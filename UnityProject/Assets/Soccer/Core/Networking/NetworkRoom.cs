@@ -18,7 +18,8 @@ namespace Soccer.Core.Networking
         public NetworkRoute Route;
         public string Name = "足球房间", PlayerName = "球员", Password = "";
         public bool UsePassword;
-        public int Port = 27860;
+        // Zero lets the program choose a port; explicit values are reserved for developer tools.
+        public int Port;
         public CharacterId Character = CharacterId.Marine;
         public Team Team = Team.Cyan;
         public DebugAccountSession Account;
@@ -102,6 +103,7 @@ namespace Soccer.Core.Networking
         public event Action<int> PlayerLeft;
         public event Action<string> Failed;
         private RoomOptions options;
+        private string expectedRoomId;
         private TcpListener listener;
         private LanAdvertiser advertiser;
         private RoomPeer server;
@@ -124,7 +126,10 @@ namespace Soccer.Core.Networking
                 room.salt = RoomPassword.Random(16);
                 room.passwordKey = value.UsePassword ? RoomPassword.Derive(value.Password, room.salt) : null;
                 value.Password = ""; // Keep only a derived verifier in the host's live room.
-                room.listener = new TcpListener(IPAddress.Any, value.Port); room.listener.Start(8);
+                room.listener = new TcpListener(IPAddress.Any, value.Port == 0 ? RoomAddress.DefaultPort : value.Port);
+                try { room.listener.Start(8); }
+                catch (SocketException e) when (value.Port == 0 && e.SocketErrorCode == SocketError.AddressAlreadyInUse)
+                { room.listener.Stop(); room.listener = new TcpListener(IPAddress.Any, 0); room.listener.Start(8); }
                 room.Port = ((IPEndPoint)room.listener.LocalEndpoint).Port;
                 room.LocalSlot = value.Team == Team.Cyan ? 0 : 3;
                 room.Lobby = new RoomLobby { Id = Guid.NewGuid().ToString("N"), Name = value.Name, Route = value.Route, Port = room.Port, RequiresPassword = value.UsePassword,
@@ -142,38 +147,44 @@ namespace Soccer.Core.Networking
             string password = value.Password ?? "";
             if (password.Length > 64) throw new ArgumentException("密码不能超过 64 个字符");
             value.UsePassword = false; value.Validate(); value.Password = password;
-            ParseAddress(address, out string host, out int port);
-            var room = new NetworkRoom { options = value, Port = port };
+            var endpoint = RoomAddress.Parse(address);
+            if (endpoint.Route.HasValue && endpoint.Route.Value != value.Route) throw new ArgumentException("请在对应的局域网或互联网方式中使用此邀请");
+            var room = new NetworkRoom { options = value, Port = endpoint.Port, expectedRoomId = endpoint.RoomId };
             Task.Run(async () =>
             {
                 var socket = new TcpClient();
                 try
                 {
-                    var connect = socket.ConnectAsync(host, port);
+                    if (value.Route == NetworkRoute.LAN && !endpoint.HasPort)
+                    {
+                        var found = await LanDiscovery.FindAt(endpoint.Host);
+                        if (found.Length > 1) throw new ArgumentException("这台电脑有多个房间，请从房间列表选择，或粘贴房间邀请");
+                        if (found.Length == 1) { endpoint.Port = found[0].Port; room.expectedRoomId = found[0].Id; }
+                    }
+                    if (room.disposed) { socket.Close(); return; }
+                    var connect = socket.ConnectAsync(endpoint.Host, endpoint.Port);
                     if (await Task.WhenAny(connect, Task.Delay(6000)) != connect) throw new TimeoutException();
                     await connect;
                     if (room.disposed) { socket.Close(); return; }
                     room.completed.Enqueue(() =>
                     {
                         if (room.disposed) { socket.Close(); return; }
-                        room.server = new RoomPeer(socket); room.lastServer = room.clock;
+                        room.Port = endpoint.Port; room.server = new RoomPeer(socket); room.lastServer = room.clock;
                         room.server.Send(PacketKind.Hello, NetworkCodec.Pack(w => { NetworkCodec.Text(w, NetworkCodec.Version); NetworkCodec.Text(w, value.PlayerName, 24); w.Write((int)value.Character); w.Write((int)value.Team); w.Write((int)value.Route); NetworkCodec.Text(w, value.Account?.Id ?? "", 16); }));
                     });
                 }
-                catch (Exception) { socket.Close(); room.completed.Enqueue(() => room.Fail("连接失败：请检查房间地址、端口、防火墙和房主是否在线")); }
+                catch (Exception e) { socket.Close(); room.completed.Enqueue(() => room.Fail(e is ArgumentException ? e.Message : "无法加入房间，请确认房主在线，或重新复制房间邀请")); }
             });
             return room;
         }
         public static void ParseAddress(string address, out string host, out int port)
         {
-            address = (address ?? "").Trim();
-            if (address.StartsWith("tcp://", StringComparison.OrdinalIgnoreCase)) address = address.Substring(6);
-            int separator = address.LastIndexOf(':'); port = 27860; host = address;
-            if (separator >= 0)
-            { host = address.Substring(0, separator); if (!int.TryParse(address.Substring(separator + 1), out port)) throw new ArgumentException("请输入 IP 或域名:端口"); }
-            if (host.Length < 1 || host.Length > 253 || host.Any(c => !(char.IsLetterOrDigit(c) || c == '.' || c == '-')) || port < 1 || port > 65535)
-                throw new ArgumentException("请输入有效的 IPv4 地址或域名:端口");
+            var endpoint = RoomAddress.Parse(address); host = endpoint.Host; port = endpoint.Port;
         }
+        public static string CreateInvitation(string host, RoomLobby lobby)
+        { if (lobby == null) throw new ArgumentException("房间信息无效"); return RoomAddress.Invite(host, lobby.Port, lobby.Route, lobby.Id); }
+        public string Invitation(string host)
+        { if (!Connected || Lobby == null) throw new InvalidOperationException("房间尚未连接"); return RoomAddress.Invite(host, Port, Lobby.Route, Lobby.Id); }
         public static string[] LocalAddresses()
         {
             try { return NetworkInterface.GetAllNetworkInterfaces().Where(n => n.OperationalStatus == OperationalStatus.Up && n.NetworkInterfaceType != NetworkInterfaceType.Loopback)
@@ -306,6 +317,7 @@ namespace Soccer.Core.Networking
                 bool wasRunning = Running;
                 NetworkCodec.Read(packet.Body, r => { LocalSlot = r.ReadInt32(); Lobby = ReadLobby(r); });
                 if (!Lobby.Members.Any(m => m.Slot == LocalSlot)) throw new InvalidDataException();
+                if (expectedRoomId != null && Lobby.Id != expectedRoomId) { Fail("这个房间邀请已失效，请让房主重新复制邀请"); return; }
                 Connected = true; Status = "已加入房间"; Changed?.Invoke(); if (wasRunning && !Running) ReturnedToLobby?.Invoke(); return;
             }
             if (packet.Kind == PacketKind.Start && Connected)

@@ -47,11 +47,10 @@ namespace Soccer.Runtime
             Check(app.UI.Root.Q<TextField>("login-password").isPasswordField, "startup password entry is masked");
             yield return new WaitForSecondsRealtime(.35f);
             yield return Capture("00-startup-login");
-            app.UI.Root.Q<TextField>("login-server").value="http://127.0.0.1:27862";
             app.UI.Root.Q<TextField>("login-name").value="a";app.UI.Root.Q<TextField>("login-password").value="a";
             yield return Click("login-submit");
             deadline=Time.realtimeSinceStartup+10;while(app.LoginBusy && Time.realtimeSinceStartup<deadline)yield return null;
-            Check(app.Page==AppPage.Login && app.Account==null && !app.LoginBusy && app.LoginStatus.Contains("无法连接"),
+            Check(app.Page==AppPage.Login && app.Account==null && !app.LoginBusy && app.LoginStatus.Contains("离线进入"),
                 "unavailable login service cannot authenticate locally and keeps offline entry usable");
             Check(app.UI.Root.Q<TextField>("login-password").value.Length==0,"failed online login clears the password field");
             yield return Click("login-offline");

@@ -18,20 +18,22 @@ namespace Soccer.Runtime
         private readonly List<string> checks = new List<string>(), errors = new List<string>();
         private AppController app;
         private string output, role, route;
-        private int port;
+        private string invitationFile;
         private const string TestPassword = "network-probe-017";
         private string Argument(string key, string fallback)
         { var args = Environment.GetCommandLineArgs(); int index = Array.IndexOf(args, key); return index >= 0 && index + 1 < args.Length ? args[index + 1] : fallback; }
         private IEnumerator Start()
         {
             app = GetComponent<AppController>(); role = Argument("--soccer-network-role", "host"); route = Argument("--soccer-network-route", "lan");
-            port = int.Parse(Argument("--soccer-network-port", "28560")); output = Argument("--soccer-report-dir", Path.Combine(Application.persistentDataPath, "NetworkSmoke")); Directory.CreateDirectory(output);
+            output = Argument("--soccer-report-dir", Path.Combine(Application.persistentDataPath, "NetworkSmoke")); Directory.CreateDirectory(output);
+            invitationFile = Argument("--soccer-network-invite-file", Path.Combine(Path.GetDirectoryName(output), "room-invitation.txt"));
             Application.logMessageReceived += Error;
             float deadline = Time.realtimeSinceStartup + 15;
             while (!app.StartupReady && Time.realtimeSinceStartup < deadline) yield return null;
             Check(app.StartupReady, "real game startup completes");
             Check(app.Page == AppPage.Login, "startup requires login or explicit offline entry");
             var root = app.UI.Root;
+            Check(root.Q("login-server") == null, "login service address is configured by deployment, not players");
             Check(root.Q<TextField>("login-password").isPasswordField, "account password uses a masked field");
             if (route == "internet")
             {
@@ -60,18 +62,26 @@ namespace Soccer.Runtime
             if (role == "host")
             {
                 root.Q<TextField>("network-room-name").value = "联机验证 · " + route;
-                root.Q<IntegerField>("network-port").value = port;
+                Check(root.Q("network-port") == null, "players create rooms without port fields");
                 if (route == "internet")
                 {
                     root.Q<Toggle>("network-password-enabled").value = true;
                     root.Q<TextField>("network-room-password").value = TestPassword;
-                    root.Q<TextField>("network-public-address").value = "127.0.0.1:" + port;
+                    root.Q<TextField>("network-public-address").value = "127.0.0.1";
                     Check(root.Q<TextField>("network-room-password").enabledSelf, "enabling room password enables password entry");
                 }
                 yield return Capture("00-room-setup");
                 yield return Click("network-create");
                 Check(app.Page == AppPage.RoomLobby && app.Room != null && app.Room.IsHost, "create button opens a real listening room");
                 Check(root.Q<TextField>("network-room-password").value.Length == 0, "created room clears password field");
+                Check(app.Room.Port > 0, "program selects a usable listening port automatically");
+                yield return new WaitForSecondsRealtime(.4f);
+                var copyButton = root.Q<Button>("lobby-copy-address"); var lobbyBounds = root.Q("room-page").worldBound;
+                Check(copyButton.worldBound.width > 0 && lobbyBounds.Contains(copyButton.worldBound.center) && copyButton.worldBound.xMax <= lobbyBounds.xMax,
+                    "copy invitation button remains visible beside the long invitation");
+                yield return Click("lobby-copy-address");
+                Check(GUIUtility.systemCopyBuffer.StartsWith("SS1-") && root.Q<TextField>("lobby-address").isReadOnly, "copy button supplies a complete read-only room invitation");
+                File.WriteAllText(invitationFile, GUIUtility.systemCopyBuffer);
                 yield return Capture("01-host-room");
                 deadline = Time.realtimeSinceStartup + 20;
                 while ((app.Room == null || app.Room.Lobby.Members.Length < 2 || !app.Room.CanStart) && Time.realtimeSinceStartup < deadline) yield return null;
@@ -106,12 +116,14 @@ namespace Soccer.Runtime
                     deadline = Time.realtimeSinceStartup + 12;
                     DiscoveredRoom found = null;
                     while (found == null && Time.realtimeSinceStartup < deadline)
-                    { if (app.Discovery != null) foreach (var room in app.Discovery.Rooms) if (room.Lobby.Port == port) found = room; yield return null; }
+                    { if (app.Discovery != null) foreach (var room in app.Discovery.Rooms) if (room.Lobby.Name == "联机验证 · " + route) found = room; yield return null; }
                     Check(found != null, "second game process discovers host over UDP");
-                    root.Q<TextField>("network-address").value = found?.Address ?? "127.0.0.1:" + port;
+                    if (Argument("--soccer-network-join-mode", "list") == "ip")
+                        root.Q<TextField>("network-address").value = "127.0.0.1";
+                    else if (found != null) yield return Click("network-discovered-" + found.Lobby.Id);
                 }
-                else { root.Q<TextField>("network-address").value = "127.0.0.1:" + port; root.Q<TextField>("network-join-password").value = TestPassword; }
-                yield return Click("network-join");
+                else { root.Q<TextField>("network-address").value = File.ReadAllText(invitationFile); root.Q<TextField>("network-join-password").value = TestPassword; }
+                if (app.Room == null) yield return Click("network-join");
                 deadline = Time.realtimeSinceStartup + 15;
                 while (app.Page != AppPage.RoomLobby && Time.realtimeSinceStartup < deadline)
                 {

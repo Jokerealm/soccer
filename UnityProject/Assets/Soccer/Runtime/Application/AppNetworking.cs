@@ -37,7 +37,7 @@ namespace Soccer.Runtime
                 Room = NetworkRoom.Host(options); AttachRoom(); LocalPlayerId = Room.LocalSlot;
                 NetworkStatus = Room.Status; Page = AppPage.RoomLobby; UI.ShowPage(Page);
             }
-            catch (Exception e) { Room?.Dispose(); Room = null; NetworkStatus = e is ArgumentException ? e.Message : "建房失败：端口可能已被占用，或防火墙禁止监听"; UI.RefreshNetwork(); }
+            catch (Exception e) { Room?.Dispose(); Room = null; NetworkStatus = e is ArgumentException ? e.Message : "无法创建房间，请稍后重试或检查系统的网络访问权限"; UI.RefreshNetwork(); }
         }
         public void JoinNetworkRoom(string address, RoomOptions options)
         {

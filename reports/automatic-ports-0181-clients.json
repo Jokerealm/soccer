@@ -1,0 +1,67 @@
+{
+  "passed": true,
+  "preferredPortOccupied": true,
+  "totalChecks": 109,
+  "runs": [
+    {
+      "route": "internet",
+      "joinMode": "invite",
+      "role": "host",
+      "exitCode": 0,
+      "report": "reports/automatic-ports-0181-internet-invite-host/network-smoke.json",
+      "passed": true,
+      "checks": 21,
+      "errors": []
+    },
+    {
+      "route": "internet",
+      "joinMode": "invite",
+      "role": "client",
+      "exitCode": 0,
+      "report": "reports/automatic-ports-0181-internet-invite-client/network-smoke.json",
+      "passed": true,
+      "checks": 18,
+      "errors": []
+    },
+    {
+      "route": "lan",
+      "joinMode": "list",
+      "role": "host",
+      "exitCode": 0,
+      "report": "reports/automatic-ports-0181-lan-list-host/network-smoke.json",
+      "passed": true,
+      "checks": 18,
+      "errors": []
+    },
+    {
+      "route": "lan",
+      "joinMode": "list",
+      "role": "client",
+      "exitCode": 0,
+      "report": "reports/automatic-ports-0181-lan-list-client/network-smoke.json",
+      "passed": true,
+      "checks": 17,
+      "errors": []
+    },
+    {
+      "route": "lan",
+      "joinMode": "ip",
+      "role": "host",
+      "exitCode": 0,
+      "report": "reports/automatic-ports-0181-lan-ip-host/network-smoke.json",
+      "passed": true,
+      "checks": 18,
+      "errors": []
+    },
+    {
+      "route": "lan",
+      "joinMode": "ip",
+      "role": "client",
+      "exitCode": 0,
+      "report": "reports/automatic-ports-0181-lan-ip-client/network-smoke.json",
+      "passed": true,
+      "checks": 17,
+      "errors": []
+    }
+  ]
+}

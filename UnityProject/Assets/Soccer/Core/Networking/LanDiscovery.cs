@@ -97,11 +97,44 @@ namespace Soccer.Core.Networking
         private double lastSearch = -10;
         public string Status { get; private set; } = "";
         public IReadOnlyList<DiscoveredRoom> Rooms => rooms.Values.OrderBy(r => r.Lobby.Name, StringComparer.Ordinal).ToArray();
+        // A directed query also resolves the real TCP port when subnet broadcasts are blocked.
+        internal static async Task<RoomLobby[]> FindAt(string host)
+        {
+            var lookup = Dns.GetHostAddressesAsync(host);
+            if (await Task.WhenAny(lookup, Task.Delay(1500)) != lookup) return new RoomLobby[0];
+            var addresses = (await lookup).Where(a => a.AddressFamily == AddressFamily.InterNetwork).ToArray();
+            if (addresses.Any(IPAddress.IsLoopback)) addresses = addresses.Concat(NetworkRoom.LocalAddresses().Select(IPAddress.Parse)).Distinct().ToArray();
+            using (var socket = new UdpClient(AddressFamily.InterNetwork))
+            {
+                socket.EnableBroadcast = true;
+                var found = new Dictionary<string, RoomLobby>();
+                foreach (var address in addresses)
+                    try { await socket.SendAsync(LanInterfaces.Query, LanInterfaces.Query.Length, new IPEndPoint(address, LanInterfaces.Port)); } catch (SocketException) { }
+                // Shared UDP listeners may deliver unicast to one process only; multicast reaches every local room.
+                LanInterfaces.Send(socket, LanInterfaces.Query, true);
+                var timeout = Task.Delay(900);
+                while (!timeout.IsCompleted)
+                {
+                    var receive = socket.ReceiveAsync();
+                    if (await Task.WhenAny(receive, timeout) != receive) break;
+                    var reply = await receive;
+                    if (reply.Buffer.Length > 8192 || reply.RemoteEndPoint.Port != LanInterfaces.Port || !addresses.Contains(reply.RemoteEndPoint.Address)) continue;
+                    try
+                    {
+                        NetworkCodec.Read(reply.Buffer, r =>
+                        { var lobby = NetworkRoom.ReadLobby(r); if (lobby.Route == NetworkRoute.LAN && !lobby.RequiresPassword) found[lobby.Id] = lobby; });
+                    }
+                    catch (Exception e) when (e is System.IO.InvalidDataException || e is System.IO.EndOfStreamException || e is ArgumentException) { }
+                    if (found.Count >= 64) break;
+                }
+                return found.Values.ToArray();
+            }
+        }
         public LanDiscovery()
         {
             queries = new UdpClient(0); queries.EnableBroadcast = true; Task.Run(() => Receive(queries));
             try { announcements = LanInterfaces.Listener(); Task.Run(() => Receive(announcements)); }
-            catch (SocketException) { Status = "房间通告端口不可用，仍在主动搜索；也可输入房主地址"; }
+            catch (SocketException) { Status = "仍在主动搜索房间；也可输入房主 IP 或粘贴房间邀请"; }
         }
         public void Pump(double now, bool refresh = false)
         {

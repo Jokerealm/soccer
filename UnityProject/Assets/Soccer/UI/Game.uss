@@ -313,6 +313,10 @@ Button.character-card.selected { background-color: rgb(207,234,223); border-widt
 .network-member.local-member { border-width: 2px; border-color: rgb(194,147,67); }
 .network-member-name { font-size: 18px; color: rgb(32,54,64); }
 .network-member-detail { color: rgb(75,100,108); font-size: 15px; margin-top: 4px; }
+.lobby-invitation { flex-shrink: 0; }
+.lobby-invite-field { flex-grow: 1; flex-shrink: 1; flex-basis: 0; min-width: 0; }
+.lobby-invite-field .unity-base-field__input { min-width: 0; flex-shrink: 1; }
+.lobby-invitation > Button { flex-shrink: 0; margin-left: 12px; }
 .network-footer { margin-top: 12px; align-items: center; }
 .network-footer Button { min-width: 190px; margin-left: 16px; }
 .discovery-room { margin-top: 8px; justify-content: space-between; align-items: center; padding: 10px; background-color: rgba(248,250,241,.9); border-radius: 8px; }

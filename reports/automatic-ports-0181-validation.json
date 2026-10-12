@@ -1,0 +1,83 @@
+{
+  "version": "0.18.1",
+  "date": "2026-10-12",
+  "passed": true,
+  "changes": [
+    "Automatic preferred TCP port with OS-assigned fallback when occupied",
+    "LAN list and directed IP-only lookup use the actual listening port",
+    "Copy-paste invitation carries endpoint, route and room identity; no player port fields",
+    "Multiple-room ambiguity and stale or wrong-route invitations are rejected",
+    "Deployment-configured login endpoint replaces player server-address input",
+    "Invitation field shrinks while copy button stays visible"
+  ],
+  "core": {
+    "passed": true,
+    "total": 223,
+    "report": "reports/automatic-ports-0181-core/core-tests.json"
+  },
+  "network": {
+    "passed": true,
+    "total": 33,
+    "report": "reports/automatic-ports-0181-network/network-tests.json"
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 109,
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet invitation with room password",
+      "LAN discovered-list button",
+      "LAN IP-only join with login service stopped"
+    ],
+    "report": "reports/automatic-ports-0181-clients.json"
+  },
+  "fullClientRegression": {
+    "passed": true,
+    "total": 331,
+    "report": "reports/automatic-ports-0181-runtime-full/runtime-smoke.json"
+  },
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413547253
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 381993233
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.18.1-Windows-x64.zip",
+    "bytes": 144233289,
+    "sha256": "0a2a5acfdca71a7e38b7bf616376056efcd643614df691fa8d115218ca548ff9",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.18.1-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "98d2fa4e2e1de825529a514e28cf4bb446d7ab0b179d5286c29f6f39a7086b50",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "ed2064e37e045ea78cb7e734ce11d208ff6c11512d795864e5edb0a8eb2be4c2",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "1f606bf3855ceb2b8961850143468b5f2fe2f2c65e00e098c6492e7a510e009c"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "4add1ecbccc0ee92c2f8014b077a9f73e391440bf4fe06e6c0237f81104f7eba",
+    "Soccer.Runtime.dll": "c10e68eced82986e63e8f25930fd661761fbc938f6212518638beed21716bbef"
+  },
+  "limitations": {
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicLoginServiceDeployed": false,
+    "matchRelayDeployed": false
+  }
+}

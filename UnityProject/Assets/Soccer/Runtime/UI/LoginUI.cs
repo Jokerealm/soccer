@@ -10,11 +10,10 @@ namespace Soccer.Runtime
         public LoginUI(AppController controller, VisualElement ui)
         {
             app = controller; root = ui;
-            Field("login-server").maxLength = 512; Field("login-server").SetValueWithoutNotify(app.LoginServerAddress);
             Field("login-name").maxLength = 16; Field("login-password").maxLength = 64; Field("login-password").isPasswordField = true;
             root.Q<Button>("login-submit").clicked += () =>
             {
-                app.Audio.PlayClick(); app.SignInOnline(Field("login-server").value, Field("login-name").value, Field("login-password").value);
+                app.Audio.PlayClick(); app.SignInOnline(app.LoginServerAddress, Field("login-name").value, Field("login-password").value);
                 Field("login-password").SetValueWithoutNotify("");
             };
             root.Q<Button>("login-offline").clicked += () => { app.Audio.PlayClick(); Field("login-password").SetValueWithoutNotify(""); app.EnterOffline(); };
@@ -22,7 +21,7 @@ namespace Soccer.Runtime
         public void Refresh()
         {
             root.Q<Label>("login-status").text = app.LoginStatus;
-            foreach (string name in new[] { "login-server", "login-name", "login-password", "login-submit" }) root.Q(name).SetEnabled(!app.LoginBusy);
+            foreach (string name in new[] { "login-name", "login-password", "login-submit" }) root.Q(name).SetEnabled(!app.LoginBusy);
             root.Q<Button>("login-submit").text = app.LoginBusy ? "登录中…" : "联网登录    →";
             root.Q<Label>("connection-status").text = app.EntryMode == GameEntryMode.Online ? "● 已登录 · 帐号 " + app.Account?.Id : "● 离线 · 局域网可用";
             root.Q<Button>("home-account").text = app.EntryMode == GameEntryMode.Online ? "切换帐号" : "联网登录";

@@ -181,4 +181,44 @@ Test("LAN announcements discover two hosts and deduplicate broadcast and loopbac
  first.Dispose();deadline=Now()+6;while(discovery.Rooms.Any(r=>r.Lobby.Id==first.Lobby.Id) && Now()<deadline){second.Pump(Now());guest.Pump(Now());discovery.Pump(Now());Thread.Sleep(5);}
  Assert(discovery.Rooms.Count==1 && discovery.Rooms[0].Lobby.Id==second.Lobby.Id,"closed room retained in discovery");
 });
+Test("automatic hosting survives occupied preferred port and assigns distinct usable endpoints",()=> {
+ using var blocker=new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any,RoomAddress.DefaultPort);blocker.Start();
+ using var first=NetworkRoom.Host(Options(NetworkRoute.LAN));using var second=NetworkRoom.Host(Options(NetworkRoute.LAN));
+ Assert(first.Port>0 && first.Port!=RoomAddress.DefaultPort && second.Port>0 && first.Port!=second.Port,"automatic host did not choose free ports");
+ using var guest=Client(second);Until(()=>guest.Connected,first,second,guest);
+ Assert(second.Lobby.Members.Length==2 && first.Lobby.Members.Length==1,"fallback listener unusable");
+});
+Test("LAN IP-only join resolves occupied-port fallback through directed discovery",()=> {
+ using var blocker=new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any,RoomAddress.DefaultPort);blocker.Start();
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var guest=NetworkRoom.Join("127.0.0.1",Options(NetworkRoute.LAN,Team.Amber));
+ Until(()=>guest.Connected,host,guest);
+ Assert(guest.Port==host.Port && host.Port!=RoomAddress.DefaultPort && guest.Lobby.Id==host.Lobby.Id,"host-only input lost the actual port");
+});
+Test("IP-only lookup refuses ambiguous hosts and invitations select the intended room",()=> {
+ using var first=NetworkRoom.Host(Options(NetworkRoute.LAN));using var second=NetworkRoom.Host(Options(NetworkRoute.LAN));
+ using var ambiguous=NetworkRoom.Join("localhost",Options(NetworkRoute.LAN,Team.Amber));string reason="";ambiguous.Failed+=s=>reason=s;
+ Until(()=>reason.Length>0,first,second,ambiguous);Assert(reason.Contains("多个房间") && !ambiguous.Connected,"ambiguous IP silently joined the wrong room");
+ using var selected=NetworkRoom.Join(second.Invitation("127.0.0.1"),Options(NetworkRoute.LAN,Team.Amber));Until(()=>selected.Connected,first,second,selected);
+ Assert(selected.Lobby.Id==second.Lobby.Id && first.Lobby.Members.Length==1,"invitation selected wrong same-machine room");
+});
+Test("internet invitation carries an automatically selected port and still requires room password",()=> {
+ using var blocker=new System.Net.Sockets.TcpListener(System.Net.IPAddress.Any,RoomAddress.DefaultPort);blocker.Start();
+ using var host=NetworkRoom.Host(Options(password:"secret"));string invite=host.Invitation("127.0.0.1");
+ Assert(invite.StartsWith("SS1-") && !invite.Contains(":"),"invitation exposed a manual endpoint");
+ NetworkRoom.ParseAddress(invite,out string ip,out int port);Assert(ip=="127.0.0.1" && port==host.Port,"invitation lost endpoint");
+ string unicodeHost=new string('测',250)+".cn";NetworkRoom.ParseAddress(host.Invitation(unicodeHost),out string roundTrip,out _);
+ Assert(roundTrip==unicodeHost,"maximum UTF-8 host invitation could not round trip");
+ using var guest=NetworkRoom.Join(invite,Options(team:Team.Amber,password:"secret",account:"b"));Until(()=>guest.Connected,host,guest);
+ Assert(guest.Port==host.Port && guest.Lobby.RequiresPassword,"automatic internet invitation bypassed password or port");
+});
+Test("malformed, cross-route and stale invitations are rejected",()=> {
+ foreach(string value in new[]{"SS1-", "SS1-%%%%", "SS1-a", "SS1-"+new string('a',1401)})
+ { bool rejected=false;try{NetworkRoom.ParseAddress(value,out _,out _);}catch(ArgumentException){rejected=true;}Assert(rejected,"malformed invite accepted"); }
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));bool wrongRoute=false;
+ try{using var wrong=NetworkRoom.Join(host.Invitation("127.0.0.1"),Options());}catch(ArgumentException){wrongRoute=true;}
+ Assert(wrongRoute,"invitation route ignored");
+ string stale=RoomAddress.Invite("127.0.0.1",host.Port,NetworkRoute.LAN,Guid.NewGuid().ToString("N"));
+ using var guest=NetworkRoom.Join(stale,Options(NetworkRoute.LAN,Team.Amber));string reason="";guest.Failed+=s=>reason=s;
+ Until(()=>reason.Length>0,host,guest);Assert(reason.Contains("失效") && !guest.Connected,"reused port admitted stale invitation");
+});
 var report=args.Length>0?args[0]:"reports/network-017-transport";Directory.CreateDirectory(report);File.WriteAllText(Path.Combine(report,"network-tests.json"),JsonSerializer.Serialize(new{passed=failed==0,total=results.Count,failed,results},new JsonSerializerOptions{WriteIndented=true}));return failed==0?0:1;

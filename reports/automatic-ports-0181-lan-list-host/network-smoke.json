@@ -1,0 +1,29 @@
+{
+    "passed": true,
+    "role": "host",
+    "route": "lan",
+    "platform": "OSXPlayer",
+    "localPlayerId": 0,
+    "tick": 329,
+    "checks": [
+        "PASS real game startup completes",
+        "PASS startup requires login or explicit offline entry",
+        "PASS login service address is configured by deployment, not players",
+        "PASS account password uses a masked field",
+        "PASS offline entry makes LAN available without account service",
+        "PASS both room passwords use masked fields",
+        "PASS players create rooms without port fields",
+        "PASS create button opens a real listening room",
+        "PASS created room clears password field",
+        "PASS program selects a usable listening port automatically",
+        "PASS copy invitation button remains visible beside the long invitation",
+        "PASS copy button supplies a complete read-only room invitation",
+        "PASS second process joins and readiness reaches host",
+        "PASS host start button starts authoritative six-player match",
+        "PASS guest selected character appears in opposing player slot",
+        "PASS remote movement changes only the guest-controlled authoritative player",
+        "PASS guest press/release executes exactly one real kick on host",
+        "PASS client exit releases remote slot for AI takeover"
+    ],
+    "errors": []
+}

@@ -43,7 +43,7 @@ namespace Soccer.Runtime
             string address = (serverAddress ?? "").Trim().TrimEnd('/');
             if (!Uri.TryCreate(address, UriKind.Absolute, out var uri) || (uri.Scheme != "http" && uri.Scheme != "https") ||
                 uri.UserInfo.Length > 0 || uri.Query.Length > 0 || uri.Fragment.Length > 0 || address.Length > 512)
-            { LoginStatus = "请填写登录服务器地址；暂时没有服务器也可离线进入"; UI.RefreshLogin(); return; }
+            { LoginStatus = "联网登录服务暂未开放，请选择离线进入"; UI.RefreshLogin(); return; }
             string id = (account ?? "").Trim();
             if (id.Length < 1 || id.Length > 16 || password == null || password.Length < 1 || password.Length > 64)
             { LoginStatus = "请输入帐号和密码"; UI.RefreshLogin(); return; }
@@ -62,7 +62,7 @@ namespace Soccer.Runtime
                 request.SetRequestHeader("Content-Type", "application/json"); request.timeout = 7;
                 yield return request.SendWebRequest(); LoginBusy = false; loginRoutine = null;
                 if (request.responseCode == 401) LoginStatus = "帐号或密码错误";
-                else if (request.result != UnityWebRequest.Result.Success) LoginStatus = "无法连接登录服务器，请检查网络和地址，或离线进入";
+                else if (request.result != UnityWebRequest.Result.Success) LoginStatus = "暂时无法联网登录，请稍后重试，或离线进入";
                 else
                 {
                     DebugAccountSession session = null;
