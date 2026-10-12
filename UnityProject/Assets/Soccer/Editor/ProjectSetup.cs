@@ -42,14 +42,15 @@ namespace Soccer.Editor
             CreateChineseBoldFont();
             AssetDatabase.ImportAsset(Root + "UI/Game.uss", ImportAssetOptions.ForceUpdate);
             var rules = LoadOrCreate<MatchRulesAsset>(Root + "Data/PrototypeRules.asset");
-            if (rules.Rules.RuleVersion != "star-strikers-prototype-0.17.1")
+            if (rules.Rules.RuleVersion != "star-strikers-prototype-0.18.0")
             {
                 rules.Rules.EnableCombat = true;
                 rules.Rules.EnableOutOfPlay = true; rules.Rules.BallRadius = .27f;
-                rules.Rules.RuleVersion = "star-strikers-prototype-0.17.1";
+                rules.Rules.RuleVersion = "star-strikers-prototype-0.18.0";
+                rules.Rules.MovementSpeedScale = 1.6f;
                 rules.Rules.PossessionSpeed = .8f; rules.Rules.PossessionContactLock = .25f;
                 rules.Rules.KickCooldown = 6; rules.Rules.TackleCooldown = 5; rules.Rules.TackleHealthCostFactor = 10;
-                rules.Assumptions = "参考用户提供的星际足球表格，先实现枪兵与雷神。统一 100 生命、100 能量；左键踢球冷却 6 秒，空格铲球冷却 5 秒，启动扣血 10/推力（原型公式）。常规二维规则与三维美术保留，5 秒原地复活。雷神驱动时长、突进距离、炸弹范围与武器数值为可调原型值。";
+                rules.Assumptions = "参考用户提供的星际足球表格，先实现枪兵与雷神。统一 100 生命、100 能量；V 键踢球冷却 6 秒，空格铲球冷却 5 秒，启动扣血 10/推力（原型公式）。常规二维规则与三维美术保留，5 秒原地复活。雷神驱动时长、突进距离、炸弹范围与武器数值为可调原型值。";
                 EditorUtility.SetDirty(rules);
             }
             var definitions = CreateDefinitions();
@@ -334,7 +335,8 @@ namespace Soccer.Editor
             EditorSettings.defaultBehaviorMode = EditorBehaviorMode.Mode2D;
             PlayerSettings.companyName = "Future City League";
             PlayerSettings.productName = "技能足球";
-            PlayerSettings.bundleVersion = "0.17.1";
+            PlayerSettings.bundleVersion = "0.18.0";
+            PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, "com.futurecity.skillsoccer");
             PlayerSettings.defaultScreenWidth = 1600; PlayerSettings.defaultScreenHeight = 900;
             PlayerSettings.fullScreenMode = FullScreenMode.Windowed;

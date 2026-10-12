@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Soccer.Runtime
 {
-    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby }
+    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby, Login }
 
     /// <summary>应用流程编排：创建对局、推进固定 Tick、暂停、结束。业务规则留在 Core。</summary>
     public sealed partial class AppController : MonoBehaviour
@@ -33,6 +33,7 @@ namespace Soccer.Runtime
         private float accumulator;
         private float feedbackRemaining;
         private KeyboardMouseInput localInput;
+        public bool SelectingSkillTarget => localInput?.SelectingSkillTarget == true;
         private ICommandSource[] inputSources;
         private PlayerCommand[] commands;
 
@@ -41,6 +42,7 @@ namespace Soccer.Runtime
             Application.targetFrameRate = 120;
             foreach (var definition in Characters) definition.EnsureCombatPrototype();
             if (Array.Find(Characters, d => d.Stats.Id == Selected) == null) Selected = Characters[0].Stats.Id;
+            InitializeLoginAddress();
             UI.Bind(this);
             UI.ShowPage(Page);
             Audio.SetContext(Page, false);
@@ -66,7 +68,7 @@ namespace Soccer.Runtime
             // 给封面与操作提示一个可读的展示时间；进度由真实资源加载驱动。
             while (Time.realtimeSinceStartup - began < 1.6f) yield return null;
             StartupReady = true;
-            GoHome();
+            OpenLogin();
         }
 
         public CharacterDefinition SelectedDefinition => Array.Find(Characters, c => c.Stats.Id == Selected);
@@ -74,6 +76,7 @@ namespace Soccer.Runtime
 
         public void OpenSelection(MatchMode mode)
         {
+            if (!EnsureEntered()) return;
             selectionOrigin = Page == AppPage.ModeDetails ? AppPage.ModeDetails : AppPage.Home;
             SelectedMode = mode;
             Page = AppPage.CharacterSelect;
@@ -83,7 +86,9 @@ namespace Soccer.Runtime
 
         public void OpenMode(GamePlaylist mode)
         {
+            if (!EnsureEntered()) return;
             SelectedPlaylist = mode;
+            if (EntryMode == GameEntryMode.Offline && GameModeCatalog.SupportsLAN(mode)) Route = ConnectionRoute.LAN;
             if (!GameModeCatalog.SupportsLAN(mode)) Route = ConnectionRoute.Internet;
             Page = AppPage.ModeDetails;
             UI.ShowPage(Page); Audio.SetContext(Page, false);
@@ -91,6 +96,7 @@ namespace Soccer.Runtime
 
         public void SelectConnection(ConnectionRoute route)
         {
+            if (route == ConnectionRoute.Internet && EntryMode != GameEntryMode.Online) return;
             if (route == ConnectionRoute.LAN && !GameModeCatalog.SupportsLAN(SelectedPlaylist)) return;
             Route = route; UI.RefreshModeDetails();
         }
@@ -103,6 +109,7 @@ namespace Soccer.Runtime
 
         public void StartMatch()
         {
+            if (!EnsureEntered()) return;
             if (Room != null) { if (Room.IsHost) Room.ReturnToLobby(); return; }
             LocalPlayerId = 0; View.LocalPlayerId = Audio.LocalPlayerId = 0;
             var roster = Array.ConvertAll(Characters, c => c.CreateStats());
@@ -116,7 +123,7 @@ namespace Soccer.Runtime
             accumulator = 0;
             FinalGoalRemaining=0;
             Paused = false;
-            Feedback = SelectedMode == MatchMode.Training ? "右键移动／追击 · Shift 追加 · S 停止 · 左键踢球 · 空格推抢 · Q/E 技能" : "传球、控制、保护队友，合力突破；进球决定胜负。除你之外均为 AI。";
+            Feedback = SelectedMode == MatchMode.Training ? "右键移动／追击 · Shift 追加 · S 停止 · V 键踢球 · 空格推抢 · Q/E 技能" : "传球、控制、保护队友，合力突破；进球决定胜负。除你之外均为 AI。";
             Page = AppPage.Match;
             UI.ShowPage(Page);
             WorldCamera.GetComponent<ArenaCamera>().ResetFraming();
@@ -128,7 +135,7 @@ namespace Soccer.Runtime
         private void Update()
         {
             PumpNetworking();
-            if (Page != AppPage.Match && Page != AppPage.Loading && Input.GetKeyDown(KeyCode.Escape))
+            if (Page != AppPage.Match && Page != AppPage.Loading && Page != AppPage.Login && Input.GetKeyDown(KeyCode.Escape))
             {
                 Audio.PlayClick();
                 if (Page == AppPage.CharacterSelect) BackFromSelection();
@@ -180,12 +187,12 @@ namespace Soccer.Runtime
             if (feedbackRemaining <= 0 && state.Phase == MatchPhase.Playing)
                 Feedback = state.Players[0].IsDead ? $"被击倒 · {state.Players[0].RespawnRemaining:0.0} 秒后原地恢复" :
                     state.Owner == null ? "右键足球追球 · 右键敌人追击 · 空格推抢 · Q/E 技能" : state.Ball.OwnerId == 0
-                    ? "你在持球 · 左键传射，C 取消 · 留意血量，及时传给队友" : state.Owner.Team==state.Players[0].Team
+                    ? "你在持球 · V 键传射，C 取消 · 留意血量，及时传给队友" : state.Owner.Team==state.Players[0].Team
                     ? "队友持球 · 跑位接应，为传球创造空间" : "敌方持球 · 右键足球追球，接触脚前球即可夺球";
             if (Page == AppPage.Match)
             {
                 Audio.Observe(state, Simulation.Rules);
-                View.Render(state, Simulation.Rules,state.Phase==MatchPhase.Finished ? 1 : accumulator / MatchSimulation.TickSeconds, ShowDebug, true, localInput.PreviewAim);
+                View.Render(state, Simulation.Rules,state.Phase==MatchPhase.Finished ? 1 : accumulator / MatchSimulation.TickSeconds, ShowDebug, true, localInput.PreviewAim, localInput.SelectingSkillTarget);
                 UI.RefreshMatch();
             }
         }
@@ -197,7 +204,7 @@ namespace Soccer.Runtime
             Simulation.SetupTrainingRestart(kind); accumulator = 0;
             WorldCamera.GetComponent<ArenaCamera>().ResetFraming();
             View.ResetFeedback(); UI.Motion.Reset(Simulation.State.Players[LocalPlayerId]);
-            Feedback = $"{Simulation.State.RestartName}练习 · 左键瞄准并踢出 · 右键走位 · S 停止";
+            Feedback = $"{Simulation.State.RestartName}练习 · V 键蓄力并踢出 · 右键走位 · S 停止";
             feedbackRemaining = 3; UI.RefreshMatch();
         }
 
@@ -223,7 +230,7 @@ namespace Soccer.Runtime
             switch (e.Kind)
             {
                 case MatchEventKind.OutOfPlay: Feedback = "整个足球越过边线 · 出界"; break;
-                case MatchEventKind.Restart: Feedback = $"{Simulation.State.RestartName} · {(Simulation.State.RestartTeam == Team.Cyan ? "青队" : "橙队")}主罚 · 左键瞄准踢出"; break;
+                case MatchEventKind.Restart: Feedback = $"{Simulation.State.RestartName} · {(Simulation.State.RestartTeam == Team.Cyan ? "青队" : "橙队")}主罚 · V 键蓄力踢出"; break;
                 case MatchEventKind.RuleViolation: Feedback = "定位球后重复触球 · 对方任意球"; break;
                 case MatchEventKind.Steal: Feedback = "碰撞夺球 · 获得球权"; break;
                 case MatchEventKind.BallDropped: Feedback = "敌人被推开 · 球留在原地，接触球获得球权"; break;
@@ -303,6 +310,7 @@ namespace Soccer.Runtime
         { FinalGoalRemaining=0;Paused = false; Page = AppPage.Results; UI.ShowPage(Page); Audio.SetContext(Page, false); Audio.PlayFinish(); }
         public void GoHome()
         {
+            if (!EnsureEntered()) return;
             CloseNetworking(); LocalPlayerId = 0;
             Page = AppPage.Home; Paused = false; Simulation = null;
             FinalGoalRemaining=0;

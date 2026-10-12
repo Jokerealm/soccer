@@ -1,5 +1,7 @@
 # 调试帐号与 Windows 联机验证 0.17.1
 
+> 此页记录 0.17.1。0.18.0 已将登录移到启动页，并通过登录服务验证；离线进入可直接局域网联机。最新步骤见 [0.18 更新说明](联机发现与操作优化0.18.0.md)。
+
 2026-10-12。两台电脑均使用 0.17.1，完整解压 Windows 包后运行 `SkillSoccer.exe`。
 
 下载：[Windows 试玩发布页](https://github.com/Jokerealm/soccer/releases/tag/v0.17.1)。选择 `SkillSoccer-0.17.1-Windows-x64.zip`，GitHub 的 `Source code` 压缩包是源码。

@@ -8,11 +8,12 @@ namespace Soccer.Runtime
     {
         private readonly Camera camera;
         private PlayerCommand pending;
-        private bool mouseGesture, eGesture;
+        private readonly GameplayGesture gesture = new GameplayGesture();
         private int localPlayerId;
-        public Vec2 PreviewAim => mouseGesture || eGesture ? pending.Aim : Vec2.Zero;
+        public bool SelectingSkillTarget => gesture.Targeting;
+        public Vec2 PreviewAim => pending.KickHeld || gesture.Targeting ? pending.Aim : Vec2.Zero;
         public KeyboardMouseInput(Camera camera) { this.camera = camera; }
-        public void Reset() { pending = default; mouseGesture = eGesture = false; }
+        public void Reset() { pending = default; gesture.Reset(); }
 
         public void Sample(MatchState state, MatchRules rules, bool pointerBlocked, bool movementOnly = false, int playerId = 0)
         {
@@ -36,24 +37,16 @@ namespace Soccer.Runtime
                 pending.QueueOrder = order.QueueOrder;
             }
             pending.StopPressed |= Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.H);
-            pending.Cancel |= Input.GetKeyDown(KeyCode.C);
             if (movementOnly)
             {
                 pending.KickPressed = pending.KickHeld = pending.KickReleased = pending.TacklePressed = pending.QPressed = pending.EPressed = pending.EReleased = pending.SpecialPressed = false;
-                mouseGesture = eGesture = false;
+                gesture.Reset();
                 return;
             }
-            if (onField && Input.GetMouseButtonDown(0)) { mouseGesture = true; pending.KickPressed = true; }
-            pending.KickHeld = mouseGesture && Input.GetMouseButton(0);
-            if (Input.GetMouseButtonUp(0) && mouseGesture)
-            {
-                pending.KickReleased |= onField; pending.Cancel |= !onField; mouseGesture = false;
-            }
-            pending.TacklePressed |= onField && Input.GetKeyDown(KeyCode.Space);
-            pending.QPressed |= onField && Input.GetKeyDown(KeyCode.Q);
-            pending.SpecialPressed |= onField && Input.GetKeyDown(KeyCode.G);
-            if (onField && Input.GetKeyDown(KeyCode.E)) { pending.EPressed = true; eGesture = true; }
-            if (Input.GetKeyUp(KeyCode.E) && eGesture) { pending.EReleased = true; eGesture = false; }
+            gesture.Apply(ref pending, player.Stats.Id, new GameplayButtons { OnField = onField,
+                Cancel = Input.GetKeyDown(KeyCode.C), KickDown = Input.GetKeyDown(KeyCode.V), KickHeld = Input.GetKey(KeyCode.V), KickUp = Input.GetKeyUp(KeyCode.V),
+                PushDown = Input.GetKeyDown(KeyCode.Space), QDown = Input.GetKeyDown(KeyCode.Q), EDown = Input.GetKeyDown(KeyCode.E),
+                LeftDown = Input.GetMouseButtonDown(0), SpecialDown = Input.GetKeyDown(KeyCode.G) });
         }
         private int PickPlayer(MatchState state)
         {

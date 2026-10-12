@@ -27,7 +27,7 @@ MatchSimulation Sim(CharacterId id = CharacterId.WindShuttle, MatchMode mode = M
 // 保留旧的固定坐标回归场景；新地图在下方用真实默认尺寸独立验证。
 MatchRules LegacyField(MatchRules rules=null)
 {
-    rules??=new MatchRules(); rules.EnableOutOfPlay=false; rules.BallRadius=.18f; rules.FieldWidth=32; rules.FieldHeight=18; rules.CenterCircleRadius=2; return rules;
+    rules??=new MatchRules(); rules.MovementSpeedScale=1; rules.EnableOutOfPlay=false; rules.BallRadius=.18f; rules.FieldWidth=32; rules.FieldHeight=18; rules.CenterCircleRadius=2; return rules;
 }
 void Steps(MatchSimulation sim, int ticks, PlayerCommand input = default)
 {
@@ -52,7 +52,7 @@ Test("opening warmup allows movement and facing without using match time", () =>
     var origin = sim.State.Players[0].Position;
     Steps(sim, 60, new PlayerCommand { Move = new Vec2(-1, 0), Aim=new Vec2(0,1) });
     Near(sim.State.RemainingSeconds, 300); Near(sim.State.ElapsedSeconds,0);
-    Near(Vec2.Distance(origin, sim.State.Players[0].Position),5.6f,.003f);
+    Near(Vec2.Distance(origin, sim.State.Players[0].Position),5.6f*sim.Rules.MovementSpeedScale,.003f);
     Near(Vec2.Distance(sim.State.Players[0].Facing,new Vec2(0,1)),0);
     Assert(sim.State.IsOpeningWarmup,"warmup ended prematurely");
 });
@@ -429,6 +429,7 @@ MatchSimulation CombatSim(CharacterId slot = CharacterId.WindShuttle, MatchMode 
         PrototypeLoadouts.Create(CharacterId.WindShuttle), PrototypeLoadouts.Create(CharacterId.IronGuard),
         PrototypeLoadouts.Create(CharacterId.ArcLight) }, slot, mode);
     sim.State.Phase = MatchPhase.Playing;
+    foreach(var p in sim.State.Players) p.Stats.HealthRegen=0;
     return sim;
 }
 void CombatPair(MatchSimulation sim, float distance = 1.5f)
@@ -794,7 +795,8 @@ Test("skill descending low ball can be received", () => {
 
 MatchSimulation StarSim(CharacterId id = CharacterId.Marine, MatchMode mode = MatchMode.Training)
 {
-    var sim = new MatchSimulation(new MatchRules(), StarStrikerLoadouts.CreateRoster(), id, mode);
+    var roster=StarStrikerLoadouts.CreateRoster(); foreach(var stats in roster) stats.HealthRegen=0;
+    var sim = new MatchSimulation(new MatchRules { MovementSpeedScale=1 }, roster, id, mode);
     if(mode==MatchMode.Training) sim.ResetTraining(false); else sim.State.Phase = MatchPhase.Playing;
     return sim;
 }
@@ -1401,9 +1403,11 @@ Test($"walking into enemy held ball steals without tackling from {approach}", ()
     Assert(sim.State.Ball.LastTouchId==p.Id,"interception did not update last physical toucher");
 });
 Test("right-click held football obtains possession without any tackle input", () => {
-    var sim=InterceptionFixture();var p=sim.State.Players[0];p.Position=sim.State.Ball.Position+new Vec2(3,0);
-    Steps(sim,150,ContextOrder.Create(sim.State,sim.Rules,0,sim.State.Ball.Position,clickedBall:true));
-    Assert(p.Steals>=1 && sim.State.Ball.OwnerId==p.Id,"ball pursuit never intercepted held football");Near(p.Health,100);Near(p.TackleCooldown,0);
+    foreach(float scale in new[]{1f,1.6f,2.5f}) {
+    var sim=InterceptionFixture();sim.Rules.MovementSpeedScale=scale;var p=sim.State.Players[0];p.Position=sim.State.Ball.Position+new Vec2(3,0);
+    var chase=ContextOrder.Create(sim.State,sim.Rules,0,sim.State.Ball.Position,clickedBall:true);
+    for(int tick=0;tick<150 && p.Steals==0;tick++) Steps(sim,1,chase);
+    Assert(p.Steals>=1 && sim.State.Ball.OwnerId==p.Id,"ball pursuit never intercepted held football at scale "+scale);Near(p.Health,100);Near(p.TackleCooldown,0); }
 });
 Test("standing outside held ball surface does not steal and football does not evade", () => {
     var sim=InterceptionFixture();var p=sim.State.Players[0];var ball=sim.State.Ball.Position;
@@ -1500,6 +1504,46 @@ Test("automatic possession tuning rejects nonfinite or invalid values", () => {
     {bool rejected=false;try{new MatchRules {PossessionSpeed=value}.Validate();}catch(ArgumentException){rejected=true;}Assert(rejected,"invalid carry speed accepted");}
 });
 
+Test("default movement tuning speeds up reference roster without changing possession ratio",()=> {
+ var sim=new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.Training);sim.ResetTraining(false);
+ var p=sim.State.Players[0];p.Position=Vec2.Zero;sim.State.Players[1].Position=new Vec2(15,12);sim.State.Ball.Position=new Vec2(-15,12);
+ Steps(sim,60,new PlayerCommand{Move=new Vec2(1,0)});Near(p.Position.X,2.35f*1.6f,.002f);
+ sim.ResetTraining(true);p.Position=Vec2.Zero;sim.State.Players[1].Position=new Vec2(15,12);
+ Steps(sim,60,new PlayerCommand{Move=new Vec2(1,0)});Near(p.Position.X,2.35f*1.6f*.8f,.002f);
+});
+Test("passive health recovers two per second and clamps without reviving a downed player",()=> {
+ var sim=new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.Training);sim.ResetTraining(false);
+ var p=sim.State.Players[0];p.Health=60;Steps(sim,120);Near(p.Health,64,.002f);Near(p.HealingDone,0);
+ p.Health=99.99f;Steps(sim,2);Near(p.Health,100);
+ p.Health=0;p.RespawnRemaining=2;Steps(sim,60);Near(p.Health,0);Assert(p.IsDead,"passive recovery revived downed player");
+ sim.State.Phase=MatchPhase.SetPiece;p.Health=60;p.RespawnRemaining=0;Steps(sim,20);Near(p.Health,60);
+});
+Test("default faster navigation reaches a short destination without oscillating",()=> {
+ var sim=new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.Training);sim.ResetTraining(false);
+ var p=sim.State.Players[0];p.Position=Vec2.Zero;sim.State.Players[1].Position=new Vec2(15,12);sim.State.Ball.Position=new Vec2(-15,12);
+ Steps(sim,1,ContextOrder.Create(sim.State,sim.Rules,0,new Vec2(1.03f,0)));Steps(sim,60);
+ Assert(Vec2.Distance(p.Position,new Vec2(1.03f,0))<.12f && p.Order==UnitOrderKind.None,"increased speed overshot short order");
+});
+Test("left mouse never kicks while keyboard hold and release produce kick edges",()=> {
+ var gesture=new GameplayGesture();var input=new PlayerCommand();gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{OnField=true,LeftDown=true});
+ Assert(!input.KickPressed && !input.KickReleased,"left mouse still shoots");
+ gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{OnField=true,KickDown=true,KickHeld=true});Assert(input.KickPressed && input.KickHeld,"V hold did not charge");
+ input=input.WithoutEdges();gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{OnField=true,KickUp=true});Assert(input.KickReleased && !input.KickHeld,"V release did not shoot");
+ input=input.WithoutEdges();gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{OnField=true});Assert(!input.KickReleased,"release edge repeated");
+});
+Test("direction skill waits for mouse confirmation without charging a held football",()=> {
+ var gesture=new GameplayGesture();var input=new PlayerCommand();gesture.Apply(ref input,CharacterId.Thor,new GameplayButtons{OnField=true,EDown=true});
+ Assert(gesture.Targeting && !input.EPressed && !input.KickPressed,"E fired before target confirmation");
+ gesture.Apply(ref input,CharacterId.Thor,new GameplayButtons{OnField=false,LeftDown=true});Assert(gesture.Targeting && !input.EPressed,"UI click selected a skill target");
+ gesture.Apply(ref input,CharacterId.Thor,new GameplayButtons{OnField=true,LeftDown=true});Assert(!gesture.Targeting && input.EPressed && !input.KickPressed,"left confirm incorrectly kicked");
+});
+Test("cancel removes skill selection and keyboard charge and push remains a separate key",()=> {
+ var gesture=new GameplayGesture();var input=new PlayerCommand();gesture.Apply(ref input,CharacterId.Thor,new GameplayButtons{OnField=true,EDown=true});
+ gesture.Apply(ref input,CharacterId.Thor,new GameplayButtons{Cancel=true});Assert(input.Cancel && !gesture.Targeting,"cancel retained selected skill");
+ input=default;gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{OnField=true,KickDown=true,KickHeld=true});
+ gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{Cancel=true});input=default;gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{OnField=true,KickUp=true,PushDown=true});
+ Assert(input.TacklePressed && !input.KickReleased && !input.KickPressed,"push or canceled charge affected kick");
+});
 string reportDir = args.Length > 0 ? args[0] : Path.GetFullPath("reports");
 Directory.CreateDirectory(reportDir);
 File.WriteAllText(Path.Combine(reportDir, "core-tests.json"), JsonSerializer.Serialize(new { passed = failed == 0, total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));

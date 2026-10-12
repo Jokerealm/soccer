@@ -37,6 +37,7 @@ assets/packages/*.zip
 .vs/
 *.csproj
 !tests/**/*.csproj
+!server/**/*.csproj
 *.sln
 *.slnx
 *.user

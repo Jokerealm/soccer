@@ -17,15 +17,28 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="PC / 乱斗原型 0.14.0" class="loading-version" />
+            <ui:Label text="PC / 乱斗原型 0.18.0" class="loading-version" />
+        </ui:VisualElement>
+
+
+        <ui:VisualElement name="login-page" class="page login-page hidden">
+            <ui:Label text="WELCOME TO THE FIELD" class="eyebrow" />
+            <ui:Label text="先登录，再一起上场。" class="page-title" />
+            <ui:Label text="联网登录可使用互联网房间；离线进入可训练、AI 对练和局域网联机。" class="muted" />
+            <ui:TextField name="login-server" label="登录服务器地址" />
+            <ui:TextField name="login-name" label="帐号" />
+            <ui:TextField name="login-password" label="密码" />
+            <ui:Label text="调试帐号：a / a，b / b（帐号 / 密码）" class="muted" />
+            <ui:Label name="login-status" class="network-status" />
+            <ui:VisualElement class="row login-actions"><ui:Button name="login-offline" text="离线进入" class="secondary" /><ui:Button name="login-submit" text="联网登录    →" class="primary" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="home-page" class="mode-home hidden">
             <ui:VisualElement class="front-topbar row">
                 <ui:VisualElement class="brand-block row"><ui:VisualElement name="brand-mark" class="brand-mark" /><ui:VisualElement><ui:Label text="技能足球" class="front-brand" /><ui:Label text="合作乱斗 · 城市球场" class="front-brand-sub" /></ui:VisualElement></ui:VisualElement>
                 <ui:VisualElement class="grow" />
-                <ui:Label name="connection-status" text="● 本地 / 联机" class="connection-status" />
-                <ui:Label text="PC / 0.14.0" class="build-label" />
+                <ui:Button name="home-account" text="联网登录" class="front-utility" /><ui:Label name="connection-status" text="● 本地 / 联机" class="connection-status" />
+                <ui:Label text="PC / 0.18.0" class="build-label" />
             </ui:VisualElement>
             <ui:VisualElement class="mode-intro">
                 <ui:Label text="一起开路，一起进球" class="eyebrow" />
@@ -51,7 +64,7 @@
             </ui:VisualElement>
             <ui:VisualElement class="front-footer row">
                 <ui:Button name="train-button" text="训练场" class="front-utility" /><ui:Button name="bots-button" text="AI 对练" class="front-utility" /><ui:Button name="roster-button" text="乐子打法" class="front-utility" /><ui:Button name="settings-button" text="设置" class="front-utility" />
-                <ui:VisualElement class="grow" /><ui:Label text="互联网 / 局域网 · 筹备中" class="front-footer-note" />
+                <ui:VisualElement class="grow" /><ui:Label text="局域网房间 · 互联网直连" class="front-footer-note" />
             </ui:VisualElement>
         </ui:VisualElement>
 
@@ -89,20 +102,6 @@
             </ui:VisualElement>
             <ui:VisualElement class="row network-tabs"><ui:Button name="network-create-tab" text="创建房间" class="route-button" /><ui:Button name="network-join-tab" text="加入房间" class="route-button" /></ui:VisualElement>
             <ui:ScrollView class="network-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
-                <ui:VisualElement name="network-account" class="network-card">
-                    <ui:VisualElement name="account-form">
-                        <ui:Label text="登录调试帐号" class="skill-heading" />
-                        <ui:Label text="试玩帐号：a / a，b / b（帐号 / 密码）" class="muted" />
-                        <ui:TextField name="account-name" label="帐号" />
-                        <ui:TextField name="account-password" label="帐号密码" />
-                        <ui:Button name="account-login" text="登录    →" class="primary" />
-                        <ui:Label name="account-status" class="network-status" />
-                    </ui:VisualElement>
-                    <ui:VisualElement name="account-session" class="row hidden">
-                        <ui:Label name="account-current" class="skill-heading grow" />
-                        <ui:Button name="account-logout" text="退出帐号" class="secondary" />
-                    </ui:VisualElement>
-                </ui:VisualElement>
                 <ui:VisualElement name="network-profile" class="row network-profile">
                     <ui:TextField name="network-player-name" label="你的名字" value="球员" />
                     <ui:DropdownField name="network-character" label="角色" />
@@ -275,7 +274,7 @@
                                 <ui:VisualElement name="kick-symbol" class="skill-symbol" />
                                 <ui:VisualElement name="kick-mask" class="cooldown-mask" />
                                 <ui:Label name="kick-cd" class="cooldown-number" />
-                                <ui:Label text="左键" class="ability-key" />
+                                <ui:Label text="V" class="ability-key" />
                             </ui:VisualElement>
                             <ui:Label text="踢球" class="ability-caption" />
                             <ui:Label name="kick-cost" text="冷却 6秒" class="ability-cost" />
@@ -311,7 +310,7 @@
                 <ui:VisualElement class="hud-help">
                     <ui:Label text="W A S D" class="hud-help-title" />
                     <ui:Label text="移动／追击 · S 停止" />
-                    <ui:Label text="按住左键蓄力" />
+                    <ui:Label text="按住 V 蓄力" />
                     <ui:Label text="松开出球 · C取消" />
                 </ui:VisualElement>
             </ui:VisualElement>
@@ -351,7 +350,7 @@
             <ui:VisualElement class="row settings-toggles"><ui:Button name="mute-toggle" text="静音：关" class="secondary" /><ui:Button name="feedback-toggle" text="命中反馈：开" class="secondary" /><ui:Button name="hud-mode-setting" text="完整技能栏：开" class="secondary" /></ui:VisualElement>
             <ui:Label text="新手可开启完整技能栏；关闭后只在左上角显示头像、生命和能量。比赛中也可随时切换。" class="muted hud-setting-copy" />
             <ui:Label text="电脑操作" class="skill-heading" />
-            <ui:Label text="右键地面移动，右键敌人自动追击，右键队友跟随；Shift 追加路线，S/H 停止。&#10;左键按住蓄力，松开踢球，冷却 6 秒；C 取消。&#10;空格推开角色腾出空间，冷却 5 秒并消耗生命。推队友／背后推保留持球；正面和侧面推敌人时球留原地，碰撞球接球。&#10;进入射程自动武器普攻，三格储备会自动补充；Q/E 角色技能。&#10;枪兵 G 消耗 10 能量提前引爆炸弹；Esc 暂停。&#10;被击倒后掉球，5 秒后在原地满状态复活。&#10;训练中 R 重置、F 持球、T 目标持球、F1 判定显示，F2 角球，F3 任意球。" class="description" />
+            <ui:Label text="右键地面移动，右键敌人自动追击，右键队友跟随；Shift 追加路线，S/H 停止。&#10;V 键按住蓄力，松开踢球，冷却 6 秒；C 取消。&#10;空格推开角色腾出空间，冷却 5 秒并消耗生命。推队友／背后推保留持球；正面和侧面推敌人时球留原地，碰撞球接球。&#10;进入射程自动武器普攻，三格储备会自动补充；Q/E 角色技能；雷神 E 选择方向后左键确认，C 取消。&#10;枪兵 G 消耗 10 能量提前引爆炸弹；Esc 暂停。&#10;被击倒后掉球，5 秒后在原地满状态复活。&#10;训练中 R 重置、F 持球、T 目标持球、F1 判定显示，F2 角球，F3 任意球。" class="description" />
             <ui:Label text="固定全场视野 · 后续添加按键重映射、手柄与触屏。" class="muted" />
             <ui:Button name="settings-back" text="返回主菜单" class="primary" />
         </ui:VisualElement>

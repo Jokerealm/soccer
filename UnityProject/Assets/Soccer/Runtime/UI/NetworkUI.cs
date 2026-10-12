@@ -28,15 +28,7 @@ namespace Soccer.Runtime
             foreach (string name in new[] { "network-team", "lobby-team" }) { Drop(name).choices = teams; Drop(name).SetValueWithoutNotify(teams[0]); }
             Field("network-player-name").maxLength = 24; Field("network-room-name").maxLength = 32;
             Field("network-player-name").SetValueWithoutNotify(PlayerPrefs.GetString("soccer.playerName", "球员"));
-            foreach (string name in new[] { "network-room-password", "network-join-password", "account-password" }) { Field(name).isPasswordField = true; Field(name).maxLength = 64; }
-            Field("account-name").maxLength = 16;
-            Button("account-login", () =>
-            {
-                bool signedIn = app.SignInDebug(Field("account-name").value, Field("account-password").value);
-                Field("account-password").SetValueWithoutNotify("");
-                if (signedIn) Field("network-player-name").SetValueWithoutNotify(app.Account.DisplayName);
-            });
-            Button("account-logout", app.SignOutDebug);
+            foreach (string name in new[] { "network-room-password", "network-join-password" }) { Field(name).isPasswordField = true; Field(name).maxLength = 64; }
             root.Q<Toggle>("network-password-enabled").RegisterValueChangedCallback(e => Field("network-room-password").SetEnabled(e.newValue));
             Field("network-room-password").SetEnabled(false);
             Button("network-back", app.BackFromNetwork); Button("lobby-leave", app.BackFromNetwork);
@@ -76,11 +68,7 @@ namespace Soccer.Runtime
             if (app.Page == AppPage.NetworkMenu)
             {
                 bool lan = app.Route == ConnectionRoute.LAN; bool busy = app.Room != null;
-                bool signedIn = app.Account != null; bool canSetUp = lan || signedIn;
-                Show("network-account", !lan); Show("account-form", !signedIn); Show("account-session", signedIn);
-                Text("account-status", app.AccountStatus); Text("account-current", signedIn ? "已登录 · 帐号 " + app.Account.Id : "");
-                Field("account-name").SetEnabled(!busy); Field("account-password").SetEnabled(!busy);
-                root.Q<Button>("account-login").SetEnabled(!busy); root.Q<Button>("account-logout").SetEnabled(!busy);
+                bool canSetUp = lan || app.EntryMode == GameEntryMode.Online;
                 Show("network-profile", canSetUp);
                 Text("network-title", lan ? "局域网房间" : "互联网房间");
                 Text("network-description", lan ? "和同一网络的朋友联机，最多 6 人；空位由 AI 补齐。" : "通过房主公网 IP 或域名加入；房主需开放所选端口或配置端口映射。");
@@ -88,6 +76,7 @@ namespace Soccer.Runtime
                 Show("network-internet-options", !lan); Show("network-join-password", !lan); Show("network-lan-discovery", lan);
                 Text("network-address-help", lan ? "例如 192.168.1.10:27860；找不到房间时可直接输入房主地址。" : "输入朋友提供的公网 IP 或域名:端口，例如 play.example.com:27860。");
                 Text("network-status", app.NetworkStatus);
+                if (lan && app.NetworkStatus.Length == 0) Text("network-status", app.Discovery?.Status ?? "");
                 root.Q("network-create-tab").EnableInClassList("route-selected", app.NetworkCreating);
                 root.Q("network-join-tab").EnableInClassList("route-selected", !app.NetworkCreating);
                 foreach (string name in new[] { "network-create", "network-join" }) root.Q<Button>(name).SetEnabled(!busy && canSetUp);

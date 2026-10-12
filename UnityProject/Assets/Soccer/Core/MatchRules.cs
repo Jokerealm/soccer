@@ -6,7 +6,9 @@ namespace Soccer.Core
     [Serializable]
     public sealed class MatchRules
     {
-        public string RuleVersion = "star-strikers-prototype-0.17.1";
+        public string RuleVersion = "star-strikers-prototype-0.18.0";
+        // 原地图速度保留在角色表；统一倍率用于校准本原型的现实时间跑位。
+        public float MovementSpeedScale = 1.6f;
         public bool EnableCombat = true;
         public float RespawnSeconds = 5;
         public float RespawnProtection = 1;
@@ -72,6 +74,8 @@ namespace Soccer.Core
 
         public void Validate()
         {
+            if (!Geometry.IsFinite(MovementSpeedScale) || MovementSpeedScale <= 0 || MovementSpeedScale > 4)
+                throw new ArgumentException("移动速度倍率必须在 0 到 4 之间。");
             foreach (float value in new[] { SkillPlayerClearHeight, SkillBallCatchHeight, SkillBallGravity,
                 SkillBallAirDeceleration, SkillBallLandingSpeedRetention })
                 if (!Geometry.IsFinite(value)) throw new ArgumentException("技能高球参数必须是有限数值。");
@@ -113,6 +117,7 @@ namespace Soccer.Core
         public CharacterId Id;
         public string Name;
         public float MaxHealth = 100;
+        public float HealthRegen = 2;
         public float MaxEnergy = 100;
         public float EnergyRegen = 12;
         public CombatLoadout Loadout = new CombatLoadout();

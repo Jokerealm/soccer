@@ -119,7 +119,7 @@ namespace Soccer.Runtime
                 orderMarker.startColor = orderMarker.endColor = color;
                 Circle(orderMarker,point,p.Order == UnitOrderKind.Attack ? .7f : .35f);
             }
-            navigationLine.enabled = ordered && debug && p.NavigationPath.Count > 0;
+            navigationLine.enabled = false;
             if (navigationLine.enabled)
             {
                 navigationLine.positionCount = p.NavigationPath.Count + 1;
@@ -159,7 +159,7 @@ namespace Soccer.Runtime
             players.Clear(); effects.Clear(); projectiles.Clear(); bombs.Clear(); pulses.Clear(); numbers.Clear();
         }
 
-        public void Render(MatchState state, MatchRules rules, float alpha, bool debug, bool animate, Vec2 localAim = default)
+        public void Render(MatchState state, MatchRules rules, float alpha, bool debug, bool animate, Vec2 localAim = default, bool targetSelection = false)
         {
             arena.Dynamics?.Render(state,animate);
             if(arena.Dynamics!=null) arena.Details?.Render(arena.Dynamics.PresentationTime);
@@ -245,11 +245,12 @@ namespace Soccer.Runtime
                 rightCone.SetPosition(0, origin);
                 rightCone.SetPosition(1, origin + ArenaProjection.ToWorld(Vec2.Rotate(-carrier.Facing, -angle) * rules.TackleDistance));
             }
-            preparation.enabled = local.PreviewingE;
-            if (local.PreviewingE)
+            preparation.enabled = local.PreviewingE || targetSelection;
+            if (preparation.enabled)
             {
                 preparation.SetPosition(0, ArenaProjection.ToWorld(local.Position));
-                preparation.SetPosition(1, ArenaProjection.ToWorld(local.Position + aim * local.Stats.LaneLength));
+                float reach = local.Stats.Id == CharacterId.Thor ? local.Stats.ReferenceSkills.ThorDashDistance : local.Stats.LaneLength;
+                preparation.SetPosition(1, ArenaProjection.ToWorld(local.Position + aim * reach));
                 preparation.startWidth = preparation.endWidth = local.Stats.LaneWidth * ArenaProjection.GroundYScale;
             }
             RenderShotGuide(state, rules, alpha, aim);
@@ -260,7 +261,7 @@ namespace Soccer.Runtime
         private void RenderShotGuide(MatchState state, MatchRules rules, float alpha, Vec2 aim)
         {
             var p = state.Players[LocalPlayerId];
-            shotGuide.enabled = state.Ball.OwnerId == LocalPlayerId && p.Dash == DashKind.None && state.Phase == MatchPhase.Playing;
+            shotGuide.enabled = p.Charging && state.Ball.OwnerId == LocalPlayerId && p.Dash == DashKind.None && state.Phase == MatchPhase.Playing;
             if (!shotGuide.enabled) return;
             float max = p.Preparation == ShotPreparation.Power ? p.Stats.PowerChargeSeconds : rules.ChargeSeconds;
             float charge = p.Charging ? Mathf.Clamp01(p.ChargeTime / max) : 0;

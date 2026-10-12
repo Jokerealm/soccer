@@ -118,7 +118,7 @@ namespace Soccer.Core
             if (p.MutablePath.Count == 0) return Vec2.Zero;
             var offset = p.MutablePath[0] - p.Position;
             // 最后一帧按剩余距离减速，避免在目标点左右振荡。
-            float speed = p.Stats.Speed + Math.Max(0, p.SkillSpeedBonus);
+            float speed = sim.MovementSpeed(p);
             return offset.Normalized * Math.Min(1, offset.Length / (speed * MatchSimulation.TickSeconds));
         }
     }

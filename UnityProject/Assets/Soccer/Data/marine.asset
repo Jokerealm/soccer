@@ -16,6 +16,7 @@ MonoBehaviour:
     Id: 3
     Name: "\u67AA\u5175"
     MaxHealth: 100
+    HealthRegen: 2
     MaxEnergy: 100
     EnergyRegen: 12
     Loadout:

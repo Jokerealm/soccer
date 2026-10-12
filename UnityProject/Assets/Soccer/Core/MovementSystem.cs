@@ -8,6 +8,7 @@ namespace Soccer.Core
         private MatchState State => sim.State;
         private MatchRules Rules => sim.Rules;
         public MovementSystem(MatchSimulation sim) { this.sim = sim; }
+        internal float Speed(PlayerState p) => (p.Stats.Speed + (p.SkillSpeedRemaining > 0 ? p.SkillSpeedBonus : 0)) * Rules.MovementSpeedScale * SpeedMultiplier(p);
 
         public void Step(PlayerCommand[] commands, float dt)
         {
@@ -30,7 +31,7 @@ namespace Soccer.Core
                     // 战斗动作的短后摇限制下一次动作，但不中断走位。
                     else if (p.ActionLock <= 0 || Rules.EnableCombat)
                     {
-                        float speed = (p.Stats.Speed + (p.SkillSpeedRemaining > 0 ? p.SkillSpeedBonus : 0)) * SpeedMultiplier(p);
+                        float speed = Speed(p);
                         var move = commands[p.Id].Move;
                         if (move.LengthSquared > 1) move = move.Normalized;
                         delta = move * (speed * dt);

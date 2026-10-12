@@ -30,22 +30,29 @@ namespace Soccer.Runtime
             float deadline = Time.realtimeSinceStartup + 15;
             while (!app.StartupReady && Time.realtimeSinceStartup < deadline) yield return null;
             Check(app.StartupReady, "real game startup completes");
-            app.OpenMode(GamePlaylist.Normal); app.SelectConnection(route == "lan" ? ConnectionRoute.LAN : ConnectionRoute.Internet); app.OpenNetwork(role == "host");
-            yield return new WaitForSecondsRealtime(.4f);
+            Check(app.Page == AppPage.Login, "startup requires login or explicit offline entry");
             var root = app.UI.Root;
-            Check(root.Q<TextField>("account-password").isPasswordField, "account password uses a masked field");
+            Check(root.Q<TextField>("login-password").isPasswordField, "account password uses a masked field");
             if (route == "internet")
             {
-                Check(!root.Q<Button>("network-create").enabledSelf && !root.Q<Button>("network-join").enabledSelf, "internet room actions require login");
                 string account = role == "host" ? "a" : "b";
-                root.Q<TextField>("account-name").value = account;
-                root.Q<TextField>("account-password").value = "incorrect"; yield return Click("account-login");
-                Check(app.Account == null && root.Q<Label>("account-status").text.Contains("错误"), "wrong account password rejected before network admission");
-                root.Q<TextField>("account-password").value = account; yield return Click("account-login");
-                Check(app.Account?.Id == account && root.Q<TextField>("account-password").value.Length == 0, "debug account login succeeds and clears password field");
-                yield return Capture("00-account-signed-in");
+                root.Q<TextField>("login-name").value = account;
+                root.Q<TextField>("login-password").value = "incorrect"; yield return Click("login-submit");
+                deadline = Time.realtimeSinceStartup + 10; while (app.LoginBusy && Time.realtimeSinceStartup < deadline) yield return null;
+                Check(app.Account == null && app.LoginStatus.Contains("错误"), "real login server rejects incorrect credentials");
+                root.Q<TextField>("login-password").value = account; yield return Click("login-submit");
+                deadline = Time.realtimeSinceStartup + 10; while (app.LoginBusy && Time.realtimeSinceStartup < deadline) yield return null;
+                Check(app.Account?.Id == account && app.EntryMode == GameEntryMode.Online && root.Q<TextField>("login-password").value.Length == 0,
+                    "network login succeeds through service and clears password field");
+                if (app.Account == null) { errors.Add(app.LoginStatus); Finish(); yield break; }
             }
-            else Check(app.Account == null, "LAN room works without an account login");
+            else
+            {
+                yield return Click("login-offline");
+                Check(app.EntryMode == GameEntryMode.Offline && app.Account == null, "offline entry makes LAN available without account service");
+            }
+            app.OpenMode(GamePlaylist.Normal); app.SelectConnection(route == "lan" ? ConnectionRoute.LAN : ConnectionRoute.Internet); app.OpenNetwork(role == "host");
+            yield return new WaitForSecondsRealtime(.4f);
             root.Q<TextField>("network-player-name").value = role == "host" ? "联机房主" : "联机客人";
             root.Q<DropdownField>("network-character").value = role == "host" ? "枪兵" : "雷神";
             root.Q<DropdownField>("network-team").value = role == "host" ? "青队" : "橙队";

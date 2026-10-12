@@ -13,8 +13,9 @@ namespace Soccer.Runtime
         public StyleSheet Styles;
         private VisualElement root;
         private AppController app;
-        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page" };
+        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page" };
         private NetworkUI network;
+        private LoginUI login;
         private readonly string[] scoreFields = { "stat-goals", "stat-steals", "stat-kicks", "stat-passes" };
         public VisualElement Root => root;
         private CharacterId? hudCharacter;
@@ -35,8 +36,14 @@ namespace Soccer.Runtime
             root.focusable = true;
             root.RegisterCallback<GeometryChangedEvent>(e =>
             {
-                root.EnableInClassList("compact-front-end", e.newRect.height < 840);
-                root.EnableInClassList("narrow-front-end", e.newRect.width < 1400);
+                if (e.target != root) return;
+                bool compact = e.newRect.height < 840, narrow = e.newRect.width < 1400;
+                // Apply responsive styles after the layout pass instead of invalidating it recursively.
+                root.schedule.Execute(() =>
+                {
+                    if (root.ClassListContains("compact-front-end") != compact) root.EnableInClassList("compact-front-end", compact);
+                    if (root.ClassListContains("narrow-front-end") != narrow) root.EnableInClassList("narrow-front-end", narrow);
+                });
             });
             if (Styles != null) root.styleSheets.Add(Styles);
             BindButton("train-button", () => app.OpenSelection(MatchMode.Training));
@@ -109,6 +116,8 @@ namespace Soccer.Runtime
             skillHelp=new SkillTooltip(root,DescribeSkill);
             ballLocator=new BallLocator(root);
             MiniMap=new MatchMiniMap(root);
+            login=new LoginUI(app,root);
+            BindButton("home-account", app.OpenLogin);
             network=new NetworkUI(app,root);
             SetFullHud(LoadFullHudPreference(), false);
             RefreshAudioSettings();
@@ -122,6 +131,8 @@ namespace Soccer.Runtime
             Text("loading-status", status);
         }
 
+        public void RefreshLogin() => login?.Refresh();
+
         public void RefreshModeDetails()
         {
             var mode = GameModeCatalog.Get(app.SelectedPlaylist);
@@ -131,6 +142,7 @@ namespace Soccer.Runtime
             string[] names = { "normal", "ranked", "party" };
             for (int i = 0; i < names.Length; i++) root.Q("mode-details-page").EnableInClassList(names[i], i == (int)app.SelectedPlaylist);
             SetImage("detail-art", "badge-" + names[(int)app.SelectedPlaylist]);
+            root.Q<Button>("internet-route").SetEnabled(app.EntryMode == GameEntryMode.Online);
             root.Q<Button>("lan-route").SetEnabled(GameModeCatalog.SupportsLAN(app.SelectedPlaylist));
             root.Q("internet-route").EnableInClassList("route-selected", app.Route == ConnectionRoute.Internet);
             root.Q("lan-route").EnableInClassList("route-selected", app.Route == ConnectionRoute.LAN);
@@ -206,6 +218,7 @@ namespace Soccer.Runtime
             MiniMap?.Hide();
             for (int i = 0; i < pageNames.Length; i++) Visible(root.Q(pageNames[i]), i == (int)page);
             ShowPause(false);
+            RefreshLogin();
             if (page == AppPage.CharacterSelect) RefreshSelection();
             if (page == AppPage.ModeDetails) RefreshModeDetails();
             if (page == AppPage.NetworkMenu || page == AppPage.RoomLobby) RefreshNetwork();
@@ -228,7 +241,7 @@ namespace Soccer.Runtime
             Text("select-subtitle", app.SelectedMode == MatchMode.Training ? "枪兵与雷神先上场，试试炸弹控制与高速抢位。" : "你与两名 AI 配合对战三名 AI；两种角色允许重复选择。");
             Text("selected-name", d.Stats.Name);
             Text("selected-role", d.Role);
-            Text("selected-stats", $"生命 100  ·  能量 100\n移动速度 {d.Stats.Speed:0.##}  ·  推力 {d.Stats.PushPower:0.##}\n左键踢球 6 秒冷却  ·  空格铲球 5 秒冷却\n铲球消耗 {app.RulesAsset.Rules.TackleHealthCost(d.Stats):0.#} 生命  ·  原地复活 5 秒");
+            Text("selected-stats", $"生命 100  ·  能量 100\n移动速度 {d.Stats.Speed * app.RulesAsset.Rules.MovementSpeedScale:0.##}  ·  推力 {d.Stats.PushPower:0.##}\nV 键踢球 6 秒冷却  ·  空格铲球 5 秒冷却\n铲球消耗 {app.RulesAsset.Rules.TackleHealthCost(d.Stats):0.#} 生命  ·  原地复活 5 秒");
             Text("passive-copy", d.PassiveDescription);
             Text("q-name", $"Q / {d.QName}  · {d.Stats.Loadout.QEnergy:0} 能量 + {d.Stats.QHealthCost:0} 生命 / {d.Stats.QCooldown:0.#} 秒");
             Text("q-copy", d.QDescription);
@@ -262,7 +275,7 @@ namespace Soccer.Runtime
             Text("cyan-score", state.CyanScore.ToString());
             Text("amber-score", state.AmberScore.ToString());
             Text("clock-label", training ? "练习" : Clock(state.PeriodRemainingSeconds(app.Simulation.Rules)));
-            Text("feedback-label", state.IsOpeningWarmup ? "右键移动热身 · Shift 追加路线 · S 停止 · 开球后可接球" : state.Phase == MatchPhase.SetPiece ? $"{state.RestartName} · {(state.RestartTeam == Team.Cyan ? "青队" : "橙队")}主罚 · {(state.PhaseRemaining > 0 ? "准备中" : state.RestartPlayerId == app.LocalPlayerId ? "左键瞄准踢出" : "等待对方开球")} · 对手退开 {app.Simulation.Rules.SetPieceDistance:0.#} 米" : app.Feedback);
+            Text("feedback-label", app.SelectingSkillTarget ? "选择技能方向 · 左键确认 · C 取消" : state.IsOpeningWarmup ? "右键移动热身 · Shift 追加路线 · S 停止 · 开球后可接球" : state.Phase == MatchPhase.SetPiece ? $"{state.RestartName} · {(state.RestartTeam == Team.Cyan ? "青队" : "橙队")}主罚 · {(state.PhaseRemaining > 0 ? "准备中" : state.RestartPlayerId == app.LocalPlayerId ? "V 键蓄力踢出" : "等待对方开球")} · 对手退开 {app.Simulation.Rules.SetPieceDistance:0.#} 米" : app.Feedback);
             Text("local-name", $"{p.Stats.Name} · 你");
             string possession = state.IsOpeningWarmup ? "热身中" : p.IsDead ? $"原地复活 {p.RespawnRemaining:0.0}s" : p.Stun > 0 ? $"眩晕 {p.Stun:0.0}s" :
                 state.Ball.OwnerId == app.LocalPlayerId ? "持球中" : "无球";
@@ -291,11 +304,11 @@ namespace Soccer.Runtime
                 root.Q("q-tile").tooltip = "Q · " + d.QName + "\n" + d.QDescription;
                 root.Q("e-tile").tooltip = "E · " + d.EName + "\n" + d.EDescription;
                 root.Q("g-tile").tooltip = "G · 提前引爆自己的炸弹，消耗10能量；与E冷却独立。";
-                root.Q("kick-tile").tooltip = "左键 · 按住蓄力，松开踢球；6秒冷却，C取消蓄力。";
+                root.Q("kick-tile").tooltip = "V 键 · 按住蓄力，松开踢球；6秒冷却，C取消蓄力。";
                 root.Q("tackle-tile").tooltip = "空格 · 铲球与推人，5秒冷却；推力越大，生命消耗越低。";
                 root.Q("weapon-tile").tooltip = "右键敌方球员 · 自动追击，进入射程攻击；S 停止。";
             }
-            Text("hud-stats", $"移速 {p.Stats.Speed + p.SkillSpeedBonus:0.00}   ·   推力 {p.Stats.PushPower:0.00}");
+            Text("hud-stats", $"移速 {(p.Stats.Speed + p.SkillSpeedBonus) * app.Simulation.Rules.MovementSpeedScale:0.00}   ·   推力 {p.Stats.PushPower:0.00}");
             Text("weapon-cd", p.Ammo==0 ? "装填中" : "右键追击");
             Text("hud-q-name", d.QName); Text("hud-e-name", d.EName);
             Text("q-cost", $"{p.Stats.Loadout.QEnergy:0}能 / {p.Stats.QHealthCost:0}血");
@@ -395,14 +408,14 @@ namespace Soccer.Runtime
                     energy=kit.QEnergy; health=p.Stats.QHealthCost; remaining=p.QCooldown;
                     help.Meta=$"冷却 {p.Stats.QCooldown:0.#} 秒 · {energy:0} 能量"+(health>0 ? $" · {health:0} 生命" : ""); break;
                 case "e":
-                    help.Title="E  /  "+d.EName; help.Body=d.EDescription;
+                    help.Title="E  /  "+d.EName; help.Body=d.EDescription + (p.Stats.Id == CharacterId.Thor ? " 按 E 选择方向，左键确认，C 取消。" : "");
                     energy=kit.EEnergy; health=p.Stats.EHealthCost; remaining=p.ECooldown;
                     help.Meta=$"冷却 {p.Stats.ECooldown:0.#} 秒 · {energy:0} 能量"+(health>0 ? $" · {health:0} 生命" : ""); break;
                 case "g":
                     help.Title="G  /  提前引爆"; help.Body="提前引爆自己放置或装在足球上的遥控炸弹，击退并震晕范围内敌人。与 E 冷却独立。";
                     energy=10; help.Meta="消耗 10 能量 · 需要已放置的炸弹"; break;
                 case "kick":
-                    help.Title="左键  /  踢球"; help.Body="持球时按住左键蓄力，松开传球或射门。鼠标决定方向，C 可取消蓄力。";
+                    help.Title="V  /  踢球"; help.Body="持球时按住 V 蓄力，松开传球或射门。鼠标决定方向，C 可取消蓄力。";
                     remaining=p.KickCooldown; help.Meta=$"冷却 {rules.KickCooldown:0.#} 秒 · 不耗生命或能量"; break;
                 case "tackle":
                     help.Title="空格  /  铲球"; help.Body="接触敌人脚前球即可夺球，接球后有 0.25 秒碰撞保护。铲球推开角色腾出空间；队友／背后推带球移动，正面／侧面推敌人时球留原地。推力越大生命消耗越低。";

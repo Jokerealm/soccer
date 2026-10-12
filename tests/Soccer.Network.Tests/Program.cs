@@ -168,4 +168,17 @@ Test("six concurrent players occupy unique slots and all can ready",()=> {
   foreach(var client in clients)Assert(client.LocalSlot!=host.LocalSlot,"guest got host position");
  }finally{foreach(var client in clients)client.Dispose();}
 });
+Test("each IPv4 subnet gets its own directed broadcast including non-24-bit masks",()=> {
+ Assert(LanInterfaces.Broadcast(System.Net.IPAddress.Parse("192.168.50.7"),System.Net.IPAddress.Parse("255.255.255.0")).ToString()=="192.168.50.255","24-bit broadcast wrong");
+ Assert(LanInterfaces.Broadcast(System.Net.IPAddress.Parse("10.2.3.4"),System.Net.IPAddress.Parse("255.255.0.0")).ToString()=="10.2.255.255","16-bit broadcast wrong");
+});
+Test("LAN announcements discover two hosts and deduplicate broadcast and loopback replies",()=> {
+ using var first=NetworkRoom.Host(Options(NetworkRoute.LAN));using var second=NetworkRoom.Host(Options(NetworkRoute.LAN));using var discovery=new LanDiscovery();
+ double deadline=Now()+5;while(discovery.Rooms.Count<2 && Now()<deadline){first.Pump(Now());second.Pump(Now());discovery.Pump(Now());Thread.Sleep(5);}
+ Assert(discovery.Rooms.Count==2 && discovery.Rooms.Select(r=>r.Lobby.Id).Distinct().Count()==2,"missing or duplicate LAN host");
+ var found=discovery.Rooms.Single(r=>r.Lobby.Id==second.Lobby.Id);using var guest=NetworkRoom.Join(found.Address,Options(NetworkRoute.LAN,Team.Amber));Until(()=>guest.Connected,first,second,guest);
+ Assert(second.Lobby.Members.Length==2 && first.Lobby.Members.Length==1,"discovered room address connected to wrong host");
+ first.Dispose();deadline=Now()+6;while(discovery.Rooms.Any(r=>r.Lobby.Id==first.Lobby.Id) && Now()<deadline){second.Pump(Now());guest.Pump(Now());discovery.Pump(Now());Thread.Sleep(5);}
+ Assert(discovery.Rooms.Count==1 && discovery.Rooms[0].Lobby.Id==second.Lobby.Id,"closed room retained in discovery");
+});
 var report=args.Length>0?args[0]:"reports/network-017-transport";Directory.CreateDirectory(report);File.WriteAllText(Path.Combine(report,"network-tests.json"),JsonSerializer.Serialize(new{passed=failed==0,total=results.Count,failed,results},new JsonSerializerOptions{WriteIndented=true}));return failed==0?0:1;

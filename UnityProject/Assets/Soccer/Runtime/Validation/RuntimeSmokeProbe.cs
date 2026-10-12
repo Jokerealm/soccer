@@ -43,7 +43,19 @@ namespace Soccer.Runtime
             yield return Capture("00-loading");
             float deadline = Time.realtimeSinceStartup + 10;
             while (!app.StartupReady && Time.realtimeSinceStartup < deadline) yield return null;
-            Check(app.StartupReady && app.Page == AppPage.Home, "real asset preload completes before mode selection");
+            Check(app.StartupReady && app.Page == AppPage.Login, "real asset preload opens login before any game mode");
+            Check(app.UI.Root.Q<TextField>("login-password").isPasswordField, "startup password entry is masked");
+            yield return new WaitForSecondsRealtime(.35f);
+            yield return Capture("00-startup-login");
+            app.UI.Root.Q<TextField>("login-server").value="http://127.0.0.1:27862";
+            app.UI.Root.Q<TextField>("login-name").value="a";app.UI.Root.Q<TextField>("login-password").value="a";
+            yield return Click("login-submit");
+            deadline=Time.realtimeSinceStartup+10;while(app.LoginBusy && Time.realtimeSinceStartup<deadline)yield return null;
+            Check(app.Page==AppPage.Login && app.Account==null && !app.LoginBusy && app.LoginStatus.Contains("无法连接"),
+                "unavailable login service cannot authenticate locally and keeps offline entry usable");
+            Check(app.UI.Root.Q<TextField>("login-password").value.Length==0,"failed online login clears the password field");
+            yield return Click("login-offline");
+            Check(app.Page == AppPage.Home && app.EntryMode == GameEntryMode.Offline && app.Account == null, "offline entry needs no login service and retains game access");
             if(Array.IndexOf(args,"--soccer-contact-quick")>=0)
             {
                 bool quickSavedHud=app.UI.FullHudEnabled;
@@ -202,6 +214,7 @@ namespace Soccer.Runtime
             yield return CaptureLowHealthWarning();
             yield return CaptureDynamicStadium();
             yield return CaptureLargeField();
+            yield return CaptureRecoveryAndControls();
             yield return CaptureRtsRules();
             yield return CaptureHeldInterception();
             yield return CapturePossessionContacts();
@@ -217,7 +230,7 @@ namespace Soccer.Runtime
             commands[0] = commands[0].WithoutEdges();
             for (int i = 0; i < 25; i++) app.Simulation.Step(commands);
             Check(app.Simulation.State.Ball.OwnerId != 1, "training front push releases the enemy football");
-            Check(Math.Abs(app.Simulation.State.Players[0].Health - (100 - 10 / .62f)) < .01f && app.Simulation.State.Players[0].TackleCooldown > 4.5f, "training tackle pays force-dependent health and starts five second cooldown");
+            Check(Math.Abs(app.Simulation.State.Players[0].Health - (100 - 10 / .62f + 25 * MatchSimulation.TickSeconds * app.Simulation.State.Players[0].Stats.HealthRegen)) < .02f && app.Simulation.State.Players[0].TackleCooldown > 4.5f, "training tackle pays force-dependent health then gradually regenerates during its five second cooldown");
             commands[0]=ContextOrder.Create(app.Simulation.State,app.Simulation.Rules,0,app.Simulation.State.Ball.Position,clickedBall:true);
             for(int pickupStep=0;pickupStep<100 && app.Simulation.State.Ball.OwnerId<0;pickupStep++)
             {StepPresented(commands);commands[0]=default;}
@@ -249,7 +262,7 @@ namespace Soccer.Runtime
             commands[0] = new PlayerCommand { Aim = new Vec2(1, 0), Move = new Vec2(0, 1), AttackHeld = true };
             commands[1] = default;
             for (int i = 0; i < 45; i++) StepPresented(commands);
-            Check(moving.Ammo == 0 && Math.Abs(moving.Position.Y - beforeMove.Y - moving.Stats.Speed * .75f) < 0.01f,
+            Check(moving.Ammo == 0 && Math.Abs(moving.Position.Y - beforeMove.Y - moving.Stats.Speed * app.Simulation.Rules.MovementSpeedScale * .75f) < 0.01f,
                 "runtime continuous strafing preserves speed through a three-attack burst");
             app.UI.RefreshMatch();
             Check(app.UI.Root.Q<Label>("weapon-cd").text.Contains("装填") && app.UI.Root.Q<Label>("weapon-reload-cd").text.Length>0,
@@ -352,7 +365,7 @@ namespace Soccer.Runtime
             Check(Math.Abs(thor.SkillSpeedBonus - 2.16f) < .01f, "thor drive decays after 0.375 seconds");
             commands[0] = new PlayerCommand { EPressed = true, Aim = new Vec2(0, 1) }; StepPresented(commands); commands[0] = default;
             for (int i = 0; i < 10; i++) StepPresented(commands);
-            Check(thor.QCooldown == 0 && thor.ECooldown > 9.8f && Math.Abs(thor.Position.Y - 2.4f) < .01f && Math.Abs(thor.Health - 80) < .01f,
+            Check(thor.QCooldown == 0 && thor.ECooldown > 9.8f && Math.Abs(thor.Position.Y - 2.4f) < .01f && Math.Abs(thor.Health - (80 + 33 * MatchSimulation.TickSeconds * thor.Stats.HealthRegen)) < .02f,
                 "thor thrusters dash on the ground and refresh drive cooldown");
             app.UI.RefreshMatch(); app.View.Render(app.Simulation.State, app.Simulation.Rules, 1, false, false);
             Check(app.UI.Root.Q<Label>("hud-e-name").text.Contains("辅助推进器") && app.UI.Root.Q("bomb-action").resolvedStyle.display == DisplayStyle.None,
@@ -369,7 +382,8 @@ namespace Soccer.Runtime
             using(var evt=PointerEnterEvent.GetPooled()) {evt.target=app.UI.Root.Q("e-tile"); app.UI.Root.Q("e-tile").SendEvent(evt);}
             yield return new WaitForSecondsRealtime(.16f);
             Check(app.UI.SkillHelpVisible && app.UI.Root.Q<Label>("skill-tooltip-title").text.Contains("辅助推进器") &&
-                app.UI.Root.Q<Label>("skill-tooltip-body").text==app.SelectedDefinition.EDescription &&
+                app.UI.Root.Q<Label>("skill-tooltip-body").text.StartsWith(app.SelectedDefinition.EDescription) &&
+                app.UI.Root.Q<Label>("skill-tooltip-body").text.Contains("左键确认") &&
                 app.UI.Root.Q<Label>("skill-tooltip-meta").text.Contains("10 生命"),
                 "thor hover uses its own thruster description and actual resource costs");
             yield return Capture("29-thor-skill-tooltip");
@@ -467,6 +481,36 @@ namespace Soccer.Runtime
             Application.Quit(errors.Count == 0 ? 0 : 1);
         }
 
+        private IEnumerator CaptureRecoveryAndControls()
+        {
+            app.SetPaused(true); app.UI.ShowPause(false); app.ResetTraining(false);
+            var state=app.Simulation.State;var p=state.Players[0];var commands=new PlayerCommand[state.Players.Count];
+            SetSmokeHealth(p,60);
+            for(int i=0;i<120;i++) app.Simulation.Step(commands);
+            app.UI.RefreshMatch();
+            Check(Math.Abs(p.Health-64)<.01f && Math.Abs(app.UI.Root.Q<ProgressBar>("health-progress").value-64)<.01f,
+                "real client restores two health per second and displays the recovered health");
+            float health=p.Health;yield return new WaitForSecondsRealtime(.2f);
+            Check(Math.Abs(p.Health-health)<.001f,"offline pause stops passive health recovery");
+            app.ResetTraining(false);
+            typeof(PlayerState).GetProperty(nameof(PlayerState.Position)).SetValue(p,new Vec2(-8,-5));
+            typeof(PlayerState).GetProperty(nameof(PlayerState.Position)).SetValue(state.Players[1],new Vec2(10,10));
+            SetSmokeBall(nameof(BallState.Position),new Vec2(10,-8));
+            var origin=p.Position;commands[0]=new PlayerCommand{Move=new Vec2(1,0)};
+            for(int i=0;i<60;i++) app.Simulation.Step(commands);
+            Check(Math.Abs(Vec2.Distance(p.Position,origin)-p.Stats.Speed*1.6f)<.01f,"real client walking uses the new speed scale");
+            Check(app.UI.Root.Q("kick-tile").Q<Label>(className:"ability-key").text=="V","skill dock labels keyboard kick as V");
+            app.ResetTraining(true);commands[0]=default;
+            var gesture=new GameplayGesture();gesture.Apply(ref commands[0],p.Stats.Id,new GameplayButtons{OnField=true,LeftDown=true});app.Simulation.Step(commands);
+            Check(!p.Charging && state.Ball.OwnerId==0,"left click with held ball leaves possession and starts no kick");
+            app.View.Render(state,app.Simulation.Rules,1,true,false);
+            Check(!app.View.ActorRoot.Find("Shot Direction Preview").GetComponent<LineRenderer>().enabled,"football trajectory stays hidden until keyboard charging");
+            commands[0]=default;gesture.Apply(ref commands[0],p.Stats.Id,new GameplayButtons{OnField=true,KickDown=true,KickHeld=true});app.Simulation.Step(commands);
+            app.View.Render(state,app.Simulation.Rules,1,true,false);
+            Check(p.Charging && app.View.ActorRoot.Find("Shot Direction Preview").GetComponent<LineRenderer>().enabled,"V gesture charges real player and opens shot preview");
+            yield return Capture("46-new-controls-and-recovery");app.ResetTraining(false);
+        }
+
         private IEnumerator CaptureRtsRules()
         {
             app.SetPaused(true); app.UI.ShowPause(false); app.ResetTraining(false);
@@ -482,7 +526,7 @@ namespace Soccer.Runtime
             Check(p.Order==UnitOrderKind.Move && p.NavigationPath.Count>1,"right click builds a body-aware route around opponent");
             app.View.Render(state,rules,1,true,false);app.UI.RefreshMatch();
             Check(app.View.ActorRoot.Find("Right click destination").GetComponent<LineRenderer>().enabled &&
-                app.View.ActorRoot.Find("Navigation route").GetComponent<LineRenderer>().enabled,"destination and debug route render in actual game");
+                !app.View.ActorRoot.Find("Navigation route").GetComponent<LineRenderer>().enabled,"right click retains destination feedback without showing a route even in debug mode");
             yield return Capture("47-right-click-route");
             for(int tick=0;tick<320;tick++)StepPresented(commands);
             Check(Vec2.Distance(p.Position,new Vec2(4,0))<.12f && p.Order==UnitOrderKind.None,
@@ -1072,7 +1116,7 @@ namespace Soccer.Runtime
             var player=app.Simulation.State.Players[0];
             Check(player.Position.X>20 && player.Position.Y>12 && Vector2.Distance(start,tracking.FocusGround)>12,
                 "real movement commands traverse the larger map and move the follow camera");
-            Check(largestFocusStep<1.2f,"camera movement stays smooth while traveling between map sections");
+            Check(largestFocusStep<1.2f*rules.MovementSpeedScale,"camera movement stays smooth while traveling between map sections");
             var local=camera.WorldToViewportPoint(ArenaProjection.ToWorld(player.Position));
             Check(local.x>.05f && local.x<.95f && local.y>.05f && local.y<.95f,
                 "boundary clamping keeps the local player inside the camera near the far corner");
@@ -1554,6 +1598,8 @@ namespace Soccer.Runtime
         }
         private void CaptureError(string message, string stack, LogType type)
         {
+            if (message.StartsWith("Layout update") && !errors.Exists(e => e.StartsWith("Layout update")))
+                Debug.Log("SOCCER_LAYOUT_CONTEXT page=" + app.Page + " frame=" + Time.frameCount + " classes=" + string.Join(",", app.UI.Root.GetClasses()));
             if (type == LogType.Error || type == LogType.Exception || type == LogType.Assert) errors.Add(message + "\n" + stack);
         }
         private IEnumerator Capture(string name)

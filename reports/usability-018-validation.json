@@ -1,0 +1,126 @@
+{
+  "version": "0.18.0",
+  "date": "2026-10-12",
+  "passed": true,
+  "changes": [
+    "Startup requires actual login service validation or explicit offline entry",
+    "Offline mode retains LAN rooms, training and AI matches",
+    "Per-NIC directed broadcast, multicast query and room announcements; unique room IDs, preferred reachable addresses and expiry",
+    "Movement scale 1.6 with matching navigation stopping speed",
+    "Passive 2 health / simulation second while alive in Playing phase, capped at maximum",
+    "Keyboard V charge/kick, Space push, left mouse confirms targeted E, right mouse movement without route lines",
+    "Tooltip layout positioning is deferred and rounded to avoid recursive layout updates"
+  ],
+  "referenceData": {
+    "file": "/Users/gz/Downloads/Unity%E5%A4%8D%E5%88%BB%E5%8F%82%E8%80%83.md",
+    "healthRecovery": 2,
+    "referenceTimeUnit": "game seconds; precise SC2 Faster-to-real-time calibration pending",
+    "movementScaleIsPrototypeTuning": true
+  },
+  "core": {
+    "passed": true,
+    "total": 223,
+    "failed": 0,
+    "report": "reports/usability-018-core/core-tests.json"
+  },
+  "network": {
+    "passed": true,
+    "total": 28,
+    "failed": 0,
+    "report": "reports/usability-018-network/network-tests.json"
+  },
+  "loginService": {
+    "passed": true,
+    "total": 9,
+    "report": "reports/usability-018-login-service.json",
+    "publicDeploymentAvailable": false
+  },
+  "twoProcessClients": {
+    "internet-host": {
+      "passed": true,
+      "total": 16,
+      "report": "reports/usability-018-internet-host/network-smoke.json"
+    },
+    "internet-client": {
+      "passed": true,
+      "total": 17,
+      "report": "reports/usability-018-internet-client/network-smoke.json"
+    },
+    "lan-host": {
+      "passed": true,
+      "total": 13,
+      "report": "reports/usability-018-lan-host/network-smoke.json"
+    },
+    "lan-client": {
+      "passed": true,
+      "total": 16,
+      "report": "reports/usability-018-lan-client/network-smoke.json"
+    }
+  },
+  "twoProcessCheckTotal": 62,
+  "lanTestRunsWithLoginServiceStopped": true,
+  "singlePlayerRegression": {
+    "passed": true,
+    "total": 331,
+    "errors": [],
+    "report": "reports/runtime-usability-018-full/runtime-smoke.json"
+  },
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 413539557
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 381985537
+    }
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.18.0-Windows-x64.zip",
+    "bytes": 144237176,
+    "sha256": "6a1a552e9b66b3f4bf3acb181ce683db63876312b662dd31f7c91a58253a82f7",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.18.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "actualCrossNetworkInternetVerified": false,
+  "twoPhysicalMachineLANVerified": false,
+  "windowsRuntimeVerified": false,
+  "initialRegressionDiagnostic": {
+    "report": "reports/runtime-usability-018-layout-diagnostic/runtime-smoke.json",
+    "resolution": "All gameplay assertions passed after adapting speed and regeneration expectations. The extended skill tooltip triggered recursive geometry positioning at fractional panel dimensions. Its positioning callback now schedules updates after layout and writes only changed rounded coordinates; final full client has no layout errors."
+  },
+  "releaseUrl": "https://github.com/Jokerealm/soccer/releases/tag/v0.18.0",
+  "sourceHashes": {
+    "UnityProject/Assets/Soccer/Core/Networking/DebugAccounts.cs": "f5880b18af0b5609826f3fda67d920365d89ea0a2488682cceb77c5b02aefb88",
+    "UnityProject/Assets/Soccer/Core/Networking/LanDiscovery.cs": "99818cb707f2be62d80124927dd8793ddbc2b54d5c05b2c34fcab780b308aac8",
+    "UnityProject/Assets/Soccer/Core/Networking/NetworkCodec.cs": "b59b23dadc2814c3926ca5025befe3e9a1d8ef9daaa9821feb8eaf4a0b669779",
+    "UnityProject/Assets/Soccer/Core/Networking/NetworkRoom.cs": "bdba87302adf55c8b89554bfddbb9d32795d45fbec28a5d7df4bb30d02a9ead3",
+    "UnityProject/Assets/Soccer/Core/Networking/RoomTransport.cs": "832ce7d3988df5890ef14cf3ac75e5e5ae0c2638fce69f77afb6740b3b17f0a1",
+    "UnityProject/Assets/Soccer/Core/GameplayGesture.cs": "46fdc28aaf438d09fe032120b84b4ae86820f7d4476ced842f660d2fee60b1b4",
+    "UnityProject/Assets/Soccer/Core/CombatSystem.cs": "a3e132610549fe67f88a2ec8ebf84bd2c87c3039018d69824aec1819fe937ac0",
+    "UnityProject/Assets/Soccer/Core/MovementSystem.cs": "73c5008829fba4475676ba964108d1cd568be21067eb9773007b069509814532",
+    "UnityProject/Assets/Soccer/Core/NavigationSystem.cs": "3b0cff64c895307c1b051e7ff51087fc4698ea0d765a288ca831857075e022a8",
+    "UnityProject/Assets/Soccer/Core/MatchRules.cs": "1f4765d6e49b9219190c55e1223a52e30f85df47d53e26fa14205bf018ef1232",
+    "UnityProject/Assets/Soccer/Runtime/Application/AppAuthentication.cs": "9afc4ace368412732912270d935d15bbaf855f6f899691ea1cba23be09e5dd2c",
+    "UnityProject/Assets/Soccer/Runtime/Application/AppController.cs": "15c780ea4af55e637576a9ddea9ee14c2448f79a2c1302d9ad1560b028cff119",
+    "UnityProject/Assets/Soccer/Runtime/Input/KeyboardMouseInput.cs": "8f10f2435d4d5b4eec0f063ecf6beae16c53ce79aad9e78cdcef9ea6fc684e17",
+    "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs": "e3a2a5683e73004b538caeaeceff4e65e2438c48d6fe2c00874721b8f16c355d",
+    "UnityProject/Assets/Soccer/Runtime/UI/LoginUI.cs": "9f77f4a90e5fbcbc815ff3603be63c34c2532f6c62ab53dbcbdf4bd68afec949",
+    "UnityProject/Assets/Soccer/Runtime/UI/SkillTooltip.cs": "65c71e9c767dafb88a592b489ef099771f616f621dc14473241fdfe13f3728e1",
+    "UnityProject/Assets/Soccer/UI/Game.uxml": "d62216ffa4bc16086db659223949a5f7bbb4878322ce72b1473fdb70527f80a3",
+    "server/Soccer.LoginServer/Program.cs": "df7f963e905962a60d96e820fa1037f8b32e349bfe4ada9e54233a6259c92cde"
+  }
+}

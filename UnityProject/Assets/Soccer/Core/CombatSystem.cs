@@ -29,6 +29,7 @@ namespace Soccer.Core
                 return;
             }
             if (State.Phase != MatchPhase.Playing) return;
+            p.Health = Math.Min(p.Stats.MaxHealth, p.Health + p.Stats.HealthRegen * dt);
             p.WeaponCooldown = Math.Max(0, p.WeaponCooldown - dt);
             p.WeaponVisual = Math.Max(0, p.WeaponVisual - dt);
             if (p.Ammo < p.Stats.Loadout.AmmoCapacity)

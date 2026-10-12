@@ -23,7 +23,7 @@ namespace Soccer.Runtime
             title=Text("skill-tooltip-title","skill-tooltip-title"); body=Text("skill-tooltip-body","skill-tooltip-body");
             meta=Text("skill-tooltip-meta","skill-tooltip-meta"); state=Text("skill-tooltip-state","skill-tooltip-state");
             panel.Add(title); panel.Add(body); panel.Add(meta); panel.Add(state); root.Q("match-page").Add(panel);
-            panel.RegisterCallback<GeometryChangedEvent>(_=>Position());
+            panel.RegisterCallback<GeometryChangedEvent>(_=>panel.schedule.Execute(Position));
             foreach(string id in new[]{"q","e","g","kick","tackle","weapon"})
             {
                 string key=id; var tile=root.Q(id+"-tile");
@@ -64,8 +64,10 @@ namespace Soccer.Runtime
             if(float.IsNaN(width) || width<=0) width=280;
             if(float.IsNaN(height) || height<=0) height=170;
             var bounds=anchor.worldBound; var page=panel.parent.worldBound;
-            panel.style.left=Mathf.Clamp(bounds.center.x-page.x-width*.5f,12,Mathf.Max(12,page.width-width-12));
-            panel.style.top=Mathf.Clamp(bounds.yMin-page.y-height-12,12,Mathf.Max(12,page.height-height-12));
+            float left=Mathf.Round(Mathf.Clamp(bounds.center.x-page.x-width*.5f,12,Mathf.Max(12,page.width-width-12)));
+            float top=Mathf.Round(Mathf.Clamp(bounds.yMin-page.y-height-12,12,Mathf.Max(12,page.height-height-12)));
+            if (Mathf.Abs(panel.style.left.value.value-left)>.01f) panel.style.left=left;
+            if (Mathf.Abs(panel.style.top.value.value-top)>.01f) panel.style.top=top;
         }
     }
 }

@@ -9,7 +9,6 @@ namespace Soccer.Runtime
     {
         public NetworkRoom Room { get; private set; }
         public DebugAccountSession Account { get; private set; }
-        public string AccountStatus { get; private set; } = "";
         public LanDiscovery Discovery { get; private set; }
         public int LocalPlayerId { get; private set; }
         public bool NetworkCreating { get; private set; }
@@ -17,21 +16,10 @@ namespace Soccer.Runtime
         public bool IsNetworkMatch => Room != null && Room.Connected && Room.Running && Simulation != null;
         private float nextNetworkUi, lastSnapshotAt;
         internal PlayerCommand? NetworkInputOverride;
-        public bool SignInDebug(string account, string password)
-        {
-            if (Room != null) return false;
-            var session = DebugAccounts.Login(account, password);
-            if (session == null) { AccountStatus = "帐号或密码错误，请使用 a/a 或 b/b"; UI.RefreshNetwork(); return false; }
-            Account?.Dispose(); Account = session; AccountStatus = ""; UI.RefreshNetwork(); return true;
-        }
-        public void SignOutDebug()
-        {
-            if (Room != null) return;
-            Account?.Dispose(); Account = null; AccountStatus = ""; UI.RefreshNetwork();
-        }
         public void OpenNetwork(bool create)
         {
-            if (SelectedPlaylist != GamePlaylist.Normal) return;
+            if (SelectedPlaylist != GamePlaylist.Normal || !EnsureEntered()) return;
+            if (Route == ConnectionRoute.Internet && EntryMode != GameEntryMode.Online) { OpenLogin(); return; }
             CloseNetworking(); NetworkCreating = create; NetworkStatus = "";
             if (Route == ConnectionRoute.LAN)
                 try { Discovery = new LanDiscovery(); } catch (Exception) { NetworkStatus = "自动发现不可用，可以使用房主地址加入"; }
@@ -132,7 +120,7 @@ namespace Soccer.Runtime
                 if (state.Phase == MatchPhase.Finished) break;
             }
             float alpha = Room.IsHost ? accumulator / MatchSimulation.TickSeconds : Mathf.Clamp01((Time.realtimeSinceStartup - lastSnapshotAt) / .05f);
-            Audio.Observe(state, Simulation.Rules); View.Render(state, Simulation.Rules, alpha, ShowDebug, !Paused, localInput.PreviewAim); UI.RefreshMatch();
+            Audio.Observe(state, Simulation.Rules); View.Render(state, Simulation.Rules, alpha, ShowDebug, !Paused, localInput.PreviewAim, localInput.SelectingSkillTarget); UI.RefreshMatch();
         }
         private void OnDestroy() { CloseNetworking(); Account?.Dispose(); Account = null; }
     }

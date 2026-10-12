@@ -33,6 +33,7 @@ namespace Soccer.Core
                     if (!Geometry.IsFinite(stats.MaxHealth) || stats.MaxHealth <= 0 ||
                         !Geometry.IsFinite(stats.MaxEnergy) || stats.MaxEnergy <= 0 ||
                         !Geometry.IsFinite(stats.EnergyRegen) || stats.EnergyRegen < 0 ||
+                        !Geometry.IsFinite(stats.HealthRegen) || stats.HealthRegen < 0 ||
                         !Geometry.IsFinite(stats.QCooldown) || stats.QCooldown <= 0 ||
                         !Geometry.IsFinite(stats.ECooldown) || stats.ECooldown <= 0 || stats.Loadout == null)
                         throw new ArgumentException("生命、能量或战斗冷却配置无效。");
@@ -415,6 +416,7 @@ namespace Soccer.Core
             var p = State.Players[playerId]; navigation.Clear(p); actionBuffers[playerId].Clear();
             CancelCharge(p); p.PreviewingE = p.AttackPending = false;
         }
+        internal float MovementSpeed(PlayerState player) => movement.Speed(player);
 
         private void ResetPositions(bool kickoff,bool opening=false)
         {

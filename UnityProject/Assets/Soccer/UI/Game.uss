@@ -322,3 +322,11 @@ Button.character-card.selected { background-color: rgb(207,234,223); border-widt
 .compact-front-end .network-page .page-title { font-size: 26px; }
 .compact-front-end .network-card { padding-top: 12px; padding-bottom: 12px; }
 .narrow-front-end .network-page { margin-left: 28px; margin-right: 28px; }
+
+.login-page { width: 660px; max-width: 90%; align-self: center; margin-top: 70px; padding: 32px; }
+.login-page .unity-base-field { margin-top: 18px; min-height: 38px; font-size: 17px; }
+.login-page .unity-base-field__label { min-width: 165px; }
+.login-page .unity-base-field__input { background-color: rgb(251,252,246); padding: 5px 10px; }
+.login-actions { margin-top: 20px; justify-content: space-between; }
+.login-actions Button { min-width: 220px; min-height: 46px; }
+.compact-front-end .login-page { margin-top: 28px; padding: 24px; }
