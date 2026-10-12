@@ -1,0 +1,21 @@
+{
+    "passed": false,
+    "role": "client",
+    "route": "internet",
+    "platform": "OSXPlayer",
+    "localPlayerId": 0,
+    "tick": 0,
+    "checks": [
+        "PASS real game startup completes",
+        "PASS account password uses a masked field",
+        "PASS internet room actions require login",
+        "PASS wrong account password rejected before network admission",
+        "PASS debug account login succeeds and clears password field",
+        "PASS both room passwords use masked fields",
+        "FAIL join button admits client to its chosen opposing team"
+    ],
+    "errors": [
+        "join button admits client to its chosen opposing team",
+        "连接失败：请检查房间地址、端口、防火墙和房主是否在线"
+    ]
+}

@@ -1,0 +1,123 @@
+{
+  "version": "0.17.1",
+  "date": "2026-10-12",
+  "passed": true,
+  "debugAccounts": [
+    {
+      "account": "a",
+      "password": "a"
+    },
+    {
+      "account": "b",
+      "password": "b"
+    }
+  ],
+  "accountBehavior": {
+    "internetLoginRequired": true,
+    "lanLoginRequired": false,
+    "hostVerifiesJoiningAccount": true,
+    "accountAndRoomPasswordsIndependent": true,
+    "passwordFieldsMaskedAndCleared": true,
+    "accountPasswordsStoredInPreferences": false,
+    "cloudAccountService": false
+  },
+  "core": {
+    "passed": true,
+    "total": 217,
+    "failed": 0,
+    "report": "reports/debug-accounts-0171-core/core-tests.json"
+  },
+  "network": {
+    "passed": true,
+    "total": 26,
+    "failed": 0,
+    "report": "reports/debug-accounts-0171-network/network-tests.json"
+  },
+  "twoProcessClients": {
+    "internet-host": {
+      "passed": true,
+      "total": 16,
+      "tick": 320,
+      "report": "reports/debug-accounts-0171-internet-host/network-smoke.json"
+    },
+    "internet-client": {
+      "passed": true,
+      "total": 17,
+      "tick": 318,
+      "report": "reports/debug-accounts-0171-internet-client/network-smoke.json"
+    },
+    "lan-host": {
+      "passed": true,
+      "total": 12,
+      "tick": 320,
+      "report": "reports/debug-accounts-0171-lan-host/network-smoke.json"
+    },
+    "lan-client": {
+      "passed": true,
+      "total": 15,
+      "tick": 318,
+      "report": "reports/debug-accounts-0171-lan-client/network-smoke.json"
+    }
+  },
+  "twoProcessCheckTotal": 60,
+  "singlePlayerClientRegression": {
+    "passed": true,
+    "total": 320,
+    "errors": [],
+    "report": "reports/runtime-debug-accounts-0171-full/runtime-smoke.json"
+  },
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 413522693
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 381968673
+    }
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.17.1-Windows-x64.zip",
+    "bytes": 144226348,
+    "sha256": "00775e09673ed1d831ba2b62aaa661c784ae92b989d3ff19f0449049343452cf",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.17.1-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "internetConnectionMode": "direct TCP public host address, default port 27860; requires reachable inbound host / port forwarding",
+  "actualCrossNetworkInternetVerified": false,
+  "twoPhysicalMachineLANVerified": false,
+  "windowsRuntimeVerified": false,
+  "initialClientProbeDiagnostic": {
+    "hostReport": "reports/debug-accounts-0171-internet-host-before-coordinated-launch/network-smoke.json",
+    "clientReport": "reports/debug-accounts-0171-internet-client-before-coordinated-launch/network-smoke.json",
+    "resolution": "Manual commands were separated by documentation work, exceeding the host probe 20-second waiting window. Final runs coordinate both real game processes in one runner, launching the guest as soon as the host lobby is listening. Both routes pass."
+  },
+  "guestPresentationFix": "Kick tooltip now checks LocalPlayerId for possession; result subtitle identifies multiplayer. Final dual-process probes also assert guest possession tooltip is ready.",
+  "releaseUrl": "https://github.com/Jokerealm/soccer/releases/tag/v0.17.1",
+  "sourceHashes": {
+    "UnityProject/Assets/Soccer/Core/Networking/DebugAccounts.cs": "f5880b18af0b5609826f3fda67d920365d89ea0a2488682cceb77c5b02aefb88",
+    "UnityProject/Assets/Soccer/Core/Networking/LanDiscovery.cs": "55c8f085147865220b3620ed039d76c212e4476869fa8038f3a98c50dc6d2a15",
+    "UnityProject/Assets/Soccer/Core/Networking/NetworkCodec.cs": "993d7366b3348b74899a0b20b88e7102e5ab617eb3bc21608bbbfdb7d7684480",
+    "UnityProject/Assets/Soccer/Core/Networking/NetworkRoom.cs": "6f2f5c10fbeafaf6bf249b58cda7f9c55e00289f71d76915174a2849c3fdd668",
+    "UnityProject/Assets/Soccer/Core/Networking/RoomTransport.cs": "832ce7d3988df5890ef14cf3ac75e5e5ae0c2638fce69f77afb6740b3b17f0a1",
+    "UnityProject/Assets/Soccer/Runtime/Application/AppNetworking.cs": "3a7696e8851dc980b8f0d7bf8a08edf500b6f7bf10e172ca7cbbc6c32c7ab1c7",
+    "UnityProject/Assets/Soccer/Runtime/UI/NetworkUI.cs": "a5bda1a60c665df545d51ae157c9fe682b070484cb5747417a22b5084ec6ac26",
+    "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs": "ad50dffe377000f2fefadf5d89dff23d5fa30bd23c6bedb2aa07a683d8b16dc1",
+    "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeNetworkProbe.cs": "119e57882a09b6282c3054fbd5700bd4eb42e553aaf321fcfb304fd3f5078f62",
+    "UnityProject/Assets/Soccer/UI/Game.uxml": "041365e8da337546c0dd1cc4d6f832b73327b38f3575f0a07fc493928e289162",
+    "tools/package_windows.py": "5a6d8cbfdab488906f71da7ca5de70ccbdc252699d99ca1699aca5944c2d00a1"
+  }
+}

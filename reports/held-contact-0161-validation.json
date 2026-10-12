@@ -1,0 +1,88 @@
+{
+  "version": "0.16.1",
+  "date": "2026-10-12",
+  "passed": true,
+  "core": {
+    "passed": true,
+    "total": 217,
+    "failed": 0,
+    "report": "reports/held-contact-0161-core/core-tests.json"
+  },
+  "runtime": {
+    "passed": true,
+    "total": 320,
+    "errors": [],
+    "report": "reports/runtime-held-contact-0161-full/runtime-smoke.json"
+  },
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 413430461
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 381876441
+    }
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.16.1-Windows-x64.zip",
+    "bytes": 144184305,
+    "sha256": "e8f30eba6f9999efcb53af3c682e301db1a5903cc4c079be887d59794b9444a8",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.16.1-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "reference": {
+    "path": "/Users/gz/Downloads/Unity%E5%A4%8D%E5%88%BB%E5%8F%82%E8%80%83.md",
+    "sha256": "69e478ca3f04436071841d61eb591a0f89666a28fef28a0767a57b945a2767c2",
+    "kind": "user-provided static unpacking analysis",
+    "adopted": {
+      "possessionSpeed": 0.8,
+      "contactLockSeconds": 0.25
+    },
+    "sc2GameTimeCalibrated": false
+  },
+  "implementation": [
+    "Held enemy football uses the same physical-contact acquisition entry as free football",
+    "Earliest relative swept contact selects a single eligible opposing receiver",
+    "Held football remains at body contact rather than escaping automatically to a side",
+    "Reception grants 0.25 seconds of contact-transfer protection; friendly ownership remains intact",
+    "Direct interceptions consume neither tackle health nor cooldown",
+    "Push release clears contact protection and preserves existing front/side drop and rear/friendly carry behavior",
+    "Pass, direct capture and dropped-ball capture update last touch; enemy captures count one steal",
+    "AI approaches the football and carrying speed is 80 percent of ordinary movement"
+  ],
+  "previousVersionWindowsPlayConfirmedByUser": true,
+  "windowsRuntimeVerified": false,
+  "nativeMouseHandFeelVerified": false,
+  "screenshots": [
+    "reports/runtime-held-contact-0161-full/55-direct-held-ball-interception.png",
+    "reports/runtime-held-contact-0161-full/56-right-click-held-ball-capture.png"
+  ],
+  "sourceHashes": {
+    "UnityProject/Assets/Soccer/Core/BallSystem.cs": "5111e0f05bb39784c3bb1d682a233e0e01b219d955c71ded39da0a10a1a0a78e",
+    "UnityProject/Assets/Soccer/Core/MatchSimulation.cs": "e021daf80c9da451a04229a36156ed775ff1ad09e4f384672c1e0446ee8fab9d",
+    "UnityProject/Assets/Soccer/Core/MatchRules.cs": "d88f0d93333580b3a797599a7bbf2e63ab77bfcc3ef3a8bb4325e563d7ee5a41",
+    "UnityProject/Assets/Soccer/Core/MatchState.cs": "2f5128eecccd53ef9106e344ea4bce9b1d7db9720efe4c2230dbcbe0e9ff843b",
+    "UnityProject/Assets/Soccer/Core/BotCommandSource.cs": "4c69b348e7a3a3e71a6d0d4df9bf5ed5b5c29f834f1b123cc0c19e07a5ecec42",
+    "UnityProject/Assets/Soccer/Data/PrototypeRules.asset": "2b80f73ecf6e4e45f78e737fc0e77b725699b14941faabdb1648792b1d88904c",
+    "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeSmokeProbe.cs": "b589b8a8594cb60408b1126f88295cf1c7da3b5bad03aeee70f05bcce97c3723"
+  },
+  "initialRuntimeDiagnostic": {
+    "report": "reports/runtime-held-contact-0161-before-stat-fixture-fix/runtime-smoke.json",
+    "passed": false,
+    "resolution": "Training reset intentionally retains match statistics. New client checks initially assumed the steal count restarted at zero, so the right-click and subsequent push fixtures failed on accumulated counters. Fixtures now verify the exact one-steal increment from their initial counts; the full client run passes all 320 checks."
+  }
+}

@@ -243,6 +243,7 @@ namespace Soccer.Core
                     State.Ball.Height = State.Ball.PreviousHeight = State.Ball.VerticalVelocity = 0;
                     State.Ball.FlightMode = BallFlightMode.Ground;
                     State.Ball.SelfCatchRemaining = State.Ball.CurveRemaining = 0;
+                    State.Ball.PossessionContactRemaining = 0;
                 }
                 ResetPlayer(target);
                 target.Health = target.Energy = 0;

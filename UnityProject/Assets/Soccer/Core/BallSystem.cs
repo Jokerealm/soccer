@@ -36,6 +36,7 @@ namespace Soccer.Core
             b.DroppedOwnerId = -1;
             b.LastKickerId = b.LastTouchId = p.Id;
             b.SelfCatchRemaining = Rules.SelfCatchLock;
+            b.PossessionContactRemaining = 0;
             b.SinceKick = 0;
             ClearFlight();
             b.Velocity = p.Facing * Math.Min(speed, Rules.MaxBallSpeed);
@@ -67,6 +68,7 @@ namespace Soccer.Core
             b.DroppedOwnerId = -1;
             b.OwnerId = -1; b.LastKickerId = b.LastTouchId = p.Id;
             b.SelfCatchRemaining = Rules.SelfCatchLock; b.SinceKick = 0;
+            b.PossessionContactRemaining = 0;
             b.FlightMode = BallFlightMode.SkillOverhead;
             b.Height = b.PreviousHeight = 0; b.VerticalVelocity = verticalSpeed;
             b.Velocity = horizontalVelocity; b.CurveRemaining = 0;
@@ -88,10 +90,14 @@ namespace Soccer.Core
         {
             var b = State.Ball;
             b.SelfCatchRemaining = Math.Max(0, b.SelfCatchRemaining - dt);
+            b.PossessionContactRemaining = Math.Max(0, b.PossessionContactRemaining - dt);
             b.SinceKick += dt;
             if (State.Owner != null)
             {
+                var start = b.Position;
+                var translation = State.Owner.Position - State.Owner.ContactStart;
                 UpdateHeldBall();
+                ReceiveHeldBall(start, translation);
                 CheckHeldGoal();
                 return;
             }
@@ -169,26 +175,8 @@ namespace Soccer.Core
             {
                 if (other.Id == owner.Id || other.IsDead) continue;
                 if (Geometry.SweepCircle(owner.Position, State.Ball.Position - owner.Position, other.Position, other.Stats.Radius + Rules.BallRadius, out float bodyT))
-                    State.Ball.Position = owner.Position + (State.Ball.Position - owner.Position) * Math.Max(0, bodyT - .001f);
-            }
-            if (Rules.EnableOutOfPlay && Vec2.Distance(State.Ball.Position, owner.Position) < offset - .002f)
-            {
-                // 正前方没有放球空间时，将球护在最接近朝向的可用侧面，保留完整球半径。
-                for (int step = 1; step <= 12; step++)
-                {
-                    bool found = false;
-                    foreach (int sign in new[] { 1, -1 })
-                    {
-                        var candidate = owner.Position + Vec2.Rotate(owner.Facing, sign * step * (float)Math.PI / 12) * offset;
-                        bool clear = true;
-                        foreach (var other in State.Players)
-                            if (other.Id != owner.Id && !other.IsDead && Vec2.Distance(candidate, other.Position) < other.Stats.Radius + Rules.BallRadius)
-                            { clear = false; break; }
-                        if (!clear) continue;
-                        State.Ball.Position = candidate; found = true; break;
-                    }
-                    if (found) break;
-                }
+                    // 保留真实接触面，不能自动挪到另一侧躲开对手的接球碰撞。
+                    State.Ball.Position = owner.Position + (State.Ball.Position - owner.Position) * bodyT;
             }
             // 不允许通过持球位置跳到门柱另一侧；最近的门柱接触面截短偏移。
             for (int side = -1; side <= 1; side += 2)
@@ -360,6 +348,33 @@ namespace Soccer.Core
                 if (Vec2.Distance(p.Position, b.Position) <= p.Stats.Radius + Rules.BallRadius)
                 { sim.TryAcquireBallOnContact(p, p.Position); UpdateHeldBall(); CheckHeldGoal(); return; }
             }
+        }
+
+        private void ReceiveHeldBall(Vec2 start, Vec2 translation)
+        {
+            var b = State.Ball;
+            var owner = State.Owner;
+            if (owner == null || owner.FullProtection > 0 || b.PossessionContactRemaining > .000001f) return;
+            PlayerState receiver = null;
+            Vec2 receiverCenter = Vec2.Zero, contactPosition = Vec2.Zero;
+            float earliest = float.PositiveInfinity;
+            for (int n = 0; n < State.Players.Count; n++)
+            {
+                var p = State.Players[(n + State.Round) % State.Players.Count];
+                if (p.Team == owner.Team || !CanCatch(p)) continue;
+                float radius = p.Stats.Radius + Rules.BallRadius;
+                float t = 0;
+                // 只扫掠真实平移；转身后检查脚前球，不把穿过持球者身体的朝向弦线当球路。
+                bool contact = Vec2.Distance(start, p.ContactStart) <= radius + .0001f ||
+                    Geometry.SweepCircle(start, translation - (p.Position - p.ContactStart), p.ContactStart, radius, out t);
+                var point = start + translation * t;
+                var center = p.ContactStart + (p.Position - p.ContactStart) * t;
+                if (!contact && Vec2.Distance(b.Position, p.Position) <= radius + .0001f)
+                { contact = true; t = 1; point = b.Position; center = p.Position; }
+                if (!contact || t >= earliest) continue;
+                receiver = p; earliest = t; receiverCenter = center; contactPosition = point;
+            }
+            if (receiver != null && sim.TryAcquireBallOnContact(receiver, receiverCenter, contactPosition)) UpdateHeldBall();
         }
     }
 }

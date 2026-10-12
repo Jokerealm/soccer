@@ -35,6 +35,7 @@ namespace Soccer.Runtime
         private readonly List<DamageNumber> numbers = new List<DamageNumber>();
         public int ActiveDamageNumbers => numbers.FindAll(n => n.Age < 0.55f).Count;
         public bool FeedbackEnabled { get; private set; } = true;
+        public int LocalPlayerId { get; set; }
         private sealed class Pulse
         {
             public LineRenderer Line;
@@ -74,14 +75,15 @@ namespace Soccer.Runtime
         public void Bind(MatchState state, CharacterDefinition[] roster)
         {
             Clear();
+            KickEffects.LocalPlayerId = LocalPlayerId;
             arena.Dynamics?.ResetMatch();
             foreach (var p in state.Players)
             {
                 var definition = System.Array.Find(roster, d => d.Stats.Id == p.Stats.Id);
-                var go = new GameObject($"{p.Id} {p.Stats.Name} ({p.Team}){(p.Id == 0 ? " Local" : " AI")}");
+                var go = new GameObject($"{p.Id} {p.Stats.Name} ({p.Team}){(p.Id == LocalPlayerId ? " Local" : " AI")}");
                 go.transform.SetParent(ActorRoot, false);
                 var view = go.AddComponent<PlayerView>();
-                view.Initialize(definition, p.Team, p.Id == 0, CyanMarker, AmberMarker, ShadowSprite);
+                view.Initialize(definition, p.Team, p.Id == LocalPlayerId, CyanMarker, AmberMarker, ShadowSprite);
                 players.Add(view);
             }
             ball = CreateBall("Ball Anchor", BallSprite, 0.48f, 700);
@@ -106,7 +108,7 @@ namespace Soccer.Runtime
 
         private void RenderOrders(MatchState state, MatchRules rules, bool debug)
         {
-            var p = state.Players[0];
+            var p = state.Players[LocalPlayerId];
             bool ordered = !p.IsDead && p.Order != UnitOrderKind.None;
             orderMarker.enabled = ordered;
             if (ordered)
@@ -167,8 +169,8 @@ namespace Soccer.Runtime
             {
                 var p = state.Players[i];
                 var display = p.PreviousPosition + (p.Position - p.PreviousPosition) * alpha;
-                players[i].Render(p, display, i == 0, state.Ball.OwnerId == i, debug, rules, animate,
-                    i == 0 && p.Dash == DashKind.None && localAim.LengthSquared > 0.001f ? localAim.Normalized : p.Facing, FeedbackEnabled);
+                players[i].Render(p, display, i == LocalPlayerId, state.Ball.OwnerId == i, debug, rules, animate,
+                    i == LocalPlayerId && p.Dash == DashKind.None && localAim.LengthSquared > 0.001f ? localAim.Normalized : p.Facing, FeedbackEnabled);
             }
             var b = state.Ball;
             while (bombs.Count < state.Bombs.Count)
@@ -210,7 +212,7 @@ namespace Soccer.Runtime
                 color.a = e.Windup > 0 ? 0.2f : lane ? 0.4f : 0.95f;
                 line.startColor = line.endColor = color;
             }
-            var local = state.Players[0];
+            var local = state.Players[LocalPlayerId];
             while (projectiles.Count < state.Projectiles.Count)
             {
                 var line = ViewLines.Create(ActorRoot, "Combat Projectile", 0.09f, Color.white, 720);
@@ -257,8 +259,8 @@ namespace Soccer.Runtime
 
         private void RenderShotGuide(MatchState state, MatchRules rules, float alpha, Vec2 aim)
         {
-            var p = state.Players[0];
-            shotGuide.enabled = state.Ball.OwnerId == 0 && p.Dash == DashKind.None && state.Phase == MatchPhase.Playing;
+            var p = state.Players[LocalPlayerId];
+            shotGuide.enabled = state.Ball.OwnerId == LocalPlayerId && p.Dash == DashKind.None && state.Phase == MatchPhase.Playing;
             if (!shotGuide.enabled) return;
             float max = p.Preparation == ShotPreparation.Power ? p.Stats.PowerChargeSeconds : rules.ChargeSeconds;
             float charge = p.Charging ? Mathf.Clamp01(p.ChargeTime / max) : 0;
@@ -349,7 +351,7 @@ namespace Soccer.Runtime
             }
             number.Amount = merge ? number.Amount + e.Strength : e.Strength;
             number.TargetId = e.TargetId; number.Center = e.Position; number.Age = 0;
-            number.Color = e.TargetId == 0 ? new Color(1, 0.52f, 0.4f) : e.Strength > 0 ? new Color(1, 0.95f, 0.7f) : new Color(0.65f, 0.85f, 1);
+            number.Color = e.TargetId == LocalPlayerId ? new Color(1, 0.52f, 0.4f) : e.Strength > 0 ? new Color(1, 0.95f, 0.7f) : new Color(0.65f, 0.85f, 1);
             number.Text.text = number.Amount > 0 ? Mathf.CeilToInt(number.Amount).ToString() : "SHIELD";
             number.Text.gameObject.SetActive(true);
         }

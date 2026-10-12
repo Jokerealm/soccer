@@ -5,10 +5,10 @@ using UnityEngine;
 
 namespace Soccer.Runtime
 {
-    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails }
+    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby }
 
     /// <summary>应用流程编排：创建对局、推进固定 Tick、暂停、结束。业务规则留在 Core。</summary>
-    public sealed class AppController : MonoBehaviour
+    public sealed partial class AppController : MonoBehaviour
     {
         public MatchRulesAsset RulesAsset;
         public CharacterDefinition[] Characters;
@@ -47,6 +47,7 @@ namespace Soccer.Runtime
             var args = Environment.GetCommandLineArgs();
             if (Array.IndexOf(args, "--soccer-smoke") >= 0) gameObject.AddComponent<RuntimeSmokeProbe>();
             if (Array.IndexOf(args, "--soccer-input-probe") >= 0) gameObject.AddComponent<RuntimeInputProbe>();
+            if (Array.IndexOf(args, "--soccer-network-smoke") >= 0) gameObject.AddComponent<RuntimeNetworkProbe>();
             float began = Time.realtimeSinceStartup;
             UI.SetLoading(0.08f, "正在准备球员与球场…");
             yield return null;
@@ -102,6 +103,8 @@ namespace Soccer.Runtime
 
         public void StartMatch()
         {
+            if (Room != null) { if (Room.IsHost) Room.ReturnToLobby(); return; }
+            LocalPlayerId = 0; View.LocalPlayerId = Audio.LocalPlayerId = 0;
             var roster = Array.ConvertAll(Characters, c => c.CreateStats());
             Simulation = new MatchSimulation(RulesAsset.CreateRules(), roster, Selected, SelectedMode);
             localInput = new KeyboardMouseInput(WorldCamera);
@@ -124,13 +127,16 @@ namespace Soccer.Runtime
 
         private void Update()
         {
+            PumpNetworking();
             if (Page != AppPage.Match && Page != AppPage.Loading && Input.GetKeyDown(KeyCode.Escape))
             {
                 Audio.PlayClick();
-                if (Page == AppPage.CharacterSelect) BackFromSelection(); else GoHome();
+                if (Page == AppPage.CharacterSelect) BackFromSelection();
+                else if (Page == AppPage.NetworkMenu || Page == AppPage.RoomLobby) BackFromNetwork(); else GoHome();
             }
             if (Page != AppPage.Match || Simulation == null) return;
             if (Input.GetKeyDown(KeyCode.Escape)) { Audio.PlayClick(); SetPaused(!Paused); }
+            if (IsNetworkMatch) { UpdateNetworkMatch(); return; }
             if (Paused) { View.Render(Simulation.State, Simulation.Rules, 1, ShowDebug, false); return; }
             var state = Simulation.State;
             if(state.Phase==MatchPhase.Finished)
@@ -174,7 +180,8 @@ namespace Soccer.Runtime
             if (feedbackRemaining <= 0 && state.Phase == MatchPhase.Playing)
                 Feedback = state.Players[0].IsDead ? $"被击倒 · {state.Players[0].RespawnRemaining:0.0} 秒后原地恢复" :
                     state.Owner == null ? "右键足球追球 · 右键敌人追击 · 空格推抢 · Q/E 技能" : state.Ball.OwnerId == 0
-                    ? "你在持球 · 左键传射，C 取消 · 留意血量，及时传给队友" : $"{state.Owner.Stats.Name} AI 持球 · 控制对手，给队友创造接应机会";
+                    ? "你在持球 · 左键传射，C 取消 · 留意血量，及时传给队友" : state.Owner.Team==state.Players[0].Team
+                    ? "队友持球 · 跑位接应，为传球创造空间" : "敌方持球 · 右键足球追球，接触脚前球即可夺球";
             if (Page == AppPage.Match)
             {
                 Audio.Observe(state, Simulation.Rules);
@@ -189,7 +196,7 @@ namespace Soccer.Runtime
             localInput.Reset(); foreach (var source in inputSources) source.Reset();
             Simulation.SetupTrainingRestart(kind); accumulator = 0;
             WorldCamera.GetComponent<ArenaCamera>().ResetFraming();
-            View.ResetFeedback(); UI.Motion.Reset(Simulation.State.Players[0]);
+            View.ResetFeedback(); UI.Motion.Reset(Simulation.State.Players[LocalPlayerId]);
             Feedback = $"{Simulation.State.RestartName}练习 · 左键瞄准并踢出 · 右键走位 · S 停止";
             feedbackRemaining = 3; UI.RefreshMatch();
         }
@@ -212,26 +219,26 @@ namespace Soccer.Runtime
             Audio.PlayEvent(e, Simulation.State);
             View.PlayEvent(e, Simulation.State);
             UI.PlayEvent(e);
-            if (e.ActorId != 0 && e.TargetId != 0 && e.Kind != MatchEventKind.Goal && e.Kind != MatchEventKind.Restart && e.Kind != MatchEventKind.OutOfPlay) return;
+            if (e.ActorId != LocalPlayerId && e.TargetId != LocalPlayerId && e.Kind != MatchEventKind.Goal && e.Kind != MatchEventKind.Restart && e.Kind != MatchEventKind.OutOfPlay) return;
             switch (e.Kind)
             {
                 case MatchEventKind.OutOfPlay: Feedback = "整个足球越过边线 · 出界"; break;
                 case MatchEventKind.Restart: Feedback = $"{Simulation.State.RestartName} · {(Simulation.State.RestartTeam == Team.Cyan ? "青队" : "橙队")}主罚 · 左键瞄准踢出"; break;
                 case MatchEventKind.RuleViolation: Feedback = "定位球后重复触球 · 对方任意球"; break;
-                case MatchEventKind.Steal: Feedback = "接触自由足球 · 获得球权"; break;
+                case MatchEventKind.Steal: Feedback = "碰撞夺球 · 获得球权"; break;
                 case MatchEventKind.BallDropped: Feedback = "敌人被推开 · 球留在原地，接触球获得球权"; break;
                 case MatchEventKind.Push: Feedback = Simulation.State.Ball.OwnerId == e.TargetId ? "推开角色 · 球跟随持球者位移" : "推开角色腾出空间 · 接触足球才能接球"; break;
                 case MatchEventKind.Protected: Feedback = "保护中 · 本次动作已消耗"; break;
                 case MatchEventKind.Miss: Feedback = "未碰到目标 · 需要实际碰撞才能推开角色"; break;
                 case MatchEventKind.Skill: Feedback = "技能已施放 · 查看下方冷却"; break;
-                case MatchEventKind.Damage: Feedback = e.TargetId == 0 ? "被击中 · 注意走位" : "武器命中"; break;
-                case MatchEventKind.Stunned: Feedback = e.TargetId == 0 ? "被震晕 · 等待控制结束" : "震晕命中 · 趁机配合突破"; break;
-                case MatchEventKind.Knockout: Feedback = e.TargetId == 0 ? "被击倒 · 原地等待 5 秒复活" : "击倒对手 · 传球推进！"; break;
+                case MatchEventKind.Damage: Feedback = e.TargetId == LocalPlayerId ? "被击中 · 注意走位" : "武器命中"; break;
+                case MatchEventKind.Stunned: Feedback = e.TargetId == LocalPlayerId ? "被震晕 · 等待控制结束" : "震晕命中 · 趁机配合突破"; break;
+                case MatchEventKind.Knockout: Feedback = e.TargetId == LocalPlayerId ? "被击倒 · 原地等待 5 秒复活" : "击倒对手 · 传球推进！"; break;
                 case MatchEventKind.Respawn: Feedback = "原地复活 · 生命、能量和冷却已恢复；1 秒保护，主动行动结束保护"; break;
                 case MatchEventKind.Support: Feedback = "团队支援生效 · 靠近队友形成配合"; break;
                 case MatchEventKind.Explosion: Feedback = "炸弹引爆 · 击退并眩晕范围内敌人"; break;
                 case MatchEventKind.ActionRejected:
-                    var p = Simulation.State.Players[0];
+                    var p = Simulation.State.Players[LocalPlayerId];
                     float cost = e.Slot == SkillSlot.Q ? p.Stats.Loadout.QEnergy : e.Slot == SkillSlot.Special ? 10 : p.Stats.Loadout.EEnergy;
                     float healthCost = e.Slot == SkillSlot.Q ? p.Stats.QHealthCost : e.Slot == SkillSlot.E ? p.Stats.EHealthCost :
                         e.Slot == SkillSlot.None ? Simulation.Rules.TackleHealthCost(p.Stats) : 0;
@@ -251,8 +258,16 @@ namespace Soccer.Runtime
             Paused = paused;
             accumulator = 0;
             localInput?.Reset();
-            Simulation?.CancelPendingInputs();
-            foreach (var source in inputSources ?? Array.Empty<ICommandSource>()) source.Reset();
+            if (IsNetworkMatch)
+            {
+                if (Room.IsHost) Simulation.CancelPlayerInputs(LocalPlayerId);
+                else Room.SendInput(new PlayerCommand { Cancel = true, StopPressed = true });
+            }
+            else
+            {
+                Simulation?.CancelPendingInputs();
+                foreach (var source in inputSources ?? Array.Empty<ICommandSource>()) source.Reset();
+            }
             UI.ShowPause(paused);
             Audio.SetContext(Page, paused);
         }
@@ -266,7 +281,7 @@ namespace Soccer.Runtime
             WorldCamera.GetComponent<ArenaCamera>().ResetFraming();
             localInput?.Reset();
             accumulator = 0;
-            Audio.ResetMatch(); View.ResetFeedback(); UI.Motion.Reset(Simulation.State.Players[0]);
+            Audio.ResetMatch(); View.ResetFeedback(); UI.Motion.Reset(Simulation.State.Players[LocalPlayerId]);
             View.GetComponent<PremiumArenaView>().Dynamics?.ResetMatch();
             Feedback = giveBall ? "足球已交给你 · 冷却已重置" : "球场与冷却已重置";
             feedbackRemaining = 2;
@@ -278,9 +293,9 @@ namespace Soccer.Runtime
             WorldCamera.GetComponent<ArenaCamera>().ResetFraming();
             localInput?.Reset();
             accumulator = 0;
-            Audio.ResetMatch(); View.ResetFeedback(); UI.Motion.Reset(Simulation.State.Players[0]);
+            Audio.ResetMatch(); View.ResetFeedback(); UI.Motion.Reset(Simulation.State.Players[LocalPlayerId]);
             View.GetComponent<PremiumArenaView>().Dynamics?.ResetMatch();
-            Feedback = "目标持球 · 空格铲球会扣生命；右键敌人追击，E 练习角色技能";
+            Feedback = "目标持球 · 右键足球追球，接触脚前球即可夺球 · 空格推开角色会扣生命";
             feedbackRemaining = 3;
         }
         public void EndSession() { Simulation?.Finish(); ShowResults(); }
@@ -288,6 +303,7 @@ namespace Soccer.Runtime
         { FinalGoalRemaining=0;Paused = false; Page = AppPage.Results; UI.ShowPage(Page); Audio.SetContext(Page, false); Audio.PlayFinish(); }
         public void GoHome()
         {
+            CloseNetworking(); LocalPlayerId = 0;
             Page = AppPage.Home; Paused = false; Simulation = null;
             FinalGoalRemaining=0;
             localInput?.Reset(); View.Clear(); UI.ShowPage(Page);

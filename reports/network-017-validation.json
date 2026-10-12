@@ -1,0 +1,131 @@
+{
+  "version": "0.17.0",
+  "date": "2026-10-12",
+  "passed": true,
+  "core": {
+    "passed": true,
+    "total": 217,
+    "failed": 0,
+    "report": "reports/network-017-core/core-tests.json"
+  },
+  "transport": {
+    "passed": true,
+    "total": 22,
+    "failed": 0,
+    "report": "reports/network-017-transport/network-tests.json"
+  },
+  "twoProcessClientTests": {
+    "lan-host": {
+      "passed": true,
+      "total": 10,
+      "errors": [],
+      "tick": 320,
+      "report": "reports/network-017-lan-host/network-smoke.json"
+    },
+    "lan-client": {
+      "passed": true,
+      "total": 12,
+      "errors": [],
+      "tick": 318,
+      "report": "reports/network-017-lan-client/network-smoke.json"
+    },
+    "internet-host": {
+      "passed": true,
+      "total": 11,
+      "errors": [],
+      "tick": 323,
+      "report": "reports/network-017-internet-host/network-smoke.json"
+    },
+    "internet-client": {
+      "passed": true,
+      "total": 11,
+      "errors": [],
+      "tick": 321,
+      "report": "reports/network-017-internet-client/network-smoke.json"
+    }
+  },
+  "singlePlayerClientRegression": {
+    "passed": true,
+    "total": 320,
+    "errors": [],
+    "report": "reports/runtime-network-017-full/runtime-smoke.json"
+  },
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 413515117
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 381961097
+    }
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.17.0-Windows-x64.zip",
+    "bytes": 144221085,
+    "sha256": "4b860d1a7f5263106b8305c1a165a1d11238989ad5ed15fb41819d9831611e0f",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.17.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "capabilities": [
+    "LAN UDP discovery and TCP direct-address hosting/joining",
+    "Internet public-address direct connection with optional room password",
+    "Six unique slots, three per team, selectable Marine/Thor and ready gate",
+    "Authoritative 60 Hz host simulation, 20 Hz snapshots, batched events and client interpolation",
+    "Each client controls its own player and uses the corresponding camera/HUD/minimap/skill/audio",
+    "Local multiplayer menu keeps shared simulation running",
+    "Guest departure clears commands and assigns AI; host departure reports disconnection",
+    "Persistent lobby rematches reset readiness and reject inputs from a prior match",
+    "Bounded frames/queues, protocol checks, command sequence checks and atomic snapshot validation"
+  ],
+  "security": {
+    "passwordPlaintextTransmitted": false,
+    "passwordStoredInPreferences": false,
+    "passwordVerifier": "PBKDF2-SHA256 / 100000 iterations / random 16-byte salt",
+    "authentication": "HMAC-SHA256 proof bound to a one-use 32-byte challenge and joining identity",
+    "transportEncrypted": false
+  },
+  "internetConnectionMode": "public-address direct TCP; requires a reachable host or port mapping",
+  "actualCrossNetworkInternetVerified": false,
+  "twoPhysicalMachineLANVerified": false,
+  "windowsRuntimeVerified": false,
+  "initialInternetProbeDiagnostic": {
+    "hostReport": "reports/network-017-internet-before-startup-race-fix-host/network-smoke.json",
+    "clientReport": "reports/network-017-internet-before-startup-race-fix-client/network-smoke.json",
+    "resolution": "The simultaneously launched guest attempted a TCP connection before host password initialization opened the listener. The probe now retries startup admission, the host stops if no real guest is present, and the final run launches the guest after the listening lobby is ready. Both independent game processes pass the final password-room checks."
+  },
+  "screenshots": [
+    "reports/network-017-internet-host/00-room-setup.png",
+    "reports/network-017-lan-host/02-host-ready-room.png",
+    "reports/network-017-lan-client/02-client-local-menu.png",
+    "reports/network-017-internet-client/03-client-synchronized-kick.png"
+  ],
+  "sourceHashes": {
+    "UnityProject/Assets/Soccer/Core/Networking/NetworkRoom.cs": "e6e26b79372ac2813111c50fd956f95fae881746a5216991f615e50ac7cab6d0",
+    "UnityProject/Assets/Soccer/Core/Networking/NetworkCodec.cs": "6b79a27e73c0f3c760a666247ae6a4ff8518c52f349762cff473a06f18a6de15",
+    "UnityProject/Assets/Soccer/Core/Networking/LanDiscovery.cs": "a36e1295c3ab6163de6cf51c63c2fa6c412b73e0ff72f509e117d39ddcdfd28d",
+    "UnityProject/Assets/Soccer/Core/Networking/RoomTransport.cs": "832ce7d3988df5890ef14cf3ac75e5e5ae0c2638fce69f77afb6740b3b17f0a1",
+    "UnityProject/Assets/Soccer/Core/MatchSimulation.cs": "556e4b6522502d724a854d2ffeb7ac18ebb2ea49a4f66a6938e0dc8774e9d589",
+    "UnityProject/Assets/Soccer/Runtime/Application/AppNetworking.cs": "b5d9a601b3bb935e8f051181cc4bbbf492f4f2332bb403eaf1284bf8dfe18dff",
+    "UnityProject/Assets/Soccer/Runtime/Application/AppController.cs": "a9ab3c9b9cc638b961b2beb3f3c69e188d9d13fe52a12eb53429697ae41eec36",
+    "UnityProject/Assets/Soccer/Runtime/UI/NetworkUI.cs": "4bda10ae2ef98d729e150ac0a718731b94d7d1e3c4ab7d228c9c061b571436aa",
+    "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs": "dbb965eaface71b1f5e4685a5e9ef96ac6ce1167e2f3aba97cab450fc55806f8",
+    "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeNetworkProbe.cs": "56bdd1e7e3082b387b4ef52635d55e3eb048a3b61aafe5c44aa3a40d54c68c50",
+    "UnityProject/Assets/Soccer/UI/Game.uxml": "9caca63f899193d5168dd06c9f0749ee17bc89293e2c82d73bffdd0136929516",
+    "UnityProject/Assets/Soccer/UI/Game.uss": "a114ce15550b49e67d7d9467276f9ce0d2c97f78ec9df262ed94b5ec96821ff9",
+    "tools/package_windows.py": "f571b7092f5905bdf1cc81c724c9c97a710101e2227a3ca2b0cd5f6aecb42e14"
+  }
+}

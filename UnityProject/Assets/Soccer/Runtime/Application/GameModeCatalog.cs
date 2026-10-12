@@ -1,6 +1,6 @@
 namespace Soccer.Runtime
 {
-    /// <summary>前端玩法入口独立于离线模拟模式；未来联网接入也不能把排位伪装成 AI 对练。</summary>
+    /// <summary>前端玩法入口独立于离线模拟模式；房间联机与离线训练共用比赛规则，排位仍独立于本地对练。</summary>
     public enum GamePlaylist { Normal, Ranked, Entertainment }
     public enum ConnectionRoute { Internet, LAN }
 
@@ -15,7 +15,7 @@ namespace Soccer.Runtime
     {
         private static readonly GameModeInfo[] Modes = {
             new GameModeInfo("普通模式", "CASUAL PLAY", "开路，救援，配合进球。", "用武器牵制对手、用技能保护队友，在混战中配合把球送进球门。",
-                "武器普攻 + 耗能技能 + 团队支援", "击倒掉球，5 秒后原地复活", "规划支持互联网与局域网房间"),
+                "武器普攻 + 耗能技能 + 团队支援", "击倒掉球，5 秒后原地复活", "支持互联网与局域网房间，空位由 AI 补齐"),
             new GameModeInfo("排位模式", "RANKED LEAGUE", "每一场，都是向上一步。", "在公平的竞技规则下与实力相近的对手交锋，用团队配合争取胜利。",
                 "与普通模式共用竞技规则", "规划赛季段位与比赛战绩", "仅互联网对战，联机开放后启用"),
             new GameModeInfo("娱乐模式", "PARTY ARENA", "让意想不到，成为好球。", "更大胆的技能、更有趣的球场变化，和朋友一起享受欢乐对局。",

@@ -46,7 +46,7 @@ namespace Soccer.Runtime
             ActivePortraitCount=0;
         }
 
-        public void Refresh(Camera camera, MatchState state, MatchRules rules)
+        public void Refresh(Camera camera, MatchState state, MatchRules rules, int localPlayerId=0)
         {
             if (root.panel==null || state.Players.Count==0 || !(root.resolvedStyle.height>0)) { Hide(); return; }
             // 两种 HUD 保持相同大小；按窗口高度缩放，作为紧凑半透明覆盖层。
@@ -59,7 +59,7 @@ namespace Soccer.Runtime
             pitch.Configure(camera, state, rules, new Vector2(canvasWidth,canvasHeight), scale);
             frame.style.display=DisplayStyle.Flex;
             foreach (var marker in markers.Values) marker.Seen=false;
-            Team localTeam=state.Players[0].Team;
+            Team localTeam=state.Players[localPlayerId].Team;
             ActivePortraitCount=state.Players.Count;
             PortraitMarker local=null;
             int allySlot=0, enemySlot=0;
@@ -70,7 +70,7 @@ namespace Soccer.Runtime
                     marker=new PortraitMarker(player.Id); markers.Add(player.Id,marker); pitch.Add(marker);
                 }
                 portraits.TryGetValue(player.Stats.Id,out Texture2D portrait);
-                bool isLocal=player.Id==state.Players[0].Id;
+                bool isLocal=player.Id==state.Players[localPlayerId].Id;
                 bool ally=player.Team==localTeam;
                 marker.Refresh(player,portrait,pitch.Project(player.Position),ally,
                     isLocal,state.Ball.OwnerId==player.Id,ally ? ++allySlot : ++enemySlot);

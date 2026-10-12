@@ -1,0 +1,171 @@
+using Soccer.Core;
+using Soccer.Core.Networking;
+using System.Diagnostics;
+using System.Text.Json;
+
+var results = new List<object>(); int failed = 0;
+void Assert(bool value, string why) { if (!value) throw new Exception(why); }
+void Test(string name, Action action)
+{ try { action(); results.Add(new { name, passed=true, error="" }); Console.WriteLine("PASS "+name); } catch(Exception e) { failed++; results.Add(new {name,passed=false,error=e.Message}); Console.WriteLine("FAIL "+name+": "+e.Message); } }
+double Now() => Stopwatch.GetTimestamp()/(double)Stopwatch.Frequency;
+void Until(Func<bool> done, params NetworkRoom[] rooms)
+{ double deadline=Now()+8; while(!done() && Now()<deadline) {foreach(var room in rooms) room.Pump(Now());Thread.Sleep(2);} Assert(done(),"network operation timed out"); }
+RoomOptions Options(NetworkRoute route=NetworkRoute.Internet, Team team=Team.Cyan, string password="", string account="a") => new RoomOptions { Route=route,Team=team,Name="联机测试房间",PlayerName="测试球员",Port=0,UsePassword=password.Length>0,Password=password,Account=route==NetworkRoute.Internet?DebugAccounts.Login(account,account):null };
+NetworkRoom Client(NetworkRoom host, Team team=Team.Amber, string password="") => NetworkRoom.Join("127.0.0.1:"+host.Port,Options(host.Lobby.Route,team,password,"b"));
+MatchSimulation Simulation(CharacterId[] lineup=null) => new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch,lineup);
+Test("both public debug accounts log in and reject invalid credentials",()=> {
+ using var a=DebugAccounts.Login("a","a");using var b=DebugAccounts.Login("b","b");
+ Assert(a?.Id=="a" && b?.Id=="b","debug login failed");
+ foreach(var pair in new[]{("a","b"),("b","a"),("a",""),("c","c"),("A","a")})
+  Assert(DebugAccounts.Login(pair.Item1,pair.Item2)==null,"invalid credentials admitted");
+});
+Test("account proof binds account, nonce and player identity",()=> {
+ using var a=DebugAccounts.Login("a","a");var nonce=RoomPassword.Random(32);var proof=a.Proof(nonce,"identity-a");
+ Assert(DebugAccounts.Verify("a",nonce,"identity-a",proof),"valid account proof rejected");
+ Assert(!DebugAccounts.Verify("b",nonce,"identity-a",proof),"account substitution admitted");
+ Assert(!DebugAccounts.Verify("a",RoomPassword.Random(32),"identity-a",proof),"account proof replay admitted");
+ Assert(!DebugAccounts.Verify("a",nonce,"identity-b",proof),"player substitution admitted");
+ a.Dispose();bool rejected=false;try{a.Proof(nonce,"identity-a");}catch(ObjectDisposedException){rejected=true;}Assert(rejected,"logout retained signing key");
+});
+Test("internet rooms require login while LAN remains available without accounts",()=> {
+ foreach(bool host in new[]{true,false}){var options=Options();options.Account=null;bool rejected=false;try{using var room=host?NetworkRoom.Host(options):NetworkRoom.Join("127.0.0.1:27860",options);}catch(ArgumentException e){rejected=e.Message.Contains("登录");}Assert(rejected,"internet admitted missing login");}
+ using var lan=NetworkRoom.Host(Options(NetworkRoute.LAN));using var guest=Client(lan);Until(()=>guest.Connected,lan,guest);
+ Assert(lan.Lobby.Members.All(m=>m.AccountId==""),"LAN assigned a fabricated account");
+});
+Test("internet host rejects forged account proof even in an unlocked room",()=> {
+ using var host=NetworkRoom.Host(Options());using var socket=new System.Net.Sockets.TcpClient("127.0.0.1",host.Port);using var peer=new RoomPeer(socket);
+ peer.Send(PacketKind.Hello,NetworkCodec.Pack(w=>{NetworkCodec.Text(w,NetworkCodec.Version);NetworkCodec.Text(w,"forged",24);w.Write((int)CharacterId.Marine);w.Write((int)Team.Amber);w.Write((int)NetworkRoute.Internet);NetworkCodec.Text(w,"b",16);}));
+ bool challenged=false;Until(()=>{while(peer.TryRead(out var packet))if(packet.Kind==PacketKind.Challenge)challenged=true;return challenged;},host);
+ peer.Send(PacketKind.Authenticate,NetworkCodec.Pack(w=>{w.Write((byte)32);w.Write(new byte[32]);w.Write((byte)0);}));
+ string reason="";Until(()=>{while(peer.TryRead(out var packet))if(packet.Kind==PacketKind.Reject)NetworkCodec.Read(packet.Body,r=>reason=NetworkCodec.Text(r));return reason.Length>0;},host);
+ Assert(reason.Contains("帐号验证失败") && host.Lobby.Members.Length==1,"forged account joined");
+});
+Test("password proofs bind nonce and player identity",()=> {
+ var salt=RoomPassword.Random(16);var nonce=RoomPassword.Random(32);var key=RoomPassword.Derive("test-password",salt);var proof=RoomPassword.Proof(key,nonce,"player-a");
+ Assert(RoomPassword.Equal(proof,RoomPassword.Proof(key,nonce,"player-a")),"valid proof rejected");
+ Assert(!RoomPassword.Equal(proof,RoomPassword.Proof(key,RoomPassword.Random(32),"player-a")),"nonce replay accepted");
+ Assert(!RoomPassword.Equal(proof,RoomPassword.Proof(key,nonce,"player-b")),"identity substitution accepted");
+});
+Test("open internet room ignores disabled password and joins without password",()=> {
+ var options=Options();options.Password="ignored";using var host=NetworkRoom.Host(options);using var client=Client(host);
+ Until(()=>client.Connected,host,client);Assert(!host.Lobby.RequiresPassword && host.Lobby.Members.Length==2 && client.LocalSlot==3,"open join did not allocate opposing team");
+ Assert(host.Lobby.Members[0].AccountId=="a" && host.Lobby.Members[1].AccountId=="b" && client.Lobby.Members[1].AccountId=="b","verified identities were not replicated");
+});
+Test("locked internet room rejects incorrect password",()=> {
+ using var host=NetworkRoom.Host(Options(password:"correct"));using var client=Client(host,password:"wrong");string reason="";client.Failed+=s=>reason=s;
+ Until(()=>reason.Length>0,host,client);Assert(reason.Contains("密码") && host.Lobby.Members.Length==1 && !client.Connected,"wrong password admitted client");
+});
+Test("locked internet room rejects omitted password",()=> {
+ using var host=NetworkRoom.Host(Options(password:"correct"));using var client=Client(host);string reason="";client.Failed+=s=>reason=s;
+ Until(()=>reason.Length>0,host,client);Assert(reason.Contains("密码") && host.Lobby.Members.Length==1,"missing password admitted client");
+});
+Test("locked internet room accepts correct password",()=> {
+ using var host=NetworkRoom.Host(Options(password:"正确密码123"));using var client=Client(host,password:"正确密码123");
+ Until(()=>client.Connected,host,client);Assert(client.Lobby.RequiresPassword && host.Lobby.Members.Length==2,"correct proof not accepted");
+});
+Test("room route mismatch cannot join a LAN room as internet",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=NetworkRoom.Join("127.0.0.1:"+host.Port,Options(NetworkRoute.Internet,Team.Amber));string reason="";client.Failed+=s=>reason=s;
+ Until(()=>reason.Length>0,host,client);Assert(host.Lobby.Members.Length==1,"route mismatch bypassed admission");
+});
+Test("LAN discovery finds real UDP responder and usable TCP address",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var discovery=new LanDiscovery();double deadline=Now()+4;
+ while(discovery.Rooms.Count==0 && Now()<deadline){host.Pump(Now());discovery.Pump(Now());Thread.Sleep(5);}
+ Assert(discovery.Rooms.Any(r=>r.Lobby.Name==host.Lobby.Name && r.Address.EndsWith(":"+host.Port)),"no LAN advertisement received");
+ using var client=NetworkRoom.Join(discovery.Rooms.First().Address,Options(NetworkRoute.LAN,Team.Amber));Until(()=>client.Connected,host,client);
+});
+Test("ready and character/team selection synchronize before host starts",()=> {
+ using var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);
+ Assert(!host.CanStart,"unready guest did not block start");client.SetChoice(CharacterId.Thor,Team.Cyan);
+ Until(()=>client.LocalSlot==1 && host.Lobby.Members.Any(m=>!m.Host && m.Character==CharacterId.Thor),host,client);
+ client.SetReady(true);Until(()=>host.CanStart,host,client);NetworkStart start=null;client.Started+=s=>start=s;
+ host.StartMatch(new MatchRules());Until(()=>start!=null,host,client);Assert(start.Lineup[1]==CharacterId.Thor && start.Lineup.Length==6,"selected lineup was not sent");
+});
+Test("full team rejects fourth member while the other team can still join",()=> {
+ using var host=NetworkRoom.Host(Options());using var a=Client(host,Team.Cyan);using var b=Client(host,Team.Cyan);Until(()=>a.Connected&&b.Connected,host,a,b);
+ using var extra=Client(host,Team.Cyan);string reason="";extra.Failed+=s=>reason=s;Until(()=>reason.Length>0,host,a,b,extra);Assert(reason.Contains("队伍已满"),"team capacity was not enforced");
+ using var opponent=Client(host);Until(()=>opponent.Connected,host,a,b,opponent);Assert(host.Lobby.Members.Length==4,"free opposing slot rejected");
+});
+Test("late join rejected after match start",()=> {
+ using var host=NetworkRoom.Host(Options());host.StartMatch(new MatchRules());using var client=Client(host);string reason="";client.Failed+=s=>reason=s;
+ Until(()=>reason.Length>0,host,client);Assert(reason.Contains("比赛已经开始"),"late join entered active match");
+});
+Test("remote input controls only assigned slot and host snapshots synchronize ball and players",()=> {
+ using var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);client.SetReady(true);Until(()=>host.CanStart,host,client);
+ MatchSimulation authority=null, replica=null;host.Started+=s=>authority=Simulation(s.Lineup);client.Started+=s=>replica=Simulation(s.Lineup);
+ client.SnapshotReceived+=bytes=>NetworkCodec.ApplySnapshot(replica.State,bytes);host.StartMatch(new MatchRules());Until(()=>replica!=null,host,client);
+ var origin=authority.State.Players[3].Position;var other=authority.State.Players[0].Position;
+ client.SendInput(new PlayerCommand {Move=new Vec2(0,1),Aim=new Vec2(0,1)});Thread.Sleep(20);host.Pump(Now());
+ for(int i=0;i<12;i++){var commands=new PlayerCommand[6];commands[3]=host.ReadInput(3);authority.Step(commands);host.Publish(authority.State);}
+ Until(()=>replica.State.Tick==authority.State.Tick,host,client);
+ Assert(authority.State.Players[3].Position.Y>origin.Y,"assigned player did not move");Assert(authority.State.Players[0].Position.X==other.X && authority.State.Players[0].Position.Y==other.Y,"remote controlled another slot");
+ Assert(replica.State.Players[3].Position.Y==authority.State.Players[3].Position.Y && replica.State.Ball.Position.X==authority.State.Ball.Position.X,"replica diverged from authoritative state");
+});
+Test("guest disconnect releases slot and notifies host for AI takeover",()=> {
+ using var host=NetworkRoom.Host(Options());var client=Client(host);Until(()=>client.Connected,host,client);int left=-1;host.PlayerLeft+=s=>left=s;client.Dispose();
+ Until(()=>left==3,host);Assert(!host.IsHumanSlot(3) && host.Lobby.Members.Length==1,"disconnected slot remained human");
+});
+Test("host closure is reported and client stops",()=> {
+ var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);string reason="";client.Failed+=s=>reason=s;host.Dispose();
+ Until(()=>reason.Length>0,client);Assert(!client.Connected,"client remained connected after host exit");
+});
+Test("return to lobby resets readiness and allows a new match",()=> {
+ using var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);client.SetReady(true);Until(()=>host.CanStart,host,client);
+ bool started=false,returned=false;client.Started+=s=>started=true;client.ReturnedToLobby+=()=>returned=true;host.StartMatch(new MatchRules());Until(()=>started,host,client);
+ host.ReturnToLobby();Until(()=>returned,host,client);Assert(!client.Running && !host.CanStart && !client.Lobby.Members.Single(m=>!m.Host).Ready,"rematch retained previous readiness");
+});
+Test("input buffer preserves short button edges and rejects replay/nonfinite commands",()=> {
+ var buffer=new RemoteCommandBuffer();Assert(buffer.Accept(1,new PlayerCommand {KickPressed=true},1),"first input rejected");buffer.Accept(2,new PlayerCommand {KickReleased=true},1.01);
+ var input=buffer.Read(1.02);Assert(input.KickPressed&&input.KickReleased,"short click edge lost");Assert(!buffer.Read(1.03).KickPressed,"edge executed twice");
+ Assert(!buffer.Accept(1,default,1.04),"replayed input accepted");Assert(!buffer.Accept(3,new PlayerCommand{Move=new Vec2(float.NaN,0)},1.05),"nonfinite input accepted");
+ Assert(buffer.Read(2).Cancel && !buffer.Read(2.1).Cancel,"timeout did not clear actions once");
+});
+Test("complete snapshot round trip includes effects, resources, orders and events",()=> {
+ var source=Simulation();source.State.Phase=MatchPhase.Playing;source.State.Players[3].Health=42;source.State.Players[3].ECooldown=3;source.State.Players[3].Order=UnitOrderKind.Move;source.State.Players[3].OrderPosition=new Vec2(4,5);source.State.Players[3].MutablePath.Add(new Vec2(2,3));
+ source.State.MutableBombs.Add(new RemoteBomb{ActorId=3,Position=new Vec2(4,5),Remaining=2,Radius=3});source.State.MutableEvents.Add(new MatchEvent(MatchEventKind.Skill,3,slot:SkillSlot.E));
+ var target=Simulation();NetworkCodec.ApplySnapshot(target.State,NetworkCodec.Snapshot(source.State));
+ Assert(target.State.Players[3].Health==42&&target.State.Players[3].ECooldown==3&&target.State.Players[3].NavigationPath.Count==1&&target.State.Bombs[0].ActorId==3&&target.State.Events.Count==1,"snapshot omitted visible game state");
+});
+Test("malformed snapshot cannot partially mutate live state",()=> {
+ var source=Simulation();source.State.Players[3].Health=12;var bytes=NetworkCodec.Snapshot(source.State);var target=Simulation();bool rejected=false;
+ try{NetworkCodec.ApplySnapshot(target.State,bytes[..^1]);}catch{rejected=true;}Assert(rejected&&target.State.Players[3].Health==100,"truncated snapshot partially mutated state");
+});
+Test("invalid passwords, ports and room addresses reject before listening",()=> {
+ foreach(var options in new[]{new RoomOptions{UsePassword=true,Password=""},new RoomOptions{Port=-1},new RoomOptions{Route=NetworkRoute.LAN,UsePassword=true,Password="x"}}){bool rejected=false;try{options.Validate();}catch{rejected=true;}Assert(rejected,"invalid room option accepted");}
+ foreach(var address in new[]{"", "localhost:0", "localhost:99999", "host/path", "localhost:bad"}){bool rejected=false;try{NetworkRoom.ParseAddress(address,out _,out _);}catch{rejected=true;}Assert(rejected,"invalid address accepted");}
+});
+Test("in-flight ready and input packets survive return-to-lobby transitions",()=> {
+ using var host=NetworkRoom.Host(Options());using var socket=new System.Net.Sockets.TcpClient("127.0.0.1",host.Port);using var peer=new RoomPeer(socket);
+ peer.Send(PacketKind.Hello,NetworkCodec.Pack(w=>{NetworkCodec.Text(w,NetworkCodec.Version);NetworkCodec.Text(w,"raw-guest",24);w.Write((int)CharacterId.Marine);w.Write((int)Team.Amber);w.Write((int)NetworkRoute.Internet);NetworkCodec.Text(w,"b",16);}));
+ byte[] nonce=null;Until(()=>{while(peer.TryRead(out var packet))if(packet.Kind==PacketKind.Challenge)NetworkCodec.Read(packet.Body,r=>{r.ReadBoolean();r.ReadBytes(16);nonce=r.ReadBytes(32);});return nonce!=null;},host);
+ using var account=DebugAccounts.Login("b","b");var proof=account.Proof(nonce,NetworkCodec.Version+"|b|raw-guest|"+(int)CharacterId.Marine+"|"+(int)Team.Amber);
+ peer.Send(PacketKind.Authenticate,NetworkCodec.Pack(w=>{w.Write((byte)proof.Length);w.Write(proof);w.Write((byte)0);}));Until(()=>host.Lobby.Members.Length==2,host);
+ peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(true)));Until(()=>host.CanStart,host);host.StartMatch(new MatchRules());
+ peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(false)));Thread.Sleep(20);host.Pump(Now());
+ Assert(peer.Connected&&host.Lobby.Members.Length==2,"late ready disconnected a valid guest");host.ReturnToLobby();
+ peer.Send(PacketKind.Input,NetworkCodec.Pack(w=>{w.Write(1L);NetworkCodec.WriteFields(w,new PlayerCommand{Move=new Vec2(0,1)});}));Thread.Sleep(20);host.Pump(Now());
+ Assert(peer.Connected&&host.Lobby.Members.Length==2,"late match input disconnected a rematching guest");
+ peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(true)));Until(()=>host.CanStart,host);host.StartMatch(new MatchRules());
+ peer.Send(PacketKind.Input,NetworkCodec.Pack(w=>{w.Write(1);w.Write(1L);NetworkCodec.WriteFields(w,new PlayerCommand{Move=new Vec2(0,1)});}));Thread.Sleep(20);host.Pump(Now());
+ Assert(host.ReadInput(3).Move.LengthSquared==0,"previous game's input moved new game's player");
+ peer.Send(PacketKind.Input,NetworkCodec.Pack(w=>{w.Write(2);w.Write(2L);NetworkCodec.WriteFields(w,new PlayerCommand{Move=new Vec2(0,1)});}));Thread.Sleep(20);host.Pump(Now());
+ Assert(host.ReadInput(3).Move.Y==1,"current game's input was not accepted after rematch");
+});
+Test("oversized unauthenticated control frame is rejected without room admission",()=> {
+ using var host=NetworkRoom.Host(Options());using var socket=new System.Net.Sockets.TcpClient("127.0.0.1",host.Port);using var peer=new RoomPeer(socket);
+ peer.Send(PacketKind.Hello,new byte[9000]);Until(()=>!peer.Connected,host);Assert(host.Lobby.Members.Length==1,"oversized frame admitted a guest");
+});
+Test("invalid owner snapshot is rejected atomically",()=> {
+ var source=Simulation();source.State.Players[3].Health=12;source.State.Ball.OwnerId=99;var target=Simulation();bool rejected=false;
+ try{NetworkCodec.ApplySnapshot(target.State,NetworkCodec.Snapshot(source.State));}catch{rejected=true;}Assert(rejected&&target.State.Players[3].Health==100&&target.State.Ball.OwnerId==-1,"invalid ball owner partly applied");
+});
+Test("six concurrent players occupy unique slots and all can ready",()=> {
+ using var host=NetworkRoom.Host(Options(team:Team.Amber));var clients=new List<NetworkRoom>();
+ try{
+  for(int i=0;i<5;i++)clients.Add(Client(host,i<3?Team.Cyan:Team.Amber));
+  var all=new[]{host}.Concat(clients).ToArray();Until(()=>clients.All(c=>c.Connected),all);
+  Assert(host.Lobby.Members.Length==6&&host.Lobby.Members.Select(m=>m.Slot).Distinct().Count()==6&&host.LocalSlot==3,"concurrent admission duplicated positions");
+  foreach(var client in clients)client.SetReady(true);Until(()=>host.CanStart,all);
+  foreach(var client in clients)Assert(client.LocalSlot!=host.LocalSlot,"guest got host position");
+ }finally{foreach(var client in clients)client.Dispose();}
+});
+var report=args.Length>0?args[0]:"reports/network-017-transport";Directory.CreateDirectory(report);File.WriteAllText(Path.Combine(report,"network-tests.json"),JsonSerializer.Serialize(new{passed=failed==0,total=results.Count,failed,results},new JsonSerializerOptions{WriteIndented=true}));return failed==0?0:1;

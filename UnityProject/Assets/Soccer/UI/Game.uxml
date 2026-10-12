@@ -24,7 +24,7 @@
             <ui:VisualElement class="front-topbar row">
                 <ui:VisualElement class="brand-block row"><ui:VisualElement name="brand-mark" class="brand-mark" /><ui:VisualElement><ui:Label text="技能足球" class="front-brand" /><ui:Label text="合作乱斗 · 城市球场" class="front-brand-sub" /></ui:VisualElement></ui:VisualElement>
                 <ui:VisualElement class="grow" />
-                <ui:Label text="● 当前离线" class="connection-status" />
+                <ui:Label name="connection-status" text="● 本地 / 联机" class="connection-status" />
                 <ui:Label text="PC / 0.14.0" class="build-label" />
             </ui:VisualElement>
             <ui:VisualElement class="mode-intro">
@@ -80,6 +80,75 @@
                     <ui:Button name="mode-training" text="进入训练场" class="secondary" />
                 </ui:VisualElement>
             </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="network-page" class="page network-page hidden">
+            <ui:VisualElement class="page-heading row">
+                <ui:VisualElement class="grow"><ui:Label text="PLAY TOGETHER" class="eyebrow" /><ui:Label name="network-title" text="联机房间" class="page-title" /><ui:Label name="network-description" class="muted" /></ui:VisualElement>
+                <ui:Button name="network-back" text="返回" class="secondary" />
+            </ui:VisualElement>
+            <ui:VisualElement class="row network-tabs"><ui:Button name="network-create-tab" text="创建房间" class="route-button" /><ui:Button name="network-join-tab" text="加入房间" class="route-button" /></ui:VisualElement>
+            <ui:ScrollView class="network-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
+                <ui:VisualElement name="network-account" class="network-card">
+                    <ui:VisualElement name="account-form">
+                        <ui:Label text="登录调试帐号" class="skill-heading" />
+                        <ui:Label text="试玩帐号：a / a，b / b（帐号 / 密码）" class="muted" />
+                        <ui:TextField name="account-name" label="帐号" />
+                        <ui:TextField name="account-password" label="帐号密码" />
+                        <ui:Button name="account-login" text="登录    →" class="primary" />
+                        <ui:Label name="account-status" class="network-status" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="account-session" class="row hidden">
+                        <ui:Label name="account-current" class="skill-heading grow" />
+                        <ui:Button name="account-logout" text="退出帐号" class="secondary" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="network-profile" class="row network-profile">
+                    <ui:TextField name="network-player-name" label="你的名字" value="球员" />
+                    <ui:DropdownField name="network-character" label="角色" />
+                    <ui:DropdownField name="network-team" label="队伍" />
+                </ui:VisualElement>
+                <ui:VisualElement name="network-create-form" class="network-card">
+                    <ui:Label text="和朋友一起踢一场" class="skill-heading" />
+                    <ui:TextField name="network-room-name" label="房间名称" value="足球房间" />
+                    <ui:IntegerField name="network-port" label="房间端口" value="27860" />
+                    <ui:VisualElement name="network-internet-options">
+                        <ui:TextField name="network-public-address" label="邀请地址（公网 IP 或域名，可留空）" />
+                        <ui:Toggle name="network-password-enabled" label="启用房间密码" />
+                        <ui:TextField name="network-room-password" label="房间密码" />
+                    </ui:VisualElement>
+                    <ui:Button name="network-create" text="创建房间    →" class="primary" />
+                </ui:VisualElement>
+                <ui:VisualElement name="network-join-form" class="network-card hidden">
+                    <ui:Label text="加入朋友的房间" class="skill-heading" />
+                    <ui:TextField name="network-address" label="房间地址" />
+                    <ui:Label name="network-address-help" class="muted" />
+                    <ui:TextField name="network-join-password" label="房间密码（无密码房间留空）" />
+                    <ui:Button name="network-join" text="加入房间    →" class="primary" />
+                    <ui:VisualElement name="network-lan-discovery">
+                        <ui:VisualElement class="row"><ui:Label text="同一局域网的房间" class="skill-heading grow" /><ui:Button name="network-refresh" text="刷新" class="secondary" /></ui:VisualElement>
+                        <ui:Label name="network-room-list-empty" text="正在寻找房间，也可以输入房主地址加入。" class="muted" />
+                        <ui:VisualElement name="network-room-list" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:ScrollView>
+            <ui:Label name="network-status" class="network-status" />
+        </ui:VisualElement>
+        <ui:VisualElement name="room-page" class="page network-page hidden">
+            <ui:VisualElement class="page-heading row">
+                <ui:VisualElement class="grow"><ui:Label name="lobby-route" class="eyebrow" /><ui:Label name="lobby-title" class="page-title" /><ui:Label name="lobby-summary" class="muted" /></ui:VisualElement>
+                <ui:Button name="lobby-leave" text="离开房间" class="secondary" />
+            </ui:VisualElement>
+            <ui:ScrollView class="network-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
+                <ui:VisualElement class="row network-profile"><ui:DropdownField name="lobby-character" label="我的角色" /><ui:DropdownField name="lobby-team" label="我的队伍" /></ui:VisualElement>
+                <ui:VisualElement class="row network-teams">
+                    <ui:VisualElement class="network-card grow"><ui:Label text="青队" class="skill-heading cyan" /><ui:VisualElement name="lobby-cyan-members" /></ui:VisualElement>
+                    <ui:VisualElement class="network-card grow"><ui:Label text="橙队" class="skill-heading amber" /><ui:VisualElement name="lobby-amber-members" /></ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="row"><ui:TextField name="lobby-address" label="邀请地址" class="grow" /><ui:Button name="lobby-copy-address" text="复制地址" class="secondary" /></ui:VisualElement>
+                <ui:Label name="lobby-address-note" class="muted" />
+            </ui:ScrollView>
+            <ui:VisualElement class="row network-footer"><ui:Label name="lobby-status" class="network-status grow" /><ui:Button name="lobby-ready" text="准备" class="primary" /><ui:Button name="lobby-start" text="开始比赛    →" class="primary" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="select-page" class="page selection hidden">
@@ -251,8 +320,8 @@
         </ui:VisualElement>
         <ui:VisualElement name="pause-overlay" class="overlay hidden">
             <ui:VisualElement class="modal">
-                <ui:Label text="比赛已暂停" class="page-title" />
-                <ui:Label text="准备好了，就继续回到球场。" class="muted" />
+                <ui:Label name="pause-title" text="比赛已暂停" class="page-title" />
+                <ui:Label name="pause-copy" text="准备好了，就继续回到球场。" class="muted" />
                 <ui:Button name="resume-button" text="继续比赛" class="primary" />
                 <ui:Button name="restart-button" text="重新开始" />
                 <ui:Button name="pause-home" text="返回主菜单" class="secondary" />

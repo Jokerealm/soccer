@@ -43,6 +43,7 @@ namespace Soccer.Core
             b.ReleasedRestart = RestartKind.None;
             b.Position = b.PreviousPosition = State.RestartPosition; b.Velocity = Vec2.Zero;
             b.Height = b.PreviousHeight = b.VerticalVelocity = b.CurveRemaining = b.SelfCatchRemaining = 0;
+            b.PossessionContactRemaining = 0;
             b.FlightMode = BallFlightMode.Ground;
             SelectKicker();
             foreach (var p in State.Players) if (!p.IsDead) { p.Position = OutsideExclusion(p); p.PreviousPosition = p.Position; }

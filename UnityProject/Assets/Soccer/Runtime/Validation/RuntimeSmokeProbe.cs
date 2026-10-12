@@ -49,6 +49,7 @@ namespace Soccer.Runtime
                 bool quickSavedHud=app.UI.FullHudEnabled;
                 app.OpenSelection(MatchMode.Training);app.SelectCharacter(CharacterId.Marine);app.StartMatch();
                 yield return new WaitForSecondsRealtime(3.4f);
+                yield return CaptureHeldInterception();
                 yield return CapturePossessionContacts();
                 yield return CaptureMiniMapTraining();
                 app.UI.SetFullHud(quickSavedHud,false);app.GoHome();
@@ -100,13 +101,13 @@ namespace Soccer.Runtime
                 Check(PicksButton(modeButtons[i]), $"mode {i} card receives pointer hit");
                 yield return Click(modeButtons[i]);
                 Check(app.Page == AppPage.ModeDetails && (int)app.SelectedPlaylist == i, $"mode {i} opens matching details");
-                Check(!app.UI.Root.Q<Button>("online-play").enabledSelf, $"mode {i} does not pretend to match online");
+                Check(app.UI.Root.Q<Button>("online-play").enabledSelf == (i==0), $"mode {i} room availability matches implemented rules");
                 Check(app.UI.Root.Q<Button>("lan-route").enabledSelf == (i != 1), $"mode {i} LAN availability");
                 yield return Capture($"01-mode-{i}-internet");
                 if (i != 1)
                 {
                     yield return Click("lan-route");
-                    Check(app.Route == ConnectionRoute.LAN && !app.UI.Root.Q<Button>("join-room").enabledSelf,
+                    Check(app.Route == ConnectionRoute.LAN && app.UI.Root.Q<Button>("join-room").enabledSelf == (i==0),
                         $"mode {i} LAN route displays honest room state");
                     yield return Capture($"01-mode-{i}-lan");
                 }
@@ -202,6 +203,7 @@ namespace Soccer.Runtime
             yield return CaptureDynamicStadium();
             yield return CaptureLargeField();
             yield return CaptureRtsRules();
+            yield return CaptureHeldInterception();
             yield return CapturePossessionContacts();
             yield return CaptureMiniMapTraining();
             yield return CaptureFootballEffects();
@@ -515,10 +517,49 @@ namespace Soccer.Runtime
             app.ResetTraining(false);app.SetPaused(false);app.UI.RefreshMatch();
         }
 
+        private IEnumerator CaptureHeldInterception()
+        {
+            app.SetPaused(true);app.UI.ShowPause(false);app.GiveTargetBall();
+            var state=app.Simulation.State;var rules=app.Simulation.Rules;var p=state.Players[0];var target=state.Players[1];
+            Check(Math.Abs(rules.PossessionSpeed-.8f)<.0001f && Math.Abs(rules.PossessionContactLock-.25f)<.0001f,
+                "serialized runtime rules use map-derived carrying speed and reception protection");
+            var ballPosition=new Vec2(target.Stats.Radius+rules.BallRadius+rules.FootGap,0);
+            typeof(PlayerState).GetProperty(nameof(PlayerState.Position)).SetValue(target,Vec2.Zero);
+            typeof(PlayerState).GetProperty(nameof(PlayerState.Facing)).SetValue(target,new Vec2(1,0));
+            typeof(PlayerState).GetProperty(nameof(PlayerState.Position)).SetValue(p,ballPosition+new Vec2(p.Stats.Radius+rules.BallRadius,0));
+            SetSmokeBall(nameof(BallState.Position),ballPosition);
+            var commands=new PlayerCommand[2];commands[1]=new PlayerCommand {Aim=new Vec2(1,0)};
+            int captureBefore=p.Steals;
+            for(int tick=0;tick<14;tick++)StepPossessionPresented(commands);
+            Check(state.Ball.OwnerId==target.Id && p.Steals==captureBefore,"fresh holder resists automatic collision for 0.25 seconds");
+            StepPossessionPresented(commands);
+            Check(state.Ball.OwnerId==p.Id && p.Steals==captureBefore+1,"held football surface contact captures immediately after reception lock expires");
+            Check(p.TackleCooldown==0 && p.Health==100 && target.PushRemaining==0,"direct collision steal requires neither tackle nor health cost");
+            Check(app.Feedback.Contains("碰撞夺球"),"direct possession transfer presents collision capture feedback");
+            commands[0]=new PlayerCommand {Aim=new Vec2(-1,0)};
+            for(int tick=0;tick<10;tick++)StepPossessionPresented(commands);
+            Check(state.Ball.OwnerId==p.Id && p.Steals==captureBefore+1,"new reception lock prevents immediate return capture on touching bodies");
+            app.View.Render(state,rules,1,false,false);app.UI.RefreshMatch();yield return Capture("55-direct-held-ball-interception");
+
+            app.GiveTargetBall();state=app.Simulation.State;p=state.Players[0];target=state.Players[1];
+            captureBefore=p.Steals;
+            typeof(PlayerState).GetProperty(nameof(PlayerState.Position)).SetValue(target,Vec2.Zero);
+            typeof(PlayerState).GetProperty(nameof(PlayerState.Facing)).SetValue(target,new Vec2(1,0));
+            typeof(PlayerState).GetProperty(nameof(PlayerState.Position)).SetValue(p,ballPosition+new Vec2(2,0));
+            SetSmokeBall(nameof(BallState.Position),ballPosition);
+            commands[0]=default;for(int tick=0;tick<16;tick++)StepPossessionPresented(commands);
+            commands[0]=ContextOrder.Create(state,rules,p.Id,state.Ball.Position,clickedBall:true);
+            for(int tick=0;tick<150 && state.Ball.OwnerId!=p.Id;tick++){StepPossessionPresented(commands);commands[0]=default;}
+            Check(state.Ball.OwnerId==p.Id && p.Steals==captureBefore+1 && p.TackleCooldown==0 && p.Health==100,
+                "right-click ball pursuit steals enemy held football in the actual client without spacebar");
+            app.View.Render(state,rules,1,false,false);app.UI.RefreshMatch();yield return Capture("56-right-click-held-ball-capture");
+        }
+
         private IEnumerator CapturePossessionContacts()
         {
             app.SetPaused(true);app.UI.ShowPause(false);app.GiveTargetBall();
             var state=app.Simulation.State;var rules=app.Simulation.Rules;var p=state.Players[0];var target=state.Players[1];
+            int captureBefore=p.Steals;
             typeof(PlayerState).GetProperty(nameof(PlayerState.Facing)).SetValue(target,new Vec2(1,0));
             typeof(PlayerState).GetProperty(nameof(PlayerState.Position)).SetValue(p,target.Position+new Vec2(0,p.Stats.Radius+target.Stats.Radius+.15f));
             var commands=new PlayerCommand[2];commands[1]=new PlayerCommand {Aim=new Vec2(1,0)};StepPossessionPresented(commands);
@@ -529,14 +570,14 @@ namespace Soccer.Runtime
                 StepPossessionPresented(commands);commands[0]=commands[0].WithoutEdges();
                 foreach(var e in state.Events){if(e.Kind==MatchEventKind.BallDropped)dropped=true;if(e.Kind==MatchEventKind.Steal||e.Kind==MatchEventKind.Catch)earlyCapture=true;}
             }
-            Check(dropped && !earlyCapture && state.Ball.OwnerId==-1 && p.Steals==0,
+            Check(dropped && !earlyCapture && state.Ball.OwnerId==-1 && p.Steals==captureBefore,
                 "side push releases football without automatically granting it to pusher");
             Check(Vec2.Distance(state.Ball.Position,originalBall)<.001f && target.Position.Y<originalTarget.Y-.9f,
                 "displaced enemy moves while released football remains at exact original spot");
             app.View.Render(state,rules,1,false,false);app.UI.RefreshMatch();yield return Capture("51-side-push-free-ball");
             commands[0]=ContextOrder.Create(state,rules,0,state.Ball.Position,clickedBall:true);
             for(int tick=0;tick<100 && state.Ball.OwnerId<0;tick++){StepPossessionPresented(commands);commands[0]=default;}
-            Check(state.Ball.OwnerId==0 && p.Steals==1,"pusher captures free ball only after physically reaching it");
+            Check(state.Ball.OwnerId==0 && p.Steals==captureBefore+1,"pusher captures free ball only after physically reaching it");
             app.View.Render(state,rules,1,false,false);app.UI.RefreshMatch();yield return Capture("52-contact-pickup");
             app.GiveTargetBall();state=app.Simulation.State;p=state.Players[0];target=state.Players[1];
             typeof(PlayerState).GetProperty(nameof(PlayerState.Facing)).SetValue(target,new Vec2(1,0));

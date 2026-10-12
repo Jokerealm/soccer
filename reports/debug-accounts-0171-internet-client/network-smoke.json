@@ -1,0 +1,28 @@
+{
+    "passed": true,
+    "role": "client",
+    "route": "internet",
+    "platform": "OSXPlayer",
+    "localPlayerId": 3,
+    "tick": 318,
+    "checks": [
+        "PASS real game startup completes",
+        "PASS account password uses a masked field",
+        "PASS internet room actions require login",
+        "PASS wrong account password rejected before network admission",
+        "PASS debug account login succeeds and clears password field",
+        "PASS both room passwords use masked fields",
+        "PASS join button admits client to its chosen opposing team",
+        "PASS room password setting arrives through live handshake",
+        "PASS verified account identities synchronize to guest lobby",
+        "PASS joining clears submitted password field",
+        "PASS client receives start and binds its own player",
+        "PASS model highlight, sound and HUD follow the local guest rather than host",
+        "PASS client sees authoritative remote movement replicated back",
+        "PASS local menu keeps shared match and snapshots running",
+        "PASS client receives host ball ownership before shooting",
+        "PASS guest kick tooltip recognizes its own possession",
+        "PASS client receives kick, cooldown and released football from host"
+    ],
+    "errors": []
+}

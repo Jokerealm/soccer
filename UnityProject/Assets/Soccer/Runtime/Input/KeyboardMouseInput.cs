@@ -9,13 +9,15 @@ namespace Soccer.Runtime
         private readonly Camera camera;
         private PlayerCommand pending;
         private bool mouseGesture, eGesture;
+        private int localPlayerId;
         public Vec2 PreviewAim => mouseGesture || eGesture ? pending.Aim : Vec2.Zero;
         public KeyboardMouseInput(Camera camera) { this.camera = camera; }
         public void Reset() { pending = default; mouseGesture = eGesture = false; }
 
-        public void Sample(MatchState state, MatchRules rules, bool pointerBlocked, bool movementOnly = false)
+        public void Sample(MatchState state, MatchRules rules, bool pointerBlocked, bool movementOnly = false, int playerId = 0)
         {
-            var player = state.Players[0];
+            localPlayerId = playerId;
+            var player = state.Players[playerId];
             if (player.IsDead || player.RespawnedThisTick) { Reset(); return; }
             var ray = camera.ScreenPointToRay(Input.mousePosition);
             var plane = new Plane(Vector3.up, Vector3.zero);
@@ -27,7 +29,7 @@ namespace Soccer.Runtime
             {
                 int target = PickPlayer(state);
                 bool ball = target < 0 && Vec2.Distance(ground, state.Ball.Position) < rules.BallRadius + .25f;
-                var order = ContextOrder.Create(state, rules, 0, ground, target, ball,
+                var order = ContextOrder.Create(state, rules, playerId, ground, target, ball,
                     Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
                 pending.OrderPressed = true; pending.OrderKind = order.OrderKind;
                 pending.OrderPosition = order.OrderPosition; pending.OrderTargetId = order.OrderTargetId;
@@ -58,7 +60,7 @@ namespace Soccer.Runtime
             int result = -1; float closest = float.PositiveInfinity;
             foreach (var p in state.Players)
             {
-                if (p.Id == 0 || p.IsDead) continue;
+                if (p.Id == localPlayerId || p.IsDead) continue;
                 var foot = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position));
                 var head = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position, p.Stats.Id == CharacterId.Thor ? 1.9f : 1.8f));
                 var edge = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position + new Vec2(p.Stats.Radius, 0), .8f));

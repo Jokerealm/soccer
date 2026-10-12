@@ -1385,6 +1385,121 @@ Test("standard front push training requires walking into released football", () 
     Assert(sim.State.Players[0].Charging,"actual receiver could not start charging");
 });
 
+// 0.16.1: held-ball interception, reception protection and map-derived carrying speed.
+MatchSimulation InterceptionFixture(bool allied=false)
+{
+    var sim=PossessionFixture(allied);Steps(sim,16);return sim;
+}
+foreach(var approach in new[]{new Vec2(1,0),new Vec2(0,1),new Vec2(0,-1)})
+Test($"walking into enemy held ball steals without tackling from {approach}", () => {
+    var sim=InterceptionFixture();var p=sim.State.Players[0];var owner=sim.State.Players[1];
+    var ball=sim.State.Ball.Position;var radius=p.Stats.Radius+sim.Rules.BallRadius;
+    p.Position=ball+approach*(radius+.15f);p.TackleCooldown=99;
+    Steps(sim,10,new PlayerCommand {Move=-approach,Aim=-approach});
+    Assert(sim.State.Ball.OwnerId==p.Id && p.Steals==1,"actual held-ball contact did not steal");
+    Near(p.Health,100);Assert(p.TackleCooldown>98 && owner.PushRemaining==0,"interception required push or paid health");
+    Assert(sim.State.Ball.LastTouchId==p.Id,"interception did not update last physical toucher");
+});
+Test("right-click held football obtains possession without any tackle input", () => {
+    var sim=InterceptionFixture();var p=sim.State.Players[0];p.Position=sim.State.Ball.Position+new Vec2(3,0);
+    Steps(sim,150,ContextOrder.Create(sim.State,sim.Rules,0,sim.State.Ball.Position,clickedBall:true));
+    Assert(p.Steals>=1 && sim.State.Ball.OwnerId==p.Id,"ball pursuit never intercepted held football");Near(p.Health,100);Near(p.TackleCooldown,0);
+});
+Test("standing outside held ball surface does not steal and football does not evade", () => {
+    var sim=InterceptionFixture();var p=sim.State.Players[0];var ball=sim.State.Ball.Position;
+    p.Position=ball+new Vec2(p.Stats.Radius+sim.Rules.BallRadius+.01f,0);Steps(sim,30);
+    Assert(sim.State.Ball.OwnerId==1 && p.Steals==0,"nearby body received without touching");Near(Vec2.Distance(ball,sim.State.Ball.Position),0);
+});
+Test("touching carrier from behind cannot reach their front football", () => {
+    var sim=InterceptionFixture();var p=sim.State.Players[0];var owner=sim.State.Players[1];
+    p.Position=owner.Position-new Vec2(p.Stats.Radius+owner.Stats.Radius,0);
+    Steps(sim,60,new PlayerCommand {Move=new Vec2(1,0)});
+    Assert(sim.State.Ball.OwnerId==owner.Id && p.Steals==0,"body contact stole a football on the far side");
+});
+Test("teammate touching held football leaves healthy teammate possession intact", () => {
+    var sim=InterceptionFixture(allied:true);var p=sim.State.Players[0];var owner=sim.State.Players[1];
+    p.Position=sim.State.Ball.Position+new Vec2(p.Stats.Radius+sim.Rules.BallRadius,0);Steps(sim,60);
+    Assert(sim.State.Ball.OwnerId==owner.Id && p.Steals==0,"friendly automatic reception stole teammate ball");
+});
+foreach(int substeps in new[]{1,4,16})
+Test($"held contact lock lasts 0.25 seconds with {substeps} physics substeps", () => {
+    var sim=PossessionFixture();sim.Rules.PhysicsSubsteps=substeps;var p=sim.State.Players[0];
+    p.Position=sim.State.Ball.Position+new Vec2(p.Stats.Radius+sim.Rules.BallRadius,0);
+    Steps(sim,13);Assert(sim.State.Ball.OwnerId==1 && p.Steals==0,"received before protection expired");
+    Steps(sim,2);Assert(sim.State.Ball.OwnerId==0 && p.Steals==1,"persistent surface contact did not receive at expiry");
+    Near(sim.State.Ball.PossessionContactRemaining,sim.Rules.PossessionContactLock,.017f);
+    Steps(sim,10);Assert(sim.State.Ball.OwnerId==0 && p.Steals==1,"new owner immediately lost ball in later substep");
+});
+foreach(string condition in new[]{"stunned","pushed","dead","respawned"})
+Test($"{condition} player cannot automatically intercept held football", () => {
+    var sim=InterceptionFixture();var p=sim.State.Players[0];
+    p.Position=sim.State.Ball.Position+new Vec2(p.Stats.Radius+sim.Rules.BallRadius,0);
+    if(condition=="stunned")p.Stun=1;
+    if(condition=="pushed")p.PushRemaining=1;
+    if(condition=="dead"){p.Health=0;p.RespawnRemaining=5;}
+    if(condition=="respawned"){p.Health=0;p.RespawnRemaining=.001f;}
+    Steps(sim,1);Assert(sim.State.Ball.OwnerId==1 && p.Steals==0,"ineligible receiver stole ball");
+});
+Test("full protection blocks direct held-ball interception", () => {
+    var sim=InterceptionFixture();var p=sim.State.Players[0];sim.State.Owner.FullProtection=1;
+    p.Position=sim.State.Ball.Position+new Vec2(p.Stats.Radius+sim.Rules.BallRadius,0);Steps(sim,30);
+    Assert(sim.State.Ball.OwnerId==1,"complete protection failed during interception");
+});
+Test("fast sideways player intercepts held ball on swept path before passing it", () => {
+    var sim=InterceptionFixture();sim.Rules.PhysicsSubsteps=1;var p=sim.State.Players[0];
+    p.Stats.Speed=600;p.Position=sim.State.Ball.Position+new Vec2(.2f,-3);
+    Steps(sim,1,new PlayerCommand {Move=new Vec2(0,1)});
+    Assert(sim.State.Ball.OwnerId==p.Id && p.Steals==1 && p.Position.Y>3,"held-ball collision tunneled at high speed");
+});
+Test("fast carrier translation exposes held ball along its continuous path", () => {
+    var sim=InterceptionFixture();sim.Rules.PhysicsSubsteps=1;var p=sim.State.Players[0];var owner=sim.State.Players[1];
+    p.Position=sim.State.Ball.Position+new Vec2(.6f,3);owner.Stats.Speed=600;
+    var commands=new PlayerCommand[2];commands[1]=new PlayerCommand {Move=new Vec2(0,1)};sim.Step(commands);
+    Assert(owner.Position.Y>5 && sim.State.Ball.OwnerId==p.Id && p.Steals==1,"moving held ball skipped receiver between endpoints");
+});
+Test("earliest of two opponents receives moving held ball only once", () => {
+    var sim=InterceptionFixture(allied:true);sim.Rules.PhysicsSubsteps=1;var owner=sim.State.Players[1];
+    var first=sim.State.Players[4];var later=sim.State.Players[3];var ball=sim.State.Ball.Position;
+    first.Position=ball+new Vec2(.6f,2);later.Position=ball+new Vec2(.6f,5);owner.Stats.Speed=600;
+    var commands=new PlayerCommand[6];commands[1]=new PlayerCommand {Move=new Vec2(0,1)};sim.Step(commands);
+    Assert(sim.State.Ball.OwnerId==first.Id && first.Steals==1 && later.Steals==0,"slot order overrode earliest collision");
+    Assert(sim.State.Events.Count(e=>e.Kind==MatchEventKind.Steal)==1,"one held-ball contact emitted multiple steals");
+});
+Test("ordinary pass reception starts contact protection independently of kicker lock", () => {
+    var sim=StarSim();EmptyField(sim);var p=sim.State.Players[0];p.Position=Vec2.Zero;sim.State.Ball.Position=p.Position;
+    Steps(sim,1);Assert(sim.State.Ball.OwnerId==p.Id && sim.State.Ball.PossessionContactRemaining>.23f,"free-ball reception omitted contact protection");
+    Steps(sim,1,new PlayerCommand {Aim=new Vec2(0,1),KickPressed=true,KickReleased=true});
+    Near(sim.State.Ball.PossessionContactRemaining,0);Assert(sim.State.Ball.SelfCatchRemaining>0,"kicking kept contact lock or lost self-catch lock");
+    sim.ResetTraining(true);Assert(sim.State.Ball.PossessionContactRemaining>0,"setup reception lock absent");
+    sim.ResetTraining(false);Near(sim.State.Ball.PossessionContactRemaining,0);
+    sim.SetupTrainingRestart(RestartKind.FreeKick);Near(sim.State.Ball.PossessionContactRemaining,0);
+});
+Test("turning does not sweep football through the carrier body to a distant receiver", () => {
+    var sim=InterceptionFixture();var p=sim.State.Players[0];var owner=sim.State.Players[1];
+    p.Position=owner.Position+new Vec2(0,p.Stats.Radius+owner.Stats.Radius+.02f);
+    var commands=new PlayerCommand[2];commands[1]=new PlayerCommand {Aim=new Vec2(-1,0)};sim.Step(commands);
+    Assert(sim.State.Ball.OwnerId==owner.Id && p.Steals==0,"rotation chord generated false ball contact");
+});
+Test("reception protection clears when pushed ball is released", () => {
+    var sim=PossessionFixture();var p=sim.State.Players[0];var owner=sim.State.Players[1];
+    Assert(sim.State.Ball.PossessionContactRemaining>0,"fixture lacks reception lock");
+    p.DashDirection=new Vec2(-1,0);TackleSystem.Resolve(sim,p,owner,new Vec2(-1,0));
+    Near(sim.State.Ball.PossessionContactRemaining,0);p.Position=sim.State.Ball.Position+new Vec2(p.Stats.Radius+sim.Rules.BallRadius,0);
+    Steps(sim,1);Assert(sim.State.Ball.OwnerId==p.Id,"previous contact lock prevented free-ball reception after push");
+});
+Test("holding football moves at eighty percent of ordinary running speed", () => {
+    var carrying=StarSim();carrying.ResetTraining(true);var running=StarSim();
+    var origin=carrying.State.Players[0].Position;Steps(carrying,60,new PlayerCommand {Move=new Vec2(0,1)});
+    Steps(running,60,new PlayerCommand {Move=new Vec2(0,1)});
+    Near(Vec2.Distance(carrying.State.Players[0].Position,origin),Vec2.Distance(running.State.Players[0].Position,origin)*.8f,.002f);
+});
+Test("automatic possession tuning rejects nonfinite or invalid values", () => {
+    foreach(float value in new[]{float.NaN,float.PositiveInfinity,-.1f})
+    {bool rejected=false;try{new MatchRules {PossessionContactLock=value}.Validate();}catch(ArgumentException){rejected=true;}Assert(rejected,"invalid reception lock accepted");}
+    foreach(float value in new[]{float.NaN,float.PositiveInfinity,0,1.01f})
+    {bool rejected=false;try{new MatchRules {PossessionSpeed=value}.Validate();}catch(ArgumentException){rejected=true;}Assert(rejected,"invalid carry speed accepted");}
+});
+
 string reportDir = args.Length > 0 ? args[0] : Path.GetFullPath("reports");
 Directory.CreateDirectory(reportDir);
 File.WriteAllText(Path.Combine(reportDir, "core-tests.json"), JsonSerializer.Serialize(new { passed = failed == 0, total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));

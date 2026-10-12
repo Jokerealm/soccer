@@ -28,7 +28,7 @@ namespace Soccer.Runtime
             if(app==null) app=FindObjectOfType<AppController>();
             if(app==null || app.Page!=AppPage.Match || app.Simulation==null || app.Paused) return;
             var state=app.Simulation.State;
-            var player=state.Players[0];
+            var player=state.Players[app.LocalPlayerId];
             // 超宽屏也只看局部，不把整张地图压成缩略图。
             RevealingGoal=state.Phase==Soccer.Core.MatchPhase.GoalCelebration || app.CelebratingFinalGoal;
             float targetSize=RevealingGoal ? Mathf.Min(5.1f,12/viewCamera.aspect) : Mathf.Min(6.8f,15/viewCamera.aspect);
@@ -48,7 +48,7 @@ namespace Soccer.Runtime
         {
             if(app==null) app=FindObjectOfType<AppController>();
             if(app?.Simulation==null) return;
-            var p=app.Simulation.State.Players[0];
+            var p=app.Simulation.State.Players[app.LocalPlayerId];
             RevealingGoal=false;
             viewCamera.orthographicSize=Mathf.Min(6.8f,15/viewCamera.aspect);
             var state=app.Simulation.State;

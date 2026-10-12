@@ -1,0 +1,27 @@
+{
+    "passed": true,
+    "role": "host",
+    "route": "internet",
+    "platform": "OSXPlayer",
+    "localPlayerId": 0,
+    "tick": 320,
+    "checks": [
+        "PASS real game startup completes",
+        "PASS account password uses a masked field",
+        "PASS internet room actions require login",
+        "PASS wrong account password rejected before network admission",
+        "PASS debug account login succeeds and clears password field",
+        "PASS both room passwords use masked fields",
+        "PASS enabling room password enables password entry",
+        "PASS create button opens a real listening room",
+        "PASS created room clears password field",
+        "PASS second process joins and readiness reaches host",
+        "PASS host verifies and displays both account identities",
+        "PASS host start button starts authoritative six-player match",
+        "PASS guest selected character appears in opposing player slot",
+        "PASS remote movement changes only the guest-controlled authoritative player",
+        "PASS guest press/release executes exactly one real kick on host",
+        "PASS client exit releases remote slot for AI takeover"
+    ],
+    "errors": []
+}

@@ -32,7 +32,7 @@ namespace Soccer.Runtime
             container.Add(distance); root.Q("match-page").Add(container); Hide();
         }
         public void Hide() => container.style.display=DisplayStyle.None;
-        public void Refresh(Camera camera,MatchState state,Rect minimapBounds=default)
+        public void Refresh(Camera camera,MatchState state,Rect minimapBounds=default,int localPlayerId=0)
         {
             Vector3 target=camera.WorldToViewportPoint(ArenaProjection.ToWorld(state.Ball.Position,state.Ball.Height+.18f));
             if(target.z>0 && target.x>=0 && target.x<=1 && target.y>=0 && target.y<=1) { Hide(); return; }
@@ -52,7 +52,7 @@ namespace Soccer.Runtime
             container.style.left=edge.x-58; container.style.top=edge.y-23;
             container.style.display=DisplayStyle.Flex;
             marker.Direction=delta.normalized; marker.MarkDirtyRepaint();
-            distance.text=$"足球\n{Vec2.Distance(state.Players[0].Position,state.Ball.Position):0.#} m";
+            distance.text=$"足球\n{Vec2.Distance(state.Players[localPlayerId].Position,state.Ball.Position):0.#} m";
         }
         private sealed class DirectionMarker : VisualElement
         {

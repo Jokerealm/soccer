@@ -64,14 +64,15 @@ namespace Soccer.Runtime
             b.Lifetime=.28f+LastKickStrength*.10f;
             RenderBurst(b);
         }
+        public int LocalPlayerId { get; set; }
         public void Render(MatchState state,MatchRules rules,Vector3 ballPosition,bool animate,bool enabled)
         {
             if(!enabled) {Clear();return;}
             float dt=animate ? Mathf.Min(Time.unscaledDeltaTime,.1f) : 0;
             clock+=dt;
             foreach(var b in bursts) { b.Age+=dt; RenderBurst(b); }
-            var p=state.Players[0];
-            bool charging=p.Charging && !p.IsDead && state.Ball.OwnerId==0 && state.Phase==MatchPhase.Playing;
+            var p=state.Players[LocalPlayerId];
+            bool charging=p.Charging && !p.IsDead && state.Ball.OwnerId==LocalPlayerId && state.Phase==MatchPhase.Playing;
             ChargeFraction=charging ? Mathf.Clamp01(p.ChargeTime/(p.Preparation==ShotPreparation.Power ? p.Stats.PowerChargeSeconds : rules.ChargeSeconds)) : 0;
             chargeBase.enabled=chargeArc.enabled=charging;
             if(charging)

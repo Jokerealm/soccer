@@ -184,13 +184,13 @@ namespace Soccer.Runtime
         public void Event(MatchEvent e, PlayerState p)
         {
             if(!enabled) return;
-            if(e.Kind==MatchEventKind.Damage && e.TargetId==0)
+            if(e.Kind==MatchEventKind.Damage && e.TargetId==p.Id)
             { damageAge=0; DamageFeedbackCount++; }
-            else if(e.Kind==MatchEventKind.Stunned && e.TargetId==0) Message("被震晕",gold);
-            else if(e.Kind==MatchEventKind.Knockout) Message(e.TargetId==0 ? "被击倒 · 原地恢复" : "击倒对手",e.TargetId==0 ? red : gold);
-            else if(e.Kind==MatchEventKind.Respawn && e.ActorId==0)
+            else if(e.Kind==MatchEventKind.Stunned && e.TargetId==p.Id) Message("被震晕",gold);
+            else if(e.Kind==MatchEventKind.Knockout) Message(e.TargetId==p.Id ? "被击倒 · 原地恢复" : "击倒对手",e.TargetId==p.Id ? red : gold);
+            else if(e.Kind==MatchEventKind.Respawn && e.ActorId==p.Id)
             { portraitAge=0; portraitColor=mint; Emit(portrait.worldBound.center,mint,20); Message("恢复就绪",mint); }
-            else if(e.Kind==MatchEventKind.Catch && e.ActorId==0)
+            else if(e.Kind==MatchEventKind.Catch && e.ActorId==p.Id)
             { portraitAge=0; portraitColor=gold; Emit(portrait.worldBound.center,gold,6); }
             else if(e.Kind==MatchEventKind.Goal)
             { Message(e.TargetId==(int)Team.Cyan ? "青队进球！" : "橙队进球！",gold,2); Emit(root.Q("cyan-score").worldBound.center,gold,24); }

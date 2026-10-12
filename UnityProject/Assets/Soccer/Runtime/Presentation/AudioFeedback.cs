@@ -142,9 +142,10 @@ namespace Soccer.Runtime
             source.priority = 128 - priority; source.Play();
         }
 
+        public int LocalPlayerId { get; set; }
         public void PlayEvent(MatchEvent e, MatchState state)
         {
-            bool local = e.ActorId == 0 || e.TargetId == 0;
+            bool local = e.ActorId == LocalPlayerId || e.TargetId == LocalPlayerId;
             float gain = local ? 0.6f : 0.22f;
             int priority = local ? 80 : 20;
             float pan = e.ActorId >= 0 ? Mathf.Clamp(state.Players[e.ActorId].Position.X / 24, -0.5f, 0.5f) : 0;
@@ -169,7 +170,7 @@ namespace Soccer.Runtime
                 case MatchEventKind.Respawn: Play(Clip("ready"), gain * 0.5f, priority, pan); break;
                 case MatchEventKind.Support: Play(Clip("catch"), gain * 0.3f, priority, pan); break;
                 case MatchEventKind.Protected: if (local) Play(Clip("bounce"), 0.18f, 60); break;
-                case MatchEventKind.Miss: if (e.ActorId == 0) Play(Clip("tackle"), 0.1f, 30, pitch: 0.8f); break;
+                case MatchEventKind.Miss: if (e.ActorId == LocalPlayerId) Play(Clip("tackle"), 0.1f, 30, pitch: 0.8f); break;
                 case MatchEventKind.Bounce:
                     Play(Clip("bounce"), 0.12f + Mathf.Clamp01(e.Strength) * 0.17f, 10,
                         Mathf.Clamp(e.Position.X / 24, -0.5f, 0.5f)); break;
@@ -187,7 +188,7 @@ namespace Soccer.Runtime
                     Play(Clip(prefix + (e.Slot == SkillSlot.Q ? "-q" : "-e")), gain * 0.85f, priority, pan); break;
                 case MatchEventKind.Goal: PlayGoal(); break;
                 case MatchEventKind.ActionRejected:
-                    if (e.ActorId == 0 && Time.unscaledTime >= rejectAt)
+                    if (e.ActorId == LocalPlayerId && Time.unscaledTime >= rejectAt)
                     { rejectAt = Time.unscaledTime + 0.18f; Play(Clip("ui-reject"), 0.16f, 70); } break;
             }
         }
@@ -204,7 +205,7 @@ namespace Soccer.Runtime
             if (state.Phase == MatchPhase.Playing && previousPhase == MatchPhase.Countdown)
                 Play(Clip("whistle"), 0.32f, 90);
             previousPhase = state.Phase;
-            var p = state.Players[0];
+            var p = state.Players[LocalPlayerId];
             if (previousAmmo >= 0 && p.Ammo > previousAmmo && !p.IsDead && !p.RespawnedThisTick)
                 Play(Clip("ready"), 0.06f, 30);
             previousAmmo = p.Ammo;

@@ -13,7 +13,8 @@ namespace Soccer.Runtime
         public StyleSheet Styles;
         private VisualElement root;
         private AppController app;
-        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page" };
+        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page" };
+        private NetworkUI network;
         private readonly string[] scoreFields = { "stat-goals", "stat-steals", "stat-kicks", "stat-passes" };
         public VisualElement Root => root;
         private CharacterId? hudCharacter;
@@ -49,6 +50,8 @@ namespace Soccer.Runtime
             BindButton("mode-back", app.GoHome);
             BindButton("internet-route", () => app.SelectConnection(ConnectionRoute.Internet));
             BindButton("lan-route", () => app.SelectConnection(ConnectionRoute.LAN));
+            BindButton("online-play", () => app.OpenNetwork(true));
+            BindButton("join-room", () => app.OpenNetwork(false));
             BindButton("mode-practice", () => app.OpenSelection(MatchMode.BotMatch));
             BindButton("mode-training", () => app.OpenSelection(MatchMode.Training));
             BindButton("settings-back", app.GoHome);
@@ -106,6 +109,7 @@ namespace Soccer.Runtime
             skillHelp=new SkillTooltip(root,DescribeSkill);
             ballLocator=new BallLocator(root);
             MiniMap=new MatchMiniMap(root);
+            network=new NetworkUI(app,root);
             SetFullHud(LoadFullHudPreference(), false);
             RefreshAudioSettings();
             RefreshSelection();
@@ -132,14 +136,16 @@ namespace Soccer.Runtime
             root.Q("lan-route").EnableInClassList("route-selected", app.Route == ConnectionRoute.LAN);
             Text("connection-heading", app.Route == ConnectionRoute.Internet ? "互联网对战" : "局域网房间");
             Text("connection-copy", app.Route == ConnectionRoute.Internet
-                ? "Steam 联机尚未开放。开放后，你可以与好友组队，或加入在线比赛。"
-                : "局域网联机尚未开放。开放后，你可以在同一网络创建房间，邀请朋友加入。");
-            root.Q<Button>("online-play").text = app.Route == ConnectionRoute.Internet ? "在线匹配 · 即将开放" : "创建房间 · 即将开放";
-            root.Q<Button>("online-play").SetEnabled(false);
-            root.Q<Button>("join-room").SetEnabled(false);
-            Visible(root.Q("join-room"), app.Route == ConnectionRoute.LAN);
+                ? "创建公网直连房间，自选是否启用密码；朋友使用房主地址加入。"
+                : "同一网络自动发现房间，也支持输入房主地址加入。最多 6 人，空位由 AI 补齐。");
+            bool networkAvailable=app.SelectedPlaylist==GamePlaylist.Normal;
+            root.Q<Button>("online-play").text = networkAvailable ? "创建房间" : "联机规则 · 待开放";
+            root.Q<Button>("join-room").text = "加入房间";
+            root.Q<Button>("online-play").SetEnabled(networkAvailable);
+            root.Q<Button>("join-room").SetEnabled(networkAvailable);
+            Visible(root.Q("join-room"), true);
             Visible(root.Q("mode-practice"), app.SelectedPlaylist == GamePlaylist.Normal);
-            Text("mode-availability", app.SelectedPlaylist == GamePlaylist.Normal ? "现在可玩：本地 3v3 AI 对练" : "玩法尚未开放 · 可以先进入训练场");
+            Text("mode-availability", app.SelectedPlaylist == GamePlaylist.Normal ? "可玩：联机房间 / 本地 AI 对练" : "玩法尚未开放 · 可以先进入训练场");
         }
 
         private void BindButton(string name, Action action)
@@ -158,6 +164,7 @@ namespace Soccer.Runtime
         }
 
         private static void Visible(VisualElement element, bool show) => element.EnableInClassList("hidden", !show);
+        public void RefreshNetwork() => network?.Refresh();
         public void SetFullHud(bool enabled, bool save = true)
         {
             skillHelp?.Hide();
@@ -201,6 +208,7 @@ namespace Soccer.Runtime
             ShowPause(false);
             if (page == AppPage.CharacterSelect) RefreshSelection();
             if (page == AppPage.ModeDetails) RefreshModeDetails();
+            if (page == AppPage.NetworkMenu || page == AppPage.RoomLobby) RefreshNetwork();
             Visible(root.Q("menu-backdrop"), page != AppPage.Match && page != AppPage.Loading);
             if (page == AppPage.Home) root.schedule.Execute(() => root.Q<Button>("normal-mode").Focus());
             if (page == AppPage.Match)
@@ -233,6 +241,12 @@ namespace Soccer.Runtime
 
         public void ShowPause(bool paused)
         {
+            bool online=app.IsNetworkMatch;
+            Text("pause-title",online ? "联机菜单" : "比赛已暂停");
+            Text("pause-copy",online ? "比赛继续进行，关闭菜单后恢复操作。" : "准备好了，就继续回到球场。");
+            root.Q<Button>("pause-button").text=online ? "菜单  Esc" : "暂停  Esc";
+            root.Q<Button>("restart-button").text=online ? "返回房间" : "重新开始";
+            root.Q<Button>("restart-button").SetEnabled(!online || app.Room.IsHost);
             skillHelp?.Hide();
             Visible(root.Q("pause-overlay"), paused);
             if (!paused && app.Page == AppPage.Match) root.schedule.Execute(() => root.Focus());
@@ -241,17 +255,17 @@ namespace Soccer.Runtime
         public void RefreshMatch()
         {
             var state = app.Simulation.State;
-            var p = state.Players[0];
+            var p = state.Players[app.LocalPlayerId];
             var d = app.SelectedDefinition;
             bool training = state.Mode == MatchMode.Training;
-            Text("mode-label", training ? "训练场" : state.Overtime ? "AI 对练 · 金球加时" : $"3 v 3 · {(state.Half==1 ? "上半场" : "下半场")}");
+            Text("mode-label", training ? "训练场" : app.IsNetworkMatch ? $"{(app.Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.LAN ? "局域网" : "互联网")} · {(state.Overtime ? "加时" : state.Half==1 ? "上半场" : "下半场")}" : state.Overtime ? "AI 对练 · 金球加时" : $"3 v 3 · {(state.Half==1 ? "上半场" : "下半场")}");
             Text("cyan-score", state.CyanScore.ToString());
             Text("amber-score", state.AmberScore.ToString());
             Text("clock-label", training ? "练习" : Clock(state.PeriodRemainingSeconds(app.Simulation.Rules)));
-            Text("feedback-label", state.IsOpeningWarmup ? "右键移动热身 · Shift 追加路线 · S 停止 · 开球后可接球" : state.Phase == MatchPhase.SetPiece ? $"{state.RestartName} · {(state.RestartTeam == Team.Cyan ? "青队" : "橙队")}主罚 · {(state.PhaseRemaining > 0 ? "准备中" : state.RestartPlayerId == 0 ? "左键瞄准踢出" : "等待对方开球")} · 对手退开 {app.Simulation.Rules.SetPieceDistance:0.#} 米" : app.Feedback);
+            Text("feedback-label", state.IsOpeningWarmup ? "右键移动热身 · Shift 追加路线 · S 停止 · 开球后可接球" : state.Phase == MatchPhase.SetPiece ? $"{state.RestartName} · {(state.RestartTeam == Team.Cyan ? "青队" : "橙队")}主罚 · {(state.PhaseRemaining > 0 ? "准备中" : state.RestartPlayerId == app.LocalPlayerId ? "左键瞄准踢出" : "等待对方开球")} · 对手退开 {app.Simulation.Rules.SetPieceDistance:0.#} 米" : app.Feedback);
             Text("local-name", $"{p.Stats.Name} · 你");
             string possession = state.IsOpeningWarmup ? "热身中" : p.IsDead ? $"原地复活 {p.RespawnRemaining:0.0}s" : p.Stun > 0 ? $"眩晕 {p.Stun:0.0}s" :
-                state.Ball.OwnerId == 0 ? "持球中" : "无球";
+                state.Ball.OwnerId == app.LocalPlayerId ? "持球中" : "无球";
             if (p.Preparation != ShotPreparation.None) possession += p.Preparation == ShotPreparation.Curve ? " · 弧线准备" : " · 重炮准备";
             Text("possession-label", possession);
             Text("ball-flight-status", state.Ball.VerticalVelocity>0 ? "技能高球上升 · 注意落点" : "技能高球下落 · 碰撞足球接球");
@@ -321,7 +335,7 @@ namespace Soccer.Runtime
             if (state.Phase == MatchPhase.GoalCelebration) Text("phase-label", "进球！");
             else if (state.Phase == MatchPhase.SetPiece) Text("phase-label", state.RestartName);
             else if (p.IsDead) Text("phase-label", $"原地复活 {p.RespawnRemaining:0.0}s");
-            Motion.Observe(p, state.Ball.OwnerId == 0, phaseVisible ? root.Q<Label>("phase-label").text : "");
+            Motion.Observe(p, state.Ball.OwnerId == app.LocalPlayerId, phaseVisible ? root.Q<Label>("phase-label").text : "");
             Motion.ObserveCountdown(state);
             skillHelp?.Refresh();
         }
@@ -329,8 +343,8 @@ namespace Soccer.Runtime
         public void PlayEvent(MatchEvent e)
         {
             Motion?.SetEnabled(app.View.FeedbackEnabled);
-            Motion?.Event(e,app.Simulation.State.Players[0]);
-            if (e.ActorId != 0) return;
+            Motion?.Event(e,app.Simulation.State.Players[app.LocalPlayerId]);
+            if (e.ActorId != app.LocalPlayerId) return;
             string name = e.Kind == MatchEventKind.Kick ? "kick-tile" : e.Kind == MatchEventKind.Weapon ? "weapon-tile" : e.Kind == MatchEventKind.Tackle ? "tackle-tile" :
                 e.Kind == MatchEventKind.Skill || e.Kind == MatchEventKind.ActionRejected
                     ? e.Slot == SkillSlot.Q ? "q-tile" : e.Slot == SkillSlot.E ? "e-tile" : e.Slot == SkillSlot.Special ? "g-tile" : e.Slot == SkillSlot.Kick ? "kick-tile" : "tackle-tile" : null;
@@ -345,11 +359,13 @@ namespace Soccer.Runtime
         private void RefreshResults()
         {
             var state = app.Simulation.State;
-            var p = state.Players[0];
+            var p = state.Players[app.LocalPlayerId];
             bool training = state.Mode == MatchMode.Training;
             Text("result-title", training ? "训练完成" : state.CyanScore > state.AmberScore ? "青队获胜" : state.CyanScore < state.AmberScore ? "橙队获胜" : "双方平局");
             Text("result-score", $"{state.CyanScore}  :  {state.AmberScore}");
-            Text("result-subtitle", $"{p.Stats.Name} · {(training ? "训练场" : "AI 对练")} · 有效时间 {Clock(state.ElapsedSeconds)}");
+            root.Q<Button>("play-again").text=app.Room!=null ? "返回房间" : "再来一场";
+            root.Q<Button>("play-again").SetEnabled(app.Room==null || app.Room.IsHost);
+            Text("result-subtitle", $"{p.Stats.Name} · {(training ? "训练场" : app.Room != null ? "联机比赛" : "AI 对练")} · 有效时间 {Clock(state.ElapsedSeconds)}");
             Text("combat-summary", $"击倒 {p.Knockouts}  ·  被击倒 {p.Deaths}  ·  伤害 {p.DamageDealt:0}  ·  治疗 {p.HealingDone:0}");
             int[] scores = { p.Goals, p.Steals, p.Kicks, p.Passes };
             for (int i = 0; i < scoreFields.Length; i++) Text(scoreFields[i], scores[i].ToString());
@@ -369,7 +385,7 @@ namespace Soccer.Runtime
         private SkillHelp DescribeSkill(string id)
         {
             if(app.Simulation==null) return default;
-            var state=app.Simulation.State; var p=state.Players[0]; var d=app.SelectedDefinition;
+            var state=app.Simulation.State; var p=state.Players[app.LocalPlayerId]; var d=app.SelectedDefinition;
             var kit=p.Stats.Loadout; var rules=app.Simulation.Rules;
             var help=new SkillHelp(); float remaining=0,energy=0,health=0;
             switch(id)
@@ -389,7 +405,7 @@ namespace Soccer.Runtime
                     help.Title="左键  /  踢球"; help.Body="持球时按住左键蓄力，松开传球或射门。鼠标决定方向，C 可取消蓄力。";
                     remaining=p.KickCooldown; help.Meta=$"冷却 {rules.KickCooldown:0.#} 秒 · 不耗生命或能量"; break;
                 case "tackle":
-                    help.Title="空格  /  铲球"; help.Body="推开角色腾出空间，不直接转移球权。推队友或从背后推时球随人移动；正面／侧面推敌人时球留原地，碰撞球接球。推力越大生命消耗越低。";
+                    help.Title="空格  /  铲球"; help.Body="接触敌人脚前球即可夺球，接球后有 0.25 秒碰撞保护。铲球推开角色腾出空间；队友／背后推带球移动，正面／侧面推敌人时球留原地。推力越大生命消耗越低。";
                     health=rules.TackleHealthCost(p.Stats); remaining=p.TackleCooldown;
                     help.Meta=$"冷却 {rules.TackleCooldown:0.#} 秒 · {health:0.#} 生命"; break;
                 default:
@@ -402,10 +418,10 @@ namespace Soccer.Runtime
                 p.Health<=health ? "生命不足" : p.Energy<energy ? "能量不足" : "准备就绪";
             if(!state.IsOpeningWarmup && !p.IsDead && remaining<=0 && p.Health>health && p.Energy>=energy)
             {
-                if(id=="kick" && state.Ball.OwnerId!=0) help.State="接到足球后即可蓄力";
+                if(id=="kick" && state.Ball.OwnerId!=app.LocalPlayerId) help.State="接到足球后即可蓄力";
                 if(id=="g")
                 {
-                    bool bomb=false; foreach(var item in state.Bombs) if(item.ActorId==0) bomb=true;
+                    bool bomb=false; foreach(var item in state.Bombs) if(item.ActorId==app.LocalPlayerId) bomb=true;
                     if(!bomb) help.State="先使用 E 放置遥控炸弹";
                 }
             }
@@ -420,8 +436,8 @@ namespace Soccer.Runtime
             if(match && app.Simulation!=null)
             {
                 Motion?.PositionCountdown(app.WorldCamera,app.Simulation.State);
-                MiniMap?.Refresh(app.WorldCamera,app.Simulation.State,app.Simulation.Rules);
-                ballLocator?.Refresh(app.WorldCamera,app.Simulation.State,MiniMap?.BoundsInRoot ?? default);
+                MiniMap?.Refresh(app.WorldCamera,app.Simulation.State,app.Simulation.Rules,app.LocalPlayerId);
+                ballLocator?.Refresh(app.WorldCamera,app.Simulation.State,MiniMap?.BoundsInRoot ?? default,app.LocalPlayerId);
             }
             else { ballLocator?.Hide(); MiniMap?.Hide(); }
         }
@@ -433,7 +449,7 @@ namespace Soccer.Runtime
             var picked = root.panel.Pick(point);
             while (picked != null)
             {
-                if (picked is Button || picked is Slider || picked is Toggle || picked.ClassListContains("skill-tile")) return true;
+                if (picked is Button || picked is Slider || picked is Toggle || picked is TextField || picked is DropdownField || picked.ClassListContains("skill-tile")) return true;
                 picked = picked.parent;
             }
             return false;

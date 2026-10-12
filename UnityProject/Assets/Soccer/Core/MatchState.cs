@@ -131,6 +131,7 @@ namespace Soccer.Core
         public int RestartKickerId { get; internal set; } = -1;
         public RestartKind ReleasedRestart { get; internal set; }
         public float SelfCatchRemaining { get; internal set; }
+        public float PossessionContactRemaining { get; internal set; }
         public float SinceKick { get; internal set; }
         public float CurveRemaining { get; internal set; }
         public float CurveRadiansPerSecond { get; internal set; }

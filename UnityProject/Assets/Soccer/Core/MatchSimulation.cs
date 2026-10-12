@@ -17,7 +17,7 @@ namespace Soccer.Core
         private readonly StarStrikerSkills starSkills;
         private readonly PlayerActionBuffer[] actionBuffers;
 
-        public MatchSimulation(MatchRules rules, CharacterStats[] roster, CharacterId selected, MatchMode mode)
+        public MatchSimulation(MatchRules rules, CharacterStats[] roster, CharacterId selected, MatchMode mode, CharacterId[] lineup = null)
         {
             rules.Validate();
             if (roster == null || roster.Length < 2 || roster.Length > 6) throw new ArgumentException("原型需要 2 至 6 名角色的配置。");
@@ -54,6 +54,14 @@ namespace Soccer.Core
             State.PhaseRemaining = rules.InitialCountdown;
             var local = Array.Find(roster, c => c.Id == selected);
             if (local == null) throw new ArgumentException("选中的角色不在配置中。");
+            if (lineup != null)
+            {
+                if (mode != MatchMode.BotMatch || lineup.Length != 6) throw new ArgumentException("联机阵容需要六个球员槽位。");
+                for (int i = 0; i < lineup.Length; i++)
+                    AddPlayer(Array.Find(roster, c => c.Id == lineup[i]) ?? throw new ArgumentException("联机角色配置缺失。"), i < 3 ? Team.Cyan : Team.Amber);
+            }
+            else
+            {
             AddPlayer(local, Team.Cyan);
             if (mode == MatchMode.BotMatch)
             {
@@ -62,6 +70,7 @@ namespace Soccer.Core
                 for (int i = 0; i < 3; i++) AddPlayer(State.Players[i].Stats, Team.Amber);
             }
             else AddPlayer(Array.Find(roster, c => c.Id == CharacterId.IronGuard) ?? Array.Find(roster, c => c.Id != selected), Team.Amber);
+            }
             navigation = new NavigationSystem(this);
             Restarts = new RestartSystem(this);
             movement = new MovementSystem(this);
@@ -294,15 +303,21 @@ namespace Soccer.Core
             => combat.ApplyHit(actor, target, damage, stun, slot);
 
         internal bool TryAcquireBallOnContact(PlayerState p, Vec2 playerCenterAtContact)
+            => TryAcquireBallOnContact(p, playerCenterAtContact, State.Ball.Position);
+
+        internal bool TryAcquireBallOnContact(PlayerState p, Vec2 playerCenterAtContact, Vec2 ballCenterAtContact)
         {
             var b = State.Ball;
             float radius = p.Stats.Radius + Rules.BallRadius;
-            if (State.Phase != MatchPhase.Playing || b.OwnerId >= 0 || !ball.CanCatch(p) ||
-                Vec2.Distance(playerCenterAtContact, b.Position) > radius + .0001f) return false;
+            if (State.Phase != MatchPhase.Playing || !ball.CanCatch(p) ||
+                Vec2.Distance(playerCenterAtContact, ballCenterAtContact) > radius + .0001f) return false;
+            var owner = State.Owner;
+            if (owner != null && (owner.Team == p.Team || owner.FullProtection > 0 || b.PossessionContactRemaining > .000001f)) return false;
+            b.Position = ballCenterAtContact;
             return AssignBall(p, true);
         }
 
-        // 显式训练／开球准备允许分配球；比赛中的自由球仅能由上述碰撞入口接收。
+        // 显式训练／开球准备允许分配球；比赛中的自由球与敌方持球都只能由碰撞入口接收。
         internal void GiveBallForSetup(PlayerState p) => AssignBall(p, false);
 
         internal void DropBallFromPush(PlayerState owner, PlayerState actor)
@@ -314,6 +329,7 @@ namespace Soccer.Core
             b.Velocity = Vec2.Zero;
             b.PreviousPosition = b.Position; // 保留接触时球所在的位置，不移动到推者或原持球者中心。
             b.Height = b.PreviousHeight = b.VerticalVelocity = b.CurveRemaining = b.SelfCatchRemaining = 0;
+            b.PossessionContactRemaining = 0;
             b.FlightMode = BallFlightMode.Ground;
             // 自由球从本次推的接触时刻起存在；不得使用此前的行进路径远程获得它。
             foreach (var p in State.Players) p.ContactStart = p.Position;
@@ -334,10 +350,12 @@ namespace Soccer.Core
                     passer.RelayCooldown = passer.Stats.RelayCooldown;
                 }
             }
-            int dispossessed = b.DroppedOwnerId;
+            int dispossessed = b.OwnerId >= 0 ? b.OwnerId : b.DroppedOwnerId;
             b.DroppedOwnerId = -1;
             b.LastKickerId = -1; // 每脚传球只计一次，不把后续抢断算作传球。
             b.OwnerId = p.Id;
+            b.LastTouchId = p.Id;
+            b.PossessionContactRemaining = Rules.PossessionContactLock;
             b.Velocity = Vec2.Zero;
             b.Height = b.PreviousHeight = b.VerticalVelocity = 0;
             b.FlightMode = BallFlightMode.Ground;
@@ -391,6 +409,13 @@ namespace Soccer.Core
             }
         }
 
+        public void CancelPlayerInputs(int playerId)
+        {
+            if (playerId < 0 || playerId >= State.Players.Count) return;
+            var p = State.Players[playerId]; navigation.Clear(p); actionBuffers[playerId].Clear();
+            CancelCharge(p); p.PreviewingE = p.AttackPending = false;
+        }
+
         private void ResetPositions(bool kickoff,bool opening=false)
         {
             navigation.ClearAll();
@@ -423,6 +448,7 @@ namespace Soccer.Core
             State.Ball.OwnerId = State.Ball.LastKickerId = State.Ball.LastTouchId = State.Ball.RestartKickerId = State.Ball.DroppedOwnerId = -1;
             State.Ball.ReleasedRestart = RestartKind.None;
             State.Ball.SelfCatchRemaining = State.Ball.CurveRemaining = 0;
+            State.Ball.PossessionContactRemaining = 0;
             State.Ball.Position = State.Ball.PreviousPosition = Vec2.Zero;
             State.Ball.Height = State.Ball.PreviousHeight = State.Ball.VerticalVelocity = 0;
             State.Ball.FlightMode = BallFlightMode.Ground;

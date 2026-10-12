@@ -1,15 +1,19 @@
 # Windows 试玩与开发
 
-当前版本 **0.16.0**，Windows **64 位**，使用团结 **1.10.4 / 2022.3.62t16** 构建。仓库：https://github.com/Jokerealm/soccer。
+当前版本 **0.17.1**，Windows **64 位**，使用团结 **1.10.4 / 2022.3.62t16** 构建。仓库：https://github.com/Jokerealm/soccer。
 
 ## 直接试玩
 
-1. 打开 [Releases](https://github.com/Jokerealm/soccer/releases)，下载 `SkillSoccer-0.16.0-Windows-x64.zip`。GitHub 自动生成的 `Source code (zip)` 是源码，不包含可执行游戏。
-2. 在 Windows 上将整个压缩包解压，例如 `D:\Games\SkillSoccer-0.16.0-Windows-x64\`。
+1. 从 [0.17.1 发布页](https://github.com/Jokerealm/soccer/releases/tag/v0.17.1) 下载 `SkillSoccer-0.17.1-Windows-x64.zip`，包含联机、调试帐号与持球碰撞夺球。GitHub 自动生成的 `Source code (zip)` 是源码，不包含可执行游戏。
+2. 在 Windows 上将整个压缩包解压，例如 `D:\Games\SkillSoccer-0.17.1-Windows-x64\`。
 3. 双击其中的 `SkillSoccer.exe`。保留同目录的 `SkillSoccer_Data`、`MonoBleedingEdge`、`TuanjiePlayer.dll` 和 `TuanjieCrashHandler64.exe`；不能只复制 exe，也不要在压缩包内部直接运行。
 4. 首页选择“训练场”熟悉操作，或“AI 对练”进行本地 3v3。
 
-此方式无需安装 Git、团结引擎或 .NET SDK。构建和 macOS 客户端检查已通过，Windows 实机启动与键鼠手感等待本次试玩验证。联网、房间、排位和 Steam 尚未接入。
+此方式无需安装 Git、团结引擎或 .NET SDK。构建和 macOS 客户端检查通过；用户已反馈旧版能在 Windows 试玩，新版的 Windows 实机手感仍需复核。普通模式的局域网和公网地址直连房间已接入，排位匹配、Steam 与云中继尚未接入。
+
+互联网先登录调试帐号 **a/a** 或 **b/b**，帐号密码与房间密码分别填写。公网实测步骤见 [调试帐号与 Windows 联机验证](调试帐号与Windows联机验证0.17.1.md)。
+
+联机：**普通模式 → 局域网／互联网 → 创建房间／加入房间**。局域网可自动发现，互联网使用房主公网地址；互联网建房可设置密码。选择队伍和角色，客人准备后由房主开始。最多 6 人，空位由 AI 补齐。Esc 只打开本机菜单，联机比赛继续进行。网络与防火墙配置见 [联机说明](局域网与互联网联机0.17.0.md)。
 
 | 操作 | 功能 |
 | --- | --- |
@@ -27,7 +31,7 @@
 | 训练 R / F / T | 重置／自己持球／目标持球 |
 | 训练 F1 / F2 / F3 | 显示推抢角度／角球练习／任意球练习 |
 
-接球必须实际接触足球。推队友或从敌人背后推，球随持球者移动；从敌人正面或侧面推，球留原地，之后接触球才能获得球权。整球越线判出界；界外球、角球、球门球和任意球已实现，点球暂不做。
+接球必须实际接触足球，敌方持球时碰到脚前球也可夺球，无需先按空格；接球后 0.25 秒内阻止自动再次易手。普通队友不会抢走持球队友的球，持球移速为基础速度的 80%。推队友或从敌人背后推，球随持球者移动；从敌人正面或侧面推，球留原地，之后接触球才能获得球权。整球越线判出界；界外球、角球、球门球和任意球已实现，点球暂不做。
 
 ## 克隆源码并在编辑器中运行
 
@@ -86,7 +90,7 @@ dotnet run --project .\tests\Soccer.Core.Tests -- "$PWD\reports\windows-core"
 .\SkillSoccer.exe --soccer-input-probe -logFile "$PWD\input.log"
 ```
 
-自动执行 0.16 接球和推抢专项检查：
+自动执行 0.16.1 持球夺球、接球保护和推抢专项检查：
 
 ```powershell
 .\SkillSoccer.exe --soccer-smoke --soccer-contact-quick --soccer-report-dir "$PWD\Smoke" -logFile "$PWD\Smoke.log"

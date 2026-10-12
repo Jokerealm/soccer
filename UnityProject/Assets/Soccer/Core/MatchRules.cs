@@ -6,7 +6,7 @@ namespace Soccer.Core
     [Serializable]
     public sealed class MatchRules
     {
-        public string RuleVersion = "star-strikers-prototype-0.16";
+        public string RuleVersion = "star-strikers-prototype-0.17.1";
         public bool EnableCombat = true;
         public float RespawnSeconds = 5;
         public float RespawnProtection = 1;
@@ -36,7 +36,7 @@ namespace Soccer.Core
         public float RestartCountdown = 2;
         public float GoalCelebration = 2;
         public float KickoffProtection = 1;
-        public float PossessionSpeed = 0.92f;
+        public float PossessionSpeed = 0.8f;
         public float ChargeMoveSpeed = 0.8f;
         public float FootGap = 0.05f;
         public float BallDeceleration = 8;
@@ -48,6 +48,8 @@ namespace Soccer.Core
         public float KickCooldown = 6;
         public float ActionBufferSeconds = 0.12f;
         public float SelfCatchLock = 0.25f;
+        // 地图 Untakable 的接球保护；只阻止自动易手，不阻止推开后落球。
+        public float PossessionContactLock = 0.25f;
         public float BodyBounce = 0.45f;
         public float WallBounce = 0.75f;
         public float MaxBallSpeed = 24;
@@ -89,7 +91,9 @@ namespace Soccer.Core
                 throw new ArgumentException("比赛配置包含非法尺寸、时间或角度。请检查 PrototypeRules。");
             if (!Geometry.IsFinite(KickCooldown) || KickCooldown <= 0 ||
                 !Geometry.IsFinite(TackleCooldown) || TackleCooldown <= 0 ||
-                !Geometry.IsFinite(TackleHealthCostFactor) || TackleHealthCostFactor < 0)
+                !Geometry.IsFinite(TackleHealthCostFactor) || TackleHealthCostFactor < 0 ||
+                !Geometry.IsFinite(PossessionContactLock) || PossessionContactLock < 0 ||
+                !Geometry.IsFinite(PossessionSpeed) || PossessionSpeed <= 0 || PossessionSpeed > 1)
                 throw new ArgumentException("踢球、铲球冷却或生命消耗配置无效。");
             foreach (float value in new[] { SetPiecePreparation, SetPieceDistance, NavigationClearance, BallRadius })
                 if (!Geometry.IsFinite(value) || value <= 0) throw new ArgumentException("定位球或寻路配置无效。");

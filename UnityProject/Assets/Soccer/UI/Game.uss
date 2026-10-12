@@ -290,3 +290,35 @@ Button.character-card.selected { background-color: rgb(207,234,223); border-widt
 .narrow-front-end .detail-player-art { width: 130px; height: 130px; opacity: 0.7; }
 
 /* Shared actions expose separate cooldowns and health costs. */
+
+/* Network setup and six-slot lobby use the existing light front-end panels. */
+.network-page { margin: 28px 60px; padding: 26px 32px; }
+.network-page .page-title { font-size: 32px; }
+.network-scroll { flex-grow: 1; }
+.network-tabs { margin-bottom: 14px; }
+.network-tabs Button { min-width: 150px; margin-right: 12px; }
+.network-profile { margin-bottom: 14px; flex-wrap: wrap; }
+.network-profile > * { flex-grow: 1; min-width: 200px; margin-right: 16px; }
+.network-card { background-color: rgba(220,231,223,.75); border-radius: 14px; padding: 18px 22px; margin-bottom: 14px; }
+.network-card .skill-heading { margin-top: 0; }
+.network-page .unity-base-field { margin: 6px 0 12px; min-height: 36px; font-size: 17px; }
+.network-page .unity-base-field__label { min-width: 130px; max-width: 290px; white-space: normal; color: rgb(39,64,70); }
+.network-page .unity-base-field__input { min-height: 34px; background-color: rgb(251,252,246); color: rgb(31,47,57); border-radius: 6px; padding: 5px 10px; }
+.network-page .unity-text-field__input { color: rgb(31,47,57); }
+.network-page Button { min-height: 42px; font-size: 17px; }
+.network-card Button.primary { margin-top: 10px; align-self: flex-end; min-width: 240px; }
+.network-status { color: rgb(34,109,109); white-space: normal; margin-top: 10px; margin-bottom: 4px; font-size: 16px; min-height: 24px; }
+.network-teams > .network-card { width: 48%; margin-right: 16px; }
+.network-member { padding: 12px 10px; margin: 4px 0; border-radius: 9px; background-color: rgba(250,252,245,.85); min-height: 64px; }
+.network-member.local-member { border-width: 2px; border-color: rgb(194,147,67); }
+.network-member-name { font-size: 18px; color: rgb(32,54,64); }
+.network-member-detail { color: rgb(75,100,108); font-size: 15px; margin-top: 4px; }
+.network-footer { margin-top: 12px; align-items: center; }
+.network-footer Button { min-width: 190px; margin-left: 16px; }
+.discovery-room { margin-top: 8px; justify-content: space-between; align-items: center; padding: 10px; background-color: rgba(248,250,241,.9); border-radius: 8px; }
+.discovery-room Label { font-size: 16px; color: rgb(34,59,65); white-space: normal; }
+.compact-front-end .network-page { margin-top: 14px; margin-bottom: 14px; padding-top: 18px; padding-bottom: 18px; }
+.compact-front-end .network-page .page-heading { margin-bottom: 6px; }
+.compact-front-end .network-page .page-title { font-size: 26px; }
+.compact-front-end .network-card { padding-top: 12px; padding-bottom: 12px; }
+.narrow-front-end .network-page { margin-left: 28px; margin-right: 28px; }

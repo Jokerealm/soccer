@@ -65,7 +65,7 @@ namespace Soccer.Core
                         float d = Vec2.Distance(teammate.Position, state.Ball.Position);
                         if (d < closest) { closest = d; closestId = teammate.Id; }
                     }
-                    if (closestId == p.Id) target = state.Owner != null && state.Owner.Team != p.Team ? PushApproach(p, state.Owner) : state.Ball.Position;
+                    if (closestId == p.Id) target = state.Ball.Position;
                     else
                     {
                         bool support = state.Owner != null && state.Owner.Team == p.Team;
@@ -77,6 +77,7 @@ namespace Soccer.Core
                     command.Aim = (state.Ball.Position - p.Position).Normalized;
                     if (state.Owner != null && state.Owner.Team != p.Team &&
                         Vec2.Distance(state.Owner.Position, p.Position) < 2.4f && p.TackleCooldown <= 0 &&
+                        Vec2.Distance(p.Position,state.Ball.Position) > p.Stats.Radius + rules.BallRadius + .12f &&
                         !TackleSystem.IsRearContact(state.Owner,state.Owner.Position-p.Position,rules))
                     { command.TacklePressed = true; command.Aim = (state.Owner.Position - p.Position).Normalized; }
                 }
@@ -154,11 +155,12 @@ namespace Soccer.Core
                         : new Vec2(-side * (rules.FieldWidth / 2 - 5), p.Id % 2 == 0 ? 3 : -3);
                     if (!teamHasBall && enemy != null && enemyDistance < 4 && closest != p.Id)
                         target = enemy.Position - (enemy.Position - p.Position).Normalized * Math.Min(3, kit.WeaponRange * 0.6f);
-                    if (closest == p.Id && state.Owner != null && !teamHasBall) target = PushApproach(p,state.Owner);
+                    if (closest == p.Id && state.Owner != null && !teamHasBall) target = state.Ball.Position;
                     var offset = target - p.Position;
                     command.Move = offset.Length > 0.4f ? offset.Normalized : Vec2.Zero;
                     command.Aim = (state.Ball.Position - p.Position).Normalized;
                     if (state.Owner != null && state.Owner.Team != p.Team && best < 2.4f && closest == p.Id && p.TackleCooldown <= 0 &&
+                        Vec2.Distance(p.Position,state.Ball.Position) > p.Stats.Radius + rules.BallRadius + .12f &&
                         p.Health > rules.TackleHealthCost(p.Stats) + 1 &&
                         !TackleSystem.IsRearContact(state.Owner,state.Owner.Position-p.Position,rules))
                     { command.TacklePressed = true; command.Aim = (state.Owner.Position - p.Position).Normalized; }
@@ -211,14 +213,6 @@ namespace Soccer.Core
             { command.KickReleased = true; command.KickHeld = false; charging = false; }
             command.Navigate = true;
             return command;
-        }
-
-        private Vec2 PushApproach(PlayerState player, PlayerState carrier)
-        {
-            if (!TackleSystem.IsRearContact(carrier,carrier.Position-player.Position,rules)) return carrier.Position;
-            var tangent = new Vec2(-carrier.Facing.Y,carrier.Facing.X);
-            float side = player.Id % 2 == 0 ? 1 : -1;
-            return carrier.Position + tangent * (side * (player.Stats.Radius + carrier.Stats.Radius + .35f)) + carrier.Facing * .3f;
         }
 
         private static RemoteBomb FindBomb(MatchState state, int actorId)
