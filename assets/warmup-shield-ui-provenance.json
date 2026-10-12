@@ -1,0 +1,59 @@
+{
+  "version": "0.9.2",
+  "date": "2026-10-10",
+  "source": "Original Core rules, transparent 3D shield shader and UI Toolkit skill descriptions; no new external art assets.",
+  "files": [
+    {
+      "path": "UnityProject/Assets/Soccer/Core/MatchState.cs",
+      "sha256": "7ae7468aa875e8fca294d5d481b77d612842a2d40857897c8e3d7420a5c8312f"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Core/MatchRules.cs",
+      "sha256": "f9051e65c410266d20650b7ae39c487655b3be8077e9199e6ae39a7f0d5ec7c3"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Core/MatchSimulation.cs",
+      "sha256": "bcd78e207e99d3ae2ac490199d36ef037d61acefa5583c1bd6f7611ca4c60488"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Core/MovementSystem.cs",
+      "sha256": "974d6981ecc86f98ce90a5d40f6b04747a0cdfc8392ad2026ffe98233a5075c3"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Core/BotCommandSource.cs",
+      "sha256": "5ce3903cea578fdf7af5033502087e0d14ae31389df199e0fae813c8a0ff8272"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Application/AppController.cs",
+      "sha256": "6e4533f994492f9494d9056bc0e819a198c14db446a325171dbb2beb6a03cbf8"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Input/KeyboardMouseInput.cs",
+      "sha256": "c98741e482b19753e759404c6086a06c866603d6cc46e59de93338b04adc31c3"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/OpeningShieldView.cs",
+      "sha256": "b3adbfedeaadc0580020b727ea995be132ed1626462477fbf839bcba5edb5edb"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/OpeningShield.shader",
+      "sha256": "b71f435d80a99c3a127bfec36484b7b0a193cc491ab8ca5048ce38298963c77b"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/SkillTooltip.cs",
+      "sha256": "ce3f21182e81b8eaa5a68ec8427c447304108f63b15214cba581c75a7c0f02a0"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs",
+      "sha256": "2c43e1e13bcbae696fb541438e2f6d6fc3055b5aae234d67d9960fc24e6f81d3"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/CountdownPresentation.cs",
+      "sha256": "639674ed69930a6d1b8cb856046b3439b8f4971aaf5e095abdfe1df495335277"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/UI/Game.uss",
+      "sha256": "79f6a44776b2a9d4e1072f2318be27aea090c297551156943d13f5f3a65eb4e5"
+    }
+  ]
+}

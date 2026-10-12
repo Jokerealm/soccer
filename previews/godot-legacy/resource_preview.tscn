@@ -1,0 +1,305 @@
+[gd_scene load_steps=22 format=3]
+
+[ext_resource type="FontFile" path="res://assets/third_party/noto-sans-cjk/NotoSansCJKsc-Regular.otf" id="font"]
+[ext_resource type="Texture2D" path="res://assets/original/arenas/standard-floor-v1.png" id="floor"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/arena-lines-v1.svg" id="lines"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/ball-v1.svg" id="ball"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/team-cyan-circle-v1.svg" id="cyan"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/team-amber-diamond-v1.svg" id="amber"]
+[ext_resource type="Texture2D" path="res://assets/original/characters/wind-shuttle-idle-v1.png" id="wind-shuttle"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/wind-shuttle-passive-v1.svg" id="wind-shuttle-passive"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/wind-shuttle-q-v1.svg" id="wind-shuttle-q"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/wind-shuttle-e-v1.svg" id="wind-shuttle-e"]
+[ext_resource type="Texture2D" path="res://assets/original/characters/iron-guard-idle-v1.png" id="iron-guard"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/iron-guard-passive-v1.svg" id="iron-guard-passive"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/iron-guard-q-v1.svg" id="iron-guard-q"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/iron-guard-e-v1.svg" id="iron-guard-e"]
+[ext_resource type="Texture2D" path="res://assets/original/characters/arc-light-idle-v1.png" id="arc-light"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/arc-light-passive-v1.svg" id="arc-light-passive"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/arc-light-q-v1.svg" id="arc-light-q"]
+[ext_resource type="Texture2D" path="res://assets/original/vector/arc-light-e-v1.svg" id="arc-light-e"]
+
+[sub_resource type="AtlasTexture" id="atlas_wind_shuttle"]
+atlas = ExtResource("wind-shuttle")
+region = Rect2(396, 227, 488, 774)
+
+[sub_resource type="AtlasTexture" id="atlas_iron_guard"]
+atlas = ExtResource("iron-guard")
+region = Rect2(215, 246, 825, 773)
+
+[sub_resource type="AtlasTexture" id="atlas_arc_light"]
+atlas = ExtResource("arc-light")
+region = Rect2(354, 152, 549, 932)
+
+[node name="ArtResourcePreview" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 60
+offset_top = 18
+offset_right = 1220
+offset_bottom = 66
+theme_override_colors/font_color = Color(0.96, 0.94, 0.89, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 30
+text = "技能足球 / 第一批美术资源"
+
+[node name="Subtitle" type="Label" parent="."]
+layout_mode = 0
+offset_left = 60
+offset_top = 60
+offset_right = 1220
+offset_bottom = 108
+theme_override_colors/font_color = Color(0.96, 0.94, 0.89, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 17
+text = "静态资源预览 · 无游戏逻辑 · 角色倾角与方向尚待统一"
+
+[node name="Floor" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 60
+offset_top = 106
+offset_right = 1220
+offset_bottom = 758.5
+texture = ExtResource("floor")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="FieldMarkings" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 60
+offset_top = 106
+offset_right = 1220
+offset_bottom = 758.5
+texture = ExtResource("lines")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Ball" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 630
+offset_top = 423
+offset_right = 650
+offset_bottom = 443
+texture = ExtResource("ball")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Team_cyan_0" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 358
+offset_top = 277
+offset_right = 402
+offset_bottom = 321
+texture = ExtResource("cyan")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Sprite_cyan_0" type="Sprite2D" parent="."]
+position = Vector2(380, 285)
+scale = Vector2(0.065, 0.065)
+texture = SubResource("atlas_wind_shuttle")
+
+[node name="Team_amber_0" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 878
+offset_top = 277
+offset_right = 922
+offset_bottom = 321
+texture = ExtResource("amber")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Sprite_amber_0" type="Sprite2D" parent="."]
+position = Vector2(900, 285)
+scale = Vector2(0.065, 0.065)
+texture = SubResource("atlas_wind_shuttle")
+
+[node name="Team_cyan_1" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 358
+offset_top = 427
+offset_right = 402
+offset_bottom = 471
+texture = ExtResource("cyan")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Sprite_cyan_1" type="Sprite2D" parent="."]
+position = Vector2(380, 435)
+scale = Vector2(0.06, 0.06)
+texture = SubResource("atlas_iron_guard")
+
+[node name="Team_amber_1" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 878
+offset_top = 427
+offset_right = 922
+offset_bottom = 471
+texture = ExtResource("amber")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Sprite_amber_1" type="Sprite2D" parent="."]
+position = Vector2(900, 435)
+scale = Vector2(0.06, 0.06)
+texture = SubResource("atlas_iron_guard")
+
+[node name="Team_cyan_2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 358
+offset_top = 577
+offset_right = 402
+offset_bottom = 621
+texture = ExtResource("cyan")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Sprite_cyan_2" type="Sprite2D" parent="."]
+position = Vector2(380, 585)
+scale = Vector2(0.06, 0.06)
+texture = SubResource("atlas_arc_light")
+
+[node name="Team_amber_2" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 878
+offset_top = 577
+offset_right = 922
+offset_bottom = 621
+texture = ExtResource("amber")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Sprite_amber_2" type="Sprite2D" parent="."]
+position = Vector2(900, 585)
+scale = Vector2(0.06, 0.06)
+texture = SubResource("atlas_arc_light")
+
+[node name="CharacterLabel0" type="Label" parent="."]
+layout_mode = 0
+offset_left = 60
+offset_top = 775
+offset_right = 1220
+offset_bottom = 823
+theme_override_colors/font_color = Color(0.96, 0.94, 0.89, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "风梭 · 快速接应"
+
+[node name="Icon0passive" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 60
+offset_top = 815
+offset_right = 116
+offset_bottom = 871
+texture = ExtResource("wind-shuttle-passive")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Icon0q" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 128
+offset_top = 815
+offset_right = 184
+offset_bottom = 871
+texture = ExtResource("wind-shuttle-q")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Icon0e" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 196
+offset_top = 815
+offset_right = 252
+offset_bottom = 871
+texture = ExtResource("wind-shuttle-e")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="CharacterLabel1" type="Label" parent="."]
+layout_mode = 0
+offset_left = 455
+offset_top = 775
+offset_right = 1615
+offset_bottom = 823
+theme_override_colors/font_color = Color(0.96, 0.94, 0.89, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "铁卫 · 身体防守"
+
+[node name="Icon1passive" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 455
+offset_top = 815
+offset_right = 511
+offset_bottom = 871
+texture = ExtResource("iron-guard-passive")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Icon1q" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 523
+offset_top = 815
+offset_right = 579
+offset_bottom = 871
+texture = ExtResource("iron-guard-q")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Icon1e" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 591
+offset_top = 815
+offset_right = 647
+offset_bottom = 871
+texture = ExtResource("iron-guard-e")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="CharacterLabel2" type="Label" parent="."]
+layout_mode = 0
+offset_left = 850
+offset_top = 775
+offset_right = 2010
+offset_bottom = 823
+theme_override_colors/font_color = Color(0.96, 0.94, 0.89, 1)
+theme_override_fonts/font = ExtResource("font")
+theme_override_font_sizes/font_size = 18
+text = "弧光 · 远射与曲线球"
+
+[node name="Icon2passive" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 850
+offset_top = 815
+offset_right = 906
+offset_bottom = 871
+texture = ExtResource("arc-light-passive")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Icon2q" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 918
+offset_top = 815
+offset_right = 974
+offset_bottom = 871
+texture = ExtResource("arc-light-q")
+expand_mode = 1
+stretch_mode = 0
+
+[node name="Icon2e" type="TextureRect" parent="."]
+layout_mode = 0
+offset_left = 986
+offset_top = 815
+offset_right = 1042
+offset_bottom = 871
+texture = ExtResource("arc-light-e")
+expand_mode = 1
+stretch_mode = 0

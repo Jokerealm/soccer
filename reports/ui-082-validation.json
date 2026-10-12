@@ -1,0 +1,70 @@
+{
+  "version": "0.8.2",
+  "date": "2026-10-09",
+  "passed": true,
+  "clientChecks": 108,
+  "runtimeErrors": [],
+  "runtimeReport": "reports/runtime-ui-082-final/runtime-smoke.json",
+  "runtimeLog": "reports/runtime-ui-082-final.log",
+  "coreChecksRetainedFrom08": 119,
+  "coreReport": "reports/star-strikers-check/core-tests.json",
+  "gameplayChanged": false,
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 364339652
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 332809777
+    }
+  },
+  "buildLogs": {
+    "macos": "reports/build-ui-082-macos-verified.log",
+    "windows": "reports/build-ui-082-windows-verified.log"
+  },
+  "implemented": [
+    "11 coordinated painted portraits and ability illustrations",
+    "Unified chamfered dock, portrait ring, ability frames and textured resource bars",
+    "Page fades and sliding match dock",
+    "Radial cooldown masks and independent authoritative timers",
+    "Health loss delay trail, resource deltas, low-health pulse",
+    "Activation spring, ready gleam, rejection shake and bounded UI sparks",
+    "Actual enemy-hit toast/vignette and arena particle bursts",
+    "Kick ready sound and existing layered action audio",
+    "Feedback switch clears UI and arena particle pools",
+    "4:3 HUD fit and high-resolution image imports"
+  ],
+  "artProvenance": "assets/battle-ui-v2-provenance.json",
+  "promptSet": "assets/original/ui/battle-v2/generation-prompts.json",
+  "particleBudgets": {
+    "ui": 80,
+    "arena": 256
+  },
+  "animation": {
+    "path": "previews/battle-hud-082.gif",
+    "capturedFrames": 48,
+    "encodedFrames": 44,
+    "size": [
+      1040,
+      365
+    ],
+    "note": "Actual client HUD crops. Duplicate GIF frames merged by encoder. Cooldown waiting compressed by advancing the simulation in the demo only."
+  },
+  "windowsRuntimeVerified": false,
+  "nativeInputHandFeelVerified": false,
+  "full4KWindowVerified": false,
+  "largeWindowActualResolution": "3840x1666"
+}

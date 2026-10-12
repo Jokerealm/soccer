@@ -1,0 +1,83 @@
+{
+  "generator": "Built-in imagegen tool",
+  "version": "0.8.2",
+  "assets": [
+    {
+      "name": "portrait-marine-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: original generic playful light-armored space brawler, expressive chunky ivory helmet with dark turquoise visor, compact teal shoulder armor and ivory chest, close-up head and shoulders, confident slightly cheeky pose. Temporary gameplay portrait, no recognizable licensed character. Warm helmet rim light, visible worn metal and soft faceplate reflections.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-ca3e91c7-dd38-4aab-bfbc-ba60f2c300b9.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/portrait-marine-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/portrait-marine-v2.png"
+    },
+    {
+      "name": "portrait-thor-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: original generic humorous heavy mech brawler portrait, sturdy ivory cockpit head, glowing turquoise horizontal visor, immense teal and warm brass shoulders with the top of two barrel weapons peeking behind the shoulders, close-up head and upper torso, slightly comically imposing. Temporary gameplay portrait, no recognizable licensed character. Rich layered armor shading.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-a062dcde-7fb3-4ecd-954b-1c3eaa913703.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/portrait-thor-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/portrait-thor-v2.png"
+    },
+    {
+      "name": "skill-stim-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: chunky futuristic stim syringe tilted diagonally, thick ivory metal cap, translucent turquoise liquid tube, sharp short needle, a small energetic teal burst behind the syringe. Make the syringe the clear readable focal point.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-015bd90c-20c7-4ed8-b6fe-4612612221e8.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-stim-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-stim-v2.png"
+    },
+    {
+      "name": "skill-bomb-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: spherical dark metal remote bomb, ivory armored collar, turquoise rectangular indicator on front, brass pull ring and a small warm orange sparkling fuse; explosive power suggested by restrained amber rays behind it. Strong round readable silhouette.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-f821b19d-46a0-480e-9480-8e1dfefa76bd.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-bomb-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-bomb-v2.png"
+    },
+    {
+      "name": "skill-drive-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: heavy mech engine reactor block with sculpted ivory and turquoise housing, blazing turquoise lightning bolt embedded in the core and two small brass fins, blue speed streaks behind it. Strong octagonal power-core silhouette.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-51991aa8-e4a0-43e4-808e-ad0abd70b11c.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-drive-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-drive-v2.png"
+    },
+    {
+      "name": "skill-thruster-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: compact dual sci-fi thruster pack, sculpted ivory metal and turquoise nozzle bands, two bright honey-gold exhaust flames shooting diagonally downward left. Strong readable booster silhouette.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-2e21904e-4bfe-494c-979a-6961393a2eb3.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-thruster-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-thruster-v2.png"
+    },
+    {
+      "name": "skill-trigger-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: handheld chunky remote detonator, ivory and dark teal armored grip, large warm orange illuminated push button and a short antenna with two faint turquoise signal arcs. Dominant button communicates triggering.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-5ddc02d5-2d65-415d-a285-1701df7f3f22.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-trigger-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-trigger-v2.png"
+    },
+    {
+      "name": "skill-kick-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: well-lit fully three-dimensional ivory soccer ball with deep navy pentagon panels, an elegant sweeping honey-gold directional arc wrapping behind the ball to imply a powerful kick, short turquoise speed trail. Ball is dominant, very clear volume.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-e093e99b-7ee4-4a94-9127-c9618191a47e.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-kick-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-kick-v2.png"
+    },
+    {
+      "name": "skill-tackle-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: bulky ivory armored sport boot skidding forward with a teal ankle guard, honey-gold impact sparks at its toe and a short turquoise motion streak. Playful forceful slide tackle, boot is dominant.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-b87aa42f-a7db-4c32-890b-ee4f10052bce.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-tackle-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-tackle-v2.png"
+    },
+    {
+      "name": "skill-rifle-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: compact pulse rifle with layered ivory metal casing, dark gunmetal muzzle, a turquoise energy cell and a small honey-gold rear grip, diagonally angled upward right. Rounded stylized but substantial with convincing mass, clear weapon silhouette.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-4e061798-0ae4-4af9-a486-82ef8e90f6a2.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-rifle-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-rifle-v2.png"
+    },
+    {
+      "name": "skill-cannons-v2",
+      "prompt": "Use case: stylized-concept. Asset type: polished PC combat-soccer game HUD illustration, square bitmap. Style: premium hand-painted stylized 3D game art, bold readable silhouette, rich material shading, sculpted bevels, crisp artistic highlights and deep contact shadows, humorous sporty sci-fi mood. Existing game's coordinated palette: deep midnight petrol background, warm ivory metal, turquoise energy, small honey-gold accents. Single central subject fills 80% of square, three-quarter view, consistent light from upper left. Detailed enough for a hero UI but readable at 64 pixels. No text, letters, numerals, logo, watermark, no border or UI frame. Background is subtle dark petrol radial light, no scenery. Avoid flat vector clip art, generic emoji, cheap glossy plastic, busy detail. Subject: a matched pair of chunky shoulder cannons with ivory mounting bracket, dark gunmetal wide barrels and brass armored rings, turquoise glowing muzzle cores, facing three-quarter toward viewer. Two barrels clearly readable as one weapon icon.",
+      "generatedPath": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-b44c5f78-a2ff-4d6f-b121-d585ecee1390.png",
+      "savedSourcePath": "/Users/gz/Documents/soccer/assets/original/ui/battle-v2/skill-cannons-v2.png",
+      "runtimePath": "/Users/gz/Documents/soccer/UnityProject/Assets/Soccer/Resources/FrontEnd/skill-cannons-v2.png"
+    }
+  ]
+}

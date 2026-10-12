@@ -1,0 +1,26 @@
+{
+  "version": "0.3",
+  "splash": "Built-in image_gen, generated with three existing character identity references; prompt in assets/original/ui/generation-prompt.json",
+  "assets": [
+    {
+      "source": "assets/original/ui/launch-cover-v1.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/launch-cover-v1.png",
+      "sha256": "08665f8d8d8e67d21a0600c5dea1bd77a76de27de07375c380dcd8eea27538a4"
+    },
+    {
+      "source": "assets/original/vector/mode-standard-v1.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/mode-normal.png",
+      "conversion": "Rasterized established SVG; source retained"
+    },
+    {
+      "source": "assets/original/vector/mode-ranked-v1.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/mode-ranked.png",
+      "conversion": "Rasterized established SVG; source retained"
+    },
+    {
+      "source": "assets/original/vector/mode-party-v1.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/mode-party.png",
+      "conversion": "Rasterized established SVG; source retained"
+    }
+  ]
+}

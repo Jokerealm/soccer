@@ -1,0 +1,290 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements">
+    <ui:VisualElement name="app" class="app">
+        <ui:VisualElement name="menu-backdrop" class="menu-backdrop"><ui:VisualElement class="menu-shade" /></ui:VisualElement>
+
+        <ui:VisualElement name="loading-page" class="loading-page">
+            <ui:VisualElement name="loading-art" class="loading-art" />
+            <ui:VisualElement class="loading-shade" />
+            <ui:VisualElement class="loading-brand">
+                <ui:Label text="合作乱斗 · 城市球场" class="loading-eyebrow" />
+                <ui:Label text="技能足球" class="loading-title" />
+                <ui:Label text="一起开路，一起进球。" class="loading-tagline" />
+                <ui:VisualElement class="loading-rule" />
+                <ui:Label text="TEAM UP. MAKE THE PLAY." class="loading-motto" />
+            </ui:VisualElement>
+            <ui:VisualElement class="loading-bottom">
+                <ui:VisualElement class="row loading-caption"><ui:Label name="loading-status" text="正在准备赛场…" class="grow" /><ui:Label name="loading-percent" text="00%" /></ui:VisualElement>
+                <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
+                <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
+            </ui:VisualElement>
+            <ui:Label text="PC / 乱斗原型 0.14.0" class="loading-version" />
+        </ui:VisualElement>
+
+        <ui:VisualElement name="home-page" class="mode-home hidden">
+            <ui:VisualElement class="front-topbar row">
+                <ui:VisualElement class="brand-block row"><ui:VisualElement name="brand-mark" class="brand-mark" /><ui:VisualElement><ui:Label text="技能足球" class="front-brand" /><ui:Label text="合作乱斗 · 城市球场" class="front-brand-sub" /></ui:VisualElement></ui:VisualElement>
+                <ui:VisualElement class="grow" />
+                <ui:Label text="● 当前离线" class="connection-status" />
+                <ui:Label text="PC / 0.14.0" class="build-label" />
+            </ui:VisualElement>
+            <ui:VisualElement class="mode-intro">
+                <ui:Label text="一起开路，一起进球" class="eyebrow" />
+                <ui:Label text="把默契，打进球门。" class="mode-page-title" />
+                <ui:Label text="武器、控制和传球，合力打出进球机会。" class="mode-intro-copy" />
+            </ui:VisualElement>
+            <ui:VisualElement class="mode-deck row">
+                <ui:Button name="normal-mode" class="mode-card normal">
+                    <ui:VisualElement class="mode-card-top row"><ui:Label text="01 / CASUAL" class="mode-kicker" /><ui:Label text="现在可玩" class="mode-tag" /></ui:VisualElement>
+                    <ui:VisualElement class="mode-card-art"><ui:Label text="01" class="mode-number" /><ui:VisualElement name="normal-icon" class="mode-icon" /><ui:VisualElement name="normal-art" class="mode-player-art" /></ui:VisualElement>
+                    <ui:VisualElement class="mode-card-copy"><ui:Label text="普通模式" class="mode-card-title" /><ui:Label text="开路，救援，配合进球。" class="mode-card-subtitle" /><ui:Label text="武器乱斗 · 5 秒原地复活" class="mode-card-description" /><ui:VisualElement class="mode-card-line" /><ui:Label text="进入普通模式    →" class="mode-card-action" /></ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="ranked-mode" class="mode-card ranked">
+                    <ui:VisualElement class="mode-card-top row"><ui:Label text="02 / RANKED" class="mode-kicker" /><ui:Label text="筹备中" class="mode-tag" /></ui:VisualElement>
+                    <ui:VisualElement class="mode-card-art"><ui:Label text="02" class="mode-number" /><ui:VisualElement name="ranked-icon" class="mode-icon" /><ui:VisualElement name="ranked-art" class="mode-player-art" /></ui:VisualElement>
+                    <ui:VisualElement class="mode-card-copy"><ui:Label text="排位模式" class="mode-card-title" /><ui:Label text="每一场，都是向上一步。" class="mode-card-subtitle" /><ui:Label text="团队竞技 · 赛季段位" class="mode-card-description" /><ui:VisualElement class="mode-card-line" /><ui:Label text="查看排位模式    →" class="mode-card-action" /></ui:VisualElement>
+                </ui:Button>
+                <ui:Button name="party-mode" class="mode-card party">
+                    <ui:VisualElement class="mode-card-top row"><ui:Label text="03 / PARTY" class="mode-kicker" /><ui:Label text="筹备中" class="mode-tag" /></ui:VisualElement>
+                    <ui:VisualElement class="mode-card-art"><ui:Label text="03" class="mode-number" /><ui:VisualElement name="party-icon" class="mode-icon" /><ui:VisualElement name="party-art" class="mode-player-art" /></ui:VisualElement>
+                    <ui:VisualElement class="mode-card-copy"><ui:Label text="娱乐模式" class="mode-card-title" /><ui:Label text="让意想不到，成为好球。" class="mode-card-subtitle" /><ui:Label text="技能强化 · 球场事件" class="mode-card-description" /><ui:VisualElement class="mode-card-line" /><ui:Label text="查看娱乐模式    →" class="mode-card-action" /></ui:VisualElement>
+                </ui:Button>
+            </ui:VisualElement>
+            <ui:VisualElement class="front-footer row">
+                <ui:Button name="train-button" text="训练场" class="front-utility" /><ui:Button name="bots-button" text="AI 对练" class="front-utility" /><ui:Button name="roster-button" text="乐子打法" class="front-utility" /><ui:Button name="settings-button" text="设置" class="front-utility" />
+                <ui:VisualElement class="grow" /><ui:Label text="互联网 / 局域网 · 筹备中" class="front-footer-note" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="mode-details-page" class="mode-details normal hidden">
+            <ui:VisualElement class="detail-topbar row"><ui:Button name="mode-back" text="← 模式选择" class="front-utility" /><ui:VisualElement class="grow" /><ui:Label text="选择玩法 / 准备比赛" class="front-brand-sub" /></ui:VisualElement>
+            <ui:VisualElement class="detail-content row">
+                <ui:VisualElement class="detail-overview">
+                    <ui:Label name="detail-english" text="CASUAL PLAY" class="detail-eyebrow" />
+                    <ui:Label name="detail-name" text="普通模式" class="detail-title" />
+                    <ui:Label name="detail-subtitle" class="detail-subtitle" />
+                    <ui:Label name="detail-description" class="detail-description" />
+                    <ui:VisualElement class="detail-rules"><ui:Label text="玩法概览" class="detail-section-label" /><ui:Label name="detail-rule-one" class="detail-rule" /><ui:Label name="detail-rule-two" class="detail-rule" /><ui:Label name="detail-rule-three" class="detail-rule" /></ui:VisualElement>
+                    <ui:VisualElement name="detail-art" class="detail-player-art" />
+                </ui:VisualElement>
+                <ui:VisualElement class="connection-panel">
+                    <ui:Label text="选择连接方式" class="detail-section-label" />
+                    <ui:VisualElement class="connection-tabs row"><ui:Button name="internet-route" text="互联网" class="route-button route-selected" /><ui:Button name="lan-route" text="局域网" class="route-button" /></ui:VisualElement>
+                    <ui:Label name="connection-heading" text="互联网对战" class="connection-title" />
+                    <ui:Label text="● 联机尚未开放" class="network-unavailable" />
+                    <ui:Label name="connection-copy" class="connection-copy" />
+                    <ui:Button name="online-play" text="在线匹配 · 即将开放" class="network-action" enabled="false" />
+                    <ui:Button name="join-room" text="加入房间 · 即将开放" class="network-action hidden" enabled="false" />
+                    <ui:VisualElement class="connection-divider" />
+                    <ui:Label name="mode-availability" text="现在可玩：本地 3v3 AI 对练" class="practice-availability" />
+                    <ui:Button name="mode-practice" text="本地 3v3 对练    →" class="primary" />
+                    <ui:Button name="mode-training" text="进入训练场" class="secondary" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="select-page" class="page selection hidden">
+            <ui:VisualElement class="page-heading row">
+                <ui:VisualElement class="grow">
+                    <ui:Label text="CHOOSE YOUR LOADOUT" class="eyebrow" />
+                    <ui:Label name="select-title" text="选择乐子打法" class="page-title" />
+                    <ui:Label name="select-subtitle" class="muted" />
+                </ui:VisualElement>
+                <ui:Button name="select-back" text="返回" class="secondary" />
+            </ui:VisualElement>
+            <ui:VisualElement class="selection-content row">
+                <ui:VisualElement class="roster-cards row">
+                    <ui:Button name="character-0" class="character-card selected">
+                        <ui:VisualElement name="portrait-0" class="portrait loadout-symbol"><ui:VisualElement name="equipment-0" class="equipment-art" /><ui:Label text="脉冲步枪" class="loadout-weapon" /></ui:VisualElement>
+                        <ui:Label text="枪兵" class="card-name" /><ui:Label text="加速 / 炸弹" class="muted" />
+                    </ui:Button>
+                    <ui:Button name="character-1" class="character-card">
+                        <ui:VisualElement name="portrait-1" class="portrait loadout-symbol"><ui:VisualElement name="equipment-1" class="equipment-art" /><ui:Label text="双联机炮" class="loadout-weapon" /></ui:VisualElement>
+                        <ui:Label text="雷神" class="card-name" /><ui:Label text="驱动 / 突进" class="muted" />
+                    </ui:Button>
+                </ui:VisualElement>
+                <ui:ScrollView class="character-details" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto">
+                    <ui:Label name="selected-name" class="page-title" />
+                    <ui:Label name="selected-role" class="eyebrow" />
+                    <ui:Label name="selected-stats" class="stats-copy" />
+                    <ui:Label text="武器与储备" class="skill-heading" /><ui:Label name="passive-copy" class="description" />
+                    <ui:Label name="q-name" class="skill-heading" /><ui:Label name="q-copy" class="description" />
+                    <ui:Label name="e-name" class="skill-heading" /><ui:Label name="e-copy" class="description" />
+                </ui:ScrollView>
+            </ui:VisualElement>
+            <ui:VisualElement class="selection-footer row">
+                <ui:Label text="枪兵与雷神先试玩法；角色外观后续再定。" class="muted grow" />
+                <ui:Button name="start-button" text="准备好了 · 开始训练    →" class="primary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="match-page" class="match-page hidden">
+            <ui:VisualElement name="damage-vignette" class="damage-vignette" picking-mode="Ignore" />
+            <ui:VisualElement class="hud-top row">
+                <ui:VisualElement class="hud-left-slot">
+                    <ui:Label name="mode-label" text="训练场" class="hud-pill" />
+                    <ui:VisualElement name="compact-player-hud" class="compact-player-hud row hidden" picking-mode="Ignore">
+                        <ui:VisualElement name="compact-portrait-frame" class="compact-portrait-frame"><ui:VisualElement name="compact-hero-symbol" class="hero-symbol" /></ui:VisualElement>
+                        <ui:VisualElement class="compact-resources">
+                            <ui:Label name="compact-health" text="生命 100 / 100" class="compact-health" />
+                            <ui:Label name="compact-energy" text="能量 100 / 100" class="compact-energy" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement class="scoreboard row">
+                    <ui:Label text="青队 ○" class="cyan team-name" /><ui:Label name="cyan-score" text="0" class="score cyan" />
+                    <ui:Label name="clock-label" text="05:00" class="clock" />
+                    <ui:Label name="amber-score" text="0" class="score amber" /><ui:Label text="◇ 橙队" class="amber team-name" />
+                </ui:VisualElement>
+                <ui:VisualElement class="hud-actions row">
+                    <ui:Button name="hud-mode-toggle" text="精简界面" class="hud-pill" />
+                    <ui:Button name="pause-button" text="暂停  Esc" class="hud-pill" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:Label name="feedback-label" text="碰撞足球获得球权；推开角色腾出空间。" class="feedback" />
+            <ui:Label name="ball-flight-status" class="ball-flight-status hidden" />
+            <ui:Label name="phase-label" text="3" class="phase-label hidden" />
+            <ui:VisualElement name="countdown-overlay" class="countdown-overlay hidden" picking-mode="Ignore">
+                <ui:Label name="countdown-number" text="3" class="countdown-number" picking-mode="Ignore" />
+                <ui:Label name="countdown-caption" text="准备开球" class="countdown-caption" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="training-tools" class="training-tools">
+                <ui:Label text="训练工具" class="skill-heading" />
+                <ui:Button name="reset-ball" text="R  重置球场" />
+                <ui:Button name="give-ball" text="F  自己持球" />
+                <ui:Button name="target-ball" text="T  目标持球" />
+                <ui:Button name="moving-target" text="目标：静止" />
+                <ui:Button name="training-corner" text="F2  角球" />
+                <ui:Button name="training-free-kick" text="F3  任意球" />
+                <ui:Button name="debug-toggle" text="F1  判定显示：开" />
+                <ui:Button name="end-training" text="结束训练" class="secondary" />
+            </ui:VisualElement>
+            <ui:Label name="combat-toast" class="combat-toast" picking-mode="Ignore" />
+            <ui:VisualElement name="battle-dock-anchor" class="hud-bottom-anchor" picking-mode="Ignore">
+            <ui:VisualElement name="battle-dock" class="hud-bottom row">
+                <ui:VisualElement name="dock-backdrop" class="dock-backdrop" picking-mode="Ignore" />
+                <ui:VisualElement class="hero-summary">
+                    <ui:VisualElement name="hero-portrait-frame" class="hero-portrait-frame"><ui:VisualElement name="hero-symbol" class="hero-symbol" /></ui:VisualElement>
+                    <ui:Label name="local-name" text="枪兵 · 你" class="hero-name" />
+                    <ui:Label name="possession-label" text="无球" class="hero-state" />
+                </ui:VisualElement>
+                <ui:VisualElement name="hud-main" class="hud-main">
+                    <ui:VisualElement class="hud-stat-strip row"><ui:Label text="技能与行动" class="dock-heading" /><ui:Label name="hud-stats" /><ui:Label name="bomb-action" class="bomb-action hidden" /></ui:VisualElement>
+                    <ui:VisualElement name="ability-strip" class="ability-strip row">
+                        <ui:VisualElement name="q-tile" class="skill-tile">
+                            <ui:VisualElement class="ability-frame">
+                                <ui:VisualElement name="q-symbol" class="skill-symbol" />
+                                <ui:VisualElement name="q-mask" class="cooldown-mask" />
+                                <ui:Label name="q-cd" class="cooldown-number" />
+                                <ui:Label text="Q" class="ability-key" />
+                            </ui:VisualElement>
+                            <ui:Label name="hud-q-name" text="兴奋剂" class="ability-caption" />
+                            <ui:Label name="q-cost" text="12能 / 10血" class="ability-cost" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="e-tile" class="skill-tile">
+                            <ui:VisualElement class="ability-frame">
+                                <ui:VisualElement name="e-symbol" class="skill-symbol" />
+                                <ui:VisualElement name="e-mask" class="cooldown-mask" />
+                                <ui:Label name="e-cd" class="cooldown-number" />
+                                <ui:Label text="E" class="ability-key" />
+                            </ui:VisualElement>
+                            <ui:Label name="hud-e-name" text="炸弹" class="ability-caption" />
+                            <ui:Label name="e-cost" text="40能" class="ability-cost" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="g-tile" class="skill-tile">
+                            <ui:VisualElement class="ability-frame">
+                                <ui:VisualElement name="g-symbol" class="skill-symbol" />
+                                <ui:VisualElement name="g-mask" class="cooldown-mask" />
+                                <ui:Label name="g-cd" class="cooldown-number" />
+                                <ui:Label text="G" class="ability-key" />
+                            </ui:VisualElement>
+                            <ui:Label text="引爆" class="ability-caption" />
+                            <ui:Label name="g-cost" text="10能" class="ability-cost" />
+                        </ui:VisualElement>
+                        <ui:VisualElement class="ability-divider" />
+                        <ui:VisualElement name="kick-tile" class="skill-tile">
+                            <ui:VisualElement class="ability-frame">
+                                <ui:VisualElement name="kick-symbol" class="skill-symbol" />
+                                <ui:VisualElement name="kick-mask" class="cooldown-mask" />
+                                <ui:Label name="kick-cd" class="cooldown-number" />
+                                <ui:Label text="左键" class="ability-key" />
+                            </ui:VisualElement>
+                            <ui:Label text="踢球" class="ability-caption" />
+                            <ui:Label name="kick-cost" text="冷却 6秒" class="ability-cost" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="tackle-tile" class="skill-tile">
+                            <ui:VisualElement class="ability-frame">
+                                <ui:VisualElement name="tackle-symbol" class="skill-symbol" />
+                                <ui:VisualElement name="tackle-mask" class="cooldown-mask" />
+                                <ui:Label name="tackle-cd" class="cooldown-number" />
+                                <ui:Label text="空格" class="ability-key" />
+                            </ui:VisualElement>
+                            <ui:Label text="铲球" class="ability-caption" />
+                            <ui:Label name="tackle-cost" text="16.1生命" class="ability-cost" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="weapon-tile" class="skill-tile">
+                            <ui:VisualElement class="ability-frame">
+                                <ui:VisualElement name="weapon-symbol" class="skill-symbol" />
+                                <ui:VisualElement name="weapon-mask" class="cooldown-mask" />
+                                <ui:Label name="weapon-reload-cd" class="cooldown-number" />
+                                <ui:Label text="右键" class="ability-key" />
+                            </ui:VisualElement>
+                            <ui:Label text="普攻" class="ability-caption" />
+                            <ui:Label name="weapon-cd" text="右键追击" class="ability-cost" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement class="resource-deck">
+                    <ui:Label name="energy-delta" class="resource-delta energy-delta" picking-mode="Ignore" />
+                    <ui:ProgressBar name="health-progress" title="生命 100/100" low-value="0" high-value="100" value="100" class="resource-progress health-progress" />
+                    <ui:ProgressBar name="energy-progress" title="能量 100/100" low-value="0" high-value="100" value="100" class="resource-progress energy-progress" />
+                    </ui:VisualElement>
+                    <ui:ProgressBar name="charge-progress" title="蓄力" low-value="0" high-value="100" class="charge-progress hidden" />
+                </ui:VisualElement>
+                <ui:VisualElement class="hud-help">
+                    <ui:Label text="W A S D" class="hud-help-title" />
+                    <ui:Label text="移动／追击 · S 停止" />
+                    <ui:Label text="按住左键蓄力" />
+                    <ui:Label text="松开出球 · C取消" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        </ui:VisualElement>
+        <ui:VisualElement name="pause-overlay" class="overlay hidden">
+            <ui:VisualElement class="modal">
+                <ui:Label text="比赛已暂停" class="page-title" />
+                <ui:Label text="准备好了，就继续回到球场。" class="muted" />
+                <ui:Button name="resume-button" text="继续比赛" class="primary" />
+                <ui:Button name="restart-button" text="重新开始" />
+                <ui:Button name="pause-home" text="返回主菜单" class="secondary" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="results-page" class="page results hidden">
+            <ui:Label text="MATCH REPORT" class="eyebrow" />
+            <ui:Label name="result-title" text="训练完成" class="page-title" />
+            <ui:Label name="result-score" text="0 : 0" class="result-score" />
+            <ui:Label name="result-subtitle" class="muted" />
+            <ui:Label name="combat-summary" class="muted combat-summary" />
+            <ui:VisualElement class="result-stats row">
+                <ui:VisualElement class="stat"><ui:Label name="stat-goals" class="stat-number" /><ui:Label text="进球" /></ui:VisualElement>
+                <ui:VisualElement class="stat"><ui:Label name="stat-steals" class="stat-number" /><ui:Label text="碰撞夺球" /></ui:VisualElement>
+                <ui:VisualElement class="stat"><ui:Label name="stat-kicks" class="stat-number" /><ui:Label text="踢球" /></ui:VisualElement>
+                <ui:VisualElement class="stat"><ui:Label name="stat-passes" class="stat-number" /><ui:Label text="成功传球" /></ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement class="row"><ui:Button name="play-again" text="再来一局    →" class="primary" /><ui:Button name="results-home" text="返回主菜单" class="secondary" /></ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="settings-page" class="page settings hidden">
+            <ui:Label text="PREFERENCES" class="eyebrow" /><ui:Label text="设置" class="page-title" />
+            <ui:Slider name="volume-slider" label="总音量" low-value="0" high-value="1" value="0.6" />
+            <ui:Slider name="music-slider" label="背景音乐" low-value="0" high-value="1" value="0.55" />
+            <ui:Slider name="effects-slider" label="音效" low-value="0" high-value="1" value="0.8" />
+            <ui:VisualElement class="row settings-toggles"><ui:Button name="mute-toggle" text="静音：关" class="secondary" /><ui:Button name="feedback-toggle" text="命中反馈：开" class="secondary" /><ui:Button name="hud-mode-setting" text="完整技能栏：开" class="secondary" /></ui:VisualElement>
+            <ui:Label text="新手可开启完整技能栏；关闭后只在左上角显示头像、生命和能量。比赛中也可随时切换。" class="muted hud-setting-copy" />
+            <ui:Label text="电脑操作" class="skill-heading" />
+            <ui:Label text="右键地面移动，右键敌人自动追击，右键队友跟随；Shift 追加路线，S/H 停止。&#10;左键按住蓄力，松开踢球，冷却 6 秒；C 取消。&#10;空格推开角色腾出空间，冷却 5 秒并消耗生命。推队友／背后推保留持球；正面和侧面推敌人时球留原地，碰撞球接球。&#10;进入射程自动武器普攻，三格储备会自动补充；Q/E 角色技能。&#10;枪兵 G 消耗 10 能量提前引爆炸弹；Esc 暂停。&#10;被击倒后掉球，5 秒后在原地满状态复活。&#10;训练中 R 重置、F 持球、T 目标持球、F1 判定显示，F2 角球，F3 任意球。" class="description" />
+            <ui:Label text="固定全场视野 · 后续添加按键重映射、手柄与触屏。" class="muted" />
+            <ui:Button name="settings-back" text="返回主菜单" class="primary" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

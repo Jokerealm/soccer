@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>技能足球 · 六角动作工坊</title>
+<style>
+@font-face{font-family:Noto;src:url('../assets/third_party/noto-sans-cjk/NotoSansCJKsc-Regular.otf');font-display:swap}
+:root{color-scheme:dark;--ink:#e9f1eb;--muted:#9fb9bc;--mint:#62e4c4;--panel:#152f39;--line:#2a4651}
+*{box-sizing:border-box}body{margin:0;background:#0b202a;color:var(--ink);font-family:Noto,system-ui,sans-serif}main{max-width:1260px;margin:auto;padding:28px 32px 60px}a{color:var(--mint);text-decoration:none}a:hover{text-decoration:underline}.top{display:flex;justify-content:space-between;gap:16px;align-items:center;font-size:12px}.tag{color:#b7d5ca;letter-spacing:2px}.badge{padding:7px 12px;border:1px solid #41645d;border-radius:99px;background:#163e39;color:#b0ebd5;white-space:nowrap}h1{font-size:36px;margin:20px 0 9px;letter-spacing:-1px}p{color:var(--muted);line-height:1.8;margin:6px 0 20px}.toolbar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:15px 0}.actions{display:flex;gap:6px;padding:5px;background:#061b24;border-radius:13px}button,select{font:inherit;border:1px solid var(--line);border-radius:8px;background:#183640;color:#d8e9e4;padding:9px 14px;cursor:pointer;font-size:13px}button:hover{border-color:#87d4c3}button[aria-pressed=true]{color:#05251f;background:var(--mint);border-color:var(--mint)}label{display:flex;align-items:center;gap:8px;color:#b0c9ca;font-size:12px}input{accent-color:var(--mint)}input[type=range]{width:100px}.speed{margin-left:auto}output{min-width:38px}.field{border:1px solid #427666;border-radius:19px;overflow:hidden;box-shadow:0 18px 50px #05151a66;background:#22645c}.field canvas{display:block;width:100%;height:auto}.statusbar{display:flex;justify-content:space-between;gap:16px;padding:12px 4px;font-size:12px;color:#a3bdb9;align-items:center}.statusbar strong{color:#e4ecb3}.notice{border-left:3px solid #edbb70;border-radius:0 8px 8px 0;background:#17313a;padding:10px 14px;font-size:12px;margin:3px 0 24px;color:#b9cbc9;line-height:1.8}.roster{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin:18px 0}.roster button{padding:13px 8px;text-align:left;border-bottom:3px solid var(--accent)}.roster b{display:block;font-size:15px}.roster small{font-size:10px;display:block;margin-top:4px;opacity:.75}.roster button[aria-pressed=true]{background:#234c4b;color:#dcfff3;border-top-color:#75bbaa}.detail{display:grid;grid-template-columns:360px 1fr;border:1px solid var(--line);border-radius:18px;overflow:hidden;background:var(--panel)}.sprite-stage{position:relative;background:#24414c;display:grid;place-items:center;min-height:360px}.sprite-stage[data-bg=light]{background:#e5e8dc}.sprite-stage[data-bg=checker]{background:repeating-conic-gradient(#384e58 0% 25%,#223640 0% 50%) 50%/24px 24px}.sprite-stage canvas{width:100%;max-width:360px;height:auto;display:block}.body{padding:24px;min-width:0}.body h2{margin:0 0 10px;font-size:24px}.body p{font-size:12px;margin:8px 0 15px}.under{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin:14px 0}.under button{padding:7px 10px;font-size:11px}.timeline{display:grid;grid-template-columns:repeat(8,1fr);gap:6px;margin:20px 0 14px}.timeline button{padding:0 0 8px;border-radius:8px;font-size:10px;overflow:hidden;background:#0d2530}.timeline canvas{display:block;width:100%;height:auto}.timeline button[aria-pressed=true]{background:#32584d;color:#daffed}.phase{font-size:13px;color:#ccdcbd}.links{display:flex;flex-wrap:wrap;gap:15px;font-size:12px;margin-top:20px}.directions{display:flex;flex-wrap:wrap;gap:5px;margin-top:12px}.directions button{padding:6px 10px;font-size:11px}.directions button[aria-pressed=true]{background:#bcebd1;color:#183c30}.footer{font-size:11px;color:#799caa;margin-top:26px;line-height:1.9}.footer a{margin-right:14px}#load-status{font-size:12px;color:#b4ccb8;min-height:22px}button:disabled{opacity:.45;cursor:default}button:focus-visible,a:focus-visible,input:focus-visible{outline:3px solid #ffc982;outline-offset:3px}[hidden]{display:none!important}
+@media(max-width:900px){main{padding:22px 18px 40px}h1{font-size:29px}.detail{grid-template-columns:280px 1fr}.roster{grid-template-columns:repeat(3,1fr)}.body{padding:18px}.sprite-stage{min-height:300px}.speed{margin-left:0}.timeline{gap:3px}.timeline button{font-size:9px}}
+@media(max-width:640px){.detail{grid-template-columns:1fr}.sprite-stage{min-height:290px}.sprite-stage canvas{max-width:300px}.body{padding:20px 15px}.statusbar{display:block;line-height:1.9}.badge{font-size:10px}.tag{letter-spacing:1px;font-size:10px}h1{font-size:27px}.roster button{padding:10px}.timeline{gap:4px}.toolbar{gap:9px}button,select{padding:8px 10px}.footer{margin-top:22px}}
+</style>
+</head>
+<body><main>
+<div class="top"><a href="art-gallery.html">← 美术图库</a><span class="tag">STREET LEAGUE / MOTION LAB</span><span class="badge">跑步优化 · 14 帧</span></div>
+<h1>让六个人物，动起来。</h1>
+<p>六人跑步循环补至 14 帧，细化收腿、过身与蹬地。当前三套动作共 __TOTAL_FRAMES__ 帧。</p>
+<div class="toolbar">
+<div class="actions" role="group" aria-label="动作选择"><button data-action="run" aria-pressed="true">跑步</button><button data-action="turn" aria-pressed="false">转身</button><button data-action="kick" aria-pressed="false">踢球</button></div>
+<button id="play" aria-label="暂停动画">暂停</button><button id="step">下一帧</button><button id="restart">重播</button>
+<label class="speed" for="fps">速度 <input type="range" id="fps" min="4" max="28" value="__INITIAL_FPS__"><output id="fps-value">__INITIAL_FPS__ fps</output></label>
+<label><input type="checkbox" id="repeat" checked>循环预览</label><label><input type="checkbox" id="ball" checked>击球示意</label>
+</div>
+<div class="toolbar" id="run-controls" role="group" aria-label="跑步对比"><button data-run-version="v2" aria-pressed="true">新版 · 14 帧</button><button data-run-version="v1" aria-pressed="false">上一版 · 8 帧</button><label><input type="checkbox" id="travel" checked>行进预览</label><span class="tag" style="letter-spacing:0;font-size:11px">关闭行进，可原地检查步态</span></div>
+<div class="field"><canvas id="ensemble" width="1200" height="640" role="img" aria-label="六名足球角色跑步动画组合预览" data-action="run" data-frame-index="0"></canvas></div>
+<div class="statusbar"><span id="play-status">准备播放…</span><span><strong id="frame-status">01 / 14</strong> · <span id="phase-status">触地 A</span></span></div>
+<div class="notice" id="scope-note">跑步与踢球已绘制右前方向；转身有八个正、侧、背视图。当前为关键帧样稿，步态衔接、脚点与服装细节仍需精修。</div>
+<div id="load-status" role="status" aria-live="polite">正在加载本地动画图集…</div>
+<div class="roster" id="characters" role="group" aria-label="人物选择"></div>
+<section class="detail" aria-label="单人动作检查">
+<div><div class="sprite-stage" data-bg="dark"><canvas id="detail" width="360" height="360" role="img" aria-label="风梭动作放大预览"></canvas></div><div class="under" role="group" aria-label="预览底色"><button data-bg="dark" aria-pressed="true">深色</button><button data-bg="light" aria-pressed="false">浅色</button><button data-bg="checker" aria-pressed="false">透明网格</button></div></div>
+<div class="body"><h2 id="character-name">风梭</h2><div class="phase" id="detail-phase">跑步 / 触地 A</div><p id="clip-note">14 帧循环 · 右前方向 · 逐帧检查收腿、过身与蹬地。</p>
+<div class="timeline" id="timeline" role="group" aria-label="逐帧选择"></div>
+<div id="directions" class="directions" role="group" aria-label="转身方向" hidden></div>
+<p>点击任一帧会暂停，便于看手脚与轮廓。空格播放／暂停，右箭头逐帧前进。</p>
+<div class="links"><a id="source-link" href="../assets/original/animations/wind-shuttle-run-v2.png">打开当前帧所在图集 ↗</a><a href="../__MANIFEST_PATH__" download>切帧坐标与脚点 JSON ↓</a><a href="../docs/动画资源准备.md">制作与导入说明 ↗</a></div>
+</div></section>
+<footer class="footer">当前选用 __TOTAL_FRAMES__ 帧；上一版跑步保留作对比。行进演示的短跑道循环、速度和脚点均为美术检查参数。踢球第 5 帧的击球时序仅用于演示。<br><a href="../__PROMPT_PATH__">本批生成提示词</a><a href="../assets/original/generation-prompts-animations-v1.json">上一批提示词</a><a href="../reports/animation-validation.json">资源验证报告</a>尚未接入团结引擎玩法工程。</footer>
+</main><div id="preload" hidden></div>
+<script id="animation-data" type="application/json">__ANIMATION_DATA__</script>
+<script>
+'use strict';
+const spec=JSON.parse(document.getElementById('animation-data').textContent),chars=spec.characters;
+const $=id=>document.getElementById(id),loaded=new Map(),contexts={ensemble:$('ensemble').getContext('2d'),detail:$('detail').getContext('2d')};
+const labels={run:'跑步',turn:'转身',kick:'踢球'},dirLabels=['正面 ↓','左前 ↙','左侧 ←','左后 ↖','背面 ↑','右后 ↗','右侧 →','右前 ↘'];
+let action='run',selected=0,frame=0,ticks=0,motionTicks=0,runVersion='v2',playing=true,ready=false,last=0;
+const clip=char=>action==='run'&&runVersion==='v1'&&spec.comparison_runs?spec.comparison_runs[char.id]:char.clips[action],fps=()=>Number($('fps').value);
+const frameCount=()=>clip(chars[selected]).frames.length;
+const asset=path=>loaded.get(path);
+function drawFigure(ctx,char,index,x,y,height){
+ const c=clip(char),f=c.frames[index],r=f.source_rect_px,s=height/c.nominal_body_height_px*f.source_scale_to_clip;
+ ctx.drawImage(asset(f.texture),r[0],r[1],r[2],r[3],x-f.pivot_px[0]*s,y-f.pivot_px[1]*s,r[2]*s,r[3]*s);
+}
+function shadow(ctx,x,y,width,color='#092e36'){
+ ctx.save();ctx.fillStyle=color;ctx.globalAlpha*=.22;ctx.beginPath();ctx.ellipse(x+3,y+2,width,width*.28,0,0,Math.PI*2);ctx.fill();ctx.restore();
+}
+function drawBall(ctx,char,x,y,height){
+ if(action!=='kick'||!$('ball').checked)return;
+ const c=clip(char),f=c.frames[4],r=f.source_rect_px,s=height/c.nominal_body_height_px;
+ const contact=f.contact_anchor_px||[r[2]-8,r[3]*.7];
+ const progress=Math.max(0,ticks-4)/4,dx=(contact[0]-f.pivot_px[0])*s+height*.055,dy=(contact[1]-f.pivot_px[1])*s;
+ const bx=x+dx+Math.min(progress,1.5)*height*.72,by=y+dy+Math.min(progress,1.5)*height*.23,size=height*.105;
+ if(ticks>=8)return;shadow(ctx,bx,by+size*.3,size*.45);ctx.drawImage(asset('assets/original/vector/ball-v2.svg'),bx-size/2,by-size/2,size,size);
+}
+function render(){
+ if(!ready)return;const ctx=contexts.ensemble;ctx.clearRect(0,0,1200,640);
+ const floor=asset('assets/original/arenas/standard-floor-v2.png');ctx.drawImage(floor,0,0,1200,640);
+ ctx.fillStyle='#0e453a';ctx.globalAlpha=.12;ctx.fillRect(0,0,1200,640);ctx.globalAlpha=1;
+ const travel=action==='run'&&$('travel').checked;
+ const positions=chars.map((char,i)=>{
+  const p={char,i,x:260+(i%3)*340,y:i<3?275:470,alpha:1};
+  if(travel){
+   const stride=char.display_body_height_px_proposal*1.36*.85;
+   const progress=(.5+motionTicks/frameCount()*stride/190+i*.12)%1;
+   p.x+=190*(progress-.5);p.y+=40*(progress-.5);
+   p.alpha=Math.min(1,progress/.08,(1-progress)/.08);
+  }return p;
+ });
+ $('ensemble').dataset.groundPositions=JSON.stringify(positions.map(p=>[Number(p.x.toFixed(2)),Number(p.y.toFixed(2))]));
+ positions.sort((a,b)=>a.y-b.y);
+ for(const p of positions){
+  ctx.save();ctx.globalAlpha=p.alpha;
+  const ctxHeight=p.char.display_body_height_px_proposal*1.36;
+  shadow(ctx,p.x,p.y,45);ctx.strokeStyle=p.char.accent;ctx.lineWidth=3;ctx.globalAlpha=p.alpha*.8;ctx.beginPath();ctx.ellipse(p.x,p.y,47,18,0,0,Math.PI*2);ctx.stroke();ctx.globalAlpha=p.alpha;
+  drawFigure(ctx,p.char,frame,p.x,p.y,ctxHeight);drawBall(ctx,p.char,p.x,p.y,ctxHeight);
+  ctx.font='600 22px Noto, sans-serif';ctx.textAlign='center';ctx.fillStyle='#112c38';ctx.fillText(p.char.name,p.x,p.y+43);
+  if(p.i===selected){ctx.fillStyle='#e1fff1';ctx.beginPath();ctx.arc(p.x,p.y+60,3,0,Math.PI*2);ctx.fill();}
+  ctx.restore();
+ }
+ const chosen=chars[selected],dctx=contexts.detail;dctx.clearRect(0,0,360,360);
+ shadow(dctx,175,310,42);drawFigure(dctx,chosen,frame,175,310,250);drawBall(dctx,chosen,175,310,250);
+ $('ensemble').dataset.frameIndex=String(frame);$('ensemble').dataset.frameCount=String(frameCount());$('ensemble').dataset.action=action;$('ensemble').dataset.runVersion=runVersion;
+ $('ensemble').setAttribute('aria-label','六名足球角色'+labels[action]+'动画，第'+(frame+1)+'帧');
+ $('detail').setAttribute('aria-label',chosen.name+labels[action]+'，第'+(frame+1)+'帧，'+clip(chosen).frames[frame].phase);
+ $('frame-status').textContent=String(frame+1).padStart(2,'0')+' / '+String(frameCount()).padStart(2,'0');$('phase-status').textContent=clip(chosen).frames[frame].phase;
+ $('play-status').textContent=(playing?'播放中':'已暂停')+' · '+labels[action]+' · '+fps()+' fps'+(action==='run'?' · '+frameCount()+' 帧 · '+(travel?'行进':'原地检查'):'')+(action==='kick'&&ticks>=8?' · 动作后停顿':'');
+ $('detail-phase').textContent=labels[action]+' / '+clip(chosen).frames[frame].phase;
+ $('source-link').href='../'+clip(chosen).frames[frame].texture;
+ document.querySelectorAll('[data-frame]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.frame)===frame)));
+ document.querySelectorAll('[data-direction]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.direction)===frame)));
+}
+function setPlaying(value){playing=value;$('play').textContent=playing?'暂停':'播放';$('play').setAttribute('aria-label',playing?'暂停动画':'播放动画');render();}
+function selectFrame(value){ticks=value;motionTicks=value;frame=value;setPlaying(false);}
+function refresh(){
+ const chosen=chars[selected];$('character-name').textContent=chosen.name;
+ $('clip-note').textContent=action==='run'?frameCount()+' 帧循环 · 右前方向 · '+(runVersion==='v2'?'每半轮 7 帧：触地、下压、支撑、过身、蹬地、腾空、前伸。':'上一版 8 帧，保留用于对照。'):action==='turn'?'8 个重新绘制的身体视图 · 点击方向可单独检查。':'8 帧单次动作 · 后摆、蓄势、击球、随挥、回收。';
+ $('run-controls').hidden=action!=='run'||!spec.comparison_runs;
+ document.querySelectorAll('[data-run-version]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.runVersion===runVersion)));
+ $('directions').hidden=action!=='turn';$('scope-note').textContent=action==='kick'?'踢球第 5 帧显示独立足球的出脚示意；动画本身不含足球。当前时序与脚点仍是美术预览提案。':action==='turn'?'转身顺序：正面 → 左前 → 左侧 → 左后 → 背面 → 右后 → 右侧 → 右前。身体视图分别绘制。':'14 帧按 18 fps 播放，一轮约 0.78 秒；8 帧对比按 10 fps 播放，一轮约 0.8 秒。行进速度跟随步频，短跑道首尾淡入淡出；关闭行进可单独检查步态。';
+ document.querySelectorAll('button[data-action]').forEach(b=>b.setAttribute('aria-pressed',String(b.dataset.action===action)));
+ document.querySelectorAll('[data-character]').forEach(b=>b.setAttribute('aria-pressed',String(Number(b.dataset.character)===selected)));
+ $('timeline').replaceChildren();$('timeline').style.gridTemplateColumns='repeat('+(frameCount()===14?7:8)+',1fr)';clip(chosen).frames.forEach((f,i)=>{
+  const b=document.createElement('button');b.dataset.frame=i;b.setAttribute('aria-label','第'+(i+1)+'帧 '+f.phase);b.setAttribute('aria-pressed','false');
+  const c=document.createElement('canvas');c.width=100;c.height=115;c.setAttribute('aria-hidden','true');b.append(c,document.createTextNode(String(i+1).padStart(2,'0')));
+  b.addEventListener('click',()=>selectFrame(i));$('timeline').append(b);if(ready)drawFigure(c.getContext('2d'),chosen,i,50,100,84);
+ });render();
+}
+chars.forEach((char,i)=>{const b=document.createElement('button');b.dataset.character=i;b.style.setProperty('--accent',char.accent);b.setAttribute('aria-pressed',String(i===0));const title=document.createElement('b');title.textContent=char.name;const role=document.createElement('small');role.textContent=char.role;b.append(title,role);b.addEventListener('click',()=>{selected=i;refresh();});$('characters').append(b);});
+dirLabels.forEach((label,i)=>{const b=document.createElement('button');b.textContent=label;b.dataset.direction=i;b.setAttribute('aria-pressed','false');b.addEventListener('click',()=>selectFrame(i));$('directions').append(b);});
+function resetClip(){ticks=0;motionTicks=0;frame=0;$('fps').value=clip(chars[selected]).fps_proposal;$('fps-value').textContent=fps()+' fps';refresh();}
+document.querySelectorAll('button[data-action]').forEach(b=>b.addEventListener('click',()=>{action=b.dataset.action;resetClip();}));
+document.querySelectorAll('[data-run-version]').forEach(b=>b.addEventListener('click',()=>{runVersion=b.dataset.runVersion;resetClip();}));
+document.querySelectorAll('[data-bg]').forEach(b=>b.addEventListener('click',()=>{document.querySelector('.sprite-stage').dataset.bg=b.dataset.bg;document.querySelectorAll('[data-bg]').forEach(n=>n.setAttribute('aria-pressed',String(n===b)));}));
+$('play').addEventListener('click',()=>setPlaying(!playing));$('step').addEventListener('click',()=>selectFrame((frame+1)%frameCount()));$('restart').addEventListener('click',()=>{frame=0;ticks=0;motionTicks=0;setPlaying(true);});
+$('fps').addEventListener('input',()=>{$('fps-value').textContent=fps()+' fps';render();});$('ball').addEventListener('change',render);
+$('travel').addEventListener('change',render);
+document.addEventListener('keydown',e=>{if(['INPUT','SELECT','BUTTON','A'].includes(e.target.tagName))return;if(e.code==='Space'){e.preventDefault();setPlaying(!playing);}if(e.code==='ArrowRight'){e.preventDefault();selectFrame((frame+1)%frameCount());}});
+const paths=[...new Set([...chars.flatMap(c=>Object.values(c.clips).flatMap(a=>a.frames.map(f=>f.texture))),...Object.values(spec.comparison_runs||{}).flatMap(c=>c.frames.map(f=>f.texture))]),'assets/original/arenas/standard-floor-v2.png','assets/original/vector/ball-v2.svg'];
+Promise.all(paths.map(path=>new Promise((resolve,reject)=>{const im=new Image();im.dataset.asset=path;im.alt='';im.onload=()=>{loaded.set(path,im);resolve();};im.onerror=()=>reject(new Error(path));im.src='../'+path;$('preload').append(im);}))).then(()=>{ready=true;$('load-status').textContent='六个人物 / 18 套动作 / '+spec.active_frame_count+' 个有效帧 · 8／14 帧跑步可对比';refresh();requestAnimationFrame(animate);}).catch(error=>{$('load-status').textContent='图集加载失败：'+error.message;$('load-status').style.color='#ffc982';setPlaying(false);});
+function animate(time){
+ const delta=last?Math.min((time-last)/1000,.1):0;last=time;
+ if(playing&&!document.hidden){ticks+=delta*fps();if(action==='run')motionTicks+=delta*fps();const count=frameCount(),length=action==='kick'?count+10:count;if(ticks>=length){if($('repeat').checked)ticks%=length;else{ticks=count-1;setPlaying(false);}}frame=Math.min(count-1,Math.floor(ticks));render();}
+ requestAnimationFrame(animate);
+}
+</script></body></html>

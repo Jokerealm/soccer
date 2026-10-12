@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-09",
+  "platform": "macOS / Metal Player",
+  "keyboardNavigation": "Tab and Enter opened AI match character selection in the native window",
+  "mouseButtons": "Native down/up and UI pointer down/up received",
+  "mousePosition": "Two automation clicks at window coordinates (389,439) and (200,200) both read Input.mousePosition (772,138); both UI pointer events used panel (965,727.5)",
+  "status": "partial; physical mouse verification pending",
+  "limitation": "Automation cursor coordinates did not synchronize with legacy Input.mousePosition. This does not verify real hardware mouse behavior.",
+  "reproduce": "Run macOS Player with --soccer-input-probe and -logFile, compare SOCCER_NATIVE_MOUSE and SOCCER_POINTER_DOWN logs while physically clicking menu buttons."
+}

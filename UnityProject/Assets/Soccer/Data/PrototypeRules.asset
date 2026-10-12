@@ -1,0 +1,74 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4e2a53d2d4b3840c192cc3ed00718326, type: 3}
+  m_Name: PrototypeRules
+  m_EditorClassIdentifier: 
+  Assumptions: "\u53C2\u8003\u7528\u6237\u63D0\u4F9B\u7684\u661F\u9645\u8DB3\u7403\u8868\u683C\uFF0C\u5148\u5B9E\u73B0\u67AA\u5175\u4E0E\u96F7\u795E\u3002\u7EDF\u4E00
+    100 \u751F\u547D\u3001100 \u80FD\u91CF\uFF1B\u5DE6\u952E\u8E22\u7403\u51B7\u5374
+    6 \u79D2\uFF0C\u7A7A\u683C\u94F2\u7403\u51B7\u5374 5 \u79D2\uFF0C\u542F\u52A8\u6263\u8840
+    10/\u63A8\u529B\uFF08\u539F\u578B\u516C\u5F0F\uFF09\u3002\u5E38\u89C4\u4E8C\u7EF4\u89C4\u5219\u4E0E\u4E09\u7EF4\u7F8E\u672F\u4FDD\u7559\uFF0C5
+    \u79D2\u539F\u5730\u590D\u6D3B\u3002\u96F7\u795E\u9A71\u52A8\u65F6\u957F\u3001\u7A81\u8FDB\u8DDD\u79BB\u3001\u70B8\u5F39\u8303\u56F4\u4E0E\u6B66\u5668\u6570\u503C\u4E3A\u53EF\u8C03\u539F\u578B\u503C\u3002"
+  Rules:
+    RuleVersion: star-strikers-prototype-0.16
+    EnableCombat: 1
+    RespawnSeconds: 5
+    RespawnProtection: 1
+    EnergyRegenDelay: 1.25
+    FieldWidth: 56
+    FieldHeight: 34
+    GoalWidth: 4.5
+    GoalDepth: 1.5
+    PostRadius: 0.1
+    BallRadius: 0.27
+    EnableOutOfPlay: 1
+    SetPiecePreparation: 1
+    SetPieceDistance: 3
+    NavigationClearance: 0.04
+    SkillPlayerClearHeight: 1.25
+    SkillBallCatchHeight: 0.3
+    SkillBallGravity: 18
+    SkillBallAirDeceleration: 0.6
+    SkillBallLandingSpeedRetention: 0.82
+    MatchSeconds: 300
+    OvertimeSeconds: 90
+    InitialCountdown: 3
+    CenterCircleRadius: 4.2
+    RestartCountdown: 2
+    GoalCelebration: 2
+    KickoffProtection: 1
+    PossessionSpeed: 0.92
+    ChargeMoveSpeed: 0.8
+    FootGap: 0.05
+    BallDeceleration: 8
+    TapKickSpeed: 9
+    FullKickSpeed: 18
+    ChargeSeconds: 0.85
+    MaxChargeHold: 0.5
+    KickRecovery: 0.12
+    KickCooldown: 6
+    ActionBufferSeconds: 0.12
+    SelfCatchLock: 0.25
+    BodyBounce: 0.45
+    WallBounce: 0.75
+    MaxBallSpeed: 24
+    TackleDistance: 1.8
+    TackleWindup: 0.06
+    TackleDuration: 0.15
+    TackleRecovery: 0.1
+    TackleCooldown: 5
+    TackleHealthCostFactor: 10
+    RearPushCarryAngleDegrees: 45
+    PushDistance: 0.9
+    PushDuration: 0.18
+    StunSeconds: 0.18
+    ControlProtection: 0.6
+    PhysicsSubsteps: 4

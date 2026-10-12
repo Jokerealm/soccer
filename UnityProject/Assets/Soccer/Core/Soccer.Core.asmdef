@@ -1,0 +1,6 @@
+{
+  "name": "Soccer.Core",
+  "rootNamespace": "Soccer.Core",
+  "references": [],
+  "noEngineReferences": true
+}

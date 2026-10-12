@@ -1,0 +1,26 @@
+{
+  "version": "0.8",
+  "generator": "tools/create_star_striker_icons.cjs",
+  "assets": [
+    {
+      "source": "assets/original/vector/star-strikers/equipment-marine.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/equipment-marine.png",
+      "sha256": "27cb3b9fa0616d425b124603bec1550d1d7d80ba4b4152c81aa9e243f71213e5",
+      "nativeRasterSize": [
+        768,
+        768
+      ],
+      "method": "Original editable vector exported with sharp; no hero likeness"
+    },
+    {
+      "source": "assets/original/vector/star-strikers/equipment-thor.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/equipment-thor.png",
+      "sha256": "e786f5ff1c7e45b87835904bda9dee8790069494c3fe6ca10d6f305498527813",
+      "nativeRasterSize": [
+        768,
+        768
+      ],
+      "method": "Original editable vector exported with sharp; no hero likeness"
+    }
+  ]
+}

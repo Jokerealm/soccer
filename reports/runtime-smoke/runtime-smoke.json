@@ -1,0 +1,25 @@
+{
+    "editor": "2022.3.62t16",
+    "platform": "OSXPlayer",
+    "passed": true,
+    "checks": [
+        "PASS UXML buttons loaded",
+        "PASS home button receives pointer hit",
+        "PASS 3 characters / 14-frame run imports",
+        "PASS settings navigation",
+        "PASS character 0 receives pointer hit",
+        "PASS character 0 selection",
+        "PASS character 1 receives pointer hit",
+        "PASS character 1 selection",
+        "PASS character 2 receives pointer hit",
+        "PASS character 2 selection",
+        "PASS training scene started",
+        "PASS training tackle transfers possession",
+        "PASS pause freezes simulation",
+        "PASS pause cancels pending shot",
+        "PASS training results navigation",
+        "PASS 3v3 bot simulation running",
+        "PASS 4:3 preserves full arena view"
+    ],
+    "errors": []
+}

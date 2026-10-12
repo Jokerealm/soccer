@@ -1,0 +1,230 @@
+.app {
+    flex-grow: 1;
+    color: rgb(247, 240, 225);
+    -unity-font-definition: url("ChineseFont.asset");
+    font-size: 20px;
+}
+.menu-backdrop { position: absolute; top: 0; bottom: 0; left: 0; right: 0; -unity-background-scale-mode: scale-and-crop; background-color: rgb(9, 24, 34); }
+.menu-shade { flex-grow: 1; background-color: rgba(7, 19, 30, 0.9); }
+.mode-home { flex-grow: 1; padding: 26px 64px 20px; }
+.front-topbar { height: 66px; flex-shrink: 0; border-bottom-width: 1px; border-bottom-color: rgba(191, 219, 226, 0.16); padding-bottom: 18px; }
+.front-brand { font-size: 30px; -unity-font-style: bold; }
+.front-brand-sub { font-size: 13px; color: rgb(145, 168, 185); }
+.connection-status { color: rgb(149, 181, 188); background-color: rgba(32, 55, 64, 0.75); padding: 8px 16px; border-radius: 18px; font-size: 15px; }
+.build-label { font-size: 13px; color: rgb(115, 145, 162); margin-left: 22px; }
+.mode-intro { padding-top: 25px; padding-bottom: 25px; flex-shrink: 0; }
+.mode-intro .eyebrow { font-size: 13px; margin-bottom: 7px; }
+.mode-page-title { font-size: 46px; -unity-font-style: bold; }
+.mode-intro-copy { color: rgb(164, 187, 197); font-size: 18px; margin-top: 5px; }
+.mode-deck { flex-grow: 1; align-items: stretch; min-height: 390px; }
+Button.mode-card { flex-grow: 1; flex-basis: 0; min-width: 0; margin: 0 20px 0 0; padding: 0; border-radius: 18px; border-width: 2px; overflow: hidden; align-items: stretch; flex-direction: column; }
+Button.mode-card.party { margin-right: 0; }
+Button.mode-card.normal { background-color: rgb(17, 48, 53); border-color: rgb(42, 91, 95); }
+Button.mode-card.ranked { background-color: rgb(49, 39, 27); border-color: rgb(103, 83, 51); }
+Button.mode-card.party { background-color: rgb(41, 31, 60); border-color: rgb(89, 66, 118); }
+Button.mode-card.normal:hover, Button.mode-card.normal:focus { background-color: rgb(22, 66, 68); border-color: rgb(104, 230, 207); }
+Button.mode-card.ranked:hover, Button.mode-card.ranked:focus { background-color: rgb(70, 53, 31); border-color: rgb(249, 195, 100); }
+Button.mode-card.party:hover, Button.mode-card.party:focus { background-color: rgb(60, 40, 81); border-color: rgb(197, 152, 247); }
+.mode-card-top { padding: 20px 24px 0; justify-content: space-between; flex-shrink: 0; }
+.mode-kicker { font-size: 13px; color: rgb(178, 203, 203); }
+.mode-tag { font-size: 13px; padding: 5px 10px; border-radius: 10px; background-color: rgba(7, 18, 29, 0.3); }
+.normal .mode-tag, .normal .mode-card-action { color: rgb(104, 230, 207); }
+.ranked .mode-tag, .ranked .mode-card-action { color: rgb(249, 195, 100); }
+.party .mode-tag, .party .mode-card-action { color: rgb(197, 152, 247); }
+.mode-card-art { flex-grow: 1; min-height: 150px; position: relative; overflow: hidden; }
+.mode-number { position: absolute; top: 46px; left: 24px; font-size: 116px; -unity-font-style: bold; color: rgba(237, 247, 249, 0.06); }
+.mode-icon { position: absolute; top: 20px; left: 26px; width: 58px; height: 58px; -unity-background-scale-mode: scale-to-fit; }
+.mode-player-art { position: absolute; top: 0; right: -12px; width: 90%; height: 330px; -unity-background-scale-mode: scale-to-fit; }
+.mode-card-copy Label { -unity-text-align: upper-left; }
+.mode-card-copy { padding: 16px 24px 23px; background-color: rgba(7, 18, 29, 0.45); flex-shrink: 0; }
+.mode-card-title { font-size: 38px; -unity-font-style: bold; }
+.mode-card-subtitle { font-size: 18px; color: rgb(234, 233, 222); margin-top: 9px; }
+.mode-card-description { font-size: 15px; color: rgb(151, 172, 185); margin-top: 8px; }
+.mode-card-line { height: 1px; background-color: rgba(224, 239, 242, 0.15); margin-top: 23px; margin-bottom: 16px; }
+.mode-card-action { font-size: 17px; -unity-font-style: bold; }
+.front-footer { height: 74px; flex-shrink: 0; padding-top: 12px; }
+Button.front-utility { min-height: 38px; background-color: rgba(22, 44, 57, 0.8); border-color: rgba(105, 142, 157, 0.3); border-radius: 8px; padding: 8px 18px; font-size: 16px; margin: 0 12px 0 0; }
+Button.front-utility:hover { background-color: rgb(34, 68, 77); border-color: rgb(104, 230, 207); }
+.front-footer-note { color: rgb(118, 146, 162); font-size: 14px; }
+.loading-page { flex-grow: 1; background-color: rgb(8, 25, 37); }
+.loading-art { position: absolute; top: 0; bottom: 0; left: 0; right: 0; -unity-background-scale-mode: scale-and-crop; }
+.loading-shade { position: absolute; top: 0; bottom: 0; left: 0; width: 46%; background-color: rgba(7, 25, 36, 0.73); }
+.loading-brand { position: absolute; top: 29%; left: 7%; }
+.loading-eyebrow { font-size: 16px; color: rgb(130, 215, 213); margin-bottom: 14px; }
+.loading-title { font-size: 94px; -unity-font-style: bold; color: rgb(255, 246, 222); }
+.loading-tagline { font-size: 25px; margin-top: 8px; color: rgb(213, 230, 226); }
+.loading-rule { width: 64px; height: 4px; background-color: rgb(104, 230, 207); margin-top: 26px; margin-bottom: 15px; }
+.loading-motto { font-size: 14px; color: rgb(142, 184, 190); }
+.loading-bottom { position: absolute; left: 7%; bottom: 9%; width: 34%; }
+.loading-caption { font-size: 15px; color: rgb(210, 232, 231); margin-bottom: 12px; }
+.loading-track { height: 4px; background-color: rgba(154, 197, 199, 0.25); }
+.loading-fill { height: 4px; width: 0; background-color: rgb(104, 230, 207); }
+.loading-tip { font-size: 13px; color: rgb(142, 180, 185); margin-top: 16px; white-space: normal; }
+.loading-version { position: absolute; right: 40px; bottom: 25px; color: rgba(238, 245, 239, 0.65); font-size: 13px; }
+.mode-details { flex-grow: 1; padding: 34px 64px 42px; }
+.detail-topbar { height: 50px; margin-bottom: 26px; }
+.detail-content { flex-grow: 1; align-items: stretch; }
+.detail-overview { flex-grow: 1; flex-basis: 0; margin-right: 34px; padding: 38px; border-radius: 18px; background-color: rgba(19, 43, 53, 0.88); overflow: hidden; }
+.detail-eyebrow { font-size: 14px; color: rgb(104, 230, 207); margin-bottom: 14px; }
+.detail-title { font-size: 62px; -unity-font-style: bold; }
+.detail-subtitle { font-size: 24px; margin-top: 14px; }
+.detail-description { font-size: 18px; color: rgb(172, 194, 199); white-space: normal; max-width: 450px; margin-top: 20px; }
+.detail-rules { margin-top: 30px; max-width: 440px; padding: 22px 24px; border-left-width: 3px; border-left-color: rgb(104, 230, 207); background-color: rgba(6, 22, 32, 0.7); }
+.detail-section-label { font-size: 16px; color: rgb(162, 190, 197); margin-bottom: 13px; }
+.detail-rule { font-size: 18px; margin-bottom: 12px; white-space: normal; }
+.detail-player-art { position: absolute; right: -12px; bottom: -10px; width: 44%; height: 66%; -unity-background-scale-mode: scale-to-fit; opacity: 0.85; }
+.ranked .detail-overview { background-color: rgba(54, 42, 28, 0.88); }
+.party .detail-overview { background-color: rgba(43, 32, 62, 0.88); }
+.ranked .detail-eyebrow { color: rgb(249, 195, 100); }
+.party .detail-eyebrow { color: rgb(197, 152, 247); }
+.ranked .detail-rules { border-left-color: rgb(249, 195, 100); }
+.party .detail-rules { border-left-color: rgb(197, 152, 247); }
+.connection-panel { width: 440px; flex-shrink: 0; border-radius: 18px; border-width: 1px; border-color: rgba(129, 164, 181, 0.25); padding: 30px; background-color: rgba(12, 30, 43, 0.96); }
+.connection-tabs { margin-bottom: 28px; background-color: rgb(8, 22, 32); border-radius: 10px; padding: 4px; }
+Button.route-button { flex-grow: 1; flex-basis: 0; margin: 0; min-height: 42px; padding: 8px 12px; border-radius: 7px; background-color: rgba(0, 0, 0, 0); border-width: 0; font-size: 17px; }
+Button.route-button.route-selected { background-color: rgb(36, 83, 86); color: rgb(135, 237, 217); }
+Button.route-button:disabled { color: rgb(95, 115, 128); }
+.connection-title { font-size: 28px; -unity-font-style: bold; margin-bottom: 14px; }
+.network-unavailable { font-size: 14px; color: rgb(226, 182, 119); margin-bottom: 14px; }
+.connection-copy { font-size: 17px; color: rgb(155, 182, 194); white-space: normal; margin-bottom: 22px; }
+Button.network-action { font-size: 17px; min-height: 48px; margin: 0 0 10px; background-color: rgb(27, 46, 58); border-color: rgb(61, 79, 88); color: rgb(110, 138, 150); }
+.connection-divider { height: 1px; background-color: rgba(124, 159, 175, 0.2); margin-top: 18px; margin-bottom: 22px; }
+.practice-availability { font-size: 15px; color: rgb(159, 195, 191); white-space: normal; margin-bottom: 10px; }
+.connection-panel Button.primary, .connection-panel Button.secondary { font-size: 18px; min-height: 48px; margin-top: 8px; padding: 11px 16px; }
+.compact-front-end .mode-home { padding-top: 18px; padding-bottom: 12px; }
+.compact-front-end .mode-intro { padding-top: 16px; padding-bottom: 16px; }
+.compact-front-end .mode-page-title { font-size: 40px; }
+.compact-front-end .mode-deck { min-height: 330px; }
+.compact-front-end .mode-card-art { min-height: 105px; }
+.compact-front-end .mode-card-copy { padding-top: 12px; padding-bottom: 16px; }
+.compact-front-end .mode-card-title { font-size: 33px; }
+.compact-front-end .mode-card-line { margin-top: 15px; margin-bottom: 12px; }
+.compact-front-end .front-footer { height: 60px; }
+.compact-front-end .detail-overview { padding: 28px; }
+.compact-front-end .detail-title { font-size: 52px; }
+.compact-front-end .detail-rules { margin-top: 20px; padding-top: 14px; padding-bottom: 12px; }
+.compact-front-end .connection-panel { padding: 22px; }
+.compact-front-end .connection-tabs { margin-bottom: 18px; }
+.compact-front-end .connection-copy { margin-bottom: 14px; }
+.narrow-front-end .front-footer-note { display: none; }
+.narrow-front-end .mode-home { padding-left: 42px; padding-right: 42px; }
+.narrow-front-end .mode-card-copy { padding-left: 20px; padding-right: 20px; }
+.narrow-front-end .mode-details { padding-left: 42px; padding-right: 42px; }
+.narrow-front-end .connection-panel { width: 380px; }
+.narrow-front-end .detail-overview { margin-right: 22px; }
+.narrow-front-end .detail-description { max-width: 360px; }
+.narrow-front-end .detail-rules { max-width: 360px; }
+.narrow-front-end .detail-player-art { width: 33%; height: 52%; }
+.hidden { display: none; }
+.row { flex-direction: row; align-items: center; }
+.grow { flex-grow: 1; }
+.page { flex-grow: 1; margin: 50px 70px; padding: 45px; background-color: rgba(19, 44, 60, 0.97); border-radius: 26px; border-width: 2px; border-color: rgba(247, 240, 225, 0.3); }
+.eyebrow { color: rgb(66, 210, 200); font-size: 17px; margin-bottom: 12px; }
+.muted { color: rgb(174, 195, 198); white-space: normal; }
+.small { font-size: 16px; }
+Button {
+    background-color: rgb(35, 64, 79); color: rgb(247, 240, 225); border-color: rgb(73, 105, 116);
+    border-width: 1px; border-radius: 12px; padding: 15px 24px; margin: 8px 6px 8px 0;
+    min-height: 56px; font-size: 20px;
+}
+Button:hover { background-color: rgb(53, 88, 99); border-color: rgb(66, 210, 200); }
+Button:active { background-color: rgb(30, 110, 110); }
+Button:focus { border-color: rgb(244, 169, 69); border-width: 2px; }
+Button.primary { background-color: rgb(66, 210, 200); color: rgb(19, 44, 60); border-color: rgb(66, 210, 200); -unity-font-style: bold; }
+Button.primary:hover { background-color: rgb(104, 228, 215); }
+Button.secondary { background-color: rgba(19, 44, 60, 0.3); }
+.page-heading { margin-bottom: 22px; }
+.page-title { font-size: 44px; -unity-font-style: bold; margin-bottom: 12px; }
+.selection-content { flex-grow: 1; align-items: stretch; }
+.selection .page-heading { margin-bottom: 14px; }
+.selection .page-title { font-size: 38px; }
+.selection .description { font-size: 17px; margin-bottom: 8px; }
+.selection .skill-heading { font-size: 18px; margin-top: 4px; margin-bottom: 4px; }
+.selection .stats-copy { margin-bottom: 10px; }
+.roster-cards { width: 62%; align-items: stretch; }
+Button.character-card { width: 31%; flex-direction: column; justify-content: flex-end; padding: 18px 10px; margin-right: 12px; background-color: rgb(29, 53, 67); }
+Button.character-card.selected { border-color: rgb(66, 210, 200); border-width: 3px; background-color: rgb(33, 74, 81); }
+.portrait { width: 100%; flex-grow: 1; min-height: 250px; -unity-background-scale-mode: scale-to-fit; }
+.card-name { font-size: 28px; margin-top: 10px; margin-bottom: 10px; }
+.character-details { flex-grow: 1; width: 38%; padding: 18px 0 0 25px; }
+.stats-copy { white-space: normal; color: rgb(244, 169, 69); margin-bottom: 14px; font-size: 18px; }
+.skill-heading { color: rgb(244, 169, 69); -unity-font-style: bold; margin-top: 8px; margin-bottom: 6px; font-size: 19px; }
+.description { white-space: normal; font-size: 18px; margin-bottom: 12px; }
+.selection-footer { margin-top: 20px; }
+.match-page { flex-grow: 1; }
+.hud-top { position: absolute; top: 18px; left: 26px; right: 26px; justify-content: space-between; }
+.hud-pill { background-color: rgba(19, 44, 60, 0.95); border-radius: 12px; padding: 12px 18px; font-size: 17px; }
+.scoreboard { background-color: rgba(19, 44, 60, 0.95); padding: 10px 25px; border-radius: 14px; }
+.score { font-size: 38px; -unity-font-style: bold; margin: 0 16px; }
+.clock { font-size: 25px; margin: 0 22px; -unity-text-align: middle-center; min-width: 95px; }
+.team-name { font-size: 18px; }
+.cyan { color: rgb(66, 210, 200); }
+.amber { color: rgb(244, 169, 69); }
+.feedback { position: absolute; top: 102px; align-self: center; background-color: rgba(19, 44, 60, 0.85); padding: 10px 20px; border-radius: 10px; font-size: 18px; }
+.phase-label { position: absolute; top: 38%; align-self: center; font-size: 78px; -unity-font-style: bold; background-color: rgba(19, 44, 60, 0.8); padding: 15px 40px; border-radius: 20px; }
+.training-tools { position: absolute; bottom: 132px; align-self: center; flex-direction: row; align-items: center; background-color: rgba(19, 44, 60, 0.88); padding: 8px 14px; border-radius: 14px; }
+.training-tools .skill-heading { margin: 0 15px 0 0; }
+.training-tools Button { font-size: 16px; min-height: 36px; padding: 8px 12px; margin-top: 3px; margin-bottom: 3px; }
+.hud-bottom { position: absolute; bottom: 18px; align-self: center; background-color: rgba(19, 44, 60, 0.96); padding: 12px 25px; border-radius: 16px; }
+.local-info { width: 160px; }
+.local-info .card-name { font-size: 22px; margin-top: 0; margin-bottom: 3px; }
+.skill-tile { min-width: 155px; padding: 0 22px; border-left-width: 1px; border-left-color: rgba(247, 240, 225, 0.2); }
+.skill-tile .skill-heading { margin-top: 0; }
+.kick-hint { padding-left: 22px; font-size: 17px; }
+.overlay { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: rgba(5, 18, 28, 0.72); align-items: center; justify-content: center; }
+.modal { width: 440px; padding: 36px; background-color: rgb(19, 44, 60); border-radius: 22px; }
+.modal Button { margin-top: 15px; }
+.results { align-items: center; justify-content: center; }
+.result-score { font-size: 84px; color: rgb(66, 210, 200); margin-bottom: 18px; }
+.result-stats { margin: 35px 0; }
+.stat { width: 180px; align-items: center; border-right-width: 1px; border-right-color: rgba(247, 240, 225, 0.2); }
+.stat-number { font-size: 48px; color: rgb(244, 169, 69); margin-bottom: 10px; }
+.settings { max-width: 900px; align-self: center; width: 80%; }
+.settings Slider { margin-top: 12px; margin-bottom: 12px; }
+.settings .description { font-size: 21px; margin-bottom: 18px; }
+.settings Button { align-self: flex-start; margin-top: 18px; }
+.settings-toggles { margin-top: 12px; margin-bottom: 14px; }
+.settings .settings-toggles Button { margin-top: 0; margin-bottom: 0; margin-right: 14px; min-height: 36px; padding: 8px 16px; font-size: 18px; }
+.skill-tile.cooling { opacity: 0.62; }
+.skill-tile.activated { background-color: rgba(66, 210, 200, 0.24); opacity: 1; }
+.skill-tile.rejected { background-color: rgba(230, 99, 73, 0.3); opacity: 1; }
+.charge-progress { height: 18px; margin-top: 7px; }
+.charge-progress .unity-progress-bar__progress { background-color: rgb(244, 169, 69); }
+.charge-progress .unity-progress-bar__title { font-size: 13px; color: rgb(247, 240, 225); }
+
+/* 玩法原型：统一棋子 + 临时装备 */
+.loadout-symbol { align-items: center; justify-content: center; min-height: 160px; }
+.loadout-number { font-size: 90px; -unity-font-style: bold; color: rgb(66, 210, 200); }
+.loadout-weapon { font-size: 22px; color: rgb(224, 238, 234); }
+.local-info { width: 175px; margin-right: 12px; }
+.resource-progress { height: 18px; margin-top: 5px; }
+.resource-progress .unity-progress-bar__title { font-size: 12px; }
+.health-progress .unity-progress-bar__progress { background-color: rgb(45, 155, 126); }
+.energy-progress .unity-progress-bar__progress { background-color: rgb(96, 90, 174); }
+.skill-tile { min-width: 120px; padding-left: 15px; padding-right: 15px; }
+.skill-tile .skill-heading { font-size: 16px; }
+.hud-bottom { padding: 10px 18px; }
+.kick-hint { font-size: 15px; padding-left: 14px; }
+.kick-hint .small { font-size: 13px; }
+.training-tools { bottom: 166px; }
+.combat-summary { margin-top: 12px; }
+.selection .card-name { font-size: 24px; }
+.selection .selection-footer .muted { font-size: 15px; }
+.selection-content { flex-basis: 0; min-height: 0; }
+.character-details { min-height: 0; }
+.selection .character-details .page-title { font-size: 30px; margin-bottom: 6px; }
+.selection .character-details .eyebrow { font-size: 15px; margin-bottom: 8px; }
+.selection .character-details .stats-copy { font-size: 16px; margin-bottom: 8px; }
+.selection .character-details .skill-heading { font-size: 16px; margin-top: 4px; margin-bottom: 4px; }
+.selection .character-details .description { font-size: 15px; margin-bottom: 8px; }
+.character-details .unity-scroller--vertical { width: 8px; margin-left: 8px; }
+.character-details .unity-scroller__low-button, .character-details .unity-scroller__high-button { display: none; }
+.character-details .unity-slider__dragger { background-color: rgba(66, 210, 200, 0.5); border-radius: 4px; }
+.character-details .unity-slider__tracker { background-color: rgba(66, 210, 200, 0.15); }
+.phase-label.recovering { top: 172px; font-size: 30px; padding: 10px 20px; }
+.compact-front-end .selection { margin: 24px 38px; padding: 24px; }
+.compact-front-end .selection .page-title { font-size: 30px; }
+.compact-front-end .selection .description { font-size: 15px; }
+.compact-front-end .selection .stats-copy { font-size: 16px; }
+.compact-front-end .selection .skill-heading { font-size: 16px; }
+.compact-front-end .selection .selection-footer { margin-top: 10px; }

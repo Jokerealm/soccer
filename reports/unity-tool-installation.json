@@ -1,0 +1,96 @@
+{
+  "checked_at": "2026-10-08T15:38:59+08:00",
+  "engine_route": "Tuanjie Editor (Unity China) + C#; user-confirmed",
+  "installed_this_turn": [
+    {
+      "name": "Git LFS",
+      "version": "3.8.0",
+      "method": "Homebrew formula git-lfs",
+      "path": "/opt/homebrew/bin/git-lfs",
+      "source": "https://git-lfs.com/",
+      "repository_initialized": true
+    },
+    {
+      "name": ".NET SDK",
+      "version": "10.0.401",
+      "architecture": "arm64",
+      "method": "Homebrew dotnet@10 (resolved to dotnet formula)",
+      "path": "/opt/homebrew/bin/dotnet",
+      "source": "https://learn.microsoft.com/en-us/dotnet/core/install/macos",
+      "tooling_only": true
+    },
+    {
+      "name": "visualstudiotoolsforunity.vstuc",
+      "version": "1.3.2",
+      "method": "VS Code official marketplace CLI",
+      "source": "https://marketplace.visualstudio.com/items?itemName=visualstudiotoolsforunity.vstuc"
+    },
+    {
+      "name": "ms-dotnettools.csharp",
+      "version": "2.160.4",
+      "method": "VS Code official marketplace CLI",
+      "source": "https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp"
+    },
+    {
+      "name": "ms-dotnettools.csdevkit",
+      "version": "3.40.210",
+      "method": "VS Code official marketplace CLI",
+      "source": "https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csdevkit"
+    },
+    {
+      "name": "ms-dotnettools.vscode-dotnet-runtime",
+      "version": "3.2.0",
+      "method": "VS Code Unity extension dependency",
+      "source": "https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.vscode-dotnet-runtime"
+    }
+  ],
+  "sdk_dependencies_installed": [
+    "brotli 1.2.0",
+    "icu4c@78 78.3",
+    "ca-certificates 2026-09-25",
+    "openssl@3 3.6.5"
+  ],
+  "already_present": [
+    "Git 2.56.0",
+    "Homebrew 7.0.8",
+    "VS Code 1.141.0",
+    "Tuanjie Cowork 2.1.2-stable",
+    "Steam",
+    "Xcode Command Line Tools"
+  ],
+  "project_configuration": [
+    "tools/git prefers Homebrew and makes git-lfs discoverable",
+    "LFS initialized locally; psd/psb/kra tracking",
+    "Unity cache ignore and text serialization attributes; .meta kept",
+    "VS Code Unity/C# extension recommendations",
+    "C# EditorConfig",
+    "Godot preview archived; default resource scripts only prepare shared art and HTML gallery"
+  ],
+  "validation": {
+    "standalone_csharp_sdk": "passed",
+    "asset_validation": "passed",
+    "csharp_git_tools_ready": true,
+    "editor_detected": false,
+    "unity_import_compile_debug_build": "not tested; editor not installed"
+  },
+  "manual_required": [
+    "Tuanjie game-development stable Editor for macOS Apple Silicon",
+    "Editor account/license activation",
+    "Matching Windows Build Support"
+  ],
+  "manual_optional": [
+    "Krita; downloaded installer is available but installation is incomplete"
+  ],
+  "deferred": [
+    "Linux Dedicated Server Build Support",
+    "Steamworks SDK/integration",
+    "Android SDK/NDK/OpenJDK via editor modules",
+    "Full Xcode and iOS Build Support",
+    "Backend/database/container tools"
+  ],
+  "reports": [
+    "reports/environment-check.json",
+    "reports/csharp-sdk-validation.json",
+    "reports/asset-validation.json"
+  ]
+}

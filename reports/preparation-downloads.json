@@ -1,0 +1,74 @@
+[
+  {
+    "id": "sports-pack",
+    "url": "https://kenney.nl/media/pages/assets/sports-pack/ede5629412-1677693282/kenney_sports-pack.zip",
+    "sha256": "d8629a1afd6b6dc48b5cb2074810166744e06ed097ea392fe7669bdcef376de5",
+    "size": 1338106,
+    "installed_path": "/Users/gz/Documents/soccer/assets/third_party/kenney/sports-pack",
+    "status": "ready"
+  },
+  {
+    "id": "particle-pack",
+    "url": "https://kenney.nl/media/pages/assets/particle-pack/f8fe0f8cb8-1677578741/kenney_particle-pack.zip",
+    "sha256": "b631d4b07f7002549fdcf155f01141ad482f79f3440e4e301eed49ce5f1d8958",
+    "size": 15001764,
+    "installed_path": "/Users/gz/Documents/soccer/assets/third_party/kenney/particle-pack",
+    "status": "ready"
+  },
+  {
+    "id": "font",
+    "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Regular.otf",
+    "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b",
+    "size": 16437364,
+    "installed_path": "/Users/gz/Documents/soccer/assets/third_party/noto-sans-cjk/NotoSansCJKsc-Regular.otf",
+    "status": "ready"
+  },
+  {
+    "id": "font-license",
+    "url": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/LICENSE",
+    "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2",
+    "size": 4301,
+    "installed_path": "/Users/gz/Documents/soccer/assets/third_party/noto-sans-cjk/OFL.txt",
+    "status": "ready"
+  },
+  {
+    "id": "ui-pack",
+    "url": "https://kenney.nl/media/pages/assets/ui-pack/f651646eab-1718203990/kenney_ui-pack.zip",
+    "sha256": "a8a14a234911eb648c062622915c93e79e94e97cb7f9f375a70f6617f1174318",
+    "size": 1229750,
+    "installed_path": "/Users/gz/Documents/soccer/assets/third_party/kenney/ui-pack",
+    "status": "ready"
+  },
+  {
+    "id": "input-prompts",
+    "url": "https://kenney.nl/media/pages/assets/input-prompts/8de120163f-1783763952/kenney_input-prompts_1.5.zip",
+    "sha256": "ac2fcf599080b0f3ba2d174c9474db6df1a0e96ff0662580e2da79a122ab78a1",
+    "size": 5070075,
+    "installed_path": "/Users/gz/Documents/soccer/assets/third_party/kenney/input-prompts",
+    "status": "ready"
+  },
+  {
+    "id": "godot",
+    "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_macos.universal.zip",
+    "sha256": "c58a24e31d720be9d62f60cb5627c4e695fb72f21b0cfe1bc9ccaa9a3b3ba63e",
+    "size": 170622178,
+    "installed_path": "/Users/gz/Applications/Godot-4.7.2.app",
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "status": "ready"
+  },
+  {
+    "id": "templates",
+    "url": "https://github.com/godotengine/godot-builds/releases/download/4.7.2-stable/Godot_v4.7.2-stable_export_templates.tpz",
+    "sha256": "f298490b8d44d934be425a5a65a51bf15f422428b229a06a6e11d9ffea248011",
+    "size": 1281349702,
+    "installed_path": "/Users/gz/Library/Application Support/Godot/export_templates/4.7.2.stable",
+    "selected_files": [
+      "linux_debug.x86_64",
+      "linux_release.x86_64",
+      "version.txt",
+      "windows_debug_x86_64.exe",
+      "windows_release_x86_64.exe"
+    ],
+    "status": "ready"
+  }
+]

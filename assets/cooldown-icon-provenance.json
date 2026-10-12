@@ -1,0 +1,87 @@
+{
+  "operation": "UI luminance desaturation; RGB channels equal, original resolution and alpha retained",
+  "generator": "tools/prepare_cooldown_icons.py",
+  "assets": [
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-stim-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-stim-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a592de448f06200a18672d4055859a4b7d84a4d9eb62842de453cc6f8242f2a9"
+    },
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-bomb-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-bomb-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "0666012f9279f19f9037f619ce064832c0c944964cfc59d5909e4d32a7fa32b3"
+    },
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-drive-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-drive-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a449dada1fecc2bd9fabc2a48b024675922616a9a31a9afca5c37d62e341af29"
+    },
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-thruster-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-thruster-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "a76d3eba46aff5c79e4e2fc754249bba838b02eb112716f10bd9d4b203ea5121"
+    },
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-kick-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-kick-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "fc67c0ef4e0743208353bdebfd78385a886770ddbffb50e803ae83cfb5afbb08"
+    },
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-tackle-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-tackle-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c692fb075f5bdf437d1b20aaf3cf728d111ad1c62375a4408fce57ffa1210406"
+    },
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-rifle-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-rifle-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "c8251d73597411034a841cf4fed3d17fee919190d1191c0da89c499afd13a2f7"
+    },
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-cannons-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-cannons-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "4131a4a848e2b84f343af99deef2628587639fd8a49c0057128b27843217730b"
+    },
+    {
+      "source": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-trigger-v2.png",
+      "display_variant": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-trigger-v2-gray.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "sha256": "7f01430669927dfb4af869878810d772f60b83a44294b6b30432577e68703107"
+    }
+  ]
+}

@@ -1,0 +1,13 @@
+{
+  "id": "krita",
+  "version": "5.3.4.1",
+  "source_page": "https://krita.org/en/download/",
+  "url": "https://download.kde.org/stable/krita/5.3.4.1/krita-5.3.4.1-signed.dmg",
+  "installer_path": "/Users/gz/Documents/soccer/.tools/downloads/krita-5.3.4.1.dmg",
+  "bytes": 392023759,
+  "sha256": "531e261da1fd8d5c468cfcd4eebd16e9edf6ab320e89406d2875f2e43c1148de",
+  "status": "installer-ready-installation-incomplete",
+  "reason": "DMG checksum verified, but reading mounted directory stalled; installation and runtime were not verified. Mount cleanup also stalled.",
+  "mount_path": "/Users/gz/Documents/soccer/.tools/krita-mount",
+  "code_signature_verified": false
+}

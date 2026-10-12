@@ -1,0 +1,12 @@
+#!/bin/sh
+set -eu
+# Include Homebrew so Git can find git-lfs as well as the Git executable.
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+runtime="${SOCCER_GIT_BIN:-}"
+if [ -z "$runtime" ]; then
+  runtime=$(command -v git || true)
+fi
+if [ -z "$runtime" ] || [ ! -x "$runtime" ]; then
+  runtime="$HOME/.cache/codex-runtimes/codex-primary-runtime/dependencies/bin/fallback/git"
+fi
+exec "$runtime" "$@"

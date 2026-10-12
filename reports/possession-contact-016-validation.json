@@ -1,0 +1,74 @@
+{
+  "version": "0.16.0",
+  "date": "2026-10-12",
+  "passed": true,
+  "core": {
+    "passed": true,
+    "total": 194,
+    "failed": 0,
+    "report": "reports/possession-contact-016-core/core-tests.json"
+  },
+  "focusedRuntime": {
+    "passed": true,
+    "total": 27,
+    "errors": [],
+    "report": "reports/runtime-possession-contact-016-quick-final/runtime-smoke.json"
+  },
+  "fullRegressionBeforeFixtureRepair": {
+    "total": 312,
+    "passed": false,
+    "errors": [
+      "pause freezes portrait positions and camera footprint"
+    ],
+    "report": "reports/runtime-possession-contact-016-final/runtime-smoke.json",
+    "resolution": "The remaining pause-map check observed the match page entering from a 6.2-pixel vertical offset; simulation tick and camera bounds did not change. The fixture now waits for entry animation to finish. The exact same pause, portrait and camera check passes in the focused final client run."
+  },
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 413426357
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 381872337
+    }
+  },
+  "implementation": [
+    "Free-ball ownership requires circle contact on the actual current or swept collision path; no pickup reach or ordinary ball-speed threshold",
+    "Push displaces the target without assigning ownership to the pusher",
+    "Friendly pushes always retain possession and carry the ball with the target",
+    "Enemy front and side pushes release a stationary football at its original position",
+    "Enemy rear pushes retain possession and move the football with its carrier",
+    "Rear half-angle is 45 degrees relative to carrier facing and physical contact, configurable",
+    "Displaced former carrier cannot immediately reacquire the ball; any eligible third player can receive through contact",
+    "Bombs use the same push/carry rules with explosion origin as the contact direction",
+    "Only a subsequent real ball reception counts a capture; push itself leaves last touch attributed to the former owner",
+    "AI approaches from the side before pushing; contextual right click only supplies movement intent"
+  ],
+  "windowsRuntimeVerified": false,
+  "nativeMouseHandFeelVerified": false,
+  "screenshots": [
+    "reports/runtime-possession-contact-016-quick-final/51-side-push-free-ball.png",
+    "reports/runtime-possession-contact-016-quick-final/52-contact-pickup.png",
+    "reports/runtime-possession-contact-016-quick-final/53-rear-push-carried-ball.png",
+    "reports/runtime-possession-contact-016-quick-final/54-friendly-push-carried-ball.png"
+  ],
+  "sourceHashes": {
+    "UnityProject/Assets/Soccer/Core/TackleSystem.cs": "110d60c2c112f607323a12ad15b6b5ef86c2e790bdb5c6216d8262bfe934a0f2",
+    "UnityProject/Assets/Soccer/Core/BallSystem.cs": "6feadae6a7c102ddf00cc8d882fe38544237911093c8e9e29a392c2c7736ecac",
+    "UnityProject/Assets/Soccer/Core/MatchSimulation.cs": "c09683f4c3895b3beec7bd728382f2bb4fd35da5946d7649572998e1cba09dd0",
+    "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeSmokeProbe.cs": "af760151a97ab132c6fd7b8a10fbe28c129d5fc5c781822ebbe60e1ef07b1f6c"
+  }
+}

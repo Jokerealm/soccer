@@ -1,0 +1,23 @@
+{
+  "version": "0.9.0",
+  "date": "2026-10-10",
+  "source": "Original editable C# procedural meshes, animation and shaders; existing arena-v3 HD detail retained.",
+  "files": [
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/DynamicStadiumView.cs",
+      "sha256": "0aa390c78425ec7e015bb50f84caf70a3908372328eb64217b3cf64e1d41a4d0"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/LivingTurf.shader",
+      "sha256": "1bc86c3e6f4a7840a4859b7611755a293fdcab44fb9b33e41ce6a52e9e281a77"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/ArenaWind.shader",
+      "sha256": "4b5deb4b7bab88d740b0605ad2c4b25dba6a8322814f3e49dab36b37a73c1868"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/StadiumLED.shader",
+      "sha256": "54aa6473400a8f3a8da658065a16703d0747baaac82675026a2c4eaab4fbf541"
+    }
+  ]
+}

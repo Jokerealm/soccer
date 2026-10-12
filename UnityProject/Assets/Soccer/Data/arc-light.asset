@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a00a3f94bf9dc42f9b8cb007057490dc, type: 3}
+  m_Name: arc-light
+  m_EditorClassIdentifier: 
+  Stats:
+    Id: 2
+    Name: "\u826F\u5B50\u53C2\u8003"
+    MaxHealth: 100
+    MaxEnergy: 100
+    EnergyRegen: 12
+    Loadout:
+      Weapon: 2
+      Support: 2
+      WeaponDamage: 18
+      WeaponRange: 7
+      WeaponCooldown: 0.26
+      WeaponWindup: 0.05
+      AmmoCapacity: 3
+      AmmoReloadSeconds: 1.05
+      WeaponShots: 1
+      WeaponSpreadDegrees: 0
+      WeaponSpeed: 18
+      WeaponRadius: 0.16
+      MeleeHalfAngle: 60
+      QDamage: 6
+      QStun: 0.55
+      QRange: 8
+      QSpeed: 12
+      QRadius: 0.24
+      QShots: 3
+      QSpreadDegrees: 18
+      QBounces: 0
+      QEnergy: 30
+      EEnergy: 30
+      SupportRadius: 3
+      SupportStrength: 30
+      SupportDuration: 2
+    Speed: 5
+    Radius: 0.5
+    KickDistance: 1
+    PushResistance: 0
+    QCooldown: 5
+    ECooldown: 8
+    QWindup: 0
+    QDuration: 0.16
+    QDistance: 1.4
+    EWindup: 0.15
+    EDuration: 2
+    LaneLength: 3
+    LaneWidth: 0.9
+    LaneSpeedBonus: 0.12
+    RelaySpeedBonus: 0.1
+    RelayDuration: 0.8
+    RelayCooldown: 6
+    ShieldLength: 2.2
+    ShieldBounce: 0.55
+    RootResistance: 0.6
+    RootSpeed: 0.8
+    PreparationLifetime: 2
+    CurveSeconds: 0.6
+    CurveDegrees: 18
+    CurveDeadZoneDegrees: 5
+    PowerChargeSeconds: 1
+    PowerDistance: 1.2
+    PowerMoveSpeed: 0.65
+  PrototypeVersion: 2
+  Role: "\u996D\u56E2\u8FDC\u6295 \xB7 \u5F00\u5E2D\u56DE\u8840"
+  PassiveDescription: "\u53F3\u952E\uFF0F\u996D\u56E2\u6295\u624B\uFF1A\u8FDC\u8DDD\u79BB\u6295\u5C04\uFF0C18
+    \u4F24\u5BB3\u30023 \u683C\u50A8\u5907\uFF0C\u95F4\u9694 0.26 \u79D2\uFF1B\u505C\u706B\u540E\u6BCF
+    1.05 \u79D2\u8865\u4E00\u683C\uFF0C\u4E0D\u8017\u80FD\u91CF\u3002\u53EF\u4EE5\u8FB9\u8D70\u8FB9\u6253\u3002"
+  QName: "\u996D\u56E2\u5F00\u8DEF"
+  QDescription: "\u5411\u6247\u533A\u6254\u51FA 3 \u9897\u996D\u56E2\uFF1B\u6BCF\u9897
+    6 \u4F24\u5BB3\uFF0C\u7729\u6655 0.55 \u79D2\u3002\u591A\u9897\u547D\u4E2D\u4E0D\u5EF6\u957F\u7729\u6655\u3002"
+  EName: "\u5F00\u5E2D"
+  EDescription: "\u6062\u590D\u81EA\u5DF1\u548C\u9644\u8FD1\u5B58\u6D3B\u961F\u53CB
+    30 \u751F\u547D\uFF1B\u6D88\u8017 30 \u80FD\u91CF\u3002"
+  Accent: {r: 0.68, g: 0.47, b: 0.84, a: 1}
+  Portrait: {fileID: 0}
+  Animations: {fileID: 11400000, guid: 659cfa36562f945928ebf327669bf3ee, type: 2}

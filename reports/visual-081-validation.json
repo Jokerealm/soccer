@@ -1,0 +1,58 @@
+{
+  "version": "0.8.1",
+  "date": "2026-10-09",
+  "passed": true,
+  "coreChecksRetainedFrom08": 119,
+  "coreReport": "reports/star-strikers-check/core-tests.json",
+  "coreVerificationNote": "Gameplay simulation and parameters are unchanged; existing 119 core checks were retained. New verification ran in the actual client for the presentation change.",
+  "clientChecks": 99,
+  "runtimeErrors": [],
+  "runtimeReport": "reports/runtime-visual-081-release/runtime-smoke.json",
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 310331168
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 278801213
+    }
+  },
+  "buildLogs": {
+    "macos": "reports/build-visual-081-macos-release.log",
+    "windows": "reports/build-visual-081-windows-release.log"
+  },
+  "buildLogNote": "Windows Bee initially used a stale source DAG without PlayerModelView, regenerated its response file, and completed successfully. Final build summary has zero errors and zero warnings.",
+  "implemented": [
+    "Volumetric replaceable marine and heavy-mech models with bevels, joints and distinct weapons",
+    "Standard-shader character lighting, cast shadows, walking and hit feedback",
+    "Ability-specific 768 px original icons with editable SVG sources",
+    "Square bottom skill bar, key caps, independent cooldown numbers and masks",
+    "Full-width health and energy bars below skills; ammo, costs and live bomb fuse",
+    "Actual 4:3 HUD viewport fit verification"
+  ],
+  "reference": "assets/battle-hud-provenance.json",
+  "windowsRuntimeVerified": false,
+  "nativeInputHandFeelVerified": false,
+  "full4KWindowVerified": false,
+  "largeWindowActualResolution": "3840x1662",
+  "screenshots": {
+    "training": "reports/runtime-visual-081-release/04-training.png",
+    "cooldowns": "reports/runtime-visual-081-release/05g-shared-cooldowns.png",
+    "thor": "reports/runtime-visual-081-release/05h-thor-thrusters.png",
+    "models": "reports/runtime-visual-081-release/16-character-models-closeup.png",
+    "4by3": "reports/runtime-visual-081-release/09b-match-4x3.png"
+  }
+}

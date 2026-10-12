@@ -1,0 +1,38 @@
+{
+    "editor": "2022.3.62t16",
+    "platform": "OSXPlayer",
+    "passed": false,
+    "checks": [
+        "PASS startup begins on loading artwork page",
+        "PASS real asset preload completes before mode selection",
+        "PASS side push releases football without automatically granting it to pusher",
+        "PASS displaced enemy moves while released football remains at exact original spot",
+        "PASS pusher captures free ball only after physically reaching it",
+        "PASS enemy rear push carries football along with displaced carrier",
+        "PASS real friendly body collision pushes teammate and their football together",
+        "PASS training full HUD: minimap remains visible and fits the bottom-left corner",
+        "PASS training full HUD: minimap does not overlap the skill dock",
+        "PASS training full HUD: minimap overlays the full-window playing field",
+        "PASS training full HUD: field and every portrait allow mouse aiming through the map",
+        "PASS training: every player has an active portrait",
+        "PASS training: player 0 uses its actual hero portrait, team color and current world position",
+        "PASS training: player 1 uses its actual hero portrait, team color and current world position",
+        "PASS training: local portrait has its own highlight",
+        "PASS real opposing movement commands update both portraits with screen-aligned north and south",
+        "PASS moving training: every player has an active portrait",
+        "PASS moving training: player 0 uses its actual hero portrait, team color and current world position",
+        "PASS moving training: player 1 uses its actual hero portrait, team color and current world position",
+        "PASS moving training: local portrait has its own highlight",
+        "PASS minimap viewport rectangle uses the actual follow-camera ground footprint",
+        "FAIL pause freezes portrait positions and camera footprint",
+        "PASS training compact HUD: minimap remains visible and fits the bottom-left corner",
+        "PASS training compact HUD: field and every portrait allow mouse aiming through the map",
+        "PASS training reset immediately shows the correct possession badge and football ground location",
+        "PASS a real kick clears possession and moves the free football marker using simulation coordinates"
+    ],
+    "errors": [
+        "pause freezes portrait positions and camera footprint"
+    ],
+    "largeWindowActualResolution": "",
+    "unobstructedSampleFps": 0.0
+}

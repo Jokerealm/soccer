@@ -1,0 +1,132 @@
+{
+  "version": "0.6.0",
+  "date": "2026-10-09",
+  "prompts": "assets/original/ui/hd-v3/generation-prompts.json",
+  "assets": [
+    {
+      "source": "assets/original/ui/hd-v3/arena-v3.png",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/arena-v3.png",
+      "sha256": "0bdcb5c9b52da5595299f088b94a0cf47984c7ceb5dc9e8a7758d0a40ca3293a",
+      "pixels": [
+        1672,
+        941
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/badge-normal.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/badge-normal.png",
+      "sha256": "8e4f6da2cc9456c2accf102cc51d970cd714e0d35870068689de026b7cc4a398",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/badge-party.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/badge-party.png",
+      "sha256": "f8a3bbd86bcad88076a0ad5db32e3ab0d5245327da2695a7227bf41ab324e894",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/badge-ranked.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/badge-ranked.png",
+      "sha256": "e8d8fff77f1499096f919d7788f57e3e57192f69d4988409754b20dfaf7205c6",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/brand-mark.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/brand-mark.png",
+      "sha256": "8e4f6da2cc9456c2accf102cc51d970cd714e0d35870068689de026b7cc4a398",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/equipment-0.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/equipment-0.png",
+      "sha256": "742deb41e7e70cee980eed63932b76fbbcdef73af1c5dcfa9081d4f92549bea3",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/equipment-1.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/equipment-1.png",
+      "sha256": "e5741177eed2e0878138956aa0213de7a50c8ba30fdd004e218925a147080f21",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/equipment-2.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/equipment-2.png",
+      "sha256": "6d66bab3a4f423ad5b3e77640e08a30aeb640cf7fcd125d28411138f311cd4d1",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/hud-e.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/hud-e.png",
+      "sha256": "577c2fb3ba100d55ccc9558a5cbadb1428f811de2797ba67ff5e63debfbbea73",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/hud-q.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/hud-q.png",
+      "sha256": "71fb78d4f72800214d16339760aec90c07a54decacf078750d04be211757c144",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/hud-tackle.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/hud-tackle.png",
+      "sha256": "9d6192d17312206857a0319d1387810aecae95015a7aa0241b07bc9653d67ebd",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/vector/premium-v3/hud-weapon.svg",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/hud-weapon.png",
+      "sha256": "2cb401118965015beab73ba3935e8991a602397e9c7369c6a7304e785442bd43",
+      "pixels": [
+        768,
+        768
+      ]
+    },
+    {
+      "source": "assets/original/ui/hd-v3/lobby-v3.png",
+      "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/lobby-v3.png",
+      "sha256": "1ef0ed454f79100c66635f24ed9a7fd4f9939766752cc7a9e72e4c8e5d8bfeac",
+      "pixels": [
+        1672,
+        941
+      ]
+    }
+  ],
+  "rendering": {
+    "imageGround": "Standard lit XZ quad, receives shadows",
+    "lights": "warm directional soft-shadow key, cyan and amber point fills, trilight ambient",
+    "football": "12 pentagons, 20 hexagons, 2880 panel triangles, recessed seam sphere; rolling by world displacement",
+    "goals": "lit cylinder posts, crossbar and braces; shadow casting",
+    "camera": "55-degree orthographic, ray/ground aiming, independent letterbox clear camera",
+    "msaa": 4
+  }
+}

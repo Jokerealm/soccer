@@ -1,0 +1,95 @@
+{
+  "version": "0.9.1",
+  "date": "2026-10-10",
+  "passed": true,
+  "clientChecks": 139,
+  "runtimeErrors": [],
+  "runtimeReport": "reports/runtime-matte-kickoff-091/runtime-smoke.json",
+  "runtimeLog": "reports/runtime-matte-kickoff-091.log",
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 364459020
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 332920353
+    }
+  },
+  "buildLogs": {
+    "macos": "reports/matte-kickoff-091-mac-build.log",
+    "windows": "reports/matte-kickoff-091-windows-build.log"
+  },
+  "builtMacVersion": "0.9.1",
+  "gameplayChanged": false,
+  "coreChecksRetainedFrom08": 119,
+  "coreReport": "reports/star-strikers-check/core-tests.json",
+  "visualQA": "Reviewed native matte field, real digits 3 and 2, kickoff transition and cleared field. Suppressed baked cyan glare without removing player or goal shadows.",
+  "brightnessComparison": {
+    "screenRegions": [
+      [
+        490,
+        625,
+        640,
+        705
+      ],
+      [
+        1280,
+        625,
+        1430,
+        705
+      ]
+    ],
+    "values": {
+      "0.9.0": {
+        "screenshot": "reports/runtime-stadium-090/24-living-stadium-wide.png",
+        "meanLuminance": [
+          0.8821566504575162,
+          0.7242942335294117
+        ],
+        "leftRightRatio": 1.2179534360764646
+      },
+      "0.9.1": {
+        "screenshot": "reports/runtime-matte-kickoff-091/24-living-stadium-wide.png",
+        "meanLuminance": [
+          0.45005260111111106,
+          0.4435288850980392
+        ],
+        "leftRightRatio": 1.0147086609965208
+      }
+    },
+    "note": "Measurements compare two empty grass regions in matching 1920x1080 native captures; not a global uniformity or physical luminance measurement."
+  },
+  "animation": {
+    "path": "previews/matte-kickoff-091.gif",
+    "frames": 21,
+    "size": [
+      960,
+      540
+    ],
+    "bytes": 3896124,
+    "source": "20 actual native countdown captures plus actual cleared-field capture, resized and encoded for a low-frame-rate preview."
+  },
+  "screenshots": {
+    "countdown": "reports/runtime-matte-kickoff-091/25-kickoff-three.png",
+    "field": "reports/runtime-matte-kickoff-091/26-matte-field.png",
+    "compactWide": "reports/runtime-matte-kickoff-091/24-living-stadium-wide.png"
+  },
+  "sourceProvenance": "assets/scene-polish-v2-provenance.json",
+  "windowsRuntimeVerified": false,
+  "mobilePerformanceVerified": false,
+  "nativeInputHandFeelVerified": false,
+  "largeWindowActualResolution": "3840x1666"
+}

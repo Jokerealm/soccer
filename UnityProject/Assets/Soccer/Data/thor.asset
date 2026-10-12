@@ -1,0 +1,107 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a00a3f94bf9dc42f9b8cb007057490dc, type: 3}
+  m_Name: thor
+  m_EditorClassIdentifier: 
+  Stats:
+    Id: 4
+    Name: "\u96F7\u795E"
+    MaxHealth: 100
+    MaxEnergy: 100
+    EnergyRegen: 12
+    Loadout:
+      HasWeapon: 1
+      Weapon: 1
+      Support: 0
+      WeaponDamage: 14
+      WeaponRange: 4.5
+      WeaponCooldown: 0.4
+      WeaponWindup: 0.07
+      AmmoCapacity: 3
+      AmmoReloadSeconds: 1.4
+      WeaponShots: 2
+      WeaponSpreadDegrees: 8
+      WeaponSpeed: 20
+      WeaponRadius: 0.16
+      MeleeHalfAngle: 60
+      QDamage: 0
+      QStun: 0
+      QRange: 8
+      QSpeed: 12
+      QRadius: 0.24
+      QShots: 1
+      QSpreadDegrees: 0
+      QBounces: 0
+      QEnergy: 20
+      EEnergy: 18
+      SupportRadius: 3
+      SupportStrength: 0
+      SupportDuration: 2
+    Speed: 2
+    Radius: 0.8
+    KickDistance: 1
+    PushResistance: 0
+    PushPower: 0.75
+    QHealthCost: 10
+    EHealthCost: 10
+    ReferenceSkills:
+      MarineStimSpeed: 0.65
+      MarineStimDuration: 5
+      BombFuse: 3
+      BombRadius: 2.5
+      BombPushDistance: 2
+      BombStun: 1.75
+      ThorDriveSpeed: 2.4
+      ThorDriveDuration: 5
+      ThorDecayInterval: 0.375
+      ThorDecayRetention: 0.9
+      ThorDashDistance: 2.4
+      ThorDashDuration: 0.16
+    QCooldown: 8
+    ECooldown: 10
+    QWindup: 0
+    QDuration: 0.16
+    QDistance: 1.4
+    EWindup: 0.15
+    EDuration: 2
+    LaneLength: 3
+    LaneWidth: 0.9
+    LaneSpeedBonus: 0.12
+    RelaySpeedBonus: 0.1
+    RelayDuration: 0.8
+    RelayCooldown: 6
+    ShieldLength: 2.2
+    ShieldBounce: 0.55
+    RootResistance: 0.6
+    RootSpeed: 0.8
+    PreparationLifetime: 2
+    CurveSeconds: 0.6
+    CurveDegrees: 18
+    CurveDeadZoneDegrees: 5
+    PowerChargeSeconds: 1
+    PowerDistance: 1.2
+    PowerMoveSpeed: 0.65
+  PrototypeVersion: 2
+  Role: "\u9AD8\u901F\u9A71\u52A8 \xB7 \u7A81\u8FDB\u63A5\u5E94"
+  PassiveDescription: "\u53F3\u952E\u654C\u4EBA\uFF0F\u53CC\u8054\u673A\u70AE\uFF1A\u6BCF\u6B21
+    2 \u53D1\uFF0C\u6BCF\u53D1 14 \u4F24\u5BB3\uFF0C\u5C04\u7A0B 4.5\u30023 \u683C\u50A8\u5907\uFF0C\u81EA\u52A8\u8FFD\u51FB\u5E76\u5728\u5C04\u7A0B\u5185\u653B\u51FB\uFF0CS
+    \u505C\u6B62\u3002"
+  QName: "\u8D85\u7EA7\u9A71\u52A8"
+  QDescription: "\u6D88\u8017 10 \u751F\u547D\uFF0C\u79FB\u52A8\u901F\u5EA6\u589E\u52A0
+    2.4\uFF0C\u6BCF 0.375 \u79D2\u524A\u51CF 10% \u7684\u52A0\u901F\u91CF\uFF1B\u672C\u8F6E\u6301\u7EED
+    5 \u79D2\u3002"
+  EName: "\u8F85\u52A9\u63A8\u8FDB\u5668"
+  EDescription: "\u6D88\u8017 10 \u751F\u547D\uFF0C\u6CBF\u671D\u5411\u7A81\u8FDB
+    2.4\uFF0C\u7ACB\u5373\u5237\u65B0\u8D85\u7EA7\u9A71\u52A8\u51B7\u5374\uFF1B\u78B0\u5230\u5355\u4F4D\u6216\u8FB9\u754C\u4F1A\u505C\u4E0B\u3002"
+  Accent: {r: 0.96, g: 0.66, b: 0.27, a: 1}
+  Portrait: {fileID: 0}
+  Animations: {fileID: 11400000, guid: b82b08cc4fd4646f79306d7ce6f685ee, type: 2}

@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64"><title>暖白深蓝足球；上左高光与下右体积阴影</title>
+<defs><radialGradient id="ball" cx=".28" cy=".22" r=".8"><stop stop-color="#FFFFFF"/><stop offset=".55" stop-color="#F7F0E1"/><stop offset="1" stop-color="#B5C9CF"/></radialGradient><clipPath id="sphere"><circle cx="32" cy="32" r="25"/></clipPath></defs>
+<circle cx="32" cy="32" r="28" fill="#F7F0E1" stroke="#132C3C" stroke-width="3"/>
+<circle cx="32" cy="32" r="25" fill="url(#ball)"/>
+<g clip-path="url(#sphere)" fill="#132C3C"><path d="M31 20 43 27 39 40 25 42 20 29ZM29 5 24 14 12 15 8 8M55 13 49 25 58 35 65 22M52 52 38 49 32 60 48 65M12 51 16 37 4 30 0 46"/>
+<path d="M24 14 31 20M12 15 20 29M43 27 49 25M39 40 38 49M25 42 16 37" fill="none" stroke="#132C3C" stroke-width="1.5"/>
+</g><path d="M14 24C16 17 20 13 27 12" fill="none" stroke="#FFFFFF" stroke-width="4" stroke-linecap="round" opacity=".8"/></svg>

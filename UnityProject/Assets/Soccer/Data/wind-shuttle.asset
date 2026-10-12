@@ -1,0 +1,89 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a00a3f94bf9dc42f9b8cb007057490dc, type: 3}
+  m_Name: wind-shuttle
+  m_EditorClassIdentifier: 
+  Stats:
+    Id: 0
+    Name: "\u5976\u9F99\u53C2\u8003"
+    MaxHealth: 100
+    MaxEnergy: 100
+    EnergyRegen: 12
+    Loadout:
+      Weapon: 0
+      Support: 0
+      WeaponDamage: 28
+      WeaponRange: 1.8
+      WeaponCooldown: 0.32
+      WeaponWindup: 0.06
+      AmmoCapacity: 3
+      AmmoReloadSeconds: 1.15
+      WeaponShots: 1
+      WeaponSpreadDegrees: 0
+      WeaponSpeed: 20
+      WeaponRadius: 0.16
+      MeleeHalfAngle: 60
+      QDamage: 20
+      QStun: 0.8
+      QRange: 8
+      QSpeed: 12
+      QRadius: 0.24
+      QShots: 1
+      QSpreadDegrees: 0
+      QBounces: 1
+      QEnergy: 30
+      EEnergy: 35
+      SupportRadius: 3
+      SupportStrength: 35
+      SupportDuration: 2
+    Speed: 5
+    Radius: 0.5
+    KickDistance: 1
+    PushResistance: 0
+    QCooldown: 5
+    ECooldown: 8
+    QWindup: 0
+    QDuration: 0.16
+    QDistance: 1.4
+    EWindup: 0.15
+    EDuration: 2
+    LaneLength: 3
+    LaneWidth: 0.9
+    LaneSpeedBonus: 0.12
+    RelaySpeedBonus: 0.1
+    RelayDuration: 0.8
+    RelayCooldown: 6
+    ShieldLength: 2.2
+    ShieldBounce: 0.55
+    RootResistance: 0.6
+    RootSpeed: 0.8
+    PreparationLifetime: 2
+    CurveSeconds: 0.6
+    CurveDegrees: 18
+    CurveDeadZoneDegrees: 5
+    PowerChargeSeconds: 1
+    PowerDistance: 1.2
+    PowerMoveSpeed: 0.65
+  PrototypeVersion: 2
+  Role: "\u5F39\u809A\u5F00\u8DEF \xB7 \u62A4\u4F4F\u961F\u53CB"
+  PassiveDescription: "\u53F3\u952E\uFF0F\u809A\u76AE\u5F39\u9524\uFF1A\u8FD1\u8EAB\u6325\u51FB\uFF0C28
+    \u4F24\u5BB3\u30023 \u683C\u50A8\u5907\uFF0C\u95F4\u9694 0.32 \u79D2\uFF1B\u505C\u706B\u540E\u6BCF
+    1.15 \u79D2\u8865\u4E00\u683C\uFF0C\u4E0D\u8017\u80FD\u91CF\u3002\u53EF\u4EE5\u8FB9\u8D70\u8FB9\u6253\u3002"
+  QName: "\u5F39\u809A\u6CE2"
+  QDescription: "\u53D1\u5C04\u5F39\u809A\u6CE2\uFF0C\u78B0\u573A\u8FB9\u53CD\u5F39\u4E00\u6B21\uFF1B20
+    \u4F24\u5BB3\u3001\u7729\u6655 0.8 \u79D2\uFF0C\u547D\u4E2D\u654C\u4EBA\u540E\u6D88\u5931\u3002"
+  EName: "Duang\u62A4\u7F69"
+  EDescription: "\u4E3A\u81EA\u5DF1\u548C\u9644\u8FD1\u961F\u53CB\u63D0\u4F9B 35
+    \u62A4\u76FE\uFF0C\u6301\u7EED 2 \u79D2\uFF1B\u6D88\u8017 35 \u80FD\u91CF\u3002"
+  Accent: {r: 0.26, g: 0.82, b: 0.78, a: 1}
+  Portrait: {fileID: 0}
+  Animations: {fileID: 11400000, guid: 15940986531cc483692371e11abac81a, type: 2}

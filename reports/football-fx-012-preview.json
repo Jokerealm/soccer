@@ -1,0 +1,97 @@
+{
+  "preview": "previews/football-fx-012.gif",
+  "frames": 21,
+  "size": [
+    960,
+    540
+  ],
+  "bytes": 10605861,
+  "source_report": "reports/runtime-football-fx-012-release",
+  "sequence": [
+    {
+      "native_png": "34-football-charge.png",
+      "duration_ms": 1100
+    },
+    {
+      "native_png": "35-football-kick-contact.png",
+      "duration_ms": 250
+    },
+    {
+      "native_png": "kick-effects-frames/000.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "kick-effects-frames/001.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "kick-effects-frames/002.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "kick-effects-frames/003.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "kick-effects-frames/004.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "kick-effects-frames/005.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "kick-effects-frames/006.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "kick-effects-frames/007.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "kick-effects-frames/008.png",
+      "duration_ms": 110
+    },
+    {
+      "native_png": "36-goal-cyan.png",
+      "duration_ms": 900
+    },
+    {
+      "native_png": "goal-effects-frames/000.png",
+      "duration_ms": 150
+    },
+    {
+      "native_png": "goal-effects-frames/001.png",
+      "duration_ms": 150
+    },
+    {
+      "native_png": "goal-effects-frames/002.png",
+      "duration_ms": 150
+    },
+    {
+      "native_png": "goal-effects-frames/003.png",
+      "duration_ms": 150
+    },
+    {
+      "native_png": "goal-effects-frames/004.png",
+      "duration_ms": 150
+    },
+    {
+      "native_png": "goal-effects-frames/005.png",
+      "duration_ms": 150
+    },
+    {
+      "native_png": "goal-effects-frames/006.png",
+      "duration_ms": 150
+    },
+    {
+      "native_png": "goal-effects-frames/007.png",
+      "duration_ms": 150
+    },
+    {
+      "native_png": "37-goal-amber.png",
+      "duration_ms": 1600
+    }
+  ],
+  "timing_note": "Native screenshots with test-controlled Core/effect stepping; GIF timing is edited, not a keyboard feel benchmark."
+}

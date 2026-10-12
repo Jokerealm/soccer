@@ -1,0 +1,481 @@
+[
+  {
+    "path": "assets/original/animations/arc-light-kick-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/arc-light-run-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/arc-light-run-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/arc-light-turn-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/echo-kick-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/echo-run-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/echo-run-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/echo-turn-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/iron-guard-kick-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/iron-guard-run-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/iron-guard-run-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/iron-guard-turn-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/jump-point-kick-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/jump-point-run-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/jump-point-run-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/jump-point-turn-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/magnet-core-kick-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/magnet-core-run-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/magnet-core-run-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/magnet-core-turn-left-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/magnet-core-turn-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/wind-shuttle-kick-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/wind-shuttle-run-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/wind-shuttle-run-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/animations/wind-shuttle-turn-v1.png",
+    "size": [
+      1774,
+      887
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ]
+  },
+  {
+    "path": "assets/original/arenas/standard-floor-v1.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  },
+  {
+    "path": "assets/original/arenas/standard-floor-v2.png",
+    "size": [
+      1672,
+      941
+    ],
+    "mode": "RGB"
+  },
+  {
+    "path": "assets/original/characters/arc-light-idle-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "raw_alpha_bbox": [
+      0,
+      20,
+      1224,
+      1254
+    ],
+    "body_bbox_alpha_ge_8": [
+      354,
+      152,
+      903,
+      1084
+    ]
+  },
+  {
+    "path": "assets/original/characters/arc-light-idle-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "raw_alpha_bbox": [
+      31,
+      31,
+      1232,
+      1234
+    ],
+    "body_bbox_alpha_ge_8": [
+      309,
+      59,
+      1000,
+      1227
+    ],
+    "alpha_below_8_pixels": 18624
+  },
+  {
+    "path": "assets/original/characters/iron-guard-idle-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "raw_alpha_bbox": [
+      33,
+      19,
+      1236,
+      1254
+    ],
+    "body_bbox_alpha_ge_8": [
+      215,
+      246,
+      1040,
+      1019
+    ]
+  },
+  {
+    "path": "assets/original/characters/iron-guard-idle-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "raw_alpha_bbox": [
+      0,
+      21,
+      1240,
+      1254
+    ],
+    "body_bbox_alpha_ge_8": [
+      205,
+      49,
+      1087,
+      1210
+    ],
+    "alpha_below_8_pixels": 15660
+  },
+  {
+    "path": "assets/original/characters/wind-shuttle-idle-v1.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "raw_alpha_bbox": [
+      43,
+      31,
+      1224,
+      1224
+    ],
+    "body_bbox_alpha_ge_8": [
+      396,
+      227,
+      884,
+      1001
+    ]
+  },
+  {
+    "path": "assets/original/characters/wind-shuttle-idle-v2.png",
+    "size": [
+      1254,
+      1254
+    ],
+    "mode": "RGBA",
+    "alpha_extrema": [
+      0,
+      255
+    ],
+    "raw_alpha_bbox": [
+      0,
+      55,
+      1236,
+      1230
+    ],
+    "body_bbox_alpha_ge_8": [
+      319,
+      57,
+      1008,
+      1217
+    ],
+    "alpha_below_8_pixels": 16675
+  },
+  {
+    "path": "assets/original/concepts/roster-v1.png",
+    "size": [
+      1942,
+      809
+    ],
+    "mode": "RGB"
+  },
+  {
+    "path": "assets/original/concepts/roster-v2.png",
+    "size": [
+      1942,
+      809
+    ],
+    "mode": "RGB"
+  }
+]

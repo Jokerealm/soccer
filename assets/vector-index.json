@@ -1,0 +1,128 @@
+[
+  {
+    "id": "wind-shuttle-passive",
+    "label": "风梭·接力",
+    "path": "assets/original/vector/wind-shuttle-passive-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "wind-shuttle-q",
+    "label": "风梭·侧滑",
+    "path": "assets/original/vector/wind-shuttle-q-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "wind-shuttle-e",
+    "label": "风梭·顺风带",
+    "path": "assets/original/vector/wind-shuttle-e-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "iron-guard-passive",
+    "label": "铁卫·稳重",
+    "path": "assets/original/vector/iron-guard-passive-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "iron-guard-q",
+    "label": "铁卫·护板",
+    "path": "assets/original/vector/iron-guard-q-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "iron-guard-e",
+    "label": "铁卫·扎根",
+    "path": "assets/original/vector/iron-guard-e-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "arc-light-passive",
+    "label": "弧光·远距脚法",
+    "path": "assets/original/vector/arc-light-passive-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "arc-light-q",
+    "label": "弧光·弧线准备",
+    "path": "assets/original/vector/arc-light-q-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "arc-light-e",
+    "label": "弧光·重炮准备",
+    "path": "assets/original/vector/arc-light-e-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "echo-passive",
+    "label": "回响·流畅触球",
+    "path": "assets/original/vector/echo-passive-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "echo-q",
+    "label": "回响·引导传球",
+    "path": "assets/original/vector/echo-q-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "echo-e",
+    "label": "回响·接应护罩",
+    "path": "assets/original/vector/echo-e-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "magnet-core-passive",
+    "label": "磁核·稳定底盘",
+    "path": "assets/original/vector/magnet-core-passive-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "magnet-core-q",
+    "label": "磁核·缓速场",
+    "path": "assets/original/vector/magnet-core-q-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "magnet-core-e",
+    "label": "磁核·排斥波",
+    "path": "assets/original/vector/magnet-core-e-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "jump-point-passive",
+    "label": "跃点·回追",
+    "path": "assets/original/vector/jump-point-passive-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "jump-point-q",
+    "label": "跃点·截击",
+    "path": "assets/original/vector/jump-point-q-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  },
+  {
+    "id": "jump-point-e",
+    "label": "跃点·影步",
+    "path": "assets/original/vector/jump-point-e-v1.svg",
+    "status": "draft-icon",
+    "source": "project-authored-svg"
+  }
+]

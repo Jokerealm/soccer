@@ -1,0 +1,22 @@
+{
+  "version": "0.13.1",
+  "origin": "Full-window native camera with existing translucent UI; preview copied from the native runtime capture.",
+  "sha256": {
+    "UnityProject/Assets/Soccer/Runtime/Presentation/ArenaCamera.cs": "de774c09e473bb66ee5841cdd4780304b4240fa703eba9e2759c46122d1ef370",
+    "UnityProject/Assets/Soccer/Runtime/UI/MatchMiniMap.cs": "4fe4352eaa4a57c7b00a7b3a5974e3d13174256a27d62d3bfd2176d55a864b52",
+    "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeSmokeProbe.cs": "e65787d992ee81d831ed6b3f035604f24647fbdde63d123e6aea39e95c712171",
+    "UnityProject/Assets/Soccer/Editor/ProjectSetup.cs": "3b147356f244c5b6207bd7fdd75461cacde72611128d6732db5f161c613d8100",
+    "UnityProject/Assets/Soccer/UI/Game.uxml": "7d7b1508c4fa4ea9408501470782655542a0144fe79eecdfaf02a4bb2eaeb85d",
+    "UnityProject/ProjectSettings/ProjectSettings.asset": "3cb3227b6b28c33f79cf532ffd3cc986f5803ffb576cfbcc7db6a79a4d2d0806",
+    "README.md": "dfba8cfd00bbec1cc7b5fbc05e331eadd5880ef18973ba842f1e6208346eaa42",
+    "UnityProject/README.md": "b10b7fa8686a894fa0e2d2e154c42c427c7ab36bf3a74a6d6ba86bb3296c83ca",
+    "docs/UI界面与交互说明.md": "0185d13a67e82b7b877ab5c67f883b905bafa30f2e32b532d01d9cc5bd554e17",
+    "docs/全屏球场0.13.1.md": "41aacccfd6d1708483509be57e3922c4a1695a63e954e192621ac45a210f3294",
+    "previews/fullscreen-field-0131.png": "d40fe28b0797e94b9717a4a18a2a782c6199d526de769473b0ec16d44acd5d92",
+    "reports/fullscreen-0131-validation.json": "c3515a5ea9b5c1fa72198e95568e38ba93095aa5e78ffd6f52b75522546c8086",
+    "UnityProject/Builds/macOS/SkillSoccer.app/Contents/MacOS/技能足球": "b75eac937e10522ad16011b37ebc6da4337291a6b3fc20de4e9d17773274f4dc",
+    "UnityProject/Builds/macOS/SkillSoccer.app/Contents/Resources/Data/Managed/Soccer.Runtime.dll": "d747e4478c871cb8a4b661538e10744262638c1ad3de3a70d1075629fe488d37",
+    "UnityProject/Builds/Windows/SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "UnityProject/Builds/Windows/SkillSoccer_Data/Managed/Soccer.Runtime.dll": "a6a1693fcf01449ba93f158f92034125f3c56b97cb5b0a6cdb5cf70981148baf"
+  }
+}

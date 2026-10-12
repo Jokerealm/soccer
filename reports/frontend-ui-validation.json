@@ -1,0 +1,38 @@
+{
+  "version": "0.3.0",
+  "date": "2026-10-09",
+  "passed": true,
+  "clientChecks": 57,
+  "runtimeErrors": [],
+  "macOSBuild": "Succeeded",
+  "windowsBuild": "Succeeded",
+  "testedWindows": [
+    "1280x720",
+    "1024x768",
+    "1920x800"
+  ],
+  "pages": [
+    "startup loading",
+    "three mode cards",
+    "three mode details",
+    "internet / LAN routes",
+    "local selection",
+    "settings",
+    "training",
+    "pause",
+    "results",
+    "bot match"
+  ],
+  "assets": {
+    "cover": "UnityProject/Assets/Soccer/Resources/FrontEnd/launch-cover-v1.png",
+    "prompt": "assets/original/ui/generation-prompt.json",
+    "imageTool": "built-in image_gen",
+    "icons": "existing original mode SVGs rasterized"
+  },
+  "limitations": [
+    "Steam SDK, network transport, matchmaking and room discovery are not implemented.",
+    "Ranked and entertainment gameplay remain planned; unavailable actions are disabled.",
+    "Windows build has not been run on a Windows machine.",
+    "Native mouse feel still requires human playtesting."
+  ]
+}

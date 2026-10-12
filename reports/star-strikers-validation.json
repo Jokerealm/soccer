@@ -1,0 +1,82 @@
+{
+  "version": "0.8.0",
+  "date": "2026-10-09",
+  "passed": true,
+  "characters": [
+    "Marine / 枪兵",
+    "Thor / 雷神"
+  ],
+  "source": {
+    "path": "/Users/gz/Downloads/%E6%98%9F%E9%99%85%E8%B6%B3%E7%90%83.xlsx",
+    "sha256": "118727b0d49404d99dc73cd2e38c47dac0fc0bd27e84c75c878d11d8bf4028ce",
+    "ranges": [
+      "Sheet1!A5:M5",
+      "Sheet1!A12:M12"
+    ],
+    "readOnly": true
+  },
+  "resources": {
+    "health": 100,
+    "energy": 100,
+    "respawnSeconds": 5
+  },
+  "sharedActions": {
+    "kickKey": "Left mouse",
+    "kickCooldown": 6,
+    "tackleKey": "Space",
+    "tackleCooldown": 5,
+    "tackleHealthCost": "10 / PushPower",
+    "marineHealthCost": 16.129032258064516,
+    "thorHealthCost": 13.333333333333334,
+    "healthCostFormulaIsPrototype": true
+  },
+  "coreChecks": 119,
+  "coreFailed": 0,
+  "clientChecks": 93,
+  "runtimeErrors": [],
+  "coreReport": "reports/star-strikers-check/core-tests.json",
+  "runtimeReport": "reports/runtime-star-strikers-smoke/runtime-smoke.json",
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 284354480
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 252824525
+    }
+  },
+  "implemented": [
+    "Two playable reference characters in selection, training, and balanced mirrored 3v3 bot teams",
+    "Marine stim costs health and energy; increases movement speed",
+    "Marine ground or ball-attached bomb, automatic three-second fuse and G detonation",
+    "Thor additive speed gain with discrete decay; planar dash refreshes Q",
+    "Independent kick and tackle cooldowns; force-dependent tackle health cost",
+    "3D bomb warning, countdown, weapon symbols, resource and cooldown HUD",
+    "Existing 2D ball rules and 3D lighting presentation preserved"
+  ],
+  "prototypeValues": [
+    "Tackle health cost coefficient 10",
+    "Thor drive lasts five seconds; decay applies to additive speed",
+    "Thor dash distance 2.4 and duration 0.16",
+    "Bomb radius 2.5 and push distance 2",
+    "Basic weapon parameters and existing energy regeneration"
+  ],
+  "windowsRuntimeVerified": false,
+  "nativeInputHandFeelVerified": false,
+  "full4KWindowVerified": false,
+  "largeWindowActualResolution": "3840x1666",
+  "validationNote": "93 runtime checks passed; subsequent changes only updated idle and settings control descriptions; both final platform builds include those descriptions."
+}

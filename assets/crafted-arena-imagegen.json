@@ -1,0 +1,10 @@
+{
+  "version": "0.11.0",
+  "date": "2026-10-10",
+  "generator": "Built-in image_gen.imagegen (imagegen skill); no CLI fallback",
+  "generatedSource": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-8b95f6ed-cb44-4e13-815f-526627488bc0.png",
+  "original": "assets/original/arena/turf-detail-v4.png",
+  "runtimeAsset": "UnityProject/Assets/Soccer/Resources/SceneSurface/turf-detail-v4.png",
+  "prompt": "Use case: stylized-concept game material. Create a premium, seamless tileable TOP DOWN / orthographic ALBEDO texture of carefully cultivated short stadium turf for a polished playful 3D battle-soccer game. Square 2048x2048 asset if possible. This is only a flat material swatch, edge to edge, NOT a scene, NOT a football pitch layout. Closely packed individually visible slim grass blades with soft painterly beveled shapes, several natural olive, sage and fresh moss greens, dense tactile fine structure, very subtle scattered tan fibers and tiny organic bare-soil flecks, softly compressed and trampled grass in occasional small irregular clusters. Sophisticated slightly desaturated warm vegetation palette, rich tactile microdetail, clean polished game art, uniform exposure, all areas equally detailed. Blade sizes roughly 8-20 pixels so this remains legible when applied as a repeated 4-6 meter tile on a wide 3D surface. Seamlessly matching opposing borders, no obvious repeat motif, no broad bands or stripes, no large contrast patches, no circular logos or field markings, no props, no characters, no text or UI. Entire texture flat diffuse color, no baked lighting, no cast shadows, no shine, no highlights, no perspective or depth of field. Actual 3D lighting and procedural movement will be layered in the engine.",
+  "application": "World-scaled repeated albedo; four offset sampling blends, matte real-time lighting, procedural normals and wind, goal-area wear and fading footprint compression. Original generated PNG copied unchanged."
+}

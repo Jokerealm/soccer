@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-08",
+  "status": "passed",
+  "scope": "local static art gallery; no gameplay or Unity validation",
+  "preview_url": "http://127.0.0.1:8765/previews/art-gallery.html",
+  "screenshot": "reports/screenshots/art-preview-v2.jpg",
+  "checks": {
+    "v2_combined_scene_rendered": true,
+    "v1_v2_switch_verified": true,
+    "independent_floor_lines_goals_units_toggles_verified": true,
+    "v1_unavailable_independent_layers_disabled": true,
+    "browser_console_errors_or_warnings": 0,
+    "v1_original_png_sha256_unchanged": true,
+    "original_alpha_preserved": true
+  },
+  "limitations": [
+    "图像相机倾角为绘制近似值，脚点为静态预览估计",
+    "未完成方向和动作动画，未接入玩法工程"
+  ]
+}

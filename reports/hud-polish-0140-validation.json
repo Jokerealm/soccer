@@ -1,0 +1,52 @@
+{
+  "version": "0.14.0",
+  "date": "2026-10-11",
+  "macOS": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413392865
+  },
+  "windows": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 381838845
+  },
+  "core": {
+    "passed": true,
+    "checks": 135,
+    "report": "reports/hud-polish-0140-core-final/core-tests.json"
+  },
+  "native": {
+    "passed": true,
+    "checks": 292,
+    "errors": [],
+    "report": "reports/runtime-hud-polish-0140-final/runtime-smoke.json",
+    "resolution": "3840x1666",
+    "sample_fps": 119.94206237792969
+  },
+  "windows_runtime_verified": false,
+  "match_timing_status": "prototype: each half 150s, 2s restart, <=90s golden overtime; final durations and change of ends remain adjustable",
+  "master_document": "docs/游戏设计文档.md",
+  "source_sha256": {
+    "UnityProject/Assets/Soccer/Runtime/UI/HudMotion.cs": "1e7ad46b8b98a4d86637cf0b2bc3cf83a589a763b138a7ed3b42473b0c5e44ac",
+    "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs": "be455fa2ddece24d6c3181eb310648e82b14d9661822acabcc217ec4aa48c7ab",
+    "UnityProject/Assets/Soccer/UI/Game.uxml": "80b994b9ea15490134fc9829596614e945314937a0ec532b4048a0da9279408b",
+    "UnityProject/Assets/Soccer/UI/Game.uss": "26bacfd45abd5349e633bd73779d69cf8c9d8a0600f15c74ed4eb008eba35484",
+    "UnityProject/Assets/Soccer/Runtime/Presentation/PlayerResourceView.cs": "7ac4fc9f59f727eefc2d50fd3879e9735e4ffa14c8e5201e3774d23ca7b12037",
+    "UnityProject/Assets/Soccer/Runtime/Presentation/PlayerView.cs": "88a641827fded71ebc5353b90bc04f632135ccc74b599ae24b077c46bf246160",
+    "UnityProject/Assets/Soccer/Core/MatchState.cs": "407cf5a9d28273f08e5b24db6535bbc85a60ab4cacaecc9928322ed468c84c20",
+    "UnityProject/Assets/Soccer/Core/MatchSimulation.cs": "d2fc1b2eba239eb4fce5f4f37df3f5e91a42d23d55af8d0e0fd0bf2583901533",
+    "docs/游戏设计文档.md": "0c64e743808912042bab0003855e676d431e40e8524141284596a88b6adbb1be",
+    "docs/关键设计确认单.md": "03a529dac9abae10c9e191b994bed6878ed34b08f25b632510d55b62b6fda1de"
+  }
+}

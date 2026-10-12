@@ -1,0 +1,137 @@
+{
+  "checked_at": "2026-10-08T17:15:15+08:00",
+  "engine_route": "Tuanjie Editor (Unity China) + C#; distribution confirmed",
+  "host": {
+    "system": "Darwin",
+    "machine": "arm64",
+    "macos": "26.6.2"
+  },
+  "git": {
+    "available": true,
+    "exit_code": 0,
+    "output": "git version 2.56.0"
+  },
+  "git_lfs": {
+    "available": true,
+    "exit_code": 0,
+    "output": "git-lfs/3.8.0 (GitHub; darwin arm64; go 1.27.0)",
+    "configured_for_repository": true
+  },
+  "dotnet_sdk": {
+    "available": true,
+    "exit_code": 0,
+    "output": "10.0.401",
+    "installed_sdks": "10.0.401 [/opt/homebrew/Cellar/dotnet/10.0.401/libexec/sdk]"
+  },
+  "vscode": {
+    "available": true,
+    "path": "/Applications/Visual Studio Code.app",
+    "version": "1.141.0",
+    "bundle_id": "com.microsoft.VSCode"
+  },
+  "vscode_extensions": {
+    "visualstudiotoolsforunity.vstuc": {
+      "available": true,
+      "version": "1.3.2"
+    },
+    "ms-dotnettools.csharp": {
+      "available": true,
+      "version": "2.160.4"
+    },
+    "ms-dotnettools.csdevkit": {
+      "available": true,
+      "version": "3.40.210"
+    }
+  },
+  "dotnet_acquisition_extension": {
+    "available": true,
+    "version": "3.2.0"
+  },
+  "tuanjie_cowork": {
+    "available": true,
+    "path": "/Applications/Tuanjie Cowork.app",
+    "version": "2.1.2-stable",
+    "bundle_id": "dev.codelycowork.desktop"
+  },
+  "engine_editors": [
+    {
+      "available": true,
+      "path": "/Applications/Tuanjie/Hub/Editor/2022.3.62t16/Tuanjie.app",
+      "version": "Unity version 2022.3.62t16",
+      "bundle_id": "com.tuanjie.TuanjieEditor5.x",
+      "distribution": "Tuanjie",
+      "platform_modules": [
+        "MacStandaloneSupport",
+        "WindowsStandaloneSupport"
+      ],
+      "platform_module_paths": [
+        "/Applications/Tuanjie/Hub/Editor/2022.3.62t16/Tuanjie.app/Contents/PlaybackEngines/MacStandaloneSupport",
+        "/Applications/Tuanjie/Hub/Editor/2022.3.62t16/PlaybackEngines/WindowsStandaloneSupport"
+      ],
+      "windows_build_support_detected": true
+    },
+    {
+      "available": true,
+      "path": "/Applications/Unity/Hub/Editor/2022.3.62f3c1/Unity.app",
+      "version": "Unity version 2022.3.62f3c1",
+      "bundle_id": "com.unity3d.UnityEditor5.x",
+      "distribution": "Unity",
+      "platform_modules": [
+        "MacStandaloneSupport",
+        "WebGLSupport"
+      ],
+      "platform_module_paths": [
+        "/Applications/Unity/Hub/Editor/2022.3.62f3c1/Unity.app/Contents/PlaybackEngines/MacStandaloneSupport",
+        "/Applications/Unity/Hub/Editor/2022.3.62f3c1/PlaybackEngines/WebGLSupport"
+      ],
+      "windows_build_support_detected": false
+    }
+  ],
+  "editor_detection_note": "Default application locations plus SOCCER_UNITY_EDITOR; detection does not validate licensing or launch/build compatibility.",
+  "unity_project": {
+    "path": "/Users/gz/Documents/soccer/UnityProject",
+    "created": false
+  },
+  "xcode_command_line_tools": {
+    "available": true,
+    "exit_code": 0,
+    "output": "/Library/Developer/CommandLineTools"
+  },
+  "full_xcode": {
+    "available": false,
+    "path": "/Applications/Xcode.app"
+  },
+  "steam": {
+    "available": true,
+    "path": "/Applications/Steam.app",
+    "version": "6.0",
+    "bundle_id": "com.valvesoftware.steam"
+  },
+  "krita": {
+    "available": false
+  },
+  "python": {
+    "available": true,
+    "version": "3.12.14"
+  },
+  "pillow": {
+    "available": true,
+    "version": "12.3.0"
+  },
+  "readiness": {
+    "csharp_git_tools_ready": true,
+    "engine_editor_detected": true,
+    "tuanjie_editor_detected": true,
+    "tuanjie_windows_build_support_detected": true,
+    "pc_development_smoke_passed": true,
+    "full_environment_ready": true
+  },
+  "build_verification": {
+    "status": "passed",
+    "report": "reports/tuanjie-environment-validation.json",
+    "scope": "Temporary project: engine startup, C# compile, PNG sprite import and Windows x64 Mono build",
+    "windows_native_execution": "not tested on this Mac",
+    "vscode_debugger_and_production_project": "not yet configured or verified"
+  },
+  "manual_next_steps": []
+}

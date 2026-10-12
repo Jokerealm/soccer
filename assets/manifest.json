@@ -1,0 +1,1431 @@
+{
+  "version": 3,
+  "date": "2026-10-08",
+  "art_direction": "未来城市运动联赛，活泼卡通手绘 2.5D，轻斜俯视与清晰体积",
+  "scope": "static art plus six-character animation keyframe preparation; no gameplay implementation",
+  "art_specification": "assets/art-direction-v2.json",
+  "original_assets": [
+    {
+      "id": "arc-light-kick-v1",
+      "path": "assets/original/animations/arc-light-kick-v1.png",
+      "sha256": "d352e8afc2f3a05b9bea52ac77f796763ef3623b7193e3a47825716b0abe55ea",
+      "bytes": 1336627,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "arc-light-run-v1",
+      "path": "assets/original/animations/arc-light-run-v1.png",
+      "sha256": "37ee11ce8eead89e0a071a1e7f78ea4be668fe95ec59e1206b54a87b5efbe4ec",
+      "bytes": 1268171,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "previous-run-comparison",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "arc-light-run-v2",
+      "path": "assets/original/animations/arc-light-run-v2.png",
+      "sha256": "78a1ca2ed10219102e0ed9c05693d523c1668cf0289398918fee5a14c83e1683",
+      "bytes": 1409996,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 2,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "arc-light-turn-v1",
+      "path": "assets/original/animations/arc-light-turn-v1.png",
+      "sha256": "faa4526f38c5945396b471d9b09bb579d5fdc5ede9954ad8f031c4f56438ec5c",
+      "bytes": 1367311,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "echo-kick-v1",
+      "path": "assets/original/animations/echo-kick-v1.png",
+      "sha256": "3cd0ad62e48e50435399ca9f3d34fa682860d246f5b21fbcef4835b5ecccebd1",
+      "bytes": 1330797,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "echo-run-v1",
+      "path": "assets/original/animations/echo-run-v1.png",
+      "sha256": "c8a4455cf841c7ec55e6dbf3eb625ec99d4a739a35872668f1a69f757dd753e4",
+      "bytes": 1278424,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "previous-run-comparison",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "echo-run-v2",
+      "path": "assets/original/animations/echo-run-v2.png",
+      "sha256": "b5f5a8aa274692da1838ec791d94cebedc7224f277d8f7c82b6027b10bfe4757",
+      "bytes": 1003636,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 2,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "echo-turn-v1",
+      "path": "assets/original/animations/echo-turn-v1.png",
+      "sha256": "4f5bb4bbaabdb0946b7d4b86e916acb01427767bdff44caa9165dbf0f40b5043",
+      "bytes": 1172007,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "iron-guard-kick-v1",
+      "path": "assets/original/animations/iron-guard-kick-v1.png",
+      "sha256": "64436d2b1adc2edf41364547909c04e1f3226755f315186a6f79c5979ec2915f",
+      "bytes": 1327307,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "iron-guard-run-v1",
+      "path": "assets/original/animations/iron-guard-run-v1.png",
+      "sha256": "75ec311ecc89f149a93b3bb9fef1432da89754a47d150ac8d024b336edd7faa3",
+      "bytes": 1261685,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "previous-run-comparison",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "iron-guard-run-v2",
+      "path": "assets/original/animations/iron-guard-run-v2.png",
+      "sha256": "2e6858352b6e528ee6ab25ee5c31d19e86e8f3927e29a1e33d9f39fa1de1d621",
+      "bytes": 1502834,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 2,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "iron-guard-turn-v1",
+      "path": "assets/original/animations/iron-guard-turn-v1.png",
+      "sha256": "d1e3a64090ce690e6179b5cd60501f509749dab8f52e14e85b1f21faf608df35",
+      "bytes": 1465540,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "jump-point-kick-v1",
+      "path": "assets/original/animations/jump-point-kick-v1.png",
+      "sha256": "1b882c9e86fc7818727ca91b19981271f718b4d2913a3b8b4ef4ba74515613ab",
+      "bytes": 1354824,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "jump-point-run-v1",
+      "path": "assets/original/animations/jump-point-run-v1.png",
+      "sha256": "953fa1a1d2fe1a97b6d28d3f5ef800854f48888e46b6cd8811e45804aa6c04c5",
+      "bytes": 1408876,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "previous-run-comparison",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "jump-point-run-v2",
+      "path": "assets/original/animations/jump-point-run-v2.png",
+      "sha256": "794796ee97e343e0d3e6a96f4dbe2efdae0b14d3ae8467c4c794c2a34675c501",
+      "bytes": 1520725,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 2,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "jump-point-turn-v1",
+      "path": "assets/original/animations/jump-point-turn-v1.png",
+      "sha256": "43e5c2e52339556df72f58d70b1f38f28a479c7b14e60455c5f7954abfd314ed",
+      "bytes": 1307449,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "magnet-core-kick-v1",
+      "path": "assets/original/animations/magnet-core-kick-v1.png",
+      "sha256": "886d2ff0d276a9713b6b5d2e8de3b15c956b57797f0bba3e46298508b1750150",
+      "bytes": 1330707,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "magnet-core-run-v1",
+      "path": "assets/original/animations/magnet-core-run-v1.png",
+      "sha256": "ffa6f63eb8d1926a523245e0e83cabe9498e9df8006a7c077e3d3699c92bc6ee",
+      "bytes": 1347967,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "previous-run-comparison",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "magnet-core-run-v2",
+      "path": "assets/original/animations/magnet-core-run-v2.png",
+      "sha256": "8220672f0716cbd6cb8be7ee0cc18ebbc418115a2d76eb5102cfe2fcfe52c07a",
+      "bytes": 1535794,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 2,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "magnet-core-turn-left-v1",
+      "path": "assets/original/animations/magnet-core-turn-left-v1.png",
+      "sha256": "c36b2567a9db6a76b110cc5a99c83eb75834a914450f0a56910d157aea380667",
+      "bytes": 1176516,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "magnet-core-turn-v1",
+      "path": "assets/original/animations/magnet-core-turn-v1.png",
+      "sha256": "db5c6c8bb1a16b17b41ceea20c297246017aa2311a85aa808a7ab5ea0b91ad83",
+      "bytes": 1407864,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "wind-shuttle-kick-v1",
+      "path": "assets/original/animations/wind-shuttle-kick-v1.png",
+      "sha256": "f6461d002f0ac731bd70bb7c3a5431b7972a5e9b2de3bf628694f5e11abcb119",
+      "bytes": 1332616,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "wind-shuttle-run-v1",
+      "path": "assets/original/animations/wind-shuttle-run-v1.png",
+      "sha256": "74fe98411e9f39e561cb2d0b55580e76e261c97e539aa3989e3c0ad6f8cd7082",
+      "bytes": 1211390,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "previous-run-comparison",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "wind-shuttle-run-v2",
+      "path": "assets/original/animations/wind-shuttle-run-v2.png",
+      "sha256": "b85b446438effcd36207049b38fae46e239939e03c90344b1f4529ad22af590e",
+      "bytes": 1295112,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 2,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "wind-shuttle-turn-v1",
+      "path": "assets/original/animations/wind-shuttle-turn-v1.png",
+      "sha256": "f63ca46fc4c0f918ea99954420afb417c6f482575bc23aa0bf40bce12cfd9d94",
+      "bytes": 1242413,
+      "status": "animation-keyframe-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "animation_version": 1,
+      "animation_specification": "assets/animation-manifest-v2.json",
+      "animation_usage": "active",
+      "dimensions_px": [
+        1774,
+        887
+      ],
+      "color_mode": "RGBA",
+      "transparent": true,
+      "alpha_extrema": [
+        0,
+        255
+      ]
+    },
+    {
+      "id": "standard-floor-v1",
+      "path": "assets/original/arenas/standard-floor-v1.png",
+      "sha256": "386315fbbaea2be0d8c5f9d218cbc5c76fb07ecd8b1de80016b746a3b278cac0",
+      "bytes": 1923949,
+      "status": "draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "color_mode": "RGB"
+    },
+    {
+      "id": "standard-floor-v2",
+      "path": "assets/original/arenas/standard-floor-v2.png",
+      "sha256": "f56c6fca45f06cb1c958449e573465fcdaa598ac644e69570bb61e435fb5a34e",
+      "bytes": 2077559,
+      "status": "arena-background-concept-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        1672,
+        941
+      ],
+      "color_mode": "RGB"
+    },
+    {
+      "id": "arc-light-idle-v1",
+      "path": "assets/original/characters/arc-light-idle-v1.png",
+      "sha256": "93aa7b825ec54e8094efa2211cbcf9509c4765b317b86ad48efc840eafcd9308",
+      "bytes": 573793,
+      "status": "static-character-concept-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "orientation": "high-angle-overhead; direction and camera not standardized",
+      "animation_complete": false,
+      "transparent": true,
+      "body_bbox_alpha_ge_8": [
+        354,
+        152,
+        903,
+        1084
+      ]
+    },
+    {
+      "id": "arc-light-idle-v2",
+      "path": "assets/original/characters/arc-light-idle-v2.png",
+      "sha256": "d09e235afd62df12b18ef9e70dc86af1aae3929d8ad8e316c6de127983321f1c",
+      "bytes": 837328,
+      "status": "static-character-concept-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "orientation": "elevated front three-quarter, southeast-facing visual draft",
+      "animation_complete": false,
+      "transparent": true,
+      "body_bbox_alpha_ge_8": [
+        309,
+        59,
+        1000,
+        1227
+      ],
+      "preview_foot_anchor_px": [
+        680,
+        1164
+      ],
+      "unity_pivot_normalized_proposal": [
+        0.542265,
+        0.07177
+      ],
+      "anchor_status": "manually estimated for static preview; final rig and foot contacts pending",
+      "display_body_height_px_at_1920": 114
+    },
+    {
+      "id": "iron-guard-idle-v1",
+      "path": "assets/original/characters/iron-guard-idle-v1.png",
+      "sha256": "9ad01f8636d1ee11777d7292f13553c0986ee83d4807661c871b19d5820afe7b",
+      "bytes": 750270,
+      "status": "static-character-concept-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "orientation": "high-angle-overhead; direction and camera not standardized",
+      "animation_complete": false,
+      "transparent": true,
+      "body_bbox_alpha_ge_8": [
+        215,
+        246,
+        1040,
+        1019
+      ]
+    },
+    {
+      "id": "iron-guard-idle-v2",
+      "path": "assets/original/characters/iron-guard-idle-v2.png",
+      "sha256": "deafaba38e1d130ec21d90473fab58eab0fb2ebd136a06f61b35a8e9a1ce6cc5",
+      "bytes": 1076559,
+      "status": "static-character-concept-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "orientation": "elevated front three-quarter, southeast-facing visual draft",
+      "animation_complete": false,
+      "transparent": true,
+      "body_bbox_alpha_ge_8": [
+        205,
+        49,
+        1087,
+        1210
+      ],
+      "preview_foot_anchor_px": [
+        665,
+        1138
+      ],
+      "unity_pivot_normalized_proposal": [
+        0.530303,
+        0.092504
+      ],
+      "anchor_status": "manually estimated for static preview; final rig and foot contacts pending",
+      "display_body_height_px_at_1920": 120
+    },
+    {
+      "id": "wind-shuttle-idle-v1",
+      "path": "assets/original/characters/wind-shuttle-idle-v1.png",
+      "sha256": "fe9d0693b661d8c589272962b5d3944437c02b1ccdfc88a01801483bfea4f299",
+      "bytes": 499416,
+      "status": "static-character-concept-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "orientation": "high-angle-overhead; direction and camera not standardized",
+      "animation_complete": false,
+      "transparent": true,
+      "body_bbox_alpha_ge_8": [
+        396,
+        227,
+        884,
+        1001
+      ]
+    },
+    {
+      "id": "wind-shuttle-idle-v2",
+      "path": "assets/original/characters/wind-shuttle-idle-v2.png",
+      "sha256": "b56e53ba827c5b24163939200963d885c4ab44a08adf58f9205a2723a4bee24e",
+      "bytes": 825293,
+      "status": "static-character-concept-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        1254,
+        1254
+      ],
+      "color_mode": "RGBA",
+      "orientation": "elevated front three-quarter, southeast-facing visual draft",
+      "animation_complete": false,
+      "transparent": true,
+      "body_bbox_alpha_ge_8": [
+        319,
+        57,
+        1008,
+        1217
+      ],
+      "preview_foot_anchor_px": [
+        670,
+        1155
+      ],
+      "unity_pivot_normalized_proposal": [
+        0.53429,
+        0.078947
+      ],
+      "anchor_status": "manually estimated for static preview; final rig and foot contacts pending",
+      "display_body_height_px_at_1920": 108
+    },
+    {
+      "id": "roster-v1",
+      "path": "assets/original/concepts/roster-v1.png",
+      "sha256": "2bbd6c5c91733936888fb592456aca7f761643720b9e6749cde9da6aa34abdef",
+      "bytes": 2136516,
+      "status": "draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        1942,
+        809
+      ],
+      "color_mode": "RGB"
+    },
+    {
+      "id": "roster-v2",
+      "path": "assets/original/concepts/roster-v2.png",
+      "sha256": "770c3ae99a41ab55cdc82d04a67ac0ecd56c042978649fb7addf107fd596438a",
+      "bytes": 2225721,
+      "status": "character-lineup-concept-draft",
+      "source": "built-in-image_gen",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        1942,
+        809
+      ],
+      "color_mode": "RGB"
+    },
+    {
+      "id": "arc-light-e-v1",
+      "path": "assets/original/vector/arc-light-e-v1.svg",
+      "sha256": "453eaa46af5ae470909fb5d200b37f208304d4c92123652485ccc927922f9a4d",
+      "bytes": 393,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "arc-light-passive-v1",
+      "path": "assets/original/vector/arc-light-passive-v1.svg",
+      "sha256": "7f15f48e7aa05eb52538bf53f89aab463cda0305c0b402554558c4596aa13501",
+      "bytes": 397,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "arc-light-q-v1",
+      "path": "assets/original/vector/arc-light-q-v1.svg",
+      "sha256": "44a2dd81ef4f106cdcc47d8419dc1536d18fdb719a67adccd1c3ef33d7d9be67",
+      "bytes": 409,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "arena-goals-v2",
+      "path": "assets/original/vector/arena-goals-v2.svg",
+      "sha256": "5e7f16071cabec0a79e6a47a67c2cba15c729d587f59e9961a4672852dc043ef",
+      "bytes": 3921,
+      "status": "editable-oblique-visual-layer-draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        1920,
+        1080
+      ],
+      "view_box": "0 0 1920 1080"
+    },
+    {
+      "id": "arena-lines-v1",
+      "path": "assets/original/vector/arena-lines-v1.svg",
+      "sha256": "9b6fe5a8dc207b075333e1140a38ff5d1677e9830fbc205494656f110daa297b",
+      "bytes": 694,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        1920,
+        1080
+      ],
+      "view_box": "0 0 1920 1080"
+    },
+    {
+      "id": "arena-lines-v2",
+      "path": "assets/original/vector/arena-lines-v2.svg",
+      "sha256": "0aaf608ee8f4f3f2927293e84be60bc81526f211c11e6225750ef9a4f2f3cbb0",
+      "bytes": 524,
+      "status": "editable-oblique-visual-layer-draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        1920,
+        1080
+      ],
+      "view_box": "0 0 1920 1080"
+    },
+    {
+      "id": "ball-v1",
+      "path": "assets/original/vector/ball-v1.svg",
+      "sha256": "855939f015e444c0dafa93551571dda0e916c26e90d18634998bb8408022959c",
+      "bytes": 407,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        64,
+        64
+      ],
+      "view_box": "0 0 64 64"
+    },
+    {
+      "id": "ball-v2",
+      "path": "assets/original/vector/ball-v2.svg",
+      "sha256": "1fd35659c3ff181476f3e527d9dda2a49da8f3844bc6f10c667ffae362616f73",
+      "bytes": 969,
+      "status": "editable-oblique-visual-layer-draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        64,
+        64
+      ],
+      "view_box": "0 0 64 64"
+    },
+    {
+      "id": "echo-e-v1",
+      "path": "assets/original/vector/echo-e-v1.svg",
+      "sha256": "21c3211d64c2c1d12206fe0e890e2fa9d87c261d684b7a94f1b390991cce9648",
+      "bytes": 450,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "echo-passive-v1",
+      "path": "assets/original/vector/echo-passive-v1.svg",
+      "sha256": "f368f1540afa594e9f6ee4fbc073db134b608ccdc3571356855c3a169ca7b2be",
+      "bytes": 417,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "echo-q-v1",
+      "path": "assets/original/vector/echo-q-v1.svg",
+      "sha256": "3cae50e9dad0aa7596ffb38cdbf9fd17299918babd496767add56d5671e09894",
+      "bytes": 440,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "iron-guard-e-v1",
+      "path": "assets/original/vector/iron-guard-e-v1.svg",
+      "sha256": "e44726ff856bf5e553c48aba502ac9169dd4acc45720fd4633e2a90b7ff45a02",
+      "bytes": 442,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "iron-guard-passive-v1",
+      "path": "assets/original/vector/iron-guard-passive-v1.svg",
+      "sha256": "aea947f8dd84a571994e3440cd6f72c232974b9fda8e55f1c04d86a54d3da8d8",
+      "bytes": 396,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "iron-guard-q-v1",
+      "path": "assets/original/vector/iron-guard-q-v1.svg",
+      "sha256": "a9f6704e00e1f1b9a8a617deb908efe73c5b3f125b80783cf1d68e590c6692c3",
+      "bytes": 375,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "jump-point-e-v1",
+      "path": "assets/original/vector/jump-point-e-v1.svg",
+      "sha256": "88de6b0429bf9e6297e0217bff11e4de3d1c5299d0692d07b6f8f2d47ab1577c",
+      "bytes": 383,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "jump-point-passive-v1",
+      "path": "assets/original/vector/jump-point-passive-v1.svg",
+      "sha256": "961406c91dca059996f54ae24e795e5bcee4cedcc09944d8b87fd35febf03c03",
+      "bytes": 393,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "jump-point-q-v1",
+      "path": "assets/original/vector/jump-point-q-v1.svg",
+      "sha256": "e314e95170ba45f0f7561264f3677289a40dfd31098383c2ee249907cb4c67c3",
+      "bytes": 420,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "local-player-v1",
+      "path": "assets/original/vector/local-player-v1.svg",
+      "sha256": "e18d6fc651907f0627649ec0aba09ad120e24e204b8e3d12ace1a7074b4cddd7",
+      "bytes": 192,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        48,
+        32
+      ],
+      "view_box": "0 0 48 32"
+    },
+    {
+      "id": "magnet-core-e-v1",
+      "path": "assets/original/vector/magnet-core-e-v1.svg",
+      "sha256": "8517893b4fbcc1ae1b44801d4fb8e8d542ab2ba7759539d86344507d21e59a61",
+      "bytes": 453,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "magnet-core-passive-v1",
+      "path": "assets/original/vector/magnet-core-passive-v1.svg",
+      "sha256": "242c6d6775e0645e3c543a728c25a5092906bb9299f704dee1fd4c0b1201c54d",
+      "bytes": 389,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "magnet-core-q-v1",
+      "path": "assets/original/vector/magnet-core-q-v1.svg",
+      "sha256": "c61f9172505237f090108eeb34f0fef4dc310b8974b9a94c7251f0688205568c",
+      "bytes": 421,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "mode-party-v1",
+      "path": "assets/original/vector/mode-party-v1.svg",
+      "sha256": "7db87724e21859589f22d15a345454d972a6fd2f8d3e151de5e04cf47f94e28d",
+      "bytes": 402,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "mode-ranked-v1",
+      "path": "assets/original/vector/mode-ranked-v1.svg",
+      "sha256": "2443c2b004dcd256c2b5979687af0b830a13e4869069248c68e5a1b463e116be",
+      "bytes": 426,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "mode-standard-v1",
+      "path": "assets/original/vector/mode-standard-v1.svg",
+      "sha256": "118018afc2812f5c7478a76476a64143ea450129f7f7b854fcbb3fd09cd09d92",
+      "bytes": 433,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "shadow-soft-v2",
+      "path": "assets/original/vector/shadow-soft-v2.svg",
+      "sha256": "235d443df939bca93466cbda81ad126458022c34682c5ed31b67392927195eba",
+      "bytes": 423,
+      "status": "editable-oblique-visual-layer-draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        128,
+        64
+      ],
+      "view_box": "0 0 128 64"
+    },
+    {
+      "id": "team-amber-diamond-v1",
+      "path": "assets/original/vector/team-amber-diamond-v1.svg",
+      "sha256": "dfd299c89dfc8a6ac348d912ff82d8c19847613ca940a2c5f0e7503ff9fd6f62",
+      "bytes": 301,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "team-amber-ground-v2",
+      "path": "assets/original/vector/team-amber-ground-v2.svg",
+      "sha256": "3fab3c9133d1971a351e1c579210668348065e9b432a972be0ffb32de65c017d",
+      "bytes": 390,
+      "status": "editable-oblique-visual-layer-draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        128,
+        112
+      ],
+      "view_box": "0 0 128 112"
+    },
+    {
+      "id": "team-cyan-circle-v1",
+      "path": "assets/original/vector/team-cyan-circle-v1.svg",
+      "sha256": "157ce5d049f8f16b22f982afcda192b385d3c8f7a329928a514b45e28e9c4c8e",
+      "bytes": 247,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "team-cyan-ground-v2",
+      "path": "assets/original/vector/team-cyan-ground-v2.svg",
+      "sha256": "36c8f10e2c661089eb2764e22d9d2b47e4a30d24145151cb16fa1467df739ae6",
+      "bytes": 400,
+      "status": "editable-oblique-visual-layer-draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 2,
+      "current_direction": true,
+      "dimensions_px": [
+        128,
+        112
+      ],
+      "view_box": "0 0 128 112"
+    },
+    {
+      "id": "wind-shuttle-e-v1",
+      "path": "assets/original/vector/wind-shuttle-e-v1.svg",
+      "sha256": "19b7268a55ee08edef04e0b7cc121dc7b55794279ce77b38250368978b1920d0",
+      "bytes": 397,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "wind-shuttle-passive-v1",
+      "path": "assets/original/vector/wind-shuttle-passive-v1.svg",
+      "sha256": "7a7b5f1ebd2359bca993f250e2e9817ab3f583335041299a9a25719dde54a6c5",
+      "bytes": 375,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    },
+    {
+      "id": "wind-shuttle-q-v1",
+      "path": "assets/original/vector/wind-shuttle-q-v1.svg",
+      "sha256": "1da0787d75cee84b3a9a74f8d272cd5e33b93a7360dc7477a21db8ac3e2e2b29",
+      "bytes": 384,
+      "status": "draft",
+      "source": "project-authored-svg",
+      "third_party_license": null,
+      "art_version": 1,
+      "current_direction": false,
+      "dimensions_px": [
+        96,
+        96
+      ],
+      "view_box": "0 0 96 96"
+    }
+  ],
+  "third_party_sources": [
+    {
+      "id": "kenney-sports-pack",
+      "source_page": "https://kenney.nl/assets/sports-pack",
+      "license": "CC0-1.0",
+      "local_directory": "assets/third_party/kenney/sports-pack",
+      "license_file": "assets/licenses/kenney-sports-pack-license.txt",
+      "files": 238,
+      "png_files": 206
+    },
+    {
+      "id": "kenney-ui-pack",
+      "source_page": "https://kenney.nl/assets/ui-pack",
+      "license": "CC0-1.0",
+      "local_directory": "assets/third_party/kenney/ui-pack",
+      "license_file": "assets/licenses/kenney-ui-pack-license.txt",
+      "files": 1315,
+      "png_files": 870
+    },
+    {
+      "id": "kenney-input-prompts",
+      "source_page": "https://kenney.nl/assets/input-prompts",
+      "license": "CC0-1.0",
+      "local_directory": "assets/third_party/kenney/input-prompts",
+      "license_file": "assets/licenses/kenney-input-prompts-license.txt",
+      "files": 4667,
+      "png_files": 3056
+    },
+    {
+      "id": "kenney-particle-pack",
+      "source_page": "https://kenney.nl/assets/particle-pack",
+      "license": "CC0-1.0",
+      "local_directory": "assets/third_party/kenney/particle-pack",
+      "license_file": "assets/licenses/kenney-particle-pack-license.txt",
+      "files": 195,
+      "png_files": 193
+    },
+    {
+      "id": "noto-sans-cjk-sc-regular",
+      "source_page": "https://github.com/notofonts/noto-cjk",
+      "path": "assets/third_party/noto-sans-cjk/NotoSansCJKsc-Regular.otf",
+      "license": "OFL-1.1",
+      "license_file": "assets/third_party/noto-sans-cjk/OFL.txt",
+      "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"
+    }
+  ],
+  "generation_prompts": [
+    "assets/original/generation-prompts.json",
+    "assets/original/generation-prompts-v2.json",
+    "assets/original/generation-prompts-animations-v1.json",
+    "assets/original/generation-prompts-animations-v2.json"
+  ],
+  "known_followup": [
+    "固定全场为预览提案，最终镜头范围与倾角需游戏原型验证",
+    "三张 PNG 为单帧静态样稿；最终方向、脚点、画布和边缘需统一",
+    "制作9种基础动作及技能施放；禁止通过旋转人物 PNG 代替方向动画",
+    "六角已有 14 帧跑步、8 帧踢球和八向转身草稿；继续修型、补齐方向和完整动作，见 animation-manifest-v2.json",
+    "引擎导入、多人移动与特效叠加下的遮挡和足球可读性尚待验证",
+    "跑步和踢球目前只有右前 SE 一个绘制方向；其他移动方向尚待补齐",
+    "动作关键帧有服装、比例、摆臂和步态漂移，需逐帧修型与中间帧补充",
+    "转身包含真实正侧背视图，但相机倾角与方向间透视仍需统一",
+    "弧光的非对称射门护具、磁核补画与原图的细节需人工核对",
+    "预览脚点为估算，最终脚部接触、根位置、击球点和时序需引擎中标定",
+    "尚无持球跑、抢断、受击、庆祝、技能动作或最终 Animator 绑定"
+  ],
+  "animation_specification": "assets/animation-manifest-v2.json"
+}

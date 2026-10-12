@@ -1,0 +1,15 @@
+#!/bin/sh
+set -eu
+export PATH="/opt/homebrew/bin:/usr/local/bin:$PATH"
+runtime="${SOCCER_DOTNET_BIN:-}"
+if [ -z "$runtime" ]; then
+  runtime=$(command -v dotnet || true)
+fi
+if [ -z "$runtime" ] || [ ! -x "$runtime" ]; then
+  echo 'Missing .NET SDK. Install it with Homebrew or the Microsoft installer.' >&2
+  exit 1
+fi
+if [ "$runtime" = /opt/homebrew/bin/dotnet ] && [ -d /opt/homebrew/opt/dotnet/libexec ]; then
+  export DOTNET_ROOT="/opt/homebrew/opt/dotnet/libexec"
+fi
+exec "$runtime" "$@"

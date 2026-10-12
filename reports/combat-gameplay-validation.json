@@ -1,0 +1,45 @@
+{
+  "date": "2026-10-09",
+  "version": "combat-prototype-0.4",
+  "direction": "先打磨合作乱斗玩法，英雄与外观暂缓",
+  "passed": true,
+  "coreChecks": 75,
+  "runtimeChecks": 62,
+  "features": [
+    "生命与能量",
+    "独立武器普攻与前摇",
+    "可躲避的伤害与眩晕弹",
+    "队友护盾、加速和治疗",
+    "击倒掉球、停止行动与碰撞",
+    "5 秒原地满状态复活与短保护",
+    "进球重开保留倒地坐标和恢复等待",
+    "统一占位棋子与三套测试装备",
+    "AI 战斗、支援与传球配合"
+  ],
+  "assemblies": {
+    "macOS": {
+      "path": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app/Contents/Resources/Data/Managed/Soccer.Core.dll",
+      "containsCombatSystem": true,
+      "containsCombatLoadout": true,
+      "sha256": "e3ed8695b9caf0ebdeff206ce2e0ea94a28c54fec537c256d534f587362d231e"
+    },
+    "Windows": {
+      "path": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer_Data/Managed/Soccer.Core.dll",
+      "containsCombatSystem": true,
+      "containsCombatLoadout": true,
+      "sha256": "69016900fff113425b18d2a19ccb495db583beb6011e263aaaf8986723bf4848"
+    }
+  },
+  "limitations": [
+    "当前真人输入＋AI 对练，未接入真人联机",
+    "数值是玩法试验，协作乐趣与平衡仍需真人试玩",
+    "Windows 已构建，未在 Windows 实机运行",
+    "原生物理鼠标操作沿用原报告的待人工确认状态；客户端自动化验证通过公开模拟指令执行战斗"
+  ],
+  "reports": [
+    "reports/core-tests.json",
+    "reports/runtime-combat-smoke/runtime-smoke.json",
+    "reports/project-build-macos.json",
+    "reports/project-build-windows.json"
+  ]
+}

@@ -1,0 +1,36 @@
+// Editable original HUD illustrations. The screenshot is a layout reference only.
+const fs = require('fs'), path = require('path'), os = require('os');
+const sharp = require(path.join(os.homedir(), '.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/sharp'));
+const root = path.resolve(__dirname, '..');
+const source = path.join(root, 'assets/original/vector/battle-hud');
+const output = path.join(root, 'UnityProject/Assets/Soccer/Resources/FrontEnd');
+const defs = `<defs>
+  <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#426e82"/><stop offset=".5" stop-color="#153649"/><stop offset="1" stop-color="#0b2133"/></linearGradient>
+  <linearGradient id="steel" x1="0" y1="0" x2=".7" y2="1"><stop stop-color="#f2f7e7"/><stop offset=".44" stop-color="#b8d0c7"/><stop offset="1" stop-color="#577a84"/></linearGradient>
+  <linearGradient id="gold" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#ffebaf"/><stop offset=".4" stop-color="#efba57"/><stop offset="1" stop-color="#a95827"/></linearGradient>
+  <linearGradient id="mint" x1="0" y1="0" x2=".8" y2="1"><stop stop-color="#d3ffe1"/><stop offset=".45" stop-color="#70e4b6"/><stop offset="1" stop-color="#1d7587"/></linearGradient>
+  <radialGradient id="ball" cx=".32" cy=".23" r=".8"><stop stop-color="#ffffff"/><stop offset=".5" stop-color="#e2ebda"/><stop offset="1" stop-color="#6c929b"/></radialGradient>
+  <radialGradient id="light"><stop stop-color="#69d1c1" stop-opacity=".25"/><stop offset="1" stop-color="#69d1c1" stop-opacity="0"/></radialGradient>
+</defs>`;
+const bodies = {
+  'battle-stim': `<path d="m84 20 8 10-44 56-10-8z" fill="url(#steel)" stroke="#173e50" stroke-width="3"/><path d="m51 62 17-22 13 10-17 22z" fill="url(#mint)"/><path d="m77 18 21 17m-65 39 21 17m-12-5L26 105" stroke="#ecfff0" stroke-width="7" stroke-linecap="round"/><path d="m86 69-12 20h12l-11 19 29-28H91l9-11z" fill="url(#gold)"/><path d="m58 57 7 5m0-13 7 5" stroke="#224c59" stroke-width="3"/>`,
+  'battle-bomb': `<path d="M67 30v-8h19l7 9" fill="none" stroke="url(#gold)" stroke-width="6"/><circle cx="63" cy="70" r="33" fill="#091e2c" stroke="url(#steel)" stroke-width="5"/><path d="m39 43 13-11h24l13 10-13 6H51z" fill="url(#steel)"/><path d="M45 71h36v18H45z" fill="url(#mint)"/><path d="M57 75v10m12-10v10" stroke="#174b54" stroke-width="4"/><path d="m94 15 2 9 9 2-8 4-1 9-4-8-9-3 8-4z" fill="#ffdc7d"/><path d="M39 55c4-6 10-9 15-9" fill="none" stroke="#597c84" stroke-width="4" stroke-linecap="round"/>`,
+  'battle-drive': `<path d="m42 34 24-11 26 15 7 48-33 21-34-21z" fill="url(#steel)" stroke="#173e50" stroke-width="3"/><path d="m47 46 18-10 18 10v30L65 89 47 76z" fill="#123340"/><path d="m66 39-17 24h14l-4 21 24-31H69l7-14z" fill="url(#mint)"/><path d="M29 42H17m11 13H12m14 13H8m20 13H16" stroke="url(#gold)" stroke-width="5" stroke-linecap="round"/>`,
+  'battle-thruster': `<path d="m40 32 20-8 25 12-11 47-31 9-16-13z" fill="url(#steel)" stroke="#173e50" stroke-width="3"/><path d="m48 38 14-5 13 6-8 34-18 6-9-7z" fill="url(#mint)"/><path d="m39 84 33-10 4 13-35 11z" fill="#193d50" stroke="#9ab6b9" stroke-width="3"/><path d="m45 95 24-7-2 29-9-11-14 12z" fill="url(#gold)"/><path d="m88 26 16 7-4 39-13 5 6-25-8-2z" fill="#84babb"/>`,
+  'battle-kick': `<ellipse cx="52" cy="100" rx="31" ry="7" fill="#071b2a" opacity=".7"/><circle cx="52" cy="72" r="30" fill="url(#ball)" stroke="#113347" stroke-width="3"/><path d="m47 61 14 3 4 13-12 9-12-10zm-24 1 12-6 3-13-11 8zm50-10-7-8-10-1 7 10zm-5 44 12-12-9-2-9 11zm-35-8-9-11 2 14 10 8z" fill="#174051"/><path d="M52 40c3-14 18-19 32-12l-7 8 29-1-8-27-7 8C68 2 40 13 36 37z" fill="url(#gold)" stroke="#34525b" stroke-width="2"/>`,
+  'battle-tackle': `<path d="m31 58 22-20 19 19-18 26z" fill="url(#steel)" stroke="#193e51" stroke-width="3"/><path d="m52 75 16-12 10 9 25 1 9 18-8 11H60L43 90z" fill="url(#gold)" stroke="#193e51" stroke-width="3"/><path d="M59 96h44" stroke="#f9efd0" stroke-width="4"/><path d="M17 72h19m-25 12h19m-18 12h28" stroke="#86e8bf" stroke-width="5" stroke-linecap="round"/><path d="m92 32 6 11 13-2-8 11 7 11-14-4-8 8 1-13-11-7 13-1z" fill="#c4ffe0"/>`,
+  'battle-weapon': `<g transform="rotate(-26 64 68)" stroke="#163e51" stroke-width="3"><path d="M21 46h65l8 11h22v24H85l-9 10H21z" fill="url(#steel)"/><path d="M16 45h17v46H16zm33 43h20l-4 24H46z" fill="url(#gold)"/><path d="M53 44V33h23v11" fill="none" stroke="#cae0d1" stroke-width="5"/><path d="M70 59h30v8H70z" fill="url(#mint)"/><path d="M38 56h17m-17 13h17" stroke="#ecfff0" stroke-width="4"/></g>`,
+  'battle-cannons': `<path d="m26 70 37-12 38 12-7 36-31 14-31-14z" fill="url(#steel)" stroke="#163e51" stroke-width="3"/><path d="M24 29h25v59H24zm55 0h25v59H79z" fill="url(#gold)" stroke="#173d50" stroke-width="3"/><path d="M18 24h37v20H18zm55 0h37v20H73z" fill="#163849" stroke="#8eb1b4" stroke-width="3"/><path d="M27 28h19v8H27zm55 0h19v8H82z" fill="url(#mint)"/><path d="M47 85h33v17H47z" fill="url(#mint)"/><path d="m23 11 12 8 14-7m30-1 12 8 14-7" fill="none" stroke="#dcf6d7" stroke-width="3"/>`,
+  'battle-trigger': `<path d="M45 34h40l7 66H37z" fill="url(#steel)" stroke="#183e50" stroke-width="3"/><path d="M64 33V16" stroke="#e7f6d9" stroke-width="5"/><circle cx="65" cy="65" r="17" fill="url(#gold)" stroke="#5a653f" stroke-width="3"/><path d="M64 55v12m0 7v1" stroke="#173e50" stroke-width="5" stroke-linecap="round"/><path d="M49 87h29" stroke="#1f5260" stroke-width="4"/><path d="M77 14c10 4 15 10 16 18m-6-27c15 6 24 17 25 29M50 14c-10 4-15 10-16 18" fill="none" stroke="#8aebbf" stroke-width="4" stroke-linecap="round"/>`,
+  'battle-marine': `<path d="M20 113V90l24-16h40l24 16v23z" fill="url(#mint)" stroke="#173c50" stroke-width="3"/><path d="M37 48c0-38 54-38 54 0v28L75 91H52L36 76z" fill="url(#steel)" stroke="#173c50" stroke-width="3"/><path d="M59 17h10v23H59z" fill="url(#mint)"/><path d="m36 45 55 1-6 19-21 8-23-9z" fill="#193c4e"/><path d="m43 50 40 1-3 8-15 5-19-5z" fill="url(#mint)"/><path d="M53 81h22" stroke="#37616c" stroke-width="5"/>`,
+  'battle-thor': `<path d="m28 46 36-13 37 13 13 52-50 21-50-21z" fill="url(#steel)" stroke="#193d50" stroke-width="3"/><path d="M17 16h23v54H17zm72 0h23v54H89z" fill="url(#gold)" stroke="#193d50" stroke-width="3"/><path d="M14 15h29v16H14zm72 0h29v16H86z" fill="url(#mint)"/><path d="M46 43h36v25H46z" fill="#173b4d"/><path d="M49 47h30v9H49z" fill="url(#mint)"/><path d="m38 80 26-10 27 10-7 23-20 8-20-8z" fill="url(#mint)" stroke="#255463" stroke-width="3"/><path d="M58 85h13v12H58z" fill="#e7ffe1"/>`
+};
+(async () => {
+  fs.mkdirSync(source, { recursive: true });
+  for (const [name, body] of Object.entries(bodies)) {
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">${defs}<rect width="128" height="128" rx="8" fill="url(#bg)"/><circle cx="64" cy="58" r="62" fill="url(#light)"/><path d="M7 118V8h113" fill="none" stroke="#85a4ae" stroke-opacity=".38" stroke-width="2"/>${body}</svg>`;
+    fs.writeFileSync(path.join(source, name + '.svg'), svg);
+    await sharp(Buffer.from(svg)).resize(768,768).png().toFile(path.join(output,name+'.png'));
+  }
+  console.log(`${Object.keys(bodies).length} original HUD icons exported at 768 px.`);
+})().catch(error => { console.error(error); process.exitCode=1; });

@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+runtime="${SOCCER_GODOT_BIN:-$HOME/Applications/Godot-4.7.2.app/Contents/MacOS/Godot}"
+if [ ! -x "$runtime" ]; then
+  echo 'Godot 4.7.2 尚未就绪；先运行 tools/python tools/prepare_resources.py，或设置 SOCCER_GODOT_BIN。' >&2
+  exit 1
+fi
+exec "$runtime" "$@"

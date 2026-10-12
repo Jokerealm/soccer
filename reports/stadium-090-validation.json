@@ -1,0 +1,76 @@
+{
+  "version": "0.9.0",
+  "date": "2026-10-10",
+  "passed": true,
+  "clientChecks": 132,
+  "runtimeErrors": [],
+  "runtimeReport": "reports/runtime-stadium-090/runtime-smoke.json",
+  "runtimeLog": "reports/runtime-stadium-090.log",
+  "gameplayChanged": false,
+  "coreChecksRetainedFrom08": 119,
+  "coreReport": "reports/star-strikers-check/core-tests.json",
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 364448704
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 332909845
+    }
+  },
+  "buildLogs": {
+    "macos": "reports/build-stadium-090-macos-verified.log",
+    "windows": "reports/build-stadium-090-windows-verified.log"
+  },
+  "stadium": {
+    "stands": 8,
+    "tiersPerStand": 3,
+    "seats": 144,
+    "animatedSpectators": 48,
+    "windFlags": 8,
+    "scrollingLEDs": 16,
+    "hoveringDrones": 2,
+    "reactiveNetLines": 50,
+    "confettiBudget": 96,
+    "playingSurface": "HD detail + procedural physically lit grass mesh + wind grass geometry",
+    "goalReaction": "Real Core goal event: crowd, LED color, deforming goal net and confetti",
+    "pause": "Transforms, shader presentation time and particle simulation freeze together",
+    "newGameplayColliders": 0
+  },
+  "visualQA": "Reviewed actual native full stadium, 3D stand closeup and goal celebration; revised terrace scale/materials and HD grass blend after first review.",
+  "animation": {
+    "path": "previews/living-stadium-090.gif",
+    "capturedFrames": 36,
+    "encodedFrames": 36,
+    "size": [
+      960,
+      540
+    ],
+    "bytes": 7246177,
+    "source": "Actual native client captures, resized for preview; runtime uses real-time meshes and shaders."
+  },
+  "standRegionChangedPixelsBetweenCaptures": 11799,
+  "screenshots": {
+    "wide": "reports/runtime-stadium-090/24-living-stadium-wide.png",
+    "closeup": "reports/runtime-stadium-090/23-3d-stadium-closeup.png"
+  },
+  "sourceProvenance": "assets/scene-dynamics-v1-provenance.json",
+  "windowsRuntimeVerified": false,
+  "mobilePerformanceVerified": false,
+  "nativeInputHandFeelVerified": false,
+  "full4KWindowVerified": false,
+  "largeWindowActualResolution": "3840x1666"
+}

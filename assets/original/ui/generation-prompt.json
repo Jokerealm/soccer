@@ -1,0 +1,12 @@
+{
+  "tool": "built-in image_gen",
+  "intent": "new illustration with character references",
+  "prompt": "Use case: stylized-concept. Asset type: production launch/loading splash artwork for an original cartoon 2D skill-football PC game. Generate a brand-new wide 16:9 illustration, ideally 2048x1152. The three supplied images are character identity and art-style references, not edit targets. Preserve the teal-haired athletic girl with teal/cream sportswear, the broad brown-haired man with orange/cream protective sports gear, and the purple-haired girl with purple/cream sportswear. Scene: a bright futuristic city football arena at blue-hour, soft distant city buildings, warm floodlights, a vibrant green pitch and stadium stands. On the RIGHT two-thirds, these three characters cooperate around one clearly readable black-and-white football, teal girl dynamically dribbling in the foreground, orange defender farther behind, purple shooter on the far right. Express speed, team play and friendly competition. Hand-painted polished cartoon game key art, crisp clean dark outlines, soft volumetric shading, energetic yet readable, consistent with supplied reference illustrations. Composition: leftmost 35 percent and lower-left remain spacious with quiet navy/teal stadium atmosphere for real UI text and a progress bar to be overlaid in code; visual action stays right of center. Full bleed landscape, premium illustrated sports-game splash screen. No text, no logos, no interface elements, no watermark. Do not depict real brands or real people.",
+  "references": [
+    "UnityProject/Assets/Soccer/Art/Characters/wind-shuttle-idle-v2.png",
+    "UnityProject/Assets/Soccer/Art/Characters/iron-guard-idle-v2.png",
+    "UnityProject/Assets/Soccer/Art/Characters/arc-light-idle-v2.png"
+  ],
+  "source": "assets/original/ui/launch-cover-v1.png",
+  "runtime": "UnityProject/Assets/Soccer/Resources/FrontEnd/launch-cover-v1.png"
+}

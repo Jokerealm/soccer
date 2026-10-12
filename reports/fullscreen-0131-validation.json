@@ -1,0 +1,59 @@
+{
+  "version": "0.13.1",
+  "passed": true,
+  "native": {
+    "report": "reports/runtime-fullscreen-0131/runtime-smoke.json",
+    "checks": 273,
+    "errors": [],
+    "largeWindowActualResolution": "3840x1666"
+  },
+  "builds": {
+    "macOS": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 370921417
+    },
+    "Windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 339367397
+    }
+  },
+  "presentation": {
+    "fullAndCompactViewport": [
+      0,
+      0,
+      1,
+      1
+    ],
+    "bottomReservedStripRemoved": true,
+    "blackFillCameraRemoved": true,
+    "nativeBottomGrassPixelsVerified": true,
+    "translucentDockAndMinimapPreserved": true,
+    "minimapCameraRaysAndBallCueVerified": true,
+    "skillTooltipsAndPauseVerified": true
+  },
+  "core": {
+    "changed": false,
+    "previousRegressionReport": "reports/minimap-013-core/core-tests.json"
+  },
+  "preview": {
+    "path": "previews/fullscreen-field-0131.png",
+    "source": "reports/runtime-fullscreen-0131/30-large-field-center.png",
+    "kind": "unaltered native screenshot"
+  },
+  "limitations": [
+    "Windows runtime still awaits a Windows device check.",
+    "Physical keyboard and mouse feel still needs human playtesting."
+  ]
+}

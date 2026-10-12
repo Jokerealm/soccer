@@ -1,0 +1,30 @@
+{
+  "checked_at": "2026-10-08T16:55:50+08:00",
+  "status": "installed",
+  "distribution": "Tuanjie",
+  "hub_version": "1.4.6",
+  "editor_release": "1.10.4",
+  "editor_internal_version": "2022.3.62t16",
+  "editor_architecture": "arm64",
+  "editor_path": "/Applications/Tuanjie/Hub/Editor/2022.3.62t16/Tuanjie.app",
+  "module_id": "windows-mono",
+  "module_name": "Windows Build Support (Mono)",
+  "method": "Official Tuanjie Hub: 安装 -> 安装设置 -> 添加模块",
+  "displayed_download_size": "334.41 MB",
+  "displayed_disk_size": "389.76 MB",
+  "installed_path": "/Applications/Tuanjie/Hub/Editor/2022.3.62t16/PlaybackEngines/WindowsStandaloneSupport",
+  "verification": {
+    "hub_status": "安装完成; Windows Build Support (Mono) 已安装",
+    "win64_player_variants": [
+      "win64_player_nondevelopment_mono",
+      "win64_player_development_mono",
+      "win64_player_development_mono_instantasset",
+      "win64_player_nondevelopment_mono_instantasset"
+    ],
+    "doctor_exit_code": 0,
+    "engine_import_or_game_build": "not yet tested"
+  },
+  "screenshot": "reports/screenshots/tuanjie-windows-build-support-installed.png",
+  "documentation": "https://docs.unity.cn/cn/tuanjiemanual/Manual/BuildSettings.html",
+  "scope": "Windows module installed for the project-selected Tuanjie 1.10.4 editor; each editor version manages its own modules."
+}

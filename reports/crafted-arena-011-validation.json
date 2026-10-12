@@ -1,0 +1,89 @@
+{
+  "version": "0.11.0",
+  "date": "2026-10-10",
+  "passed": true,
+  "rules": {
+    "fieldSize": [
+      56,
+      34
+    ],
+    "previousFieldSize": [
+      48,
+      28
+    ],
+    "areaIncreasePercent": 41.66666666666667,
+    "centerAndShieldRadius": 4.2,
+    "previousRadius": 2,
+    "newCircleDiameter": 8.4,
+    "openingSpawnsOutsideShield": true,
+    "planarGameplay": true
+  },
+  "material": {
+    "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/turf-detail-v4.png",
+    "sourceOriginal": "assets/original/arena/turf-detail-v4.png",
+    "nativeSourceSize": [
+      1254,
+      1254
+    ],
+    "tool": "Built-in image_gen.imagegen",
+    "promptRecord": "assets/crafted-arena-imagegen.json",
+    "sha256": "207dcfad25f3d1c6e6c620f6fb32671b33f78ff90812c3bbe59da292e9e13d1b",
+    "copiedUnmodified": true
+  },
+  "core": {
+    "checks": 132,
+    "failed": 0,
+    "report": "reports/crafted-arena-011-core/core-tests.json"
+  },
+  "native": {
+    "platform": "OSXPlayer",
+    "checks": 181,
+    "errors": [],
+    "largeWindowActualResolution": "3840x1662",
+    "report": "reports/runtime-crafted-arena-011-final/runtime-smoke.json",
+    "unobstructedSampleFps": 119.91034698486328,
+    "fpsSampleNote": "A short 0.8 second sample without screenshot encoding in this macOS native 1920x1080 run. This is not a sustained performance benchmark or a platform-wide guarantee."
+  },
+  "builds": {
+    "macOS": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 370846761
+    },
+    "Windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 339294093
+    },
+    "macOSBundleVersion": "0.11.0"
+  },
+  "preview": {
+    "path": "previews/crafted-arena-011.gif",
+    "frames": 17,
+    "size": [
+      960,
+      540
+    ],
+    "source": "Real macOS native screenshots. Travel frames use 20 Core ticks per source frame. GIF timing edited; not real time human input."
+  },
+  "limits": {
+    "windowsRuntimeVerified": false,
+    "physicalKeyboardMouseFeelVerified": false,
+    "mobileVerified": false
+  },
+  "qaCorrections": [
+    "Layered inlays separated in height to remove z fighting",
+    "Countdown anchored horizontally to the ball",
+    "Net smoke checks any observed deformation during real celebration, independent of screenshot sequence timing"
+  ]
+}

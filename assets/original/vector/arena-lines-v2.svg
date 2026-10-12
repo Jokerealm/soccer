@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080"><title>轻斜俯视地面标线；32u×18u 草案，55°正交投影，无球门插画</title>
+<g transform="translate(192 186.12631686) scale(48 39.3192981264)" fill="none" stroke="#F7F0E1" stroke-width=".095" opacity=".88">
+<path d="M0 6.75V0H32V6.75M32 11.25V18H0V11.25M16 0V18"/>
+<circle cx="16" cy="9" r="2"/><circle cx="16" cy="9" r=".10" fill="#F7F0E1"/>
+<path d="M0 4.5H3V13.5H0M32 4.5H29V13.5H32" opacity=".55"/>
+</g></svg>

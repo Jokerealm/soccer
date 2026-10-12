@@ -1,0 +1,20 @@
+; Resource preparation project. Contains no gameplay or network implementation.
+config_version=5
+
+[application]
+config/name="技能足球 · 美术资源预览"
+run/main_scene="res://resource_preview.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+
+[display]
+window/size/viewport_width=1280
+window/size/viewport_height=900
+window/size/window_width_override=1280
+window/size/window_height_override=900
+window/stretch/mode="canvas_items"
+
+[rendering]
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/default_filters/use_nearest_mipmap_filter=false
+environment/defaults/default_clear_color=Color(0.045, 0.086, 0.114, 1)

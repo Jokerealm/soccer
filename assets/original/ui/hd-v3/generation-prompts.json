@@ -1,0 +1,35 @@
+{
+  "version": "0.6",
+  "generationTool": "Built-in image_gen",
+  "prompts": {
+    "lobby": "Use case: stylized-concept. Asset type: production game lobby and launch-screen background for a Chinese playful cooperative ball-combat arena game. Generate a polished high-definition landscape 3840x2160 image, 16:9. Scene: a lively futuristic city sports arena at blue-hour dusk, premium stylized 3D game environment art with smooth sculpted forms, excellent anti-aliasing and fine material detail, clean lighting, soft ambient occlusion, layered depth. Main subject: a beautifully rendered football, broad teal playing surface, futuristic goal and arena architecture on the right half, warm amber stadium accents and softly lit city buildings further back. Character design is pending so there are no people, heroes, mascots or character silhouettes. Composition must support the actual interface: the left 45% is restrained deep-navy atmospheric negative space for large crisp UI typography; the right has the attractive arena and football; bottom 35% relatively quiet behind three mode panels. Keep the ball entirely in the right half above the bottom panel area. Refined teal, deep navy, warm ivory and amber palette matching the project. Premium friendly playful collectible-toy game art, careful restrained surface texture, no sketch outlines, no grime, no repetitive neon strips. No text, letters, logos, UI panels, buttons, watermarks or baked-in interface. Sharp production asset, not a UI mockup.",
+    "arena": "Use case: stylized-concept. Asset type: final in-game arena environment background, not a UI mockup. Generate native high-definition 3840x2160 landscape 16:9 premium stylized 3D cooperative ball-combat game arena. Camera: strict orthographic overhead with a mild 55-degree ground-view angle; parallel lines, symmetrical left-right gameplay plane, no vanishing point. A precise broad EMPTY teal-green playing floor occupies the central rectangle from x=10% to90% of the image and y=17% to83%. It is flat, quietly detailed with subtle smooth rubber/sport-court material and broad alternating teal panels, uniformly readable and brighter than its surroundings. There are NO field markings, center circles, goal boxes or lines because those are drawn by the game engine. NO goals or gate illustrations; leave both middle left and middle right clear for engine goal geometry. Environment decorations restricted to the outer 10% left/right and outer 17% top/bottom: beautifully modelled warm-ivory rounded arena walls, tidy seating bays, tasteful amber and teal accents, a few stadium lamps, excellent soft shadows and ambient occlusion, cinematic but clear lighting from upper left. Attractive premium collectible-toy materials, consistent bevels, clean restrained high-quality surfaces, crisp details, elegant playful futuristic city arena, no scratchy sketch outlines. Keep all central gameplay space uncluttered with no objects, obstacles, people, characters, balls, text, symbols, numbers, logos, watermarks or UI. Full composition flat axis-aligned, entire rectangular playing floor visible, no isometric diagonal rotation. Goal and player positions will be added separately by code."
+  },
+  "files": [
+    "assets/original/ui/hd-v3/lobby-v3.png",
+    "assets/original/ui/hd-v3/arena-v3.png"
+  ],
+  "actualRasterResolution": [
+    1672,
+    941
+  ],
+  "vectorIcons": {
+    "source": "assets/original/vector/premium-v3",
+    "exportPixels": [
+      768,
+      768
+    ],
+    "generator": "tools/create_premium_ui_assets.cjs"
+  },
+  "font": {
+    "name": "Noto Sans CJK SC Bold",
+    "source": "https://raw.githubusercontent.com/notofonts/noto-cjk/main/Sans/OTF/SimplifiedChinese/NotoSansCJKsc-Bold.otf",
+    "license": "OFL",
+    "sdfSamplingPointSize": 96,
+    "sdfAtlas": [
+      4096,
+      4096
+    ]
+  },
+  "note": "Image-generation outputs are 1672x941 native. UI text, symbols and field markings render independently; do not describe background art as native 4K."
+}

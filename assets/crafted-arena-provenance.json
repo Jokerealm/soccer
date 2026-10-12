@@ -1,0 +1,97 @@
+{
+  "version": "0.11.0",
+  "date": "2026-10-10",
+  "material": {
+    "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/turf-detail-v4.png",
+    "sourceOriginal": "assets/original/arena/turf-detail-v4.png",
+    "nativeSourceSize": [
+      1254,
+      1254
+    ],
+    "tool": "Built-in image_gen.imagegen",
+    "promptRecord": "assets/crafted-arena-imagegen.json",
+    "sha256": "207dcfad25f3d1c6e6c620f6fb32671b33f78ff90812c3bbe59da292e9e13d1b",
+    "copiedUnmodified": true
+  },
+  "generation": {
+    "version": "0.11.0",
+    "date": "2026-10-10",
+    "generator": "Built-in image_gen.imagegen (imagegen skill); no CLI fallback",
+    "generatedSource": "/Users/gz/.codex/generated_images/01a11e48-800c-70f3-b574-8d1278f58118/exec-8b95f6ed-cb44-4e13-815f-526627488bc0.png",
+    "original": "assets/original/arena/turf-detail-v4.png",
+    "runtimeAsset": "UnityProject/Assets/Soccer/Resources/SceneSurface/turf-detail-v4.png",
+    "prompt": "Use case: stylized-concept game material. Create a premium, seamless tileable TOP DOWN / orthographic ALBEDO texture of carefully cultivated short stadium turf for a polished playful 3D battle-soccer game. Square 2048x2048 asset if possible. This is only a flat material swatch, edge to edge, NOT a scene, NOT a football pitch layout. Closely packed individually visible slim grass blades with soft painterly beveled shapes, several natural olive, sage and fresh moss greens, dense tactile fine structure, very subtle scattered tan fibers and tiny organic bare-soil flecks, softly compressed and trampled grass in occasional small irregular clusters. Sophisticated slightly desaturated warm vegetation palette, rich tactile microdetail, clean polished game art, uniform exposure, all areas equally detailed. Blade sizes roughly 8-20 pixels so this remains legible when applied as a repeated 4-6 meter tile on a wide 3D surface. Seamlessly matching opposing borders, no obvious repeat motif, no broad bands or stripes, no large contrast patches, no circular logos or field markings, no props, no characters, no text or UI. Entire texture flat diffuse color, no baked lighting, no cast shadows, no shine, no highlights, no perspective or depth of field. Actual 3D lighting and procedural movement will be layered in the engine.",
+    "application": "World-scaled repeated albedo; four offset sampling blends, matte real-time lighting, procedural normals and wind, goal-area wear and fading footprint compression. Original generated PNG copied unchanged."
+  },
+  "sources": [
+    {
+      "path": "UnityProject/Assets/Soccer/Core/MatchRules.cs",
+      "sha256": "d59df07c3cfe6c1ed01683f859a8818095bc7081ba1b6e6a36546c3d440ba9ed"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Core/MatchSimulation.cs",
+      "sha256": "ae1af48c667076639b3a008bbc6abbce89bb397b6fa2a6d6fba0bdd79b3c6d36"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Data/PrototypeRules.asset",
+      "sha256": "cd8bae0b60ec321eeeae13b9601597c16ad46670284632366709c66e849e31dc"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/PremiumArenaView.cs",
+      "sha256": "edbf90c1a283135df4f8c1f742350c1c5aba031e7ff886731fa67edbe5562682"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/DynamicStadiumView.cs",
+      "sha256": "ff744d5c0413b1a420659da8819cc75d958aa7f383d7e2c6ecdad0ad9a574b4f"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/ArenaDetailView.cs",
+      "sha256": "25a2d6a67374de161d57b43359ca7ee1daf4efb3705c94a9c07b7a68f8688449"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/LivingTurf.shader",
+      "sha256": "9ea8ff9a06a046a398d571c6a6549f5769dd64cf9b44668310b6e3dd3a4eb3b0"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/ArenaInlay.shader",
+      "sha256": "535906e77564227c0ab145ced7cbf0b6c802d96eeffe9502c4bbf48d854d81fb"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/MatchView.cs",
+      "sha256": "884eccc3c67e8cb7a2b21036a4ea42dc8cba937c6f2ce88d88a9f4799e2fa479"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/CountdownPresentation.cs",
+      "sha256": "02f39b1408e7682b0b343e3bfbd734fefd607f99914a694333c3977b3a49ac72"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/HudMotion.cs",
+      "sha256": "5aa6500d29fec20a877cebfd6316546bac321d90cdaeebb8345cb740807cb4f3"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs",
+      "sha256": "dbd206e711942fa3bd2801baa3991dfc30278f8611c049328425c8e0d8bf9038"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeSmokeProbe.cs",
+      "sha256": "005da1ac17a5418180d22132068de0f8189e85658cfa117860fe0b57b77464c1"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Editor/ProjectSetup.cs",
+      "sha256": "4ef9e062b7cfd979483ea71bdf3de0ee62dfc70c6760ea0f49805a16a8613065"
+    },
+    {
+      "path": "tests/Soccer.Core.Tests/Program.cs",
+      "sha256": "08f9bff3489e73d46f5ba979720ab0054da0d8569a7dd66418f1ef97c3b9b641"
+    }
+  ],
+  "preview": {
+    "path": "previews/crafted-arena-011.gif",
+    "frames": 17,
+    "size": [
+      960,
+      540
+    ],
+    "source": "Real macOS native screenshots. Travel frames use 20 Core ticks per source frame. GIF timing edited; not real time human input."
+  }
+}

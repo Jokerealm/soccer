@@ -1,0 +1,6 @@
+{
+  "name": "Soccer.Editor",
+  "rootNamespace": "Soccer.Editor",
+  "references": ["Soccer.Core", "Soccer.Runtime", "Unity.2D.Sprite.Editor"],
+  "includePlatforms": ["Editor"]
+}

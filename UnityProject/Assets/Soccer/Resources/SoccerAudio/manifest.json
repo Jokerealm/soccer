@@ -1,0 +1,286 @@
+{
+  "sampleRate": 44100,
+  "seed": 20261009,
+  "source": "Original procedural synthesis in tools/create_game_audio.py; no third-party samples.",
+  "assets": [
+    {
+      "name": "ui-click",
+      "category": "ui",
+      "seconds": 0.09,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1944,
+      "sha256": "d13abc314fce9849ac7538eb5d2263093d3e3a70eac4f0a37470519b3a36943a"
+    },
+    {
+      "name": "ui-hover",
+      "category": "ui",
+      "seconds": 0.065,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.2227,
+      "sha256": "0c8ecc4965582d6a8c88cfe41400ec3b694547dc586f1f8149bbb099f0b29cd4"
+    },
+    {
+      "name": "ui-reject",
+      "category": "ui",
+      "seconds": 0.25,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.2381,
+      "sha256": "4f844acfcc644b2db58e763608f55ac67301474914174e185506c0d11571b2f2"
+    },
+    {
+      "name": "ui-cancel",
+      "category": "ui",
+      "seconds": 0.14,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.2352,
+      "sha256": "16d1e80123ef0f45103b5633ab10ceb00d8082daaaa02c952694887c5f79b7b0"
+    },
+    {
+      "name": "kick",
+      "category": "match",
+      "seconds": 0.22,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1034,
+      "sha256": "d123f1f3b3155875d23ea66312c9829184f6ee1ff959fe9c7a6c6bb6a627fbf1"
+    },
+    {
+      "name": "kick-power",
+      "category": "match",
+      "seconds": 0.5,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1287,
+      "sha256": "b880653406a5172239d9bc72e8f315a2aa85f7b2f55b04c3c31e5918143407c1"
+    },
+    {
+      "name": "catch",
+      "category": "match",
+      "seconds": 0.14,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.194,
+      "sha256": "b0d471d29cd993ec0a6cb63aa4f09d213c218bc2ca62237a124dcd0bb3c8657f"
+    },
+    {
+      "name": "tackle",
+      "category": "match",
+      "seconds": 0.22,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.112,
+      "sha256": "89e18abbde55f21bae11c3f0ad873ae73ead291f446cbd5f23a5101725cf4dc7"
+    },
+    {
+      "name": "impact",
+      "category": "match",
+      "seconds": 0.23,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1341,
+      "sha256": "4257f2085bdf6de5b89f9409526449895e735b19e439d775074fd0591c1ae7cd"
+    },
+    {
+      "name": "steal",
+      "category": "match",
+      "seconds": 0.3,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.2183,
+      "sha256": "69320e85895f2ff2f5c3aa7d59aa93c11393debff1e58b5eac4c1aab470e3af5"
+    },
+    {
+      "name": "bounce",
+      "category": "match",
+      "seconds": 0.13,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1743,
+      "sha256": "4aadfb7547706b4cb4b4c0e3be0e816c18f3e336a14034e9550525008a2e36fc"
+    },
+    {
+      "name": "countdown",
+      "category": "match",
+      "seconds": 0.12,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.2234,
+      "sha256": "46b84d1d139d66c6298ef580a2b49b42a1d6fdc1f67b308de6722061aa661c8a"
+    },
+    {
+      "name": "whistle",
+      "category": "match",
+      "seconds": 0.48,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1946,
+      "sha256": "150f5a0a96b2db68d7f4008f87d8de7ecbd48ed8194ebe3683996663117098d4"
+    },
+    {
+      "name": "goal",
+      "category": "match",
+      "seconds": 1.0,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1643,
+      "sha256": "49135a51f5b34a5233a8da1e9c3624901a39cda655670f86450085f07a207fee"
+    },
+    {
+      "name": "finish",
+      "category": "match",
+      "seconds": 1.3,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1798,
+      "sha256": "2574d17db86192a809df510508b3e2e8c16c9d43e5d3e456d862ae8d0dee0179"
+    },
+    {
+      "name": "ready",
+      "category": "match",
+      "seconds": 0.32,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.2144,
+      "sha256": "5369384bd1759be6f677ca8b241ca98f01aeab81bf7a835deba4222b43f14f12"
+    },
+    {
+      "name": "combat-duang",
+      "category": "combat",
+      "seconds": 0.24,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1794,
+      "sha256": "b64777e43d8cfa18a2e34a6d0788429cf7881c90c29944294ffcfd64449f0ee2"
+    },
+    {
+      "name": "combat-pan",
+      "category": "combat",
+      "seconds": 0.18,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1314,
+      "sha256": "f0f584840d37d7118e004276aadb672501d075dc575b81e362425fda3a087470"
+    },
+    {
+      "name": "combat-rice",
+      "category": "combat",
+      "seconds": 0.11,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1943,
+      "sha256": "26fe28fc43e5087dff7e406afcabb922dd4c8b3587356937d936932a4649efd8"
+    },
+    {
+      "name": "combat-hit",
+      "category": "combat",
+      "seconds": 0.1,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1544,
+      "sha256": "90195beaccb23023a15722e541788f23c1c106e685e74e449465ce35eeabe083"
+    },
+    {
+      "name": "combat-shield",
+      "category": "combat",
+      "seconds": 0.15,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1706,
+      "sha256": "702e311f6b273dfed8fa0be94af47993d515bbd0bfd502839137a07e3ba8401b"
+    },
+    {
+      "name": "combat-ko",
+      "category": "combat",
+      "seconds": 0.4,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1938,
+      "sha256": "8947f7a9e9096fc6692ee69c9425f7faaae44a02590df1588f37db3e222c8a01"
+    },
+    {
+      "name": "wind-q",
+      "category": "skill",
+      "seconds": 0.32,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1241,
+      "sha256": "c594b368bdb4c51a846037dda608bb19f430b2d6faf0a426cb110f2d6ee8e124"
+    },
+    {
+      "name": "wind-e",
+      "category": "skill",
+      "seconds": 0.65,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1697,
+      "sha256": "37beb1e189e1b6f3540d3c336821be459759bd29db2a4654a5341ae3e723c6b6"
+    },
+    {
+      "name": "iron-q",
+      "category": "skill",
+      "seconds": 0.55,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1246,
+      "sha256": "767eb8ee716689e1cd8ae56a8069e8e9163896be63258e1bbc22f7ab1e803c17"
+    },
+    {
+      "name": "iron-e",
+      "category": "skill",
+      "seconds": 0.65,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1468,
+      "sha256": "faac07785f230463399449c22d3283603113b2a9c110884db7623994032fc549"
+    },
+    {
+      "name": "arc-q",
+      "category": "skill",
+      "seconds": 0.65,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1588,
+      "sha256": "ff8b384689d3abd5759434039b90e020d055c70493d0672928654834f2cf5f4d"
+    },
+    {
+      "name": "arc-e",
+      "category": "skill",
+      "seconds": 0.7,
+      "loop": false,
+      "peak": 0.72,
+      "rms": 0.1702,
+      "sha256": "563bf61cfae8bdbbd2b0275cdcb44507ca99a2406502bc968ee2a02b7c4cd828"
+    },
+    {
+      "name": "charge-loop",
+      "category": "charge",
+      "seconds": 0.5,
+      "loop": true,
+      "peak": 0.72,
+      "rms": 0.4774,
+      "sha256": "5e76790444f6859122d45e4e447b7b504210ee29c370e0d01ea8ee3c4caee690"
+    },
+    {
+      "name": "menu-loop",
+      "category": "music",
+      "seconds": 38.4,
+      "loop": true,
+      "peak": 0.72,
+      "rms": 0.1334,
+      "sha256": "73bd8e98f9a904f03ee15e5543377ddf3ae0a0a9d194c3e6704bb17ae083e758"
+    },
+    {
+      "name": "match-loop",
+      "category": "music",
+      "seconds": 33.103,
+      "loop": true,
+      "peak": 0.72,
+      "rms": 0.1377,
+      "sha256": "f7da50ed67eae709c4b46a5bedcc3ba581650214d6994e51ee93a60354d9b152"
+    }
+  ]
+}

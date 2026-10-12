@@ -1,0 +1,95 @@
+{
+  "version": "0.8.2",
+  "generator": "Built-in imagegen tool (11 separate generated illustrations)",
+  "promptSet": "assets/original/ui/battle-v2/generation-prompts.json",
+  "skinGenerator": "tools/create_hud_skin.cjs",
+  "assets": [
+    {
+      "source": "assets/original/ui/battle-v2/portrait-marine-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/portrait-marine-v2.png",
+      "sha256": "0b2842431c0edae13e8b404417eb2153d6a09ddc265321e2f4eca825a13ea1b3"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/portrait-thor-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/portrait-thor-v2.png",
+      "sha256": "d79e142a287a38795823e22f266c41a7c2e3dd8d6b96a12f5eeb0d79303b8c6a"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-bomb-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-bomb-v2.png",
+      "sha256": "df274718082b00552bf06caadfd8ee14bffff29f753046fbed7a68fa3ad9f32a"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-cannons-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-cannons-v2.png",
+      "sha256": "a6542250bde442d5c1cc056b6849d8062c474592a4495cdb1d9818ba48ed496f"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-drive-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-drive-v2.png",
+      "sha256": "fb4a6959e27f31cca94bad1b8f60f736f919689aac4978beab887aeb359f17c6"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-kick-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-kick-v2.png",
+      "sha256": "94d5878b4a10bf5b1485ab263f2b3d6154827973e22a51a6031ad38884715fb4"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-rifle-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-rifle-v2.png",
+      "sha256": "bf059c3d1f3c6598545442bcb63d522b60040dd398d2cdd5130ff247f8a59a95"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-stim-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-stim-v2.png",
+      "sha256": "8092c7dad8dafcfba4f7fd2a993977374aad014b88f936383917c38df80f4f96"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-tackle-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-tackle-v2.png",
+      "sha256": "83264991a88cd0f16e3c01c84f0fce771779029f4fd7be12a6228806e93ae240"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-thruster-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-thruster-v2.png",
+      "sha256": "ba92ae2db64f05899157714026e7ffcae8011143034799082fa0899ccf1a211d"
+    },
+    {
+      "source": "assets/original/ui/battle-v2/skill-trigger-v2.png",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/skill-trigger-v2.png",
+      "sha256": "3c5a6025674c1c2be0e294b4fabf7fb2678bda7d5d13a08a80fb2098c5809354"
+    },
+    {
+      "source": "assets/original/vector/hud-skin-v2/fx-spark-v2.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/fx-spark-v2.png",
+      "sha256": "4c19c30142940aeec1028518c8dfde4ffc166d34d5df2624a39530f36e315afa",
+      "conversion": "Original SVG skin rasterized using sharp"
+    },
+    {
+      "source": "assets/original/vector/hud-skin-v2/ui-damage-v2.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/ui-damage-v2.png",
+      "sha256": "46c90f1f96241fe1cfa78fafabc55c1aba1ee4e290575259b57c0bacd7b9e8fe",
+      "conversion": "Original SVG skin rasterized using sharp"
+    },
+    {
+      "source": "assets/original/vector/hud-skin-v2/ui-dock-v2.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/ui-dock-v2.png",
+      "sha256": "9ecec30b01c781e3da130e8ecf798eee7a201567875afe317e0663c352d18877",
+      "conversion": "Original SVG skin rasterized using sharp"
+    },
+    {
+      "source": "assets/original/vector/hud-skin-v2/ui-glint-v2.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/ui-glint-v2.png",
+      "sha256": "b5f6ef0b910d64c1587bde7289d024c1b9cb773961ff86504d5a5034a87daf55",
+      "conversion": "Original SVG skin rasterized using sharp"
+    },
+    {
+      "source": "assets/original/vector/hud-skin-v2/ui-resource-fill-v2.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/ui-resource-fill-v2.png",
+      "sha256": "ca3fe9fd80146f459940323dad42eb02218ac08b2ed4116dc6d5ad6777c8fa39",
+      "conversion": "Original SVG skin rasterized using sharp"
+    }
+  ],
+  "gameplayChanged": false,
+  "portraitsAreTemporary": true
+}

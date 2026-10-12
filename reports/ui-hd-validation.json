@@ -1,0 +1,182 @@
+{
+  "version": "0.6.0",
+  "date": "2026-10-09",
+  "passed": true,
+  "clientChecks": 82,
+  "runtimeErrors": [],
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 298532472
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 267002517
+    }
+  },
+  "runtimeReport": "reports/runtime-ui-hd-smoke/runtime-smoke.json",
+  "screenshots": {
+    "03-selection-0": [
+      1920,
+      1080
+    ],
+    "10-home-ultrawide": [
+      1920,
+      800
+    ],
+    "04-training": [
+      1920,
+      1080
+    ],
+    "03-selection-1": [
+      1920,
+      1080
+    ],
+    "03-selection-2": [
+      1920,
+      1080
+    ],
+    "01-home": [
+      1920,
+      1080
+    ],
+    "05b-combat-stun": [
+      1920,
+      1080
+    ],
+    "01-mode-1-internet": [
+      1920,
+      1080
+    ],
+    "14-football-lit-closeup": [
+      1920,
+      1080
+    ],
+    "06-results": [
+      1920,
+      1080
+    ],
+    "05c-combat-respawn-countdown": [
+      1920,
+      1080
+    ],
+    "08-home-4x3": [
+      1024,
+      768
+    ],
+    "15-football-key-off-closeup": [
+      1920,
+      1080
+    ],
+    "05d-combat-revived": [
+      1920,
+      1080
+    ],
+    "01-mode-0-internet": [
+      1920,
+      1080
+    ],
+    "05-pause": [
+      1920,
+      1080
+    ],
+    "05b-hit-number": [
+      1920,
+      1080
+    ],
+    "01-mode-2-internet": [
+      1920,
+      1080
+    ],
+    "07-bot-match": [
+      1920,
+      1080
+    ],
+    "09-normal-4x3": [
+      1024,
+      768
+    ],
+    "13-training-large-window": [
+      3840,
+      1662
+    ],
+    "01-mode-0-lan": [
+      1920,
+      1080
+    ],
+    "02-settings": [
+      1920,
+      1080
+    ],
+    "00-loading": [
+      1920,
+      1080
+    ],
+    "01-mode-2-lan": [
+      1920,
+      1080
+    ],
+    "05a-strafe-stock": [
+      1920,
+      1080
+    ],
+    "12-home-large-window": [
+      3840,
+      1662
+    ],
+    "04b-charge": [
+      1920,
+      1080
+    ],
+    "11-home-1440p": [
+      2560,
+      1440
+    ]
+  },
+  "requestedLargeWindow": [
+    3840,
+    2160
+  ],
+  "actualLargeWindow": "3840x1662",
+  "full4KWindowVerified": false,
+  "windowsRuntimeVerified": false,
+  "rendering": {
+    "imageGround": "Standard lit XZ quad, receives shadows",
+    "lights": "warm directional soft-shadow key, cyan and amber point fills, trilight ambient",
+    "football": "12 pentagons, 20 hexagons, 2880 panel triangles, recessed seam sphere; rolling by world displacement",
+    "goals": "lit cylinder posts, crossbar and braces; shadow casting",
+    "camera": "55-degree orthographic, ray/ground aiming, independent letterbox clear camera",
+    "msaa": 4
+  },
+  "ui": "new lobby, mode cards, loadout, settings, pause, results, HP/energy/ammo and skill HUD",
+  "art": {
+    "generationMode": "Built-in image_gen",
+    "nativeBackgroundPixels": [
+      1672,
+      941
+    ],
+    "prompts": "assets/original/ui/hd-v3/generation-prompts.json",
+    "vectorIcons": "assets/original/vector/premium-v3",
+    "exportPixels": [
+      768,
+      768
+    ]
+  },
+  "limits": [
+    "Character designs remain pending; neutral gameplay pawns retained.",
+    "Seat and surrounding detail is still baked into the ground image.",
+    "Native hardware input feel and Windows runtime require manual playtesting."
+  ]
+}

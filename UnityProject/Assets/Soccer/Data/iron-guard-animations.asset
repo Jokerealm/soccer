@@ -1,0 +1,50 @@
+%YAML 1.1
+%TAG !u! tag:yousandi.cn,2023:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3e726f0b48e104fe1ba83a1910c83064, type: 3}
+  m_Name: iron-guard-animations
+  m_EditorClassIdentifier: 
+  Turn:
+  - {fileID: -4471571045620707620, guid: 09996948074f44f0ca80dbb9b911622e, type: 3}
+  - {fileID: 5421671071211468581, guid: 09996948074f44f0ca80dbb9b911622e, type: 3}
+  - {fileID: 7343301514118014832, guid: 09996948074f44f0ca80dbb9b911622e, type: 3}
+  - {fileID: 5387964812461994355, guid: 09996948074f44f0ca80dbb9b911622e, type: 3}
+  - {fileID: 1650925275435923174, guid: 09996948074f44f0ca80dbb9b911622e, type: 3}
+  - {fileID: -6587004933290988263, guid: 09996948074f44f0ca80dbb9b911622e, type: 3}
+  - {fileID: 4385570211886450857, guid: 09996948074f44f0ca80dbb9b911622e, type: 3}
+  - {fileID: -3862258476164517686, guid: 09996948074f44f0ca80dbb9b911622e, type: 3}
+  Run:
+  - {fileID: 7007605362025598828, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -3106885426084368454, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -1468474463336448866, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -7703667902656870712, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: 1980249534574136840, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -4043398842525561547, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -7975235390887764035, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -3242415912787895549, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -168471193766321479, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: 1187553234723925685, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: 3003789169655790119, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -6092536456907055262, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: -1445699202850245649, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  - {fileID: 907984458040544535, guid: d0e2993661f7945898e0439a5d6d9c7a, type: 3}
+  Kick:
+  - {fileID: -1655819005087855108, guid: d9b5a47551a4f4fe3af91b9890141047, type: 3}
+  - {fileID: 570958453093815297, guid: d9b5a47551a4f4fe3af91b9890141047, type: 3}
+  - {fileID: 8986537112090303559, guid: d9b5a47551a4f4fe3af91b9890141047, type: 3}
+  - {fileID: -8195164103695907408, guid: d9b5a47551a4f4fe3af91b9890141047, type: 3}
+  - {fileID: -4686897759110116762, guid: d9b5a47551a4f4fe3af91b9890141047, type: 3}
+  - {fileID: -8721094332786064001, guid: d9b5a47551a4f4fe3af91b9890141047, type: 3}
+  - {fileID: -1059668647871719993, guid: d9b5a47551a4f4fe3af91b9890141047, type: 3}
+  - {fileID: -1767690093360511920, guid: d9b5a47551a4f4fe3af91b9890141047, type: 3}
+  RunFps: 18
+  KickFps: 10
+  Limitation: "\u8DD1\u6B65\u3001\u8E22\u7403\u4EC5 SE\uFF1B\u5176\u4ED6\u65B9\u5411\u4F7F\u7528\u516B\u65B9\u5411\u8F6C\u8EAB\u5E27\uFF0C\u7B49\u5F85\u8865\u753B\u3002\u7981\u6B62\u955C\u50CF\u6216\u65CB\u8F6C\u4EE3\u66FF\u65B9\u5411\u52A8\u753B\u3002"

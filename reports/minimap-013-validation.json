@@ -1,0 +1,125 @@
+{
+  "version": "0.13.0",
+  "passed": true,
+  "core": {
+    "report": "reports/minimap-013-core/core-tests.json",
+    "checks": 132,
+    "failed": 0
+  },
+  "native": {
+    "report": "reports/runtime-minimap-013-final/runtime-smoke.json",
+    "checks": 273,
+    "errors": [],
+    "largeWindowActualResolution": "3840x1662",
+    "maximumPortraitLayoutErrorScreenPixels": 0.943
+  },
+  "builds": {
+    "macOS": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 370921417
+    },
+    "Windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 339367397
+    }
+  },
+  "macBundleVersion": "0.13.0",
+  "minimap": {
+    "placement": "bottom-left",
+    "portraitSource": "actual player character, cached HUD portraits",
+    "teams": "cyan allies, orange enemies, gold local player",
+    "coordinates": "real simulation XY, fixed screen-aligned orientation",
+    "cameraFootprint": "camera rays intersecting the ground plane",
+    "fullAndCompactHud": true,
+    "pauseResetRespawnVerified": true,
+    "allDescendantsIgnorePointer": true,
+    "rosterSizesVerified": [
+      2,
+      6
+    ],
+    "freeBallAndPossessionBadges": true,
+    "offscreenBallCueAvoidsMap": true
+  },
+  "preservedRules": {
+    "health": 100,
+    "energy": 100,
+    "kickCooldownSeconds": 6,
+    "tackleCooldownSeconds": 5,
+    "reviveSeconds": 5,
+    "fieldSize": [
+      56,
+      34
+    ],
+    "centerCircleRadius": 4.2,
+    "ordinaryBallMotion": "2D"
+  },
+  "preview": {
+    "source_report": "reports/runtime-minimap-013-final",
+    "native_screenshot": {
+      "screenshot": "40-minimap-3v3.png",
+      "screenWidth": 1920,
+      "screenHeight": 1080,
+      "boundsPixels": [
+        26.0,
+        905.0,
+        272.0,
+        167.00003051757812
+      ],
+      "portraits": 6
+    },
+    "crop_pixels": [
+      20,
+      899,
+      304,
+      1078
+    ],
+    "motion_frames": [
+      "40-minimap-3v3.png",
+      "minimap-motion-frames/000.png",
+      "minimap-motion-frames/001.png",
+      "minimap-motion-frames/002.png",
+      "minimap-motion-frames/003.png",
+      "minimap-motion-frames/004.png",
+      "minimap-motion-frames/005.png",
+      "minimap-motion-frames/006.png",
+      "minimap-motion-frames/007.png",
+      "minimap-motion-frames/008.png",
+      "minimap-motion-frames/009.png",
+      "minimap-motion-frames/010.png",
+      "minimap-motion-frames/011.png"
+    ],
+    "outputs": [
+      {
+        "path": "previews/minimap-013-match.png",
+        "bytes": 2380853
+      },
+      {
+        "path": "previews/minimap-013-detail.png",
+        "bytes": 146933
+      },
+      {
+        "path": "previews/minimap-013-motion.gif",
+        "bytes": 1028637
+      }
+    ],
+    "timing_note": "Actual native UI and Core-controlled movement; GIF timings are edited. Detail is cropped and enlarged."
+  },
+  "provenance": "assets/minimap-provenance.json",
+  "limitations": [
+    "Windows runtime has not been tested on a Windows device.",
+    "Physical keyboard and mouse feel still needs human playtesting.",
+    "Preview movement is Core-controlled; GIF timing is edited."
+  ]
+}

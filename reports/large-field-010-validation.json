@@ -1,0 +1,63 @@
+{
+  "version": "0.10.0",
+  "date": "2026-10-10",
+  "passed": true,
+  "rules": {
+    "fieldSize": [
+      48,
+      28
+    ],
+    "previousFieldSize": [
+      32,
+      18
+    ],
+    "areaIncreasePercent": 133.33333333333334,
+    "centerAndShieldRadius": 2,
+    "planarGameplay": true
+  },
+  "core": {
+    "checks": 130,
+    "failed": 0,
+    "report": "reports/large-field-010-core/core-tests.json"
+  },
+  "native": {
+    "platform": "OSXPlayer",
+    "checks": 172,
+    "errors": [],
+    "largeWindowActualResolution": "3840x1666",
+    "report": "reports/runtime-large-field-010/runtime-smoke.json"
+  },
+  "builds": {
+    "macOS": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 364492721
+    },
+    "Windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 332954189
+    },
+    "macOSBundleVersion": "0.10.0"
+  },
+  "preview": {
+    "path": "previews/large-field-camera-010.gif",
+    "source": "Actual macOS native smoke screenshots; Core movement commands advanced 20 ticks per captured travel frame. Preview timings are edited, not a real-time gameplay video.",
+    "frames": 25
+  },
+  "limits": {
+    "windowsRuntimeVerified": false,
+    "physicalKeyboardMouseFeelVerified": false,
+    "mobileVerified": false
+  }
+}

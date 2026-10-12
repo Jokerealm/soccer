@@ -1,0 +1,67 @@
+{
+  "version": "0.8.4",
+  "date": "2026-10-10",
+  "passed": true,
+  "clientChecks": 124,
+  "runtimeErrors": [],
+  "runtimeReport": "reports/runtime-ui-084/runtime-smoke.json",
+  "runtimeLog": "reports/runtime-ui-084.log",
+  "gameplayChanged": false,
+  "coreChecksRetainedFrom08": 119,
+  "coreReport": "reports/star-strikers-check/core-tests.json",
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 364355904
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 332826029
+    }
+  },
+  "buildLogs": {
+    "macos": "reports/build-ui-084-macos-verified.log",
+    "windows": "reports/build-ui-084-windows-verified.log"
+  },
+  "warning": {
+    "trigger": "alive and health / maxHealth < 0.25",
+    "outerEdgeOpacity": 0.42,
+    "insetFractionOfShortDimension": 0.055,
+    "fadeSeconds": 0.25,
+    "centerTransparent": true,
+    "modes": [
+      "full",
+      "compact"
+    ],
+    "independentOfHitFeedbackToggle": true,
+    "clearOn": [
+      "health >= 25 percent",
+      "knockout",
+      "full-health revival",
+      "training reset",
+      "leaving match"
+    ],
+    "renderer": "UI Toolkit gradient mesh; no new bitmap assets"
+  },
+  "screenshots": {
+    "full": "reports/runtime-ui-084/21-low-health-full-hud.png",
+    "compact": "reports/runtime-ui-084/22-low-health-compact-hud.png"
+  },
+  "visualQA": "Reviewed actual full and compact captures; outer rim visible, center clear. Edge and center pixels compared in native runtime.",
+  "windowsRuntimeVerified": false,
+  "nativeInputHandFeelVerified": false,
+  "full4KWindowVerified": false,
+  "largeWindowActualResolution": "3840x1666"
+}

@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-08",
+  "sdk": "10.0.401",
+  "architecture": "osx-arm64",
+  "status": "passed",
+  "scope": "Standalone C# SDK compile/run smoke check; Unity compilation and engine launch not tested.",
+  "steps": [
+    {
+      "step": "new",
+      "exit_code": 0,
+      "output": "已成功创建模板“控制台应用”。"
+    },
+    {
+      "step": "restore",
+      "exit_code": 0,
+      "output": "正在确定要还原的项目…\n  已还原 /Users/gz/Documents/soccer/.tools/csharp-sdk-check-rvdflt74/csharp-sdk-check-rvdflt74.csproj (用时 24 毫秒)。"
+    },
+    {
+      "step": "run",
+      "exit_code": 0,
+      "output": "Soccer C# toolchain OK"
+    }
+  ]
+}

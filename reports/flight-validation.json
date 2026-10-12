@@ -1,0 +1,79 @@
+{
+  "version": "0.7.0",
+  "date": "2026-10-09",
+  "direction": "Fixed tilted-view 2.5D; planar player movement with physical ball height",
+  "directionSelection": "Recommended default used; full-3D preference question received no answer during this turn.",
+  "passed": true,
+  "coreChecks": 98,
+  "coreFailed": 0,
+  "clientChecks": 91,
+  "runtimeErrors": [],
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 298542480
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 267012525
+    }
+  },
+  "coreReport": "reports/legacy/flight-0.7-core-tests.json",
+  "runtimeReport": "reports/runtime-flight-smoke/runtime-smoke.json",
+  "screenshots": {
+    "16-loft-aim": [
+      1920,
+      1080
+    ],
+    "17-loft-overhead": [
+      1920,
+      1080
+    ],
+    "18-loft-apex": [
+      1920,
+      1080
+    ],
+    "19-loft-landed": [
+      1920,
+      1080
+    ]
+  },
+  "controls": "L in training to arrange defender; Shift + left mouse press/hold/release for loft; ordinary left mouse remains ground kick",
+  "implemented": [
+    "height and interpolated previous height",
+    "vertical speed and gravity",
+    "separate air drag and ground friction",
+    "landing rebound and horizontal energy loss",
+    "height-gated body and shield contact",
+    "low descending reception",
+    "crossbar sweep and full ball goal clearance",
+    "buffered loft intent and cancellation",
+    "trajectory and landing ring preview",
+    "UI flight status",
+    "height-aware 3D model and contact shadow"
+  ],
+  "limits": [
+    "Environment surrounds remain in a ground image.",
+    "Player bodies use planar sweeps with a height threshold; no head surface, jumping or active air interception.",
+    "Bots retain ground kicks.",
+    "Trajectory preview assumes no obstacle collisions.",
+    "Closed arena boundaries remain, including rear-goal rebound.",
+    "Native Shift/mouse hand feel and Windows runtime have not been verified."
+  ],
+  "windowsRuntimeVerified": false,
+  "largeWindowActualResolution": "3840x1666",
+  "full4KWindowVerified": false,
+  "supersededBy": "reports/skill-height-validation.json"
+}

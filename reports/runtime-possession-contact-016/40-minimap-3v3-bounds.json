@@ -1,0 +1,12 @@
+{
+    "screenshot": "40-minimap-3v3.png",
+    "screenWidth": 1280,
+    "screenHeight": 800,
+    "boundsPixels": [
+        19.0,
+        670.0,
+        205.0,
+        124.0
+    ],
+    "portraits": 6
+}

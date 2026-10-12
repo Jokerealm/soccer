@@ -1,0 +1,39 @@
+{
+  "version": "0.9.1",
+  "date": "2026-10-10",
+  "source": "Original editable grass material, lighting, field details and UI Toolkit meshes/animation; existing arena image used only for fine turf texture. No new downloaded or AI-generated raster assets.",
+  "files": [
+    {
+      "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/LivingTurf.shader",
+      "sha256": "9de3cc44b80e2a847850a7dfdf01859ec3881e758757bf7cbec5187b9b34f02f"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/PremiumArenaView.cs",
+      "sha256": "69976084735bc0bff17fe179d865f5611bcab2f4f329417c71508dfb48697e31"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/DynamicStadiumView.cs",
+      "sha256": "cc3e101cc88c30b18ba9616c7cda7bd83e579b94bcdd3a1f0f6ad62fb07e8a2c"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/CountdownPresentation.cs",
+      "sha256": "be17ee2cf3c73ebc69e14797f32c57df7234af034a7f2f3e77f99794bef6c21b"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/HudMotion.cs",
+      "sha256": "1c14312ce07829541e34a9c8300c03a4923ee08d16448f5b05291b630189cefa"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs",
+      "sha256": "1a966d4d1be874842f13a8a6ac8ceff5c9be5af3a6638375e1fbbbf6131a58f5"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/UI/Game.uxml",
+      "sha256": "c24304e9b6914d3ac03d0e7c7202c5676376bc5be3e220cb50711bbc7dfb399c"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/UI/Game.uss",
+      "sha256": "29b4068b12e850f96dc59d6be7460e39ebb8098de58990c1b6d4473e10fc310b"
+    }
+  ]
+}

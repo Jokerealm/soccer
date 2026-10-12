@@ -1,0 +1,11 @@
+#!/bin/sh
+set -eu
+editor="${SOCCER_UNITY_EDITOR:-/Applications/Tuanjie/Hub/Editor/2022.3.62t16/Tuanjie.app/Contents/MacOS/Tuanjie}"
+if [ -d "$editor" ]; then
+    editor="$editor/Contents/MacOS/Tuanjie"
+fi
+if [ ! -x "$editor" ]; then
+    echo 'Missing Tuanjie editor. Set SOCCER_UNITY_EDITOR to the locked editor executable.' >&2
+    exit 1
+fi
+exec "$editor" "$@"

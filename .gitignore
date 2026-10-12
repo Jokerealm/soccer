@@ -1,0 +1,46 @@
+.DS_Store
+.tools/
+.godot/
+*.import
+.env.local
+.env
+.env.*
+!.env.example
+builds/
+dist/
+__pycache__/
+
+# Keep compact verification summaries; runtime frames and logs stay local.
+reports/**
+!reports/**/
+!reports/**/*.json
+!reports/**/*.md
+!reports/runtime-possession-contact-016-quick-final/51-side-push-free-ball.png
+!reports/runtime-possession-contact-016-quick-final/52-contact-pickup.png
+!reports/runtime-possession-contact-016-quick-final/53-rear-push-carried-ball.png
+!reports/runtime-possession-contact-016-quick-final/54-friendly-push-carried-ball.png
+
+# Generated distribution copies; keep the source PNGs and metadata in Git.
+assets/packages/*.zip
+
+# Unity/Tuanjie generated directories; keep Assets, Packages, ProjectSettings and .meta.
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]in/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Uu]ser[Ss]ettings/
+[Mm]emoryCaptures/
+[Rr]ecordings/
+.vs/
+*.csproj
+!tests/**/*.csproj
+*.sln
+*.slnx
+*.user
+*.pidb
+*.booproj
+*.opendb
+*.VC.db

@@ -1,0 +1,65 @@
+{
+  "version": "0.15.0",
+  "date": "2026-10-12",
+  "passed": true,
+  "core": {
+    "total": 171,
+    "failed": 0,
+    "report": "reports/collision-rts-015-core/core-tests.json"
+  },
+  "runtime": {
+    "total": 306,
+    "errors": [],
+    "fps": 119.98981475830078,
+    "report": "reports/runtime-collision-rts-015-final/runtime-smoke.json"
+  },
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 413418581
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 381864561
+    }
+  },
+  "implemented": [
+    "Full-radius friendly and enemy continuous body collisions, sliding and area-weighted separation",
+    "Marine 0.5, Thor 0.8 and ball 0.27 physical radii; ball visuals use configured collision radius",
+    "Persistent right-click move, armed enemy chase/attack, friendly follow, ball chase, Shift queue, S/H stop",
+    "Body-inflated visibility-graph A* with dynamic replanning, opening shield and restart spacing",
+    "Whole-ball swept out-of-play with independent last touch, corner/goal kick/throw-in team assignment",
+    "Fixed-ball set-piece phase, manual and AI kicks, live-player assignment and clock suspension",
+    "Free kick for restart second touch; weapon, skill and push/tackle combat remain legal",
+    "No penalties; throw-ins currently use ground kick interaction",
+    "Destination feedback, debug paths, set-piece ring, camera and F2/F3 training controls"
+  ],
+  "screenshots": [
+    "reports/runtime-collision-rts-015-final/47-right-click-route.png",
+    "reports/runtime-collision-rts-015-final/48-corner-kick.png",
+    "reports/runtime-collision-rts-015-final/49-free-kick.png",
+    "reports/runtime-collision-rts-015-final/50-throw-in.png"
+  ],
+  "nativeInputAutomation": {
+    "verified": false,
+    "note": "Core and built-client checks passed; additional OS input automation could not bind the running app: CUA returned Running application not found / Invalid app for the enumerated game identifier. No native input pass claimed."
+  },
+  "windowsRuntimeVerified": false,
+  "notes": [
+    "Set-piece preparation 1 second and opponent distance 3 units are prototype tuning values.",
+    "StarCraft interaction is referenced; the proprietary pathfinding implementation is not copied.",
+    "Existing 45 degree contact-based steal semantics remain in place."
+  ]
+}

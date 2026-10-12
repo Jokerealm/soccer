@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1920" height="1080" viewBox="0 0 1920 1080">
+<title>32u × 18u 球场视觉标线，48px/u；球门宽4.5u，深1.5u</title>
+<g fill="none" stroke="#F7F0E1" stroke-width="5" stroke-linejoin="round" opacity=".8">
+<path d="M192 432V108H1728V432M1728 648V972H192V648M960 108V972"/>
+<circle cx="960" cy="540" r="96"/><circle cx="960" cy="540" r="6" fill="#F7F0E1"/>
+<path d="M192 324H336V756H192M1728 324H1584V756H1728" opacity=".5"/>
+</g><path d="M192 432H120V648H192" fill="#42D2C8" fill-opacity=".09" stroke="#42D2C8" stroke-width="6"/>
+<path d="M1728 432H1800V648H1728" fill="#F4A945" fill-opacity=".09" stroke="#F4A945" stroke-width="6"/>
+</svg>

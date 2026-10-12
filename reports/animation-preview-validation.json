@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-08",
+  "animation_version": 2,
+  "status": "passed",
+  "url": "http://127.0.0.1:8765/previews/animation-player.html",
+  "browser": "Codex in-app browser",
+  "source_images_loaded": 27,
+  "active_animation_pngs": 19,
+  "comparison_animation_pngs": 6,
+  "active_frames": 180,
+  "run_checks": {
+    "all_six_character_buttons": "14-frame timelines, run-v2 sources and 18 fps verified",
+    "frame_14_reachable": true,
+    "step_from_frame_14": "wraps to frame 1",
+    "old_run_comparison": "8 frames, v1 source, 10 fps; frame 8 wraps to frame 1",
+    "paused_frame_and_position": "stable across observations",
+    "in_place_mode": "all six ground positions fixed while animation frame changes",
+    "travel_mode": "all six ground positions change while playing",
+    "default_cycle_seconds": 0.777778,
+    "old_cycle_seconds": 0.8
+  },
+  "regression_checks": {
+    "magnet_turn": "8 frames; SW uses magnet-core-turn-left-v1.png",
+    "kick": "8 frames at 10 fps; repeat disabled stops on frame 8",
+    "console_errors_or_warnings": []
+  },
+  "screenshot": "reports/screenshots/animation-preview-v2.jpg",
+  "final_state": "14-frame run, 18 fps, travel and repeat enabled, playing",
+  "limitations": [
+    "Art preview only; no gameplay-engine integration",
+    "Run and kick have only SE direction",
+    "Gait, costume continuity and foot locking still require production cleanup"
+  ]
+}

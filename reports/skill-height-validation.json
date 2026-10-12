@@ -1,0 +1,47 @@
+{
+  "version": "0.7.1",
+  "date": "2026-10-09",
+  "direction": "2D normal gameplay with 3D presentation; height only for future explicit overhead skills",
+  "passed": true,
+  "coreChecks": 95,
+  "coreFailed": 0,
+  "clientChecks": 84,
+  "runtimeErrors": [],
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 298537228
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 267007273
+    }
+  },
+  "coreReport": "reports/legacy/skill-height-0.7.1-core-tests.json",
+  "runtimeReport": "reports/runtime-skill-height-smoke/runtime-smoke.json",
+  "implemented": [
+    "Normal kicks, movement, interception and goals use 2D rules",
+    "Explicit skill mode is required to enable ball height",
+    "Only player contact and reception windows use skill height",
+    "Goal height has no gameplay effect",
+    "First skill landing returns immediately to 2D without vertical rebound",
+    "Generic Shift loft controls and L training entry removed",
+    "3D ball, goals, lighting and shadows preserved"
+  ],
+  "currentOverheadSkills": [],
+  "windowsRuntimeVerified": false,
+  "largeWindowActualResolution": "3840x1666",
+  "full4KWindowVerified": false
+}

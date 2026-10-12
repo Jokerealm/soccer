@@ -1,0 +1,292 @@
+/* HD UI v3: real CJK weights, restrained surfaces, sharp vector symbols. */
+.app { flex-grow: 1; color: rgb(247,247,238); -unity-font-definition: url("ChineseFont.asset"); font-size: 18px; }
+.hidden { display: none; }
+.row { flex-direction: row; align-items: center; }
+.grow { flex-grow: 1; }
+Label { margin: 0; padding: 0; }
+.menu-backdrop, .loading-art { position: absolute; top: 0; bottom: 0; left: 0; right: 0; -unity-background-scale-mode: scale-and-crop; background-color: rgb(15,31,53); }
+.menu-shade { flex-grow: 1; background-color: rgba(8,21,39,0.25); }
+Button { color: rgb(30,48,62); background-color: rgb(238,242,234); border-color: rgb(186,200,196); border-width: 1px; border-bottom-width: 4px; border-bottom-color: rgb(136,157,161); border-radius: 12px; padding: 11px 20px; margin: 6px 8px 6px 0; min-height: 48px; font-size: 17px; transition-property: background-color, border-color; transition-duration: 0.12s; }
+Button:hover { background-color: rgb(255,255,249); border-color: rgb(89,181,171); border-bottom-color: rgb(60,137,143); }
+Button:active { background-color: rgb(207,225,219); border-bottom-width: 2px; padding-top: 13px; }
+Button:focus { border-top-color: rgb(247,191,87); border-left-color: rgb(247,191,87); border-right-color: rgb(247,191,87); }
+Button.primary { background-color: rgb(247,196,91); border-color: rgb(255,225,155); border-bottom-color: rgb(171,118,46); -unity-font-definition: url("ChineseBold.asset"); font-size: 20px; }
+Button.primary:hover { background-color: rgb(255,214,116); }
+Button.secondary { background-color: rgb(222,232,227); }
+Button:disabled { color: rgb(127,143,151); background-color: rgb(214,223,222); border-color: rgb(198,211,209); }
+.eyebrow, .front-brand-sub { color: rgb(158,222,216); font-size: 12px; letter-spacing: 2px; margin-bottom: 8px; }
+.muted { color: rgb(107,130,140); white-space: normal; font-size: 16px; }
+.small { font-size: 13px; }
+.page-title, .mode-page-title, .front-brand, .loading-title, .mode-card-title, .detail-title, .card-name, .stat-number, .score { -unity-font-definition: url("ChineseBold.asset"); }
+.page-title { font-size: 38px; margin-bottom: 10px; }
+.page { flex-grow: 1; margin: 40px 64px; padding: 32px; background-color: rgb(245,246,237); color: rgb(30,48,62); border-radius: 22px; border-width: 1px; border-color: rgb(255,255,249); border-bottom-width: 7px; border-bottom-color: rgb(139,160,166); }
+.page .eyebrow { color: rgb(32,133,131); }
+.page .skill-heading { color: rgb(37,108,112); }
+.page-heading { margin-bottom: 20px; }
+/* Lobby */
+.mode-home { flex-grow: 1; padding: 24px 58px 18px; }
+.front-topbar { height: 62px; flex-shrink: 0; }
+.brand-mark { width: 44px; height: 44px; margin-right: 14px; -unity-background-scale-mode: scale-to-fit; }
+.front-brand { font-size: 28px; }
+.front-brand-sub { font-size: 11px; margin-top: 3px; margin-bottom: 0; }
+.connection-status { font-size: 13px; padding: 8px 15px; background-color: rgba(20,46,62,0.82); border-width: 1px; border-color: rgba(168,208,211,0.3); border-radius: 20px; color: rgb(194,229,222); }
+.build-label { font-size: 12px; color: rgb(176,190,199); margin-left: 18px; }
+.mode-intro { flex-grow: 1; justify-content: center; min-height: 190px; padding-top: 18px; padding-bottom: 22px; }
+.mode-page-title { font-size: 58px; color: rgb(255,249,226); margin-top: 2px; }
+.mode-intro-copy { font-size: 19px; color: rgb(192,218,222); margin-top: 14px; }
+.mode-deck { height: 330px; flex-shrink: 0; align-items: stretch; }
+Button.mode-card { flex-grow: 1; flex-basis: 0; min-width: 0; margin: 0 18px 0 0; padding: 0; border-width: 1px; border-bottom-width: 6px; border-radius: 18px; overflow: hidden; flex-direction: column; align-items: stretch; background-color: rgb(244,249,240); }
+Button.mode-card.party { margin-right: 0; background-color: rgb(246,240,252); border-bottom-color: rgb(144,116,181); }
+Button.mode-card.normal { border-bottom-color: rgb(49,135,137); }
+Button.mode-card.ranked { background-color: rgb(252,246,227); border-bottom-color: rgb(187,147,74); }
+Button.mode-card:hover { background-color: rgb(255,255,252); border-color: rgb(255,217,127); border-bottom-width: 6px; }
+Button.mode-card:focus { border-top-width: 3px; border-left-width: 3px; border-right-width: 3px; border-color: rgb(255,210,99); }
+.mode-card-top { padding: 18px 22px 0; justify-content: space-between; }
+.mode-kicker { color: rgb(111,133,139); font-size: 11px; letter-spacing: 1px; }
+.mode-tag { color: rgb(44,123,118); font-size: 12px; padding: 4px 9px; border-radius: 6px; background-color: rgb(211,235,221); }
+.ranked .mode-tag { color: rgb(151,112,54); background-color: rgb(241,228,194); }
+.party .mode-tag { color: rgb(126,91,166); background-color: rgb(232,216,246); }
+.mode-card-art { position: absolute; right: 14px; top: 60px; width: 130px; height: 145px; }
+.mode-icon { position: absolute; top: 0; right: 0; width: 126px; height: 126px; -unity-background-scale-mode: scale-to-fit; }
+.mode-number, .mode-player-art { display: none; }
+.mode-card-copy { flex-grow: 1; padding: 25px 22px 19px; }
+.mode-card-copy Label { -unity-text-align: upper-left; }
+.mode-card-title { font-size: 34px; margin-top: 7px; }
+.mode-card-subtitle { font-size: 16px; margin-top: 13px; color: rgb(81,112,121); max-width: 73%; white-space: normal; }
+.mode-card-description { font-size: 13px; margin-top: 12px; color: rgb(118,141,148); max-width: 73%; white-space: normal; }
+.mode-card-line { flex-grow: 1; min-height: 10px; }
+.mode-card-action { color: rgb(33,112,111); font-size: 17px; -unity-font-definition: url("ChineseBold.asset"); border-top-width: 1px; border-top-color: rgb(211,225,216); padding-top: 16px; }
+.ranked .mode-card-action { color: rgb(153,112,48); }
+.party .mode-card-action { color: rgb(132,91,169); }
+.front-footer { height: 66px; flex-shrink: 0; padding-top: 10px; }
+Button.front-utility { background-color: rgba(23,46,64,0.92); color: rgb(229,242,235); border-color: rgba(189,219,218,0.22); border-bottom-color: rgb(8,23,37); font-size: 15px; min-height: 38px; padding: 8px 17px; border-radius: 9px; margin-right: 10px; }
+Button.front-utility:hover { background-color: rgb(46,86,96); }
+.front-footer-note { color: rgb(165,186,197); font-size: 12px; }
+/* Launch */
+.loading-page { flex-grow: 1; background-color: rgb(12,28,48); }
+.loading-shade { position: absolute; top: 0; bottom: 0; left: 0; width: 44%; background-color: rgba(9,28,50,0.26); }
+.loading-brand { position: absolute; top: 28%; left: 7%; }
+.loading-eyebrow { font-size: 14px; letter-spacing: 3px; color: rgb(152,225,214); margin-bottom: 18px; }
+.loading-title { font-size: 96px; color: rgb(255,248,221); }
+.loading-tagline { font-size: 27px; color: rgb(216,233,229); margin-top: 15px; }
+.loading-rule { width: 70px; height: 4px; margin-top: 28px; margin-bottom: 20px; background-color: rgb(247,196,91); border-radius: 2px; }
+.loading-motto { font-size: 12px; letter-spacing: 2px; color: rgb(144,184,200); }
+.loading-bottom { position: absolute; left: 7%; bottom: 10%; width: 34%; }
+.loading-caption { font-size: 14px; margin-bottom: 14px; }
+.loading-track { height: 8px; background-color: rgba(108,151,173,0.35); border-radius: 4px; overflow: hidden; }
+.loading-fill { height: 8px; width: 0; background-color: rgb(247,196,91); border-radius: 4px; }
+.loading-tip { font-size: 13px; margin-top: 16px; color: rgb(171,201,210); white-space: normal; }
+.loading-version { position: absolute; right: 32px; bottom: 24px; font-size: 12px; color: rgb(161,183,198); }
+/* Mode information */
+.mode-details { flex-grow: 1; padding: 30px 58px 36px; }
+.detail-topbar { height: 46px; margin-bottom: 24px; }
+.detail-content { flex-grow: 1; align-items: stretch; }
+.detail-overview { flex-grow: 1; flex-basis: 0; margin-right: 24px; padding: 34px; border-radius: 20px; background-color: rgba(17,40,58,0.94); border-width: 1px; border-color: rgba(207,230,223,0.22); overflow: hidden; }
+.detail-eyebrow { font-size: 12px; color: rgb(146,222,208); margin-bottom: 18px; letter-spacing: 2px; }
+.detail-title { font-size: 58px; color: rgb(255,244,217); }
+.detail-subtitle { font-size: 23px; margin-top: 14px; }
+.detail-description { font-size: 18px; margin-top: 20px; max-width: 470px; color: rgb(178,205,211); white-space: normal; }
+.detail-rules { margin-top: 32px; max-width: 430px; padding: 20px; border-left-width: 3px; border-left-color: rgb(241,197,106); background-color: rgba(7,24,39,0.5); }
+.detail-section-label { font-size: 13px; color: rgb(137,174,188); margin-bottom: 14px; }
+.detail-rule { font-size: 17px; margin-bottom: 13px; white-space: normal; }
+.detail-player-art { position: absolute; right: 24px; bottom: 30px; width: 190px; height: 190px; -unity-background-scale-mode: scale-to-fit; opacity: 0.95; }
+.connection-panel { width: 410px; flex-shrink: 0; border-radius: 20px; padding: 28px; background-color: rgb(245,247,237); color: rgb(30,48,62); border-bottom-width: 6px; border-bottom-color: rgb(124,149,158); }
+.connection-panel .detail-section-label { color: rgb(103,136,142); }
+.connection-tabs { padding: 4px; background-color: rgb(218,228,223); border-radius: 10px; margin-bottom: 26px; }
+Button.route-button { flex-grow: 1; flex-basis: 0; min-height: 40px; font-size: 17px; margin: 0; padding: 8px; border-width: 0; background-color: rgba(0,0,0,0); }
+Button.route-button.route-selected { background-color: rgb(41,125,126); color: rgb(245,249,240); }
+.connection-title { font-size: 26px; -unity-font-definition: url("ChineseBold.asset"); margin-bottom: 14px; }
+.network-unavailable { font-size: 13px; color: rgb(161,122,57); margin-bottom: 15px; }
+.connection-copy { font-size: 17px; color: rgb(110,135,143); white-space: normal; margin-bottom: 22px; }
+Button.network-action { min-height: 44px; font-size: 16px; margin: 0 0 8px; }
+.connection-divider { height: 1px; background-color: rgb(209,222,216); margin: 20px 0; }
+.practice-availability { font-size: 14px; color: rgb(50,126,118); white-space: normal; margin-bottom: 10px; }
+.connection-panel Button.primary, .connection-panel Button.secondary { min-height: 46px; margin-top: 8px; font-size: 18px; }
+/* Equipment selection, held for later character definitions. */
+.selection-content { flex-grow: 1; flex-basis: 0; min-height: 0; align-items: stretch; }
+.roster-cards { width: 59%; align-items: stretch; }
+Button.character-card { width: 47%; min-width: 0; padding: 18px 12px; margin-right: 12px; background-color: rgb(224,234,228); border-bottom-color: rgb(146,177,175); flex-direction: column; justify-content: flex-end; }
+Button.character-card.selected { background-color: rgb(207,234,223); border-width: 2px; border-color: rgb(49,153,146); border-bottom-width: 6px; }
+.portrait { width: 100%; min-height: 100px; flex-grow: 1; -unity-background-scale-mode: scale-to-fit; }
+.loadout-symbol { align-items: center; justify-content: center; }
+.loadout-number { display: none; }
+.loadout-weapon { margin-top: 12px; font-size: 16px; color: rgb(80,118,122); }
+.equipment-art { width: 168px; height: 168px; max-width: 90%; -unity-background-scale-mode: scale-to-fit; }
+.card-name { font-size: 24px; margin: 14px 0 8px; }
+.character-details { width: 41%; flex-grow: 1; padding: 14px 0 0 26px; min-height: 0; }
+.selection .character-details .page-title { font-size: 28px; margin-bottom: 6px; }
+.selection .character-details .eyebrow { font-size: 14px; margin-bottom: 12px; }
+.stats-copy { color: rgb(170,126,56); font-size: 16px; margin-bottom: 12px; white-space: normal; }
+.skill-heading { -unity-font-definition: url("ChineseBold.asset"); color: rgb(50,118,119); font-size: 16px; margin: 7px 0; }
+.description { white-space: normal; font-size: 17px; margin-bottom: 10px; }
+.selection .description { font-size: 15px; }
+.selection-footer { margin-top: 18px; }
+.selection-footer .muted { font-size: 13px; }
+.character-details .unity-scroller--vertical { width: 7px; margin-left: 7px; }
+.character-details .unity-scroller__low-button, .character-details .unity-scroller__high-button { display: none; }
+.character-details .unity-slider__tracker { background-color: rgb(215,227,220); }
+.character-details .unity-slider__dragger { background-color: rgb(104,171,161); border-radius: 4px; border-width: 0; }
+.character-details .unity-base-slider__tracker { background-color: rgb(215,227,220); }
+.character-details .unity-base-slider__dragger { background-color: rgb(104,171,161); background-image: none; border-radius: 4px; border-width: 0; }
+/* In-game UI: compact safe margins, no large translucent slab. */
+.match-page { flex-grow: 1; }
+.hud-top { position: absolute; top: 14px; left: 22px; right: 22px; justify-content: space-between; }
+.hud-left-slot, .hud-actions { width: 236px; flex-shrink: 0; }
+.hud-left-slot { align-items: flex-start; }
+.hud-actions { justify-content: flex-end; }
+.hud-actions Button { margin: 0 0 0 8px; padding: 9px 12px; font-size: 13px; }
+.compact-player-hud { height: 62px; width: 236px; padding: 5px 10px 5px 5px; background-color: rgba(9,29,36,0.60); border-width: 1px; border-color: rgba(157,197,177,0.38); border-radius: 12px; }
+.compact-portrait-frame { width: 50px; height: 50px; flex-shrink: 0; border-width: 2px; border-color: rgb(143,188,167); border-radius: 26px; overflow: hidden; background-color: rgb(5,19,26); }
+.compact-portrait-frame .hero-symbol { border-radius: 22px; }
+.compact-resources { margin-left: 11px; }
+.compact-resources Label { font-size: 14px; -unity-font-definition: url("ChineseBold.asset"); text-shadow: 0 1px 2px rgba(0,0,0,0.95); }
+.compact-health { color: rgb(115,229,171); margin-bottom: 5px; }
+.compact-health.low-health { color: rgb(255,139,107); }
+.compact-energy { color: rgb(140,204,250); }
+.hud-pill { color: rgb(242,248,235); background-color: rgb(17,43,49); border-width: 1px; border-color: rgb(88,123,116); border-bottom-color: rgb(8,24,38); border-bottom-width: 3px; border-radius: 10px; padding: 9px 15px; min-height: 40px; font-size: 14px; }
+.scoreboard { height: 62px; padding: 6px 20px; background-image: url("../Resources/FrontEnd/ui-dock-v2.png"); background-color: transparent; border-radius: 12px; border-width: 0; border-color: rgb(120,151,162); border-bottom-width: 4px; border-bottom-color: rgb(9,26,41); }
+.score { font-size: 34px; margin: 0 16px; }
+.clock { min-width: 80px; -unity-text-align: middle-center; font-size: 21px; margin: 0 12px; padding: 8px 10px; background-color: rgb(11,30,47); border-radius: 7px; color: rgb(253,246,220); }
+.team-name { font-size: 12px; }
+.cyan { color: rgb(103,224,198); }
+.amber { color: rgb(252,201,106); }
+.feedback { position: absolute; top: 141px; align-self: center; padding: 5px 13px; background-color: rgba(12,36,41,0.9); border-radius: 7px; color: rgb(223,239,228); font-size: 13px; }
+.ball-flight-status { position: absolute; top: 177px; align-self: center; padding: 5px 13px; background-color: rgb(251,216,130); border-radius: 7px; color: rgb(34,61,68); font-size: 13px; }
+.phase-label { position: absolute; top: 26%; align-self: center; padding: 6px 24px; font-size: 64px; color: rgb(255,225,159); -unity-font-definition: url("ChineseBold.asset"); text-shadow: 0 3px 3px rgba(12,32,31,0.80); }
+.phase-label.recovering { top: 176px; font-size: 23px; padding: 8px 18px; background-color: rgba(16,36,39,0.62); border-radius: 12px; }
+.countdown-overlay { position: absolute; top: 19%; align-self: center; width: 224px; height: 242px; }
+.countdown-number { position: absolute; left: 0; right: 0; top: 21px; height: 160px; font-size: 116px; -unity-font-definition: url("ChineseBold.asset"); -unity-text-align: middle-center; color: rgb(255,247,217); text-shadow: 0 4px 2px rgba(12,32,31,0.80); }
+.countdown-caption { position: absolute; top: 169px; left: -30px; right: -30px; font-size: 13px; -unity-text-align: middle-center; color: rgb(224,239,221); text-shadow: 0 2px 2px rgba(12,32,31,0.85); letter-spacing: 2px; }
+.countdown-overlay.kickoff .countdown-number { font-size: 54px; color: rgb(164,244,211); }
+.countdown-overlay.kickoff .countdown-caption { font-size: 13px; }
+.training-tools { width: 940px; max-width: 94%; flex-wrap: wrap; justify-content: center; position: absolute; top: 95px; align-self: center; flex-direction: row; align-items: center; padding: 3px 10px; background-color: rgba(12,31,37,0.95); border-radius: 8px; border-width: 1px; border-color: rgb(71,99,94); }
+.training-tools .skill-heading { color: rgb(233,200,120); margin: 0 10px 0 0; font-size: 12px; }
+.training-tools Button { color: rgb(221,237,220); background-color: rgb(34,65,69); border-color: rgb(89,121,115); border-bottom-color: rgb(11,33,40); min-height: 27px; padding: 5px 9px; margin: 2px 5px 2px 0; font-size: 12px; border-bottom-width: 2px; border-radius: 5px; }
+.training-tools Button:hover { background-color: rgb(48,85,86); border-color: rgb(225,192,123); }
+.hud-bottom-anchor { position: absolute; left: 0; right: 0; bottom: 7px; align-items: center; }
+.hud-bottom { padding: 8px 12px; flex-direction: row; align-items: center; flex-shrink: 0; }
+.minimap { position: absolute; left: 22px; bottom: 7px; background-color: rgba(9,29,36,0.68); border-width: 1px; border-color: rgba(139,185,167,0.48); border-top-color: rgba(212,192,133,0.68); border-radius: 9px; }
+.minimap-heading { position: absolute; left: 10px; right: 10px; top: 4px; height: 16px; flex-direction: row; align-items: center; }
+.minimap-heading Label { margin: 0; font-size: 10px; }
+.minimap-title { flex-grow: 1; color: rgb(236,222,186); -unity-font-definition: url("ChineseBold.asset"); letter-spacing: 1px; }
+.minimap-heading .minimap-allies { color: rgb(111,232,199); margin-right: 10px; }
+.minimap-enemies { color: rgb(255,170,108); }
+.minimap-player { position: absolute; border-radius: 16px; background-color: rgb(6,19,25); border-width: 1.5px; }
+.minimap-ally { border-color: rgb(99,230,195); }
+.minimap-enemy { border-color: rgb(255,158,99); }
+.minimap-local { border-color: rgb(255,237,164); border-width: 2px; }
+.minimap-portrait { position: absolute; left: 1px; right: 1px; top: 1px; bottom: 1px; border-radius: 14px; -unity-background-scale-mode: scale-and-crop; }
+.minimap-badge { position: absolute; right: -2px; bottom: -4px; min-width: 10px; height: 11px; margin: 0; padding: 0 2px; font-size: 8px; color: rgb(241,244,229); background-color: rgba(7,23,29,0.94); border-radius: 4px; -unity-text-align: middle-center; }
+.minimap-local .minimap-badge { color: rgb(255,237,164); }
+.minimap-down { position: absolute; right: -4px; top: -5px; width: 12px; height: 12px; margin: 0; font-size: 12px; color: rgb(242,208,194); background-color: rgba(36,23,29,0.94); border-radius: 7px; -unity-text-align: middle-center; }
+.minimap-knocked-out .minimap-portrait { opacity: 0.30; }
+.minimap-knocked-out { border-color: rgb(145,149,144); }
+.minimap-possession { position: absolute; left: -4px; top: -3px; width: 8px; height: 8px; border-radius: 5px; background-color: rgb(255,249,215); border-width: 1px; border-color: rgb(241,187,82); }
+.dock-backdrop { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-image: url("../Resources/FrontEnd/ui-dock-v2.png"); -unity-background-scale-mode: stretch-to-fill; opacity: 0.64; }
+.hud-stat-strip Label, .ability-caption, .ability-cost, .hero-name, .hero-state, .hud-help Label { text-shadow: 0 1px 2px rgba(0,0,0,0.95); }
+.hero-summary { width: 66px; align-items: center; margin-right: 10px; }
+.hero-portrait-frame { width: 60px; height: 60px; border-width: 2px; border-color: rgb(143,188,167); border-radius: 32px; overflow: hidden; background-color: rgb(5,19,26); }
+.hero-symbol { position: absolute; left: 2px; top: 2px; right: 2px; bottom: 2px; border-radius: 44px; -unity-background-scale-mode: scale-and-crop; }
+.portrait-down .hero-symbol { opacity: 0.35; }
+.portrait-possession { border-color: rgb(240,201,124); }
+.hero-name { -unity-font-definition: url("ChineseBold.asset"); font-size: 13px; color: rgb(247,236,202); margin-top: 4px; -unity-text-align: middle-center; }
+.hero-state { font-size: 10px; color: rgb(142,215,184); white-space: normal; -unity-text-align: middle-center; margin-top: 2px; }
+.hud-main { width: 400px; }
+.hud-stat-strip { display: none; }
+.hud-stat-strip Label { font-size: 10px; color: rgb(127,159,158); }
+.hud-stat-strip .dock-heading { color: rgb(224,207,158); letter-spacing: 1px; font-size: 11px; }
+.hud-stat-strip .bomb-action { color: rgb(255,206,119); position: absolute; right: 0; top: -20px; }
+.ability-strip { align-items: flex-start; justify-content: space-between; }
+.skill-tile { width: 60px; align-items: center; flex-shrink: 0; }
+.ability-frame { width: 54px; height: 54px; background-color: rgb(8,23,31); border-width: 2px; border-color: rgb(96,117,118); border-bottom-color: rgb(44,65,70); border-radius: 7px; overflow: hidden; }
+.skill-symbol { position: absolute; left: 2px; top: 2px; right: 2px; bottom: 2px; border-radius: 4px; -unity-background-scale-mode: scale-and-crop; }
+.cooldown-mask { position: absolute; left: 2px; right: 2px; top: 2px; bottom: 2px; }
+.cooldown-number { position: absolute; left: 0; right: 0; top: 0; bottom: 0; margin: 0; padding-top: 4px; font-size: 22px; -unity-font-definition: url("ChineseBold.asset"); -unity-text-align: middle-center; color: rgb(255,251,226); text-shadow: 0 2px 2px rgba(0,0,0,0.95); }
+.skill-tile.blocked .cooldown-number { font-size: 10px; }
+.ability-key { position: absolute; left: 2px; top: 2px; font-size: 10px; -unity-font-definition: url("ChineseBold.asset"); margin: 0; padding: 3px 5px; background-color: rgba(4,16,23,0.93); color: rgb(251,235,190); border-bottom-right-radius: 5px; border-bottom-width: 1px; border-bottom-color: rgb(107,116,96); }
+.ability-caption { font-size: 10px; margin: 3px 0 0; color: rgb(230,230,209); -unity-text-align: middle-center; }
+.ability-cost { font-size: 9px; margin: 1px 0 1px; color: rgb(157,189,181); -unity-text-align: middle-center; }
+.ability-divider { width: 1px; height: 53px; background-color: rgb(102,117,105); margin: 1px 3px 0; flex-shrink: 0; }
+.skill-tile.cooling .skill-symbol { opacity: 0.80; }
+.skill-tile.cooling .cooldown-mask { background-color: rgba(4,12,17,0.25); }
+.skill-tile.blocked .skill-symbol { opacity: 0.28; }
+.skill-tile.armed .ability-frame { border-color: rgb(250,207,110); }
+.ability-gleam { position: absolute; left: 0; top: 0; width: 38px; bottom: 0; background-image: url("../Resources/FrontEnd/ui-glint-v2.png"); opacity: 0; }
+.resource-deck { margin-top: 2px; }
+.resource-progress { height: 16px; margin: 2px 0 0; }
+.resource-progress .unity-progress-bar__background { border-width: 1px; border-color: rgb(4,15,21); border-top-color: rgb(42,76,75); background-color: rgb(5,19,26); border-radius: 4px; overflow: hidden; }
+.resource-progress .unity-progress-bar__progress { border-width: 0; border-radius: 2px; background-image: url("../Resources/FrontEnd/ui-resource-fill-v2.png"); -unity-background-scale-mode: stretch-to-fill; background-color: transparent; transition-property: width; transition-duration: 0.12s; }
+.resource-progress .unity-progress-bar__title { font-size: 10px; -unity-font-definition: url("ChineseBold.asset"); color: rgb(244,251,238); text-shadow: 0 1px 2px rgba(0,0,0,0.95); }
+.health-progress .unity-progress-bar__progress { -unity-background-image-tint-color: rgb(71,212,150); }
+.energy-progress .unity-progress-bar__progress { -unity-background-image-tint-color: rgb(80,171,226); }
+.resource-trail { position: absolute; left: 0; top: 0; bottom: 0; background-color: transparent; background-image: url("../Resources/FrontEnd/ui-resource-fill-v2.png"); -unity-background-image-tint-color: rgb(209,166,98); border-radius: 2px; }
+.energy-progress .resource-trail { -unity-background-image-tint-color: rgb(106,144,170); }
+.resource-ticks { position: absolute; left: 0; top: 0; right: 0; bottom: 0; }
+.resource-tick { position: absolute; top: 0; bottom: 0; width: 1px; background-color: rgba(0,12,17,0.25); }
+.resource-delta { position: absolute; right: 7px; font-size: 14px; -unity-font-definition: url("ChineseBold.asset"); color: rgb(255,215,154); opacity: 0; text-shadow: 0 1px 2px rgba(0,0,0,0.95); }
+.energy-delta { top: 19px; }
+.hud-help { display: none; }
+.hud-help Label { font-size: 10px; color: rgb(136,167,166); margin: 4px 0; }
+.hud-help .hud-help-title { color: rgb(220,201,151); font-size: 12px; letter-spacing: 1px; margin-bottom: 8px; }
+.charge-progress { height: 18px; margin: 6px 0 0; }
+.charge-progress .unity-progress-bar__background { background-color: rgb(9,28,42); border-width: 0; border-radius: 3px; }
+.charge-progress .unity-progress-bar__progress { background-color: rgb(248,201,106); border-width: 0; border-radius: 3px; }
+.charge-progress .unity-progress-bar__title { font-size: 10px; color: rgb(20,45,61); }
+.skill-tooltip { position: absolute; width: 280px; padding: 13px 15px 12px; border-radius: 10px; background-color: rgba(10,29,34,0.94); border-width: 1px; border-color: rgb(109,152,139); border-top-width: 2px; border-top-color: rgb(207,184,118); }
+.skill-tooltip-title { margin: 0 0 8px; font-size: 16px; -unity-font-definition: url("ChineseBold.asset"); color: rgb(251,225,172); white-space: normal; }
+.skill-tooltip-body { margin: 0 0 9px; font-size: 12px; color: rgb(221,234,222); white-space: normal; }
+.skill-tooltip-meta { margin: 0 0 7px; padding-top: 8px; border-top-width: 1px; border-top-color: rgba(145,186,168,0.25); font-size: 11px; color: rgb(157,201,186); white-space: normal; }
+.skill-tooltip-state { margin: 0; font-size: 11px; color: rgb(239,198,121); white-space: normal; }
+.damage-vignette { position: absolute; left: 0; top: 0; right: 0; bottom: 0; background-image: url("../Resources/FrontEnd/ui-damage-v2.png"); opacity: 0; }
+.combat-toast { position: absolute; bottom: 222px; align-self: center; padding: 7px 22px; background-color: rgba(5,21,29,0.94); border-radius: 8px; border-top-width: 1px; border-top-color: rgb(131,162,142); font-size: 18px; -unity-font-definition: url("ChineseBold.asset"); opacity: 0; }
+/* Dialogs / report / preferences */
+.overlay { position: absolute; top: 0; bottom: 0; left: 0; right: 0; background-color: rgba(8,24,41,0.72); align-items: center; justify-content: center; }
+.modal { width: 420px; padding: 32px; color: rgb(30,48,62); background-color: rgb(245,247,237); border-radius: 20px; border-width: 1px; border-color: rgb(255,255,247); border-bottom-width: 7px; border-bottom-color: rgb(135,160,166); }
+.modal Button { margin-top: 13px; }
+.results { align-items: center; justify-content: center; }
+.result-score { font-size: 80px; color: rgb(33,131,126); -unity-font-definition: url("ChineseBold.asset"); margin: 6px 0 15px; }
+.result-stats { margin: 28px 0; padding: 20px 10px; border-radius: 12px; background-color: rgb(225,235,226); }
+.stat { width: 165px; align-items: center; border-right-width: 1px; border-right-color: rgb(198,214,209); }
+.stat-number { font-size: 42px; color: rgb(171,126,52); margin-bottom: 7px; }
+.combat-summary { margin-top: 10px; }
+.settings { max-width: 860px; align-self: center; width: 80%; }
+.settings .description { font-size: 17px; margin-bottom: 14px; }
+.settings Slider { margin: 10px 0; height: 28px; }
+.settings .unity-base-field__label { min-width: 112px; color: rgb(69,105,116); font-size: 17px; }
+.settings .unity-slider__tracker { height: 5px; background-color: rgb(185,206,199); border-radius: 3px; }
+.settings .unity-slider__dragger { width: 20px; height: 20px; background-color: rgb(57,144,136); border-width: 3px; border-color: rgb(246,249,239); border-radius: 12px; }
+.settings .unity-base-slider__tracker { height: 5px; background-color: rgb(185,206,199); border-width: 0; border-radius: 3px; }
+.settings .unity-base-slider__dragger { width: 20px; height: 20px; background-image: none; background-color: rgb(57,144,136); border-width: 3px; border-color: rgb(246,249,239); border-radius: 12px; }
+.settings .unity-base-slider__dragger-border { display: none; }
+.settings-toggles { margin: 12px 0; }
+.settings .settings-toggles Button { margin-right: 12px; font-size: 16px; }
+.settings Button { align-self: flex-start; }
+.settings .hud-setting-copy { font-size: 13px; margin-bottom: 8px; }
+/* 4:3 and small-window layout */
+.compact-front-end .mode-home { padding-top: 18px; padding-bottom: 12px; }
+.compact-front-end .mode-intro { min-height: 142px; padding: 15px 0; }
+.compact-front-end .mode-page-title { font-size: 48px; }
+.compact-front-end .mode-deck { height: 295px; }
+.compact-front-end .mode-card-copy { padding-top: 18px; }
+.compact-front-end .mode-card-title { font-size: 30px; }
+.compact-front-end .mode-card-art { width: 106px; right: 10px; }
+.compact-front-end .mode-icon { width: 100px; height: 100px; }
+.compact-front-end .front-footer { height: 58px; }
+.compact-front-end .detail-overview { padding: 24px; }
+.compact-front-end .detail-title { font-size: 48px; }
+.compact-front-end .detail-rules { margin-top: 20px; padding: 15px; }
+.compact-front-end .connection-panel { padding: 22px; }
+.compact-front-end .connection-tabs { margin-bottom: 18px; }
+.compact-front-end .connection-copy { margin-bottom: 16px; }
+.compact-front-end .page { margin: 25px 38px; padding: 25px; }
+.compact-front-end .selection .page-title { font-size: 30px; }
+.compact-front-end .selection .description { font-size: 14px; }
+.compact-front-end .settings .description { font-size: 16px; }
+.narrow-front-end .mode-home, .narrow-front-end .mode-details { padding-left: 38px; padding-right: 38px; }
+.narrow-front-end .front-footer-note { display: none; }
+.narrow-front-end .connection-panel { width: 355px; }
+.narrow-front-end .detail-overview { margin-right: 18px; }
+.narrow-front-end .detail-description, .narrow-front-end .detail-rules { max-width: 350px; }
+.narrow-front-end .detail-player-art { width: 130px; height: 130px; opacity: 0.7; }
+
+/* Shared actions expose separate cooldowns and health costs. */

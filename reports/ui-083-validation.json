@@ -1,0 +1,69 @@
+{
+  "version": "0.8.3",
+  "date": "2026-10-09",
+  "passed": true,
+  "clientChecks": 117,
+  "runtimeErrors": [],
+  "runtimeReport": "reports/runtime-ui-083/runtime-smoke.json",
+  "runtimeLog": "reports/runtime-ui-083.log",
+  "gameplayChanged": false,
+  "coreChecksRetainedFrom08": 119,
+  "coreReport": "reports/star-strikers-check/core-tests.json",
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 364350784
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 332820909
+    }
+  },
+  "buildLogs": {
+    "macos": "reports/build-ui-083-macos.log",
+    "windows": "reports/build-ui-083-windows.log"
+  },
+  "hud": {
+    "default": "full",
+    "preferenceKey": "soccer.fullHud",
+    "backdropOpacity": 0.64,
+    "compactBackdropOpacity": 0.6,
+    "switches": [
+      "match top right",
+      "settings full skill dock button"
+    ],
+    "removed": [
+      "bottom received-damage toast",
+      "bottom hit-damage toast",
+      "health loss numeric delta"
+    ],
+    "compact": [
+      "current character portrait",
+      "authoritative health number",
+      "authoritative energy number"
+    ]
+  },
+  "screenshots": {
+    "full": "reports/runtime-ui-083/18-translucent-full-hud.png",
+    "compact": "reports/runtime-ui-083/19-compact-player-hud.png",
+    "compact4x3": "reports/runtime-ui-083/09c-compact-match-4x3.png",
+    "settings": "reports/runtime-ui-083/02-settings.png"
+  },
+  "visualQA": "Reviewed actual full, compact, 4:3 compact and settings captures; no overlap or clipped numbers.",
+  "windowsRuntimeVerified": false,
+  "nativeInputHandFeelVerified": false,
+  "full4KWindowVerified": false,
+  "largeWindowActualResolution": "3840x1666"
+}

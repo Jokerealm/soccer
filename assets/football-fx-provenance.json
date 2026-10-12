@@ -1,0 +1,122 @@
+{
+  "version": "0.12.0",
+  "origin": "Runtime C# meshes, vertex colors and LineRenderer paths; no new bitmap assets.",
+  "source_sha256": {
+    "UnityProject/Assets/Soccer/Runtime/Presentation/KickEffectsView.cs": "8e52d24d8286e3cd3e1b0b58c843cd57bda070f3b617de3b7c196e6a064af799",
+    "UnityProject/Assets/Soccer/Runtime/Presentation/GoalCelebrationView.cs": "9c0c6e8b4d22cd2844cca68ba0f14a9933561f545973290db80932e1a7b40ee2",
+    "UnityProject/Assets/Soccer/Resources/SceneSurface/CelebrationPaper.shader": "980bd6085aee4222e28545956aef118ca10f9a21b13d81c3d512b38dd079f3e5",
+    "UnityProject/Assets/Soccer/Runtime/Presentation/MatchView.cs": "12a96e84ab2a02ff7c28ec0566beb76e8c4ee1e733f874d1071a29bc68d8b83b",
+    "UnityProject/Assets/Soccer/Runtime/Presentation/DynamicStadiumView.cs": "fda7b415c5581b3aa490619ecac4a565cd80a782b6a4f66d70a8c6570667ef06",
+    "UnityProject/Assets/Soccer/Runtime/Presentation/ArenaParticles.cs": "ec44cc069bfdc1fb63bd317d27780551f0e2a7931f994641875f9169da93218e",
+    "UnityProject/Assets/Soccer/Runtime/Presentation/ArenaCamera.cs": "1aa9d714493bd09445e00b1f836cf3709a84db598786fb3dfc74d39e0d2ce5a2",
+    "UnityProject/Assets/Soccer/Runtime/Application/AppController.cs": "2e8f6add724c4fd6014b6878d6903790a0499b7f87bacc621b2cb98754f5e9b0",
+    "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeSmokeProbe.cs": "83efb97ad33e91a2f5ce2c3f60021cfffbac9863c33c59b28ec43a44ec31a156",
+    "UnityProject/Assets/Soccer/Editor/ProjectSetup.cs": "e3f3bd1165a76c257c12e13adba466d555b4c42a1caf5e4e3a3228f0b6f9d500",
+    "UnityProject/Assets/Soccer/UI/Game.uxml": "39cdc8dfc9e0e629bf47688b567379892c55f2cbf6df75c6ff295151744411cd",
+    "UnityProject/Assets/Soccer/Data/PrototypeRules.asset": "cd8bae0b60ec321eeeae13b9601597c16ad46670284632366709c66e849e31dc",
+    "tools/build_football_fx_preview.py": "7211fa433650527f54bd2e075a4d63ff06d998020102561911751313708e2c4d",
+    "docs/踢球与进球特效0.12.0.md": "ad6c169607b8267e234f013058dbe559f35f46eaec4716c0c48b344773847d39",
+    "previews/football-fx-012.gif": "e27c709f23fc2d7f7761c0566232f90dd543ebea6749da9e7631b1ddbdd39fc4"
+  },
+  "preview": {
+    "preview": "previews/football-fx-012.gif",
+    "frames": 21,
+    "size": [
+      960,
+      540
+    ],
+    "bytes": 10605861,
+    "source_report": "reports/runtime-football-fx-012-release",
+    "sequence": [
+      {
+        "native_png": "34-football-charge.png",
+        "duration_ms": 1100
+      },
+      {
+        "native_png": "35-football-kick-contact.png",
+        "duration_ms": 250
+      },
+      {
+        "native_png": "kick-effects-frames/000.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "kick-effects-frames/001.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "kick-effects-frames/002.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "kick-effects-frames/003.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "kick-effects-frames/004.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "kick-effects-frames/005.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "kick-effects-frames/006.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "kick-effects-frames/007.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "kick-effects-frames/008.png",
+        "duration_ms": 110
+      },
+      {
+        "native_png": "36-goal-cyan.png",
+        "duration_ms": 900
+      },
+      {
+        "native_png": "goal-effects-frames/000.png",
+        "duration_ms": 150
+      },
+      {
+        "native_png": "goal-effects-frames/001.png",
+        "duration_ms": 150
+      },
+      {
+        "native_png": "goal-effects-frames/002.png",
+        "duration_ms": 150
+      },
+      {
+        "native_png": "goal-effects-frames/003.png",
+        "duration_ms": 150
+      },
+      {
+        "native_png": "goal-effects-frames/004.png",
+        "duration_ms": 150
+      },
+      {
+        "native_png": "goal-effects-frames/005.png",
+        "duration_ms": 150
+      },
+      {
+        "native_png": "goal-effects-frames/006.png",
+        "duration_ms": 150
+      },
+      {
+        "native_png": "goal-effects-frames/007.png",
+        "duration_ms": 150
+      },
+      {
+        "native_png": "37-goal-amber.png",
+        "duration_ms": 1600
+      }
+    ],
+    "timing_note": "Native screenshots with test-controlled Core/effect stepping; GIF timing is edited, not a keyboard feel benchmark."
+  },
+  "artifacts": {
+    "UnityProject/Builds/macOS/SkillSoccer.app/Contents/MacOS/技能足球": "704c375f04cb350f0fc77202e7bdcfe9bc198080d049a1c216fcc02d1baf2120",
+    "UnityProject/Builds/Windows/SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e"
+  }
+}

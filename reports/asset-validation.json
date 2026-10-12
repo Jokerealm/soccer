@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-08",
+  "status": "passed",
+  "original_counts": {
+    "png": 35,
+    "svg": 32
+  },
+  "original_total": 67,
+  "current_v2_asset_count": 36,
+  "gallery_image_references": 58,
+  "third_party_sources": [
+    {
+      "id": "kenney-sports-pack",
+      "source_page": "https://kenney.nl/assets/sports-pack",
+      "license": "CC0-1.0",
+      "local_directory": "assets/third_party/kenney/sports-pack",
+      "license_file": "assets/licenses/kenney-sports-pack-license.txt",
+      "files": 238,
+      "png_files": 206
+    },
+    {
+      "id": "kenney-ui-pack",
+      "source_page": "https://kenney.nl/assets/ui-pack",
+      "license": "CC0-1.0",
+      "local_directory": "assets/third_party/kenney/ui-pack",
+      "license_file": "assets/licenses/kenney-ui-pack-license.txt",
+      "files": 1315,
+      "png_files": 870
+    },
+    {
+      "id": "kenney-input-prompts",
+      "source_page": "https://kenney.nl/assets/input-prompts",
+      "license": "CC0-1.0",
+      "local_directory": "assets/third_party/kenney/input-prompts",
+      "license_file": "assets/licenses/kenney-input-prompts-license.txt",
+      "files": 4667,
+      "png_files": 3056
+    },
+    {
+      "id": "kenney-particle-pack",
+      "source_page": "https://kenney.nl/assets/particle-pack",
+      "license": "CC0-1.0",
+      "local_directory": "assets/third_party/kenney/particle-pack",
+      "license_file": "assets/licenses/kenney-particle-pack-license.txt",
+      "files": 195,
+      "png_files": 193
+    },
+    {
+      "id": "noto-sans-cjk-sc-regular",
+      "source_page": "https://github.com/notofonts/noto-cjk",
+      "path": "assets/third_party/noto-sans-cjk/NotoSansCJKsc-Regular.otf",
+      "license": "OFL-1.1",
+      "license_file": "assets/third_party/noto-sans-cjk/OFL.txt",
+      "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"
+    }
+  ],
+  "errors": [],
+  "limitations": [
+    "固定全场为预览提案，最终镜头范围与倾角需游戏原型验证",
+    "三张 PNG 为单帧静态样稿；最终方向、脚点、画布和边缘需统一",
+    "制作9种基础动作及技能施放；禁止通过旋转人物 PNG 代替方向动画",
+    "六角已有 14 帧跑步、8 帧踢球和八向转身草稿；继续修型、补齐方向和完整动作，见 animation-manifest-v2.json",
+    "引擎导入、多人移动与特效叠加下的遮挡和足球可读性尚待验证",
+    "跑步和踢球目前只有右前 SE 一个绘制方向；其他移动方向尚待补齐",
+    "动作关键帧有服装、比例、摆臂和步态漂移，需逐帧修型与中间帧补充",
+    "转身包含真实正侧背视图，但相机倾角与方向间透视仍需统一",
+    "弧光的非对称射门护具、磁核补画与原图的细节需人工核对",
+    "预览脚点为估算，最终脚部接触、根位置、击球点和时序需引擎中标定",
+    "尚无持球跑、抢断、受击、庆祝、技能动作或最终 Animator 绑定"
+  ]
+}

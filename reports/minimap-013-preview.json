@@ -1,0 +1,51 @@
+{
+  "source_report": "reports/runtime-minimap-013-final",
+  "native_screenshot": {
+    "screenshot": "40-minimap-3v3.png",
+    "screenWidth": 1920,
+    "screenHeight": 1080,
+    "boundsPixels": [
+      26.0,
+      905.0,
+      272.0,
+      167.00003051757812
+    ],
+    "portraits": 6
+  },
+  "crop_pixels": [
+    20,
+    899,
+    304,
+    1078
+  ],
+  "motion_frames": [
+    "40-minimap-3v3.png",
+    "minimap-motion-frames/000.png",
+    "minimap-motion-frames/001.png",
+    "minimap-motion-frames/002.png",
+    "minimap-motion-frames/003.png",
+    "minimap-motion-frames/004.png",
+    "minimap-motion-frames/005.png",
+    "minimap-motion-frames/006.png",
+    "minimap-motion-frames/007.png",
+    "minimap-motion-frames/008.png",
+    "minimap-motion-frames/009.png",
+    "minimap-motion-frames/010.png",
+    "minimap-motion-frames/011.png"
+  ],
+  "outputs": [
+    {
+      "path": "previews/minimap-013-match.png",
+      "bytes": 2380853
+    },
+    {
+      "path": "previews/minimap-013-detail.png",
+      "bytes": 146933
+    },
+    {
+      "path": "previews/minimap-013-motion.gif",
+      "bytes": 1028637
+    }
+  ],
+  "timing_note": "Actual native UI and Core-controlled movement; GIF timings are edited. Detail is cropped and enlarged."
+}

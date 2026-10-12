@@ -1,0 +1,52 @@
+{
+  "date": "2026-10-08",
+  "scope": "Static art preparation only",
+  "checks": {
+    "import": {
+      "status": "passed",
+      "log": "reports/godot-import.log",
+      "errors_or_warnings": []
+    },
+    "headless_preview": {
+      "status": "passed",
+      "log": "reports/preview-run.log",
+      "errors_or_warnings": []
+    },
+    "windows_export": {
+      "status": "passed",
+      "log": "reports/windows-export.log",
+      "errors_or_warnings": []
+    },
+    "linux_export": {
+      "status": "passed",
+      "log": "reports/linux-export.log",
+      "errors_or_warnings": []
+    }
+  },
+  "build_outputs": [
+    {
+      "path": "builds/windows/resource-preview.exe",
+      "bytes": 120376024,
+      "sha256": "29f6c5c7b708662480c06b99981a63a18b75322ff2bbf2daa4acbfa98cfe1c4e",
+      "platform_execution_tested": false
+    },
+    {
+      "path": "builds/linux/resource-preview.x86_64",
+      "bytes": 90903112,
+      "sha256": "af838a16e1334e96cb0b92f0478f2dd8a0ccc69124ce3534fda4cff71ba09b65",
+      "platform_execution_tested": false
+    }
+  ],
+  "windows_linux_native_execution_tested": false,
+  "steam_integration_tested": false,
+  "multiplayer_tested": false,
+  "browser_gallery": {
+    "status": "passed",
+    "image_references": 38,
+    "failed_images": [],
+    "horizontal_overflow": false,
+    "background_switch": "passed",
+    "field_lines_toggle": "passed",
+    "character_ball_toggle": "passed"
+  }
+}

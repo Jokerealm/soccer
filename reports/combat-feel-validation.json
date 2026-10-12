@@ -1,0 +1,16 @@
+{
+  "version": "0.2.0",
+  "date": "2026-10-09",
+  "passed": true,
+  "coreTests": 47,
+  "clientChecks": 30,
+  "originalAudioAssets": 25,
+  "macOSBuild": "Succeeded",
+  "windowsBuild": "Succeeded",
+  "runtimeErrors": [],
+  "limits": [
+    "Native mouse position and subjective feel require human playtesting.",
+    "Windows build has not been run on a Windows machine.",
+    "Shot guide is a capped direction preview, without obstacle collision prediction."
+  ]
+}

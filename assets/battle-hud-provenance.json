@@ -1,0 +1,125 @@
+{
+  "version": "0.8.1",
+  "reference": {
+    "path": "/Users/gz/Downloads/default.jpg",
+    "sha256": "dbfbfd72443cad5d2a06a3cee00dbf43a5c9f13f02cc72d075bbfe5f01647326",
+    "use": "User-provided Star Strikers screenshot; inspiration for perspective, volume and bottom HUD layout only. Photo is not embedded in the game."
+  },
+  "proceduralModels": {
+    "source": "UnityProject/Assets/Soccer/Runtime/Presentation/PlayerModelView.cs",
+    "description": "Original replaceable marine and heavy-mech silhouettes with beveled armor, volumetric weapons, walk/impact poses and real Standard-shader lighting; no final hero appearance."
+  },
+  "icons": [
+    {
+      "source": "assets/original/vector/battle-hud/battle-bomb.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-bomb.png",
+      "sha256": "3336fd11ceae878f9b1aa3f1effb2ebe2cab40ac1605c33c7e54d75b6f179f1e",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-cannons.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-cannons.png",
+      "sha256": "3deac611264853c93eecc2c3e877aeecd6ca8b7ab6b2d8cc554927ba1cdbad8a",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-drive.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-drive.png",
+      "sha256": "65dad43683711cf45bace8b6ca2f696bbf9536e921a7cc3babf7ee83108da55d",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-kick.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-kick.png",
+      "sha256": "2c5483849856dcbed0f2dad5db605b1c44c660377348c49114262577c9e99b4f",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-marine.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-marine.png",
+      "sha256": "dda408c08336ccb43b1a0e92b8973764131eac3837e6c0e1b41b6cc73385abfa",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-stim.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-stim.png",
+      "sha256": "daa2de31940ef9b6182782f04924de06b78333847fa4e43658185c402afd4f65",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-tackle.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-tackle.png",
+      "sha256": "2a2cc139a35f9d7ea511e1cfeb6006f225609b26aed3c44577e055349edc95a1",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-thor.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-thor.png",
+      "sha256": "0056c8691c9dccaf3f33ee8ece380e9b794a214083fb905864738e5c12105e99",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-thruster.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-thruster.png",
+      "sha256": "ce2fbc9523340806be470bf2b1ac32954884c32680a3b044371067c86a2ea0e8",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-trigger.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-trigger.png",
+      "sha256": "d9a923aa696a026e1e0c42dfe926c3bce56680524e36e8ad1d68252f7fb9764a",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    },
+    {
+      "source": "assets/original/vector/battle-hud/battle-weapon.svg",
+      "target": "UnityProject/Assets/Soccer/Resources/FrontEnd/battle-weapon.png",
+      "sha256": "857772a0ce390c1323721d3be546005c8a224aafe3e426848509ea8b2a1db01e",
+      "dimensions": [
+        768,
+        768
+      ],
+      "conversion": "Original SVG illustration rasterized with sharp"
+    }
+  ],
+  "generator": "tools/create_battle_hud_icons.cjs"
+}

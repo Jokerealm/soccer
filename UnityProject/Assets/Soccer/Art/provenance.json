@@ -1,0 +1,130 @@
+{
+  "animation_source": "assets/animation-manifest-v2.json",
+  "assets": [
+    {
+      "source": "assets/original/animations/wind-shuttle-run-v2.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/wind-shuttle-run-v2.png",
+      "sha256": "b85b446438effcd36207049b38fae46e239939e03c90344b1f4529ad22af590e"
+    },
+    {
+      "source": "assets/original/animations/wind-shuttle-turn-v1.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/wind-shuttle-turn-v1.png",
+      "sha256": "f63ca46fc4c0f918ea99954420afb417c6f482575bc23aa0bf40bce12cfd9d94"
+    },
+    {
+      "source": "assets/original/animations/wind-shuttle-kick-v1.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/wind-shuttle-kick-v1.png",
+      "sha256": "f6461d002f0ac731bd70bb7c3a5431b7972a5e9b2de3bf628694f5e11abcb119"
+    },
+    {
+      "source": "assets/original/characters/wind-shuttle-idle-v2.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/wind-shuttle-idle-v2.png",
+      "sha256": "b56e53ba827c5b24163939200963d885c4ab44a08adf58f9205a2723a4bee24e"
+    },
+    {
+      "source": "assets/original/animations/iron-guard-run-v2.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/iron-guard-run-v2.png",
+      "sha256": "2e6858352b6e528ee6ab25ee5c31d19e86e8f3927e29a1e33d9f39fa1de1d621"
+    },
+    {
+      "source": "assets/original/animations/iron-guard-turn-v1.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/iron-guard-turn-v1.png",
+      "sha256": "d1e3a64090ce690e6179b5cd60501f509749dab8f52e14e85b1f21faf608df35"
+    },
+    {
+      "source": "assets/original/animations/iron-guard-kick-v1.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/iron-guard-kick-v1.png",
+      "sha256": "64436d2b1adc2edf41364547909c04e1f3226755f315186a6f79c5979ec2915f"
+    },
+    {
+      "source": "assets/original/characters/iron-guard-idle-v2.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/iron-guard-idle-v2.png",
+      "sha256": "deafaba38e1d130ec21d90473fab58eab0fb2ebd136a06f61b35a8e9a1ce6cc5"
+    },
+    {
+      "source": "assets/original/animations/arc-light-run-v2.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/arc-light-run-v2.png",
+      "sha256": "78a1ca2ed10219102e0ed9c05693d523c1668cf0289398918fee5a14c83e1683"
+    },
+    {
+      "source": "assets/original/animations/arc-light-turn-v1.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/arc-light-turn-v1.png",
+      "sha256": "faa4526f38c5945396b471d9b09bb579d5fdc5ede9954ad8f031c4f56438ec5c"
+    },
+    {
+      "source": "assets/original/animations/arc-light-kick-v1.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/arc-light-kick-v1.png",
+      "sha256": "d352e8afc2f3a05b9bea52ac77f796763ef3623b7193e3a47825716b0abe55ea"
+    },
+    {
+      "source": "assets/original/characters/arc-light-idle-v2.png",
+      "target": "UnityProject/Assets/Soccer/Art/Characters/arc-light-idle-v2.png",
+      "sha256": "d09e235afd62df12b18ef9e70dc86af1aae3929d8ad8e316c6de127983321f1c"
+    },
+    {
+      "source": "assets/original/arenas/standard-floor-v2.png",
+      "target": "UnityProject/Assets/Soccer/Art/Arena/standard-floor-v2.png",
+      "sha256": "f56c6fca45f06cb1c958449e573465fcdaa598ac644e69570bb61e435fb5a34e"
+    },
+    {
+      "source": "assets/third_party/noto-sans-cjk/NotoSansCJKsc-Regular.otf",
+      "target": "UnityProject/Assets/Soccer/Art/Fonts/NotoSansCJKsc-Regular.otf",
+      "sha256": "2c76254f6fc379fddfce0a7e84fb5385bb135d3e399294f6eeb6680d0365b74b"
+    },
+    {
+      "source": "assets/third_party/noto-sans-cjk/OFL.txt",
+      "target": "UnityProject/Assets/Soccer/Art/Fonts/OFL.txt",
+      "sha256": "6a73f9541c2de74158c0e7cf6b0a58ef774f5a780bf191f2d7ec9cc53efe2bf2"
+    },
+    {
+      "source": "assets/third_party/kenney/ui-pack/Sounds/click-a.ogg",
+      "target": "UnityProject/Assets/Soccer/Audio/click-a.ogg",
+      "sha256": "c5faa31bbf4a921332cdc9e7d7f7d930ca73fc8cc96e35ccc70ed2de975b26e5"
+    },
+    {
+      "source": "assets/third_party/kenney/ui-pack/Sounds/tap-a.ogg",
+      "target": "UnityProject/Assets/Soccer/Audio/tap-a.ogg",
+      "sha256": "f74c1334c0c1ab9ec69f3dd723611a8eb89a2630df6c3760dee3b09413370c83"
+    },
+    {
+      "source": "assets/third_party/kenney/ui-pack/Sounds/switch-a.ogg",
+      "target": "UnityProject/Assets/Soccer/Audio/switch-a.ogg",
+      "sha256": "1a4c90fed704b4f4b36d58f481117cfac5cdc25279a9af97d4765b71ff21ed48"
+    },
+    {
+      "source": "assets/licenses/kenney-ui-pack-license.txt",
+      "target": "UnityProject/Assets/Soccer/Audio/LICENSE.txt",
+      "sha256": "69f7eaa5e05913b4d09cf5848f75390b5c3c9a409ef8555777803d9ca0c171fb"
+    },
+    {
+      "source": "assets/original/vector/arena-goals-v2.svg",
+      "derivative": "UnityProject/Assets/Soccer/Art/Arena/arena-goals-v2.png",
+      "conversion": "SVG rasterization, original retained"
+    },
+    {
+      "source": "assets/original/vector/arena-lines-v2.svg",
+      "derivative": "UnityProject/Assets/Soccer/Art/Arena/arena-lines-v2.png",
+      "conversion": "SVG rasterization, original retained"
+    },
+    {
+      "source": "assets/original/vector/ball-v2.svg",
+      "derivative": "UnityProject/Assets/Soccer/Art/Arena/ball-v2.png",
+      "conversion": "SVG rasterization, original retained"
+    },
+    {
+      "source": "assets/original/vector/shadow-soft-v2.svg",
+      "derivative": "UnityProject/Assets/Soccer/Art/Arena/shadow-soft-v2.png",
+      "conversion": "SVG rasterization, original retained"
+    },
+    {
+      "source": "assets/original/vector/team-amber-ground-v2.svg",
+      "derivative": "UnityProject/Assets/Soccer/Art/Arena/team-amber-ground-v2.png",
+      "conversion": "SVG rasterization, original retained"
+    },
+    {
+      "source": "assets/original/vector/team-cyan-ground-v2.svg",
+      "derivative": "UnityProject/Assets/Soccer/Art/Arena/team-cyan-ground-v2.png",
+      "conversion": "SVG rasterization, original retained"
+    }
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "version": "0.13.0",
+  "origin": "Native UI Toolkit vector meshes and cached existing HD hero portraits; preview is native gameplay capture, cropped and enlarged.",
+  "source_sha256": {
+    "UnityProject/Assets/Soccer/Runtime/UI/MatchMiniMap.cs": "6faab09d7faf989b8d333373d9fdd04440bc06c2ef809e8de37065a13641eb64",
+    "UnityProject/Assets/Soccer/Runtime/UI/MatchMiniMap.cs.meta": "3c76cba4265a46589b322edf40741e1cb3ccecd5de65df5d3fa8e2103e279d74",
+    "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs": "a35f5b050a6c5967367ed7c3b01430d6a6a0ac39a7af11ea2a2ca4fc9bd9d8ff",
+    "UnityProject/Assets/Soccer/Runtime/UI/BallLocator.cs": "4ea43650fb46907539d90d51715e2b4fa0dae5817085b6e16a8d6dc124f7dfa2",
+    "UnityProject/Assets/Soccer/UI/Game.uss": "6249764dc1056f64afb769055932e64f53452fbe89350417fb58b0332b03da89",
+    "UnityProject/Assets/Soccer/UI/Game.uxml": "a5a681c663c5b57fafbe0b70dfc3a29c731265d19d3040d4f70c391fb512588e",
+    "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeSmokeProbe.cs": "e208ec509c91f06697ec76e3914347ee8c4b8bea0f2fc3034a1a1701f09e576d",
+    "UnityProject/Assets/Soccer/Editor/ProjectSetup.cs": "56e279b9b1011a22cb3a7b2d75b1aebbce651838dca8cf9a7c4f16c03bf3fd45",
+    "UnityProject/ProjectSettings/ProjectSettings.asset": "b4147c2f7da35a3cca64fa025426926dddca74350b99f8e4fd7f8100a452cf91",
+    "UnityProject/Assets/Soccer/Resources/FrontEnd/portrait-marine-v2.png": "0b2842431c0edae13e8b404417eb2153d6a09ddc265321e2f4eca825a13ea1b3",
+    "UnityProject/Assets/Soccer/Resources/FrontEnd/portrait-thor-v2.png": "d79e142a287a38795823e22f266c41a7c2e3dd8d6b96a12f5eeb0d79303b8c6a",
+    "tools/build_minimap_preview.py": "78b06f9c5119f8e1ff9844484107665cd717ca25dcc5f245f8142c65d036a76a",
+    "docs/全场头像小地图0.13.0.md": "b92cabd7182e7624e1a2b40e1d5a1c2b96d60a4ad2ecbe0748fbed20fa61a922",
+    "README.md": "14337f8ced73fcdeec713d71b137f9504a9e9e5df48fb23b9b816385538e8163",
+    "UnityProject/README.md": "a61501e39d5601069e9519b8fe49559a57bb15bac26b0f87ba855543a0cf2ada"
+  },
+  "preview_sha256": {
+    "previews/minimap-013-match.png": "8b9e4e533c5b30e9612f5c616c70e6b096d35b171783c6fc78202c2aa96e2716",
+    "previews/minimap-013-detail.png": "c5df26dea7b3c2f347548c3ed1c59b1494ee7446110fc1baa25080a1da315cc7",
+    "previews/minimap-013-motion.gif": "e4fcc891189d4daa4825c1fba49a54ee4f18e6ad59210ca91d1640b5f9bb4d68"
+  },
+  "build_sha256": {
+    "UnityProject/Builds/macOS/SkillSoccer.app/Contents/MacOS/技能足球": "1825f43506fba2f4cfbcd1d25af9f110b53ba183c15ee49a399427497bc42890",
+    "UnityProject/Builds/macOS/SkillSoccer.app/Contents/Resources/Data/Managed/Soccer.Runtime.dll": "aba85dee68eb02b734c320a3e6ba29b88a7784fc661f80a6ec158a6070654ba4",
+    "UnityProject/Builds/Windows/SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "UnityProject/Builds/Windows/SkillSoccer_Data/Managed/Soccer.Runtime.dll": "b16eb54688620a491ccf395f13aa72c04340d6e3f1ce22c1244130d91aeeda44"
+  },
+  "native_report": "reports/runtime-minimap-013-final/runtime-smoke.json",
+  "preview": {
+    "source_report": "reports/runtime-minimap-013-final",
+    "native_screenshot": {
+      "screenshot": "40-minimap-3v3.png",
+      "screenWidth": 1920,
+      "screenHeight": 1080,
+      "boundsPixels": [
+        26.0,
+        905.0,
+        272.0,
+        167.00003051757812
+      ],
+      "portraits": 6
+    },
+    "crop_pixels": [
+      20,
+      899,
+      304,
+      1078
+    ],
+    "motion_frames": [
+      "40-minimap-3v3.png",
+      "minimap-motion-frames/000.png",
+      "minimap-motion-frames/001.png",
+      "minimap-motion-frames/002.png",
+      "minimap-motion-frames/003.png",
+      "minimap-motion-frames/004.png",
+      "minimap-motion-frames/005.png",
+      "minimap-motion-frames/006.png",
+      "minimap-motion-frames/007.png",
+      "minimap-motion-frames/008.png",
+      "minimap-motion-frames/009.png",
+      "minimap-motion-frames/010.png",
+      "minimap-motion-frames/011.png"
+    ],
+    "outputs": [
+      {
+        "path": "previews/minimap-013-match.png",
+        "bytes": 2380853
+      },
+      {
+        "path": "previews/minimap-013-detail.png",
+        "bytes": 146933
+      },
+      {
+        "path": "previews/minimap-013-motion.gif",
+        "bytes": 1028637
+      }
+    ],
+    "timing_note": "Actual native UI and Core-controlled movement; GIF timings are edited. Detail is cropped and enlarged."
+  }
+}

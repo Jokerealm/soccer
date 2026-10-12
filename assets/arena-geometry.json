@@ -1,0 +1,25 @@
+{
+  "status": "archived-v1-design-proposal-for-visual-preview-only",
+  "design_decision": "D01 direction now oblique; this geometry is the archived v1 overhead preview; D02/D03/D07 remain pending",
+  "canvas": [
+    1920,
+    1080
+  ],
+  "pixels_per_unit": 48,
+  "field_origin_px": [
+    192,
+    108
+  ],
+  "field_size_u": [
+    32,
+    18
+  ],
+  "goal_width_u": 4.5,
+  "goal_depth_u": 1.5,
+  "goal_y_px": [
+    432,
+    648
+  ],
+  "physics_source": false,
+  "note": "标线坐标供资源预览；生成背景不提供碰撞或进球边界，装饰与逻辑分离。"
+}

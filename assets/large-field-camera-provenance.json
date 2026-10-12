@@ -1,0 +1,56 @@
+{
+  "version": "0.10.0",
+  "date": "2026-10-10",
+  "changes": "Enlarged actual planar field, shared circle/shield radius, smooth bounded local camera, pointer-transparent offscreen football cue, dimension-driven lit ground and stadium. Existing HD artwork and 3D assets reused.",
+  "sources": [
+    {
+      "path": "UnityProject/Assets/Soccer/Core/MatchRules.cs",
+      "sha256": "8747d0ee916ff676f212f49d8cf7af392236a726bdce7a0e6d7b3290b6e4e2cb"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Data/PrototypeRules.asset",
+      "sha256": "162a2922d07b0d74c4b091dd4b4c3530f060f77b1460c4204b243accf8f0014f"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/ArenaCamera.cs",
+      "sha256": "7e68c02e9cbd16dfa78c1fb4b9762e29684bb655b6caf48372d96d436bf17776"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/PremiumArenaView.cs",
+      "sha256": "df22182ee3b1125f338fb1d66d1140625ff32d6a0d169028253dbf28520a448c"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Presentation/DynamicStadiumView.cs",
+      "sha256": "ec90a68af0d1ccc7b91e9b7618ac1367c9dbb4255b501e3d887a75633346a16c"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Resources/SceneSurface/LivingTurf.shader",
+      "sha256": "ae7ece727e1e294eba9c6d180c5ffd5d4824ecd4c4ba7350c7aeb0ec0b0a240a"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/BallLocator.cs",
+      "sha256": "b706ff45592856e393bbb6cbc29356db179f576c994df3d39f353ddf8a8b2667"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/UI/GameUI.cs",
+      "sha256": "c1b3b2067e2dbb8732fc12fd34d2c483beddfacabdc0293e16276cd57b1e46bf"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Application/AppController.cs",
+      "sha256": "83daa0b6de1d5d23d56b0c4a80fba2f350cff3132184103f307fda8ef69bf8f7"
+    },
+    {
+      "path": "UnityProject/Assets/Soccer/Runtime/Validation/RuntimeSmokeProbe.cs",
+      "sha256": "931d23884513c4350556c2963ecf10c1a8e7f6ec4da4243c1e4a6ba4e8e16553"
+    },
+    {
+      "path": "tests/Soccer.Core.Tests/Program.cs",
+      "sha256": "b9d5572ebbaf7d087d06ca08a0de680805c105a8d1bdd321ec5e8f92230ee24f"
+    }
+  ],
+  "preview": {
+    "path": "previews/large-field-camera-010.gif",
+    "source": "Actual macOS native smoke screenshots; Core movement commands advanced 20 ticks per captured travel frame. Preview timings are edited, not a real-time gameplay video.",
+    "frames": 25
+  }
+}

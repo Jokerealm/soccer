@@ -1,0 +1,64 @@
+{
+  "version": "0.9.2",
+  "date": "2026-10-10",
+  "passed": true,
+  "coreChecks": 125,
+  "coreReport": "reports/warmup-092-core/core-tests.json",
+  "clientChecks": 160,
+  "runtimeErrors": [],
+  "runtimeReport": "reports/runtime-warmup-tooltip-092-final/runtime-smoke.json",
+  "runtimeLog": "reports/runtime-warmup-tooltip-092-final.log",
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 364483276
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 332944081
+    }
+  },
+  "buildLogs": {
+    "macos": "reports/warmup-tooltip-092-mac-confirmed.log",
+    "windows": "reports/warmup-tooltip-092-windows-confirmed.log"
+  },
+  "builtMacVersion": "0.9.2",
+  "gameplayChanged": "Initial opening countdown permits movement and aim while a swept circular shield prevents entry and ball pickup; combat edges discarded. Match time stays frozen. Live play releases shield without resetting players. Existing goal restart flow retained.",
+  "shieldRadius": 1.25,
+  "shieldCollisionOwner": "Core MovementSystem, no presentation colliders",
+  "nativeHudBoundaryVerified": true,
+  "tooltipChecks": "All six marine tiles, pointer leave, live cooldown, compact hide and matching Thor thruster data. Explicit targeted UI events in actual native Player; physical mouse hand-feel not claimed.",
+  "visualQA": "Reviewed actual shield, small HUD below pitch, Marine and Thor hover panels. Shortened countdown caption to avoid player health bars.",
+  "animation": {
+    "path": "previews/warmup-shield-tooltip-092.gif",
+    "frames": 20,
+    "size": [
+      960,
+      540
+    ],
+    "bytes": 3632733,
+    "source": "Actual client captures. First two demonstrate movement via native Core commands; remaining frames show real countdown, shield release and targeted UI hover. Resized and encoded for low-frame-rate preview."
+  },
+  "screenshots": {
+    "shield": "reports/runtime-warmup-tooltip-092-final/27-warmup-shield.png",
+    "marineHelp": "reports/runtime-warmup-tooltip-092-final/28-marine-skill-tooltip.png",
+    "thorHelp": "reports/runtime-warmup-tooltip-092-final/29-thor-skill-tooltip.png"
+  },
+  "sourceProvenance": "assets/warmup-shield-ui-provenance.json",
+  "windowsRuntimeVerified": false,
+  "nativeInputHandFeelVerified": false,
+  "mobilePerformanceVerified": false,
+  "largeWindowActualResolution": "3840x1666"
+}

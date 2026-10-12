@@ -1,0 +1,29 @@
+{
+  "project_path": "/Users/gz/Documents/soccer/.tools/validation/tuanjie-environment-2iml6ca1",
+  "editor_path": "/Applications/Tuanjie/Hub/Editor/2022.3.62t16/Tuanjie.app/Contents/MacOS/Tuanjie",
+  "phase": "validated",
+  "scope": "Temporary environment validation; no gameplay implementation.",
+  "create_project_exit_code": 0,
+  "project_version_file_exists": true,
+  "create_log": "reports/tuanjie-create-smoke.log",
+  "build_exit_code": 0,
+  "build_log": "reports/tuanjie-windows-smoke.log",
+  "build_summary": {
+    "editorVersion": "2022.3.62t16",
+    "spriteImported": true,
+    "buildResult": "Succeeded",
+    "outputPath": "/Users/gz/Documents/soccer/.tools/validation/tuanjie-environment-2iml6ca1/Builds/Windows/EnvironmentProbe.exe",
+    "outputBytes": 122063678,
+    "errors": 0,
+    "warnings": 1
+  },
+  "status": "passed",
+  "windows_native_execution": "not tested on this Mac",
+  "production_project_created": false,
+  "initial_probe_correction": "Corrected the validation script enum to ScriptingImplementation.Mono2x.",
+  "warning_details": [
+    "GfxDevice renderer is null. Unity cannot update the Ambient Probe and Reflection Probes that the SkyManager generates. Run the Editor without the -nographics argument or generate lighting for your scene."
+  ],
+  "warning_inspection": "completed without rebuilding",
+  "warning_assessment": "The single warning is caused by -nographics: ambient/reflection probes cannot update without a graphics device. The static unlit 2D sprite and Windows Mono build succeeded; this does not validate graphics rendering or Windows native execution."
+}

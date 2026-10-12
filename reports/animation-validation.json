@@ -1,0 +1,336 @@
+{
+  "date": "2026-10-08",
+  "status": "passed",
+  "source_png_count": 19,
+  "characters": 6,
+  "clips": 18,
+  "active_frames": 180,
+  "checks": [
+    "RGBA/alpha",
+    "isolated full-body rectangles",
+    "frame bounds",
+    "non-empty frames",
+    "pivot ranges",
+    "unique active frames"
+  ],
+  "animation_version": 2,
+  "comparison_frames": 48,
+  "records": [
+    {
+      "character": "wind-shuttle",
+      "action": "run",
+      "source": "assets/original/animations/wind-shuttle-run-v2.png",
+      "texture_size_px": [
+        1254,
+        1254
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 14,
+      "indexed_frames": 14,
+      "sha256": "b85b446438effcd36207049b38fae46e239939e03c90344b1f4529ad22af590e"
+    },
+    {
+      "character": "wind-shuttle",
+      "action": "turn",
+      "source": "assets/original/animations/wind-shuttle-turn-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "f63ca46fc4c0f918ea99954420afb417c6f482575bc23aa0bf40bce12cfd9d94"
+    },
+    {
+      "character": "wind-shuttle",
+      "action": "kick",
+      "source": "assets/original/animations/wind-shuttle-kick-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "f6461d002f0ac731bd70bb7c3a5431b7972a5e9b2de3bf628694f5e11abcb119"
+    },
+    {
+      "character": "iron-guard",
+      "action": "run",
+      "source": "assets/original/animations/iron-guard-run-v2.png",
+      "texture_size_px": [
+        1254,
+        1254
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 14,
+      "indexed_frames": 14,
+      "sha256": "2e6858352b6e528ee6ab25ee5c31d19e86e8f3927e29a1e33d9f39fa1de1d621"
+    },
+    {
+      "character": "iron-guard",
+      "action": "turn",
+      "source": "assets/original/animations/iron-guard-turn-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "d1e3a64090ce690e6179b5cd60501f509749dab8f52e14e85b1f21faf608df35"
+    },
+    {
+      "character": "iron-guard",
+      "action": "kick",
+      "source": "assets/original/animations/iron-guard-kick-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "64436d2b1adc2edf41364547909c04e1f3226755f315186a6f79c5979ec2915f"
+    },
+    {
+      "character": "arc-light",
+      "action": "run",
+      "source": "assets/original/animations/arc-light-run-v2.png",
+      "texture_size_px": [
+        1254,
+        1254
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 14,
+      "indexed_frames": 14,
+      "sha256": "78a1ca2ed10219102e0ed9c05693d523c1668cf0289398918fee5a14c83e1683"
+    },
+    {
+      "character": "arc-light",
+      "action": "turn",
+      "source": "assets/original/animations/arc-light-turn-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "faa4526f38c5945396b471d9b09bb579d5fdc5ede9954ad8f031c4f56438ec5c"
+    },
+    {
+      "character": "arc-light",
+      "action": "kick",
+      "source": "assets/original/animations/arc-light-kick-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "d352e8afc2f3a05b9bea52ac77f796763ef3623b7193e3a47825716b0abe55ea"
+    },
+    {
+      "character": "echo",
+      "action": "run",
+      "source": "assets/original/animations/echo-run-v2.png",
+      "texture_size_px": [
+        1254,
+        1254
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 14,
+      "indexed_frames": 14,
+      "sha256": "b5f5a8aa274692da1838ec791d94cebedc7224f277d8f7c82b6027b10bfe4757"
+    },
+    {
+      "character": "echo",
+      "action": "turn",
+      "source": "assets/original/animations/echo-turn-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "4f5bb4bbaabdb0946b7d4b86e916acb01427767bdff44caa9165dbf0f40b5043"
+    },
+    {
+      "character": "echo",
+      "action": "kick",
+      "source": "assets/original/animations/echo-kick-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "3cd0ad62e48e50435399ca9f3d34fa682860d246f5b21fbcef4835b5ecccebd1"
+    },
+    {
+      "character": "magnet-core",
+      "action": "run",
+      "source": "assets/original/animations/magnet-core-run-v2.png",
+      "texture_size_px": [
+        1254,
+        1254
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 14,
+      "indexed_frames": 14,
+      "sha256": "8220672f0716cbd6cb8be7ee0cc18ebbc418115a2d76eb5102cfe2fcfe52c07a"
+    },
+    {
+      "character": "magnet-core",
+      "action": "turn",
+      "source": "assets/original/animations/magnet-core-turn-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "db5c6c8bb1a16b17b41ceea20c297246017aa2311a85aa808a7ab5ea0b91ad83"
+    },
+    {
+      "character": "magnet-core",
+      "action": "kick",
+      "source": "assets/original/animations/magnet-core-kick-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "886d2ff0d276a9713b6b5d2e8de3b15c956b57797f0bba3e46298508b1750150"
+    },
+    {
+      "character": "jump-point",
+      "action": "run",
+      "source": "assets/original/animations/jump-point-run-v2.png",
+      "texture_size_px": [
+        1254,
+        1254
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 14,
+      "indexed_frames": 14,
+      "sha256": "794796ee97e343e0d3e6a96f4dbe2efdae0b14d3ae8467c4c794c2a34675c501"
+    },
+    {
+      "character": "jump-point",
+      "action": "turn",
+      "source": "assets/original/animations/jump-point-turn-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "43e5c2e52339556df72f58d70b1f38f28a479c7b14e60455c5f7954abfd314ed"
+    },
+    {
+      "character": "jump-point",
+      "action": "kick",
+      "source": "assets/original/animations/jump-point-kick-v1.png",
+      "texture_size_px": [
+        1774,
+        887
+      ],
+      "rgba": true,
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "isolated_bodies": 8,
+      "indexed_frames": 8,
+      "sha256": "1b882c9e86fc7818727ca91b19981271f718b4d2913a3b8b4ef4ba74515613ab"
+    }
+  ],
+  "errors": [],
+  "visual_status": "keyframe draft; not production-ready",
+  "limitations": [
+    "跑步和踢球目前只有右前 SE 一个绘制方向；其他移动方向尚待补齐",
+    "动作关键帧有服装、比例、摆臂和步态漂移，需逐帧修型与中间帧补充",
+    "转身包含真实正侧背视图，但相机倾角与方向间透视仍需统一",
+    "弧光的非对称射门护具、磁核补画与原图的细节需人工核对",
+    "预览脚点为估算，最终脚部接触、根位置、击球点和时序需引擎中标定",
+    "尚无持球跑、抢断、受击、庆祝、技能动作或最终 Animator 绑定"
+  ]
+}

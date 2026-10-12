@@ -1,0 +1,60 @@
+{
+  "date": "2026-10-09",
+  "version": "combat-prototype-0.5",
+  "direction": "meme-inspired cooperative combat and responsive strafing",
+  "passed": true,
+  "coreChecks": 84,
+  "runtimeChecks": 69,
+  "audioChecks": 31,
+  "assemblies": {
+    "macOS": {
+      "path": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app/Contents/Resources/Data/Managed/Soccer.Core.dll",
+      "sha256": "fd14a1050847ec899a1257bbcf853bdb3bfd961c7de1fbc720a2f6b02ae14835",
+      "hasAmmo": true,
+      "hasSpread": true,
+      "hasBounce": true
+    },
+    "Windows": {
+      "path": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer_Data/Managed/Soccer.Core.dll",
+      "sha256": "80fb6e3350038866b4fe6e0a08ae63add2c28357026c4ec9a0fbf41f23898a29",
+      "hasAmmo": true,
+      "hasSpread": true,
+      "hasBounce": true
+    }
+  },
+  "visualQA": [
+    "03-selection-0.png",
+    "03-selection-1.png",
+    "03-selection-2.png",
+    "05a-strafe-stock.png",
+    "05b-hit-number.png",
+    "05c-combat-respawn-countdown.png",
+    "05d-combat-revived.png"
+  ],
+  "features": [
+    "three provisional meme-reference kits",
+    "continuous strafing during combat recovery",
+    "three attack stocks and sequential reload",
+    "short weapon click buffer",
+    "one wall rebound Q and spread volleys",
+    "hit flash, local recoil, squash, merged damage numbers",
+    "six original synthetic combat sounds",
+    "five-second in-place full-state revival"
+  ],
+  "limitations": [
+    "Character reference artwork, real-person voices and animations not integrated.",
+    "Liangzi provisionally interpreted as the food streamer pending user clarification.",
+    "Local player plus AI only; no human multiplayer yet.",
+    "Comfort, audio taste and humor need human playtesting.",
+    "Physical mouse feel pending; runtime combat automation uses public simulation commands.",
+    "Windows build produced, not run on Windows hardware."
+  ],
+  "reports": [
+    "reports/core-tests.json",
+    "reports/runtime-meme-feel-smoke/runtime-smoke.json",
+    "reports/audio-asset-validation.json",
+    "reports/project-build-macos.json",
+    "reports/project-build-windows.json"
+  ],
+  "visualQAStatus": "Reviewed loadout selection, attack stock and hit-number separation screenshots."
+}
