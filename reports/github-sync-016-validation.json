@@ -1,0 +1,25 @@
+{
+  "version": "0.16.0",
+  "date": "2026-10-12",
+  "verifiedSourceCommit": "cb70adce0cf89a753be4b32a889585f5e342d6e9",
+  "sourceClone": {
+    "passed": true,
+    "trackedFiles": 7256,
+    "allAssetMetaPresent": true,
+    "entryScenePresent": true,
+    "generatedBuildsExcluded": true
+  },
+  "coreTests": {
+    "passed": true,
+    "total": 194,
+    "failed": 0
+  },
+  "package": {
+    "filename": "SkillSoccer-0.16.0-Windows-x64.zip",
+    "bytes": 144183013,
+    "sha256": "6f4cfc0402a4e5ce18e838dfccd6afe42a41e046b3471ca0da801c66054bfcb9",
+    "playerFiles": 140,
+    "zipCrcVerified": true
+  },
+  "windowsRuntimeVerified": false
+}
