@@ -1,0 +1,121 @@
+{
+  "version": "0.25.0",
+  "date": "2026-10-13",
+  "passed": true,
+  "changes": [
+    "Personal profile shows lifetime overall and per-hero match, win/loss/draw, win rate and goals",
+    "Role cards filter recent matches, with full match-history detail and correct return navigation",
+    "Version-one local history migrates to version-two atomic cumulative stats and capped recent history",
+    "Friend system uses authenticated account search, requests, acceptance, rejection, withdrawal, removal and remote profiles",
+    "Friendships, full match-id ledger, career stats and recent fifty matches persist across service restart",
+    "Local finished match uploads synchronize account stats while offline profiles remain usable",
+    "Room starts with empty slots and unready host; only host may explicitly add or remove bots",
+    "Six occupied slots and readiness from every human start a replicated three-second countdown automatically",
+    "Unready, bot changes, team changes or disconnect cancel countdown before draft",
+    "Personal profile and friends layouts verified at 1024x768,1280x720,1920x1080"
+  ],
+  "coreTests": {
+    "passed": true,
+    "total": 243,
+    "report": "reports/social-025-core/core-tests.json"
+  },
+  "networkTests": {
+    "passed": true,
+    "total": 42,
+    "report": "reports/social-025-network/network-tests.json"
+  },
+  "fullClientRegression": {
+    "passed": true,
+    "total": 612,
+    "report": "reports/social-025-runtime-full/runtime-smoke.json",
+    "gameplayFpsSample": 119.98924255371094,
+    "profileFixturesUseIsolatedReportDirectory": true
+  },
+  "focusedSocialClient": {
+    "passed": true,
+    "total": 24,
+    "report": "reports/social-025-focused/runtime-smoke.json"
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 159,
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet room-code login and password using loopback service",
+      "Offline LAN list join with login service stopped"
+    ],
+    "winningGuestHistory": true,
+    "losingHostHistory": true,
+    "finalSnapshotHistoryDeduplicated": true,
+    "explicitBotControl": true,
+    "hostReadinessRequired": true,
+    "threeSecondCountdown": true,
+    "countdownCancelAndRestart": true,
+    "report": "reports/social-025-clients.json",
+    "sameMachineMacProcesses": true
+  },
+  "screenshots": [
+    "reports/social-025-runtime-full/profile-1280x720.png",
+    "reports/social-025-focused/friends-1280x720.png",
+    "reports/social-025-internet-code-host/02-host-countdown.png"
+  ],
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413761641
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 382207621
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.25.0-Windows-x64.zip",
+    "bytes": 144304936,
+    "sha256": "b1e1a70fb73db26c2597f9bc3b9c4338662af21365adca90d1856e04d3eeb886",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.25.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "07d699cb0452e6b512c000569d1c44e7a033c6a989eb365c57b52247a05649db",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "3def44bf3572116d33d166a764569097c6ca11c4f6c52dbf7d41fa6cf4c9676d",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "283b7994dc250e9d5fe5c4bb9af4cc647610c750a981e076d3f09b8d0e9087ee"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "8099ae4fd8900b4650f1091b331960ff64444008026759223be641ddb6198eff",
+    "Soccer.Runtime.dll": "32539178dcad0c3d2abfc9f62daf8e1417e535b6e5df5a4f50e73f77c2c42132"
+  },
+  "limitations": {
+    "historyStorage": "local profiles plus authenticated upload of retained recent account matches",
+    "statsAreClientSubmitted": true,
+    "officialAccountRegistration": false,
+    "replaysImplemented": false,
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicLoginAndDirectoryDeployed": false,
+    "matchRelayDeployed": false
+  },
+  "roomDirectoryRegression": {
+    "passed": true,
+    "total": 36,
+    "report": "reports/social-025-directory.json"
+  },
+  "socialServiceTests": {
+    "passed": true,
+    "total": 22,
+    "report": "reports/social-025-service.json",
+    "restartPersistenceVerified": true
+  }
+}

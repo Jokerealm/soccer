@@ -25,17 +25,17 @@ namespace Soccer.Runtime
         {
             if(historyRecorded || Simulation?.State.Phase!=MatchPhase.Finished)return;
             historyRecorded=true;if(Simulation.State.Mode!=MatchMode.BotMatch || sessionHistory==null)return;
-            try{sessionHistory.Add(MatchRecord.FromFinishedMatch(Simulation.State,rewardPlayerId,rewardMatchId,historySource,DateTimeOffset.UtcNow.ToUnixTimeSeconds(),MatchCoins));}
+            try{sessionHistory.Add(MatchRecord.FromFinishedMatch(Simulation.State,rewardPlayerId,rewardMatchId,historySource,DateTimeOffset.UtcNow.ToUnixTimeSeconds(),MatchCoins));SyncSocialProfile();}
             catch(Exception){HistoryStatus="本局记录暂时无法保存";}
         }
         public void OpenHistory()
         {
             if(!EnsureEntered())return;SettleMatchReward();ReloadWallet();historyOrigin=Page==AppPage.Results ? AppPage.Results : AppPage.Home;
-            Page=AppPage.History;UI.ShowPage(Page);Audio.SetContext(Page,false);
+            if(Page==AppPage.Profile)historyOrigin=AppPage.Profile;Page=AppPage.History;UI.ShowPage(Page);Audio.SetContext(Page,false);
         }
         public void BackFromHistory()
         {
-            if(historyOrigin==AppPage.Results && Simulation!=null){Page=AppPage.Results;UI.ShowPage(Page);Audio.SetContext(Page,false);}else GoHome();
+            if(historyOrigin==AppPage.Results && Simulation!=null){Page=AppPage.Results;UI.ShowPage(Page);Audio.SetContext(Page,false);}else if(historyOrigin==AppPage.Profile)OpenProfile();else GoHome();
         }
     }
 }

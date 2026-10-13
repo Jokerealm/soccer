@@ -28,32 +28,40 @@ namespace Soccer.Core
         public static void Validate(MatchRecord value)
         {
             if(value==null || string.IsNullOrWhiteSpace(value.MatchId) || value.MatchId.Length>128 || value.FinishedUnixSeconds<1 || value.FinishedUnixSeconds>253402300799L ||
-                !Enum.IsDefined(typeof(MatchSource),value.Source) || !Enum.IsDefined(typeof(CharacterId),value.Character) ||
+                !Enum.IsDefined(typeof(MatchSource),value.Source) || value.Character!=CharacterId.Marine && value.Character!=CharacterId.Thor ||
                 value.Result!=(value.OwnScore>value.OpponentScore ? MatchResult.Victory : value.OwnScore<value.OpponentScore ? MatchResult.Defeat : MatchResult.Draw))throw new ArgumentException("对局记录无效");
             foreach(int number in new[]{value.OwnScore,value.OpponentScore,value.Goals,value.Steals,value.Kicks,value.Passes,value.Knockouts,value.Deaths,value.Coins})if(number<0)throw new ArgumentException("对局统计无效");
             foreach(float number in new[]{value.DurationSeconds,value.DamageDealt,value.HealingDone})if(!Geometry.IsFinite(number) || number<0)throw new ArgumentException("对局统计无效");
         }
     }
     [Serializable] public sealed class MatchHistoryData
-    {public int Version=1;public List<MatchRecord> Matches=new List<MatchRecord>();}
+    {public int Version=2;public List<MatchRecord> Matches=new List<MatchRecord>();public HeroRecord[] Heroes=HeroRecord.Empty();}
     public interface IMatchHistoryStore {MatchHistoryData Load();void Save(MatchHistoryData data);}
     public sealed class MatchHistory
     {
         public const int Limit=50;
         private readonly IMatchHistoryStore store;private MatchHistoryData data;
         public IReadOnlyList<MatchRecord> Matches=>data.Matches;
+        public HeroRecord[] Heroes=>data.Heroes.Select(h=>h.Copy()).ToArray();
         public MatchHistory(IMatchHistoryStore storage)
-        {store=storage ?? throw new ArgumentNullException(nameof(storage));data=store.Load() ?? new MatchHistoryData();Validate(data);data.Matches=data.Matches.OrderByDescending(m=>m.FinishedUnixSeconds).ToList();}
+        {store=storage ?? throw new ArgumentNullException(nameof(storage));data=store.Load() ?? new MatchHistoryData();Upgrade(data);Validate(data);data.Matches=data.Matches.OrderByDescending(m=>m.FinishedUnixSeconds).ToList();}
+        public static void Upgrade(MatchHistoryData value)
+        {
+            if(value?.Version!=1)return;
+            Validate(value);value.Heroes=HeroRecord.Empty();foreach(var match in value.Matches)value.Heroes.Single(h=>h.Character==match.Character).Add(match);value.Version=2;
+        }
         public static void Validate(MatchHistoryData value)
         {
-            if(value==null || value.Version!=1 || value.Matches==null || value.Matches.Count>Limit)throw new ArgumentException("对局记录存档无效");
+            if(value==null || value.Version!=1 && value.Version!=2 || value.Matches==null || value.Matches.Count>Limit)throw new ArgumentException("对局记录存档无效");
             var ids=new HashSet<string>(StringComparer.Ordinal);
             foreach(var item in value.Matches){MatchRecord.Validate(item);if(!ids.Add(item.MatchId))throw new ArgumentException("对局记录重复");}
+            if(value.Version==2)HeroRecord.Validate(value.Heroes);
         }
         public bool Add(MatchRecord record)
         {
             MatchRecord.Validate(record);if(data.Matches.Any(m=>m.MatchId==record.MatchId))return false;
-            var next=new MatchHistoryData {Matches=new[]{record}.Concat(data.Matches).OrderByDescending(m=>m.FinishedUnixSeconds).Take(Limit).ToList()};
+            var next=new MatchHistoryData {Heroes=Heroes,Matches=new[]{record}.Concat(data.Matches).OrderByDescending(m=>m.FinishedUnixSeconds).Take(Limit).ToList()};
+            next.Heroes.Single(h=>h.Character==record.Character).Add(record);
             store.Save(next);data=next;return true;
         }
     }

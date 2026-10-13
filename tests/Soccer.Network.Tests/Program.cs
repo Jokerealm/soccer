@@ -77,7 +77,7 @@ Test("ready and character/team selection synchronize before host starts",()=> {
  using var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);
  Assert(!host.CanStart,"unready guest did not block start");client.SetChoice(CharacterId.Thor,Team.Cyan);
  Until(()=>client.LocalSlot==1 && host.Lobby.Members.Any(m=>!m.Host && m.Character==CharacterId.Thor),host,client);
- client.SetReady(true);Until(()=>host.CanStart,host,client);NetworkStart start=null;client.Started+=s=>start=s;
+ host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);NetworkStart start=null;client.Started+=s=>start=s;
  host.StartMatch(new MatchRules());Until(()=>start!=null,host,client);Assert(start.Lineup[1]==CharacterId.Thor && start.Lineup.Length==6,"selected lineup was not sent");
 });
 Test("full team rejects fourth member while the other team can still join",()=> {
@@ -86,11 +86,11 @@ Test("full team rejects fourth member while the other team can still join",()=> 
  using var opponent=Client(host);Until(()=>opponent.Connected,host,a,b,opponent);Assert(host.Lobby.Members.Length==4,"free opposing slot rejected");
 });
 Test("late join rejected after match start",()=> {
- using var host=NetworkRoom.Host(Options());host.StartMatch(new MatchRules());using var client=Client(host);string reason="";client.Failed+=s=>reason=s;
+ using var host=NetworkRoom.Host(Options());host.FillBots();host.SetReady(true);host.StartMatch(new MatchRules());using var client=Client(host);string reason="";client.Failed+=s=>reason=s;
  Until(()=>reason.Length>0,host,client);Assert(reason.Contains("比赛已经开始"),"late join entered active match");
 });
 Test("remote input controls only assigned slot and host snapshots synchronize ball and players",()=> {
- using var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);client.SetReady(true);Until(()=>host.CanStart,host,client);
+ using var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);
  MatchSimulation authority=null, replica=null;host.Started+=s=>authority=Simulation(s.Lineup);client.Started+=s=>replica=Simulation(s.Lineup);
  client.SnapshotReceived+=bytes=>NetworkCodec.ApplySnapshot(replica.State,bytes);host.StartMatch(new MatchRules());Until(()=>replica!=null,host,client);
  var origin=authority.State.Players[3].Position;var other=authority.State.Players[0].Position;
@@ -109,7 +109,7 @@ Test("host closure is reported and client stops",()=> {
  Until(()=>reason.Length>0,client);Assert(!client.Connected,"client remained connected after host exit");
 });
 Test("return to lobby resets readiness and allows a new match",()=> {
- using var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);client.SetReady(true);Until(()=>host.CanStart,host,client);
+ using var host=NetworkRoom.Host(Options());using var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);
  bool started=false,returned=false;client.Started+=s=>started=true;client.ReturnedToLobby+=()=>returned=true;host.StartMatch(new MatchRules());Until(()=>started,host,client);
  host.ReturnToLobby();Until(()=>returned,host,client);Assert(!client.Running && !host.CanStart && !client.Lobby.Members.Single(m=>!m.Host).Ready,"rematch retained previous readiness");
 });
@@ -139,12 +139,12 @@ Test("in-flight ready and input packets survive return-to-lobby transitions",()=
  byte[] nonce=null;Until(()=>{while(peer.TryRead(out var packet))if(packet.Kind==PacketKind.Challenge)NetworkCodec.Read(packet.Body,r=>{r.ReadBoolean();r.ReadBytes(16);nonce=r.ReadBytes(32);});return nonce!=null;},host);
  using var account=DebugAccounts.Login("b","b");var proof=account.Proof(nonce,NetworkCodec.Version+"|b|raw-guest|"+(int)CharacterId.Marine+"|"+(int)Team.Amber);
  peer.Send(PacketKind.Authenticate,NetworkCodec.Pack(w=>{w.Write((byte)proof.Length);w.Write(proof);w.Write((byte)0);}));Until(()=>host.Lobby.Members.Length==2,host);
- peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(true)));Until(()=>host.CanStart,host);host.StartMatch(new MatchRules());
+ host.FillBots();host.SetReady(true);peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(true)));Until(()=>host.CanStart,host);host.StartMatch(new MatchRules());
  peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(false)));Thread.Sleep(20);host.Pump(Now());
  Assert(peer.Connected&&host.Lobby.Members.Length==2,"late ready disconnected a valid guest");host.ReturnToLobby();
  peer.Send(PacketKind.Input,NetworkCodec.Pack(w=>{w.Write(1L);NetworkCodec.WriteFields(w,new PlayerCommand{Move=new Vec2(0,1)});}));Thread.Sleep(20);host.Pump(Now());
  Assert(peer.Connected&&host.Lobby.Members.Length==2,"late match input disconnected a rematching guest");
- peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(true)));Until(()=>host.CanStart,host);host.StartMatch(new MatchRules());
+ host.FillBots();host.SetReady(true);peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(true)));Until(()=>host.CanStart,host);host.StartMatch(new MatchRules());
  peer.Send(PacketKind.Input,NetworkCodec.Pack(w=>{w.Write(1);w.Write(1L);NetworkCodec.WriteFields(w,new PlayerCommand{Move=new Vec2(0,1)});}));Thread.Sleep(20);host.Pump(Now());
  Assert(host.ReadInput(3).Move.LengthSquared==0,"previous game's input moved new game's player");
  peer.Send(PacketKind.Input,NetworkCodec.Pack(w=>{w.Write(2);w.Write(2L);NetworkCodec.WriteFields(w,new PlayerCommand{Move=new Vec2(0,1)});}));Thread.Sleep(20);host.Pump(Now());
@@ -164,7 +164,7 @@ Test("six concurrent players occupy unique slots and all can ready",()=> {
   for(int i=0;i<5;i++)clients.Add(Client(host,i<3?Team.Cyan:Team.Amber));
   var all=new[]{host}.Concat(clients).ToArray();Until(()=>clients.All(c=>c.Connected),all);
   Assert(host.Lobby.Members.Length==6&&host.Lobby.Members.Select(m=>m.Slot).Distinct().Count()==6&&host.LocalSlot==3,"concurrent admission duplicated positions");
-  foreach(var client in clients)client.SetReady(true);Until(()=>host.CanStart,all);
+  host.SetReady(true);foreach(var client in clients)client.SetReady(true);Until(()=>host.CanStart,all);
   foreach(var client in clients)Assert(client.LocalSlot!=host.LocalSlot,"guest got host position");
  }finally{foreach(var client in clients)client.Dispose();}
 });
@@ -238,13 +238,13 @@ Test("LAN discovery includes the current room code",()=> {
 Test("room enters replicated draft after ready and cannot join or change teams during selection",()=> {
  using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);
  bool rejected=false;try{host.BeginDraft(new MatchRules());}catch(InvalidOperationException){rejected=true;}Assert(rejected,"unready guest admitted draft");
- client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
+ host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
  Assert(host.Lobby.Drafting && client.Lobby.Drafting && !host.Running && !host.CanStart && host.Draft.CurrentSlot==0 && client.Draft.CurrentSlot==0,"draft was not replicated");
  client.SetChoice(CharacterId.Thor,Team.Cyan);client.SetReady(false);for(int i=0;i<4;i++){host.Pump(Now());client.Pump(Now());Thread.Sleep(5);}Assert(client.LocalSlot==3 && host.Lobby.Members.Last().Ready,"draft allowed lobby changes");
  using var late=Client(host);string reason="";late.Failed+=x=>reason=x;Until(()=>reason.Length>0,host,client,late);Assert(!late.Connected,"late join entered draft");
 });
 Test("only current player's lock is accepted and final lineup and positions start both peers",()=> {
- using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);client.SetReady(true);Until(()=>host.CanStart,host,client);
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);
  NetworkStart local=null,remote=null;host.Started+=x=>local=x;client.Started+=x=>remote=x;host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
  client.LockDraft(CharacterId.Thor,client.Draft.Picks[3].Position);Until(()=>client.Status.Contains("等待"),host,client);Assert(host.Draft.TurnIndex==0,"wrong peer advanced draft");
  var hostPosition=new Vec2(-14,2);Assert(host.LockDraft(CharacterId.Thor,hostPosition),"host pick rejected");Until(()=>client.Draft.CurrentSlot==3,host,client);
@@ -254,14 +254,32 @@ Test("only current player's lock is accepted and final lineup and positions star
  Assert(Vec2.Distance(local.Positions[0],hostPosition)<.001f && Vec2.Distance(remote.Positions[3],clientPosition)<.001f,"selected placement was not transmitted");MatchDraft.ValidateOpening(remote.Rules,remote.Positions);
 });
 Test("draft cancellation returns both players to lobby and rematch starts a new selection epoch",()=> {
- using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
  int old=client.Draft.Epoch;bool returned=false;client.ReturnedToLobby+=()=>returned=true;host.ReturnToLobby();Until(()=>returned,host,client);Assert(client.Draft==null && !client.Lobby.Drafting,"canceled selection stayed visible");
- client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft?.Epoch>old,host,client);Assert(client.Draft.TurnIndex==0 && client.Draft.Picks.All(x=>!x.Locked),"new round retained locked picks");
+ host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft?.Epoch>old,host,client);Assert(client.Draft.TurnIndex==0 && client.Draft.Picks.All(x=>!x.Locked),"new round retained locked picks");
 });
 Test("draft snapshot rejects impossible locked order and nonfinite placement",()=> {
  var rules=new MatchRules();var draft=new MatchDraft(rules,new bool[6]);draft.Picks[3].Locked=true;bool rejected=false;
  try{NetworkCodec.Read(NetworkCodec.Pack(w=>NetworkRoom.WriteDraft(w,draft)),r=>NetworkRoom.ReadDraft(r));}catch(ArgumentException){rejected=true;}Assert(rejected,"malformed pick order accepted");
  draft.Picks[3].Locked=false;draft.Picks[0].Position=new Vec2(float.NaN,0);rejected=false;
  try{NetworkCodec.Read(NetworkCodec.Pack(w=>NetworkRoom.WriteDraft(w,draft)),r=>NetworkRoom.ReadDraft(r));}catch(ArgumentException){rejected=true;}Assert(rejected,"nonfinite placement accepted");
+});
+Test("lobby begins empty and only host controls explicit bot slots",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));Assert(host.Lobby.Bots.Length==0 && !host.CanStart && !host.Lobby.Members[0].Ready,"room silently filled or host silently readied");
+ using var client=Client(host);Until(()=>client.Connected,host,client);Assert(!client.SetBot(1,true) && !host.SetBot(0,true) && !host.SetBot(3,true),"guest changed bots or bot replaced a human");
+ Assert(host.SetBot(1,true),"host could not add a bot");Until(()=>client.Lobby.Bots.Contains(1),host,client);Assert(host.SetBot(1,false),"host could not remove a bot");Until(()=>client.Lobby.Bots.Length==0,host,client);
+ host.SetReady(true);client.SetReady(true);Until(()=>host.Lobby.Members.All(m=>m.Ready),host,client);Assert(!host.CanStart,"unfilled room started without explicit bots");
+ host.FillBots();Until(()=>client.Lobby.Bots.Length==4,host,client);Assert(host.OccupiedSlots==6 && host.Lobby.Members.All(m=>!m.Ready),"adding bots retained outdated readiness");
+ host.ClearBots();Until(()=>client.Lobby.Bots.Length==0,host,client);
+});
+Test("three second countdown replicates, cancels on unready and then enters draft",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);
+ Assert(host.BeginCountdown(new MatchRules()) && !host.CanStart,"countdown did not lock duplicate start");Until(()=>client.CountingDown,host,client);Assert(client.Lobby.CountdownRemaining>2 && client.Draft==null,"guest skipped countdown");
+ client.SetReady(false);Until(()=>!host.CountingDown && !client.CountingDown,host,client);Assert(host.Draft==null,"unready did not cancel draft launch");
+ client.SetReady(true);Until(()=>host.CanStart,host,client);var timer=Stopwatch.StartNew();host.BeginCountdown(new MatchRules());Until(()=>client.Draft!=null,host,client);Assert(timer.Elapsed.TotalSeconds>=2.9 && host.Lobby.Drafting && !client.CountingDown,"three seconds elapsed or draft state incorrect");
+});
+Test("leaving or changing the roster cancels a pending countdown",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginCountdown(new MatchRules());
+ host.SetBot(1,false);Assert(!host.CountingDown && host.Draft==null && !host.CanStart,"bot removal did not cancel launch");host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginCountdown(new MatchRules());client.Dispose();Until(()=>host.Lobby.Members.Length==1,host);Assert(!host.CountingDown && host.Draft==null,"disconnect did not cancel launch");
 });
 var report=args.Length>0?args[0]:"reports/network-017-transport";Directory.CreateDirectory(report);File.WriteAllText(Path.Combine(report,"network-tests.json"),JsonSerializer.Serialize(new{passed=failed==0,total=results.Count,failed,results},new JsonSerializerOptions{WriteIndented=true}));return failed==0?0:1;

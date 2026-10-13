@@ -13,17 +13,18 @@ namespace Soccer.Runtime
         public StyleSheet Styles;
         private VisualElement root;
         private AppController app;
-        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page", "play-page", "shop-page", "history-page" };
+        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page", "play-page", "shop-page", "history-page", "profile-page", "friends-page" };
         public CharacterPreviewView CharacterPreview { get; private set; }
         public KeyBindingsUI KeyBindings { get; private set; }
         public bool BlocksKeyNavigation => KeyBindings != null && KeyBindings.BlocksNavigation;
         public MenuStageView MenuStage { get; private set; }
         private Texture2D menuVeil;
-        private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "history-button", "shop-button", "settings-button" };
+        private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "profile-button", "shop-button", "settings-button" };
         private DraftUI draftUI;
         private TutorialUI tutorialUI;
         private ShopUI shopUI;
         private HistoryUI historyUI;
+        private SocialUI socialUI;
         private NetworkUI network;
         private LoginUI login;
         private readonly string[] scoreFields = { "stat-goals", "stat-steals", "stat-kicks", "stat-passes" };
@@ -68,7 +69,7 @@ namespace Soccer.Runtime
             BindButton("tutorial-previous",app.PreviousTutorialStep);
             BindButton("tutorial-retry",app.RestartTutorialStep);
             BindButton("tutorial-exit",()=>{app.GoHome();app.OpenPlayMenu();});
-            BindButton("history-button",app.OpenHistory);
+            BindButton("profile-button",()=>app.OpenProfile());BindButton("home-friends",app.OpenFriends);
             BindButton("history-back",app.BackFromHistory);
             BindButton("results-history",app.OpenHistory);
             BindButton("shop-button",app.OpenShop);
@@ -145,7 +146,7 @@ namespace Soccer.Runtime
             login=new LoginUI(app,root);
             BindButton("home-account", app.OpenLogin);
             network=new NetworkUI(app,root);
-            draftUI=new DraftUI(app,root);tutorialUI=new TutorialUI(app,root);shopUI=new ShopUI(app,root);historyUI=new HistoryUI(app,root);
+            draftUI=new DraftUI(app,root);tutorialUI=new TutorialUI(app,root);shopUI=new ShopUI(app,root);historyUI=new HistoryUI(app,root);socialUI=new SocialUI(app,root);
             SetImage("shop-marine-art","portrait-marine-v2");SetImage("shop-thor-art","portrait-thor-v2");
             SetFullHud(LoadFullHudPreference(), false);
             RefreshAudioSettings();
@@ -217,6 +218,7 @@ namespace Soccer.Runtime
 
         private static void Visible(VisualElement element, bool show) => element.EnableInClassList("hidden", !show);
         public void RefreshNetwork() => network?.Refresh();
+        public void RefreshSocial()=>socialUI?.Refresh();
         public void SetFullHud(bool enabled, bool save = true)
         {
             skillHelp?.Hide();
@@ -267,6 +269,7 @@ namespace Soccer.Runtime
             shopUI?.Refresh();
             if(page==AppPage.PlayMenu)root.schedule.Execute(()=>{if(app.Page==AppPage.PlayMenu)root.Q<Button>("play-online").Focus();});
             if (page == AppPage.History)historyUI.Open();
+            if(page==AppPage.Profile)socialUI.OpenProfile();socialUI?.Refresh();
             if (page == AppPage.CharacterSelect){root.Q<Foldout>("character-parameters").SetValueWithoutNotify(false);root.Q("character-parameter-content").AddToClassList("hidden");RefreshSelection();}
             if (page == AppPage.ModeDetails) RefreshModeDetails();
             if (page == AppPage.NetworkMenu || page == AppPage.RoomLobby) RefreshNetwork();

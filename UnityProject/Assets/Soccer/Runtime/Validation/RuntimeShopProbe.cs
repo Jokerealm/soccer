@@ -17,7 +17,7 @@ namespace Soccer.Runtime
             int width=Screen.width,height=Screen.height;var mode=Screen.fullScreenMode;
             app.GoHome();yield return new WaitForSecondsRealtime(.4f);app.UI.Root.Focus();yield return null;
             NavigationMove(Vector2.down);Check(FocusIs("bots-button"),"native navigation recovers home selection when root has focus");yield return null;
-            string[] names={"bots-button","normal-mode","train-button","history-button","shop-button","settings-button"};
+            string[] names={"bots-button","normal-mode","train-button","profile-button","shop-button","settings-button"};
             for(int i=1;i<names.Length;i++){NavigationMove(Vector2.down);Check(FocusIs(names[i]),"native down selects home action: "+names[i]);yield return null;}
             NavigationMove(Vector2.down);Check(FocusIs("bots-button"),"native navigation wraps down from last home action");yield return null;
             NavigationMove(Vector2.up);Check(FocusIs("settings-button"),"native navigation wraps up from first home action");yield return null;

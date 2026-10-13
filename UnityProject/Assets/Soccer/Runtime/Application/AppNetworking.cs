@@ -105,6 +105,7 @@ namespace Soccer.Runtime
         private void PumpNetworking()
         {
             Room?.Pump(Time.realtimeSinceStartup);
+            if(Page==AppPage.RoomLobby && Room?.CanStart==true && RoomCodeReady)Room.BeginCountdown(RulesAsset.CreateRules());
             if (Page == AppPage.NetworkMenu) Discovery?.Pump(Time.realtimeSinceStartup);
             if ((Page == AppPage.NetworkMenu || Page == AppPage.RoomLobby) && Time.realtimeSinceStartup >= nextNetworkUi)
             { nextNetworkUi = Time.realtimeSinceStartup + .25f; UI.RefreshNetwork(); }

@@ -5,7 +5,7 @@ using Soccer.Core.Networking;
 // Rooms are leased, and ownership belongs to the login session rather than a shared debug account.
 sealed class RoomDirectory
 {
-    private sealed record Session(DateTimeOffset Expires);
+    private sealed record Session(DateTimeOffset Expires,string Account);
     private sealed class Room
     {
         internal required string Code, Owner;
@@ -18,7 +18,7 @@ sealed class RoomDirectory
     private readonly Dictionary<string, DateTimeOffset> retired = new();
     private readonly int leaseSeconds;
     internal RoomDirectory(int leaseSeconds) { this.leaseSeconds = Math.Clamp(leaseSeconds, 3, 120); }
-    internal string? Login()
+    internal string? Login(string account)
     {
         lock (gate)
         {
@@ -26,7 +26,7 @@ sealed class RoomDirectory
             foreach (var key in sessions.Where(p => p.Value.Expires <= now).Select(p => p.Key).ToArray()) sessions.Remove(key);
             if (sessions.Count >= 1024) return null;
             string token = Convert.ToHexString(RandomNumberGenerator.GetBytes(32));
-            sessions[token] = new Session(now.AddHours(6)); return token;
+            sessions[token] = new Session(now.AddHours(6),account); return token;
         }
     }
     private string? Authorize(HttpContext context)
@@ -36,6 +36,8 @@ sealed class RoomDirectory
         string token = header.Substring(7);
         return sessions.TryGetValue(token, out var session) && session.Expires > DateTimeOffset.UtcNow ? token : null;
     }
+    internal string? Account(HttpContext context)
+    {lock(gate){var token=Authorize(context);return token==null ? null : sessions[token].Account;}}
     private void Purge()
     {
         var now = DateTimeOffset.UtcNow;

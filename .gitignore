@@ -50,3 +50,5 @@ assets/packages/*.zip
 reports/**/wallets/
 
 reports/**/history/
+reports/**/social-state/
+server/.local/

@@ -15,7 +15,7 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="0.24.0" class="loading-version" />
+            <ui:Label text="0.25.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -31,19 +31,19 @@
         </ui:VisualElement>
 
         <ui:VisualElement name="home-page" class="game-home hidden">
-            <ui:VisualElement class="home-topbar row"><ui:VisualElement class="grow" /><ui:Label name="home-coins" class="home-coins" /><ui:Label name="connection-status" class="home-connection" /><ui:Button name="home-account" text="联网登录" class="home-account" /></ui:VisualElement>
+            <ui:VisualElement class="home-topbar row"><ui:VisualElement class="grow" /><ui:Button name="home-friends" text="好友" class="home-account" /><ui:Label name="home-coins" class="home-coins" /><ui:Label name="connection-status" class="home-connection" /><ui:Button name="home-account" text="联网登录" class="home-account" /></ui:VisualElement>
             <ui:VisualElement class="home-body">
                 <ui:VisualElement class="home-wordmark"><ui:Label text="SKILL SOCCER" class="home-brand-en" /><ui:Label text="技能足球" class="home-brand-title" /><ui:VisualElement class="home-brand-line" /></ui:VisualElement>
                 <ui:VisualElement name="home-navigation" class="home-navigation">
                     <ui:Button name="bots-button" class="home-nav home-nav-primary"><ui:Label text="开始游戏" class="home-nav-title" /><ui:Label text="选择模式" class="home-nav-note" /><ui:Label text="›" class="home-nav-arrow" /></ui:Button>
                     <ui:Button name="normal-mode" text="联机对战" class="home-nav" />
                     <ui:Button name="train-button" text="训练场" class="home-nav" />
-                    <ui:Button name="history-button" text="对局记录" class="home-nav" />
+                    <ui:Button name="profile-button" text="个人主页" class="home-nav" />
                     <ui:Button name="shop-button" text="商城" class="home-nav" />
                     <ui:Button name="settings-button" text="设置" class="home-nav home-nav-small" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.24.0" class="home-version" /></ui:VisualElement>
+            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.25.0" class="home-version" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="play-page" class="play-menu hidden">
@@ -122,7 +122,8 @@
                     <ui:Label name="lobby-address-note" class="muted small" />
                 </ui:Foldout>
             </ui:ScrollView>
-            <ui:VisualElement class="row network-footer"><ui:Label name="lobby-status" class="network-status grow hidden" /><ui:VisualElement class="grow" /><ui:Button name="lobby-ready" text="准备" class="primary" /><ui:Button name="lobby-start" text="开始选人" class="primary" /></ui:VisualElement>
+            <ui:VisualElement class="row network-footer"><ui:Label name="lobby-status" class="network-status grow hidden" /><ui:VisualElement class="grow" /><ui:Button name="lobby-fill-bots" text="补齐机器人" class="secondary" /><ui:Button name="lobby-clear-bots" text="清空机器人" class="secondary" /><ui:Button name="lobby-ready" text="准备" class="primary" /></ui:VisualElement>
+            <ui:VisualElement name="lobby-countdown" class="lobby-countdown hidden" picking-mode="Ignore"><ui:Label name="lobby-countdown-number" class="lobby-countdown-number" /><ui:Label text="即将进入选人布阵" class="lobby-countdown-copy" /><ui:Label text="取消准备可中止" class="social-muted" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="select-page" class="selection hidden">
@@ -324,6 +325,21 @@
             </ui:VisualElement>
         </ui:VisualElement>
 
+        <ui:VisualElement name="profile-page" class="social-page hidden">
+            <ui:VisualElement class="row social-heading"><ui:VisualElement class="grow"><ui:Label name="profile-name" class="social-title" /><ui:Label name="profile-id" class="social-muted" /></ui:VisualElement><ui:Button name="profile-friends" text="好友" class="front-utility" /><ui:Button name="profile-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
+            <ui:Label name="profile-status" class="social-status" />
+            <ui:VisualElement class="row profile-metrics"><ui:VisualElement class="profile-metric"><ui:Label name="profile-matches" class="profile-number" /><ui:Label text="累计场次" class="social-muted" /></ui:VisualElement><ui:VisualElement class="profile-metric"><ui:Label name="profile-winrate" class="profile-number" /><ui:Label text="胜率" class="social-muted" /></ui:VisualElement><ui:VisualElement class="profile-metric"><ui:Label name="profile-goals" class="profile-number" /><ui:Label text="总进球" class="social-muted" /></ui:VisualElement></ui:VisualElement>
+            <ui:VisualElement name="profile-heroes" class="row profile-heroes" />
+            <ui:VisualElement class="row profile-recent-heading"><ui:Label name="profile-recent-title" text="最近战绩" class="social-section grow" /><ui:Button name="profile-all" text="全部角色" class="social-action" /><ui:Button name="profile-history" text="战绩详情" class="social-action" /></ui:VisualElement>
+            <ui:Label name="profile-empty" text="暂无战绩，完成正式对局后会显示在这里。" class="social-muted" /><ui:ScrollView name="profile-recent" class="profile-recent" mode="Vertical" horizontal-scroller-visibility="Hidden" />
+        </ui:VisualElement>
+        <ui:VisualElement name="friends-page" class="social-page hidden">
+            <ui:VisualElement class="row social-heading"><ui:Label text="好友" class="social-title grow" /><ui:Button name="friends-refresh" text="刷新" class="front-utility" /><ui:Button name="friends-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
+            <ui:VisualElement name="friends-offline" class="social-offline"><ui:Label text="联网登录后可添加好友" class="social-section" /><ui:Button name="friends-login" text="联网登录" class="primary" /></ui:VisualElement>
+            <ui:VisualElement name="friends-online" class="friends-online"><ui:VisualElement class="row friend-search-row"><ui:TextField name="friend-account" label="帐号 ID" class="grow" /><ui:Button name="friend-search" text="查找玩家" class="social-action" /></ui:VisualElement><ui:Label name="friends-status" class="social-status" /><ui:VisualElement name="friend-result" />
+                <ui:VisualElement class="row friends-columns"><ui:VisualElement class="friends-column"><ui:Label name="friends-count" text="好友 · 0" class="social-section" /><ui:Label name="friends-empty" text="暂无好友，可以通过帐号 ID 添加。" class="social-muted" /><ui:ScrollView name="friends-list" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement><ui:VisualElement class="friends-column"><ui:Label name="friends-requests-title" text="申请 · 0" class="social-section" /><ui:ScrollView name="friends-requests" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement></ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
         <ui:VisualElement name="shop-page" class="shop-page hidden">
             <ui:VisualElement class="row shop-heading"><ui:Label text="商城" class="shop-title grow" /><ui:Button name="shop-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
             <ui:VisualElement class="shop-content">

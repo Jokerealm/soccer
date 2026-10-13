@@ -1,0 +1,94 @@
+{
+  "passed": true,
+  "total": 22,
+  "checks": [
+    {
+      "name": "social endpoints require a valid account session",
+      "passed": true
+    },
+    {
+      "name": "unknown account search returns no fabricated player",
+      "passed": true
+    },
+    {
+      "name": "self request is rejected",
+      "passed": true
+    },
+    {
+      "name": "unrequested acceptance is rejected",
+      "passed": true
+    },
+    {
+      "name": "request appears in sender outbox",
+      "passed": true
+    },
+    {
+      "name": "duplicate friend request is idempotent",
+      "passed": true
+    },
+    {
+      "name": "recipient receives actual sender identity",
+      "passed": true
+    },
+    {
+      "name": "reverse request does not silently accept",
+      "passed": true
+    },
+    {
+      "name": "rejection clears both pending views",
+      "passed": true
+    },
+    {
+      "name": "acceptance creates bilateral friendship",
+      "passed": true
+    },
+    {
+      "name": "existing friends cannot send another request",
+      "passed": true
+    },
+    {
+      "name": "finished match uploads under the authenticated account",
+      "passed": true
+    },
+    {
+      "name": "identical completed match upload is idempotent",
+      "passed": true
+    },
+    {
+      "name": "friend sees actual career and recent details",
+      "passed": true
+    },
+    {
+      "name": "same match id cannot rewrite prior results",
+      "passed": true
+    },
+    {
+      "name": "client cannot attribute match stats to a different account",
+      "passed": true
+    },
+    {
+      "name": "career survives the recent fifty cap",
+      "passed": true
+    },
+    {
+      "name": "retired recent match ids remain deduplicated",
+      "passed": true
+    },
+    {
+      "name": "friendship survives server restart",
+      "passed": true
+    },
+    {
+      "name": "career and recent stats survive server restart",
+      "passed": true
+    },
+    {
+      "name": "removing friendship is bilateral",
+      "passed": true
+    },
+    {
+      "name": "invalid statistics are rejected without changing career",
+      "passed": true
+    }
+  ]
+}

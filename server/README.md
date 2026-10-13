@@ -44,3 +44,20 @@ python tools/test_room_directory.py --start-server
 ```
 
 第二条命令自行选取空闲本机端口、启动短租期测试服务并关闭，不会操作已有服务器。
+
+
+## 个人主页与好友（0.25.0）
+
+登录成功返回的 Bearer token 绑定帐号。增加以下接口：
+
+- `GET /api/profiles/{account}`：查看帐号累计角色战绩和最近 50 场。
+- `POST /api/profile/matches`：当前帐号提交完成的赛果，按 MatchId 去重。
+- `GET /api/friends`：双向好友、收到及发出的申请。
+- `POST /api/friends/{account}/request`、`accept`、`reject`：申请、接受、拒绝。
+- `DELETE /api/friends/{account}`：移除好友或撤回申请。
+
+默认原子保存至运行目录 `data/social.json`，可通过 `Social__DataPath` 指定绝对路径。请在部署时持久化这个文件所在目录。房间租约仍只在内存中，好友和战绩跨服务重启保留。调试帐号仍为 a / a、b / b。
+
+当前战绩由客户端完成对局后提交，联网登录时补传仍在本机保存的最近记录；各设备尚未同步的记录超过最近 50 场范围后不会补传。客户端主页保留本机累计统计；好友主页展示服务已经接收的战绩。正式上线仍需服务器结算和正式帐号服务。本次未部署公共服务。
+
+实际 HTTP 与重启验证：`tools/python tools/test_social_server.py`。测试使用独立的临时社交存档，不修改正常服务数据。

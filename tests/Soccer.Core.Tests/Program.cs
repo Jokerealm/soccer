@@ -1641,8 +1641,19 @@ Test("history save failure leaves existing results intact and permits retry",()=
 });
 Test("history rejects malformed version, duplicate ids and invalid numerical stats",()=> {
  var sim=StarSim(mode:MatchMode.BotMatch);sim.Finish();var record=MatchRecord.FromFinishedMatch(sim.State,0,"one",MatchSource.AI,1000,0);
- foreach(var data in new[]{new MatchHistoryData{Version=2},new MatchHistoryData{Matches=null},new MatchHistoryData{Matches=new List<MatchRecord>{record,record}}}){bool rejected=false;try{new MatchHistory(new MemoryHistoryStore{Data=data});}catch(ArgumentException){rejected=true;}Assert(rejected,"malformed history accepted");}
+ foreach(var data in new[]{new MatchHistoryData{Version=3},new MatchHistoryData{Matches=null},new MatchHistoryData{Matches=new List<MatchRecord>{record,record}}}){bool rejected=false;try{new MatchHistory(new MemoryHistoryStore{Data=data});}catch(ArgumentException){rejected=true;}Assert(rejected,"malformed history accepted");}
  record.DurationSeconds=float.NaN;bool invalid=false;try{MatchRecord.Validate(record);}catch(ArgumentException){invalid=true;}Assert(invalid,"nonfinite duration accepted");
+});
+Test("lifetime hero results survive recent history retention and reload",()=> {
+ var store=new MemoryHistoryStore();var history=new MatchHistory(store);var sim=StarSim(mode:MatchMode.BotMatch);sim.State.CyanScore=1;sim.Finish();
+ for(int i=0;i<55;i++)history.Add(MatchRecord.FromFinishedMatch(sim.State,0,"career-"+i,MatchSource.AI,1000+i,100));
+ var hero=history.Heroes.Single(h=>h.Character==sim.State.Players[0].Stats.Id);Assert(history.Matches.Count==50 && hero.Matches==55 && hero.Wins==55 && hero.WinRate==100,"career counts rolled off with recent results");
+ var copy=history.Heroes;copy[0].Matches=0;Assert(new MatchHistory(store).Heroes.Sum(h=>h.Matches)==55,"display data mutated saved career");
+});
+Test("version one history upgrades once without losing previous results",()=> {
+ var sim=StarSim(mode:MatchMode.BotMatch);sim.Finish();var store=new MemoryHistoryStore{Data=new MatchHistoryData{Version=1,Matches=new List<MatchRecord>{MatchRecord.FromFinishedMatch(sim.State,0,"old",MatchSource.AI,1000,0)}}};
+ var history=new MatchHistory(store);Assert(history.Heroes.Sum(h=>h.Draws)==1 && history.Matches.Count==1,"old history was lost during upgrade");
+ history.Add(MatchRecord.FromFinishedMatch(sim.State,0,"new",MatchSource.LAN,1001,0));Assert(new MatchHistory(store).Heroes.Sum(h=>h.Matches)==2 && store.Data.Version==2,"migration doubled previous career");
 });
 string reportDir = args.Length > 0 ? args[0] : Path.GetFullPath("reports");
 Directory.CreateDirectory(reportDir);

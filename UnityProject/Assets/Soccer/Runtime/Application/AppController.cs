@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Soccer.Runtime
 {
-    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby, Login, PlayMenu, Shop, History }
+    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby, Login, PlayMenu, Shop, History, Profile, Friends }
 
     /// <summary>应用流程编排：创建对局、推进固定 Tick、暂停、结束。业务规则留在 Core。</summary>
     public sealed partial class AppController : MonoBehaviour
@@ -150,6 +150,7 @@ namespace Soccer.Runtime
         private void Update()
         {
             PumpNetworking();
+            TickSocial();
             TickDraft();
             if (UI.BlocksKeyNavigation) return;
             if (Page != AppPage.Match && Page != AppPage.Loading && Page != AppPage.Login && Input.GetKeyDown(KeyCode.Escape))
@@ -157,7 +158,7 @@ namespace Soccer.Runtime
                 Audio.PlayClick();
                 if (Page == AppPage.CharacterSelect) BackFromSelection();
                 else if (Page == AppPage.NetworkMenu || Page == AppPage.RoomLobby) BackFromNetwork();
-                else if(Page==AppPage.ModeDetails)BackFromMode();else GoHome();
+                else if(Page==AppPage.ModeDetails)BackFromMode();else if(Page==AppPage.Profile)BackFromProfile();else GoHome();
             }
             if (Page != AppPage.Match || Simulation == null) return;
             if (Input.GetKeyDown(KeyCode.Escape) || Keys.Down(GameAction.Pause)) { Audio.PlayClick(); SetPaused(!Paused); }

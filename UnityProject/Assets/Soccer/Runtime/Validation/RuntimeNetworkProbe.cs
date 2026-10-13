@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -98,12 +99,22 @@ namespace Soccer.Runtime
                 yield return CheckRoomSizes("room-page", "lobby-copy-address", "lobby");
                 File.WriteAllText(codeFile, GUIUtility.systemCopyBuffer);
                 yield return Capture("01-host-room");
+                Check(app.Room.Lobby.Bots.Length==0 && !app.Room.Lobby.Members[0].Ready,"created room has empty slots and unready host");
                 deadline = Time.realtimeSinceStartup + 20;
-                while ((app.Room == null || app.Room.Lobby.Members.Length < 2 || !app.Room.CanStart) && Time.realtimeSinceStartup < deadline) yield return null;
-                Check(app.Room != null && app.Room.Lobby.Members.Length == 2 && app.Room.CanStart, "second process joins and readiness reaches host");
-                if (app.Room == null || app.Room.Lobby.Members.Length < 2 || !app.Room.CanStart) { Finish(); yield break; }
+                while ((app.Room == null || app.Room.Lobby.Members.Length < 2) && Time.realtimeSinceStartup < deadline) yield return null;
+                if(app.Room==null || app.Room.Lobby.Members.Length<2){Check(false,"second process joins room");Finish();yield break;}
+                yield return Click("lobby-fill-bots");
+                Check(app.Room.Lobby.Bots.Length==4 && app.Room.OccupiedSlots==6,"host explicitly fills four vacant positions with bots");
+                deadline=Time.realtimeSinceStartup+12;while(!app.Room.Lobby.Members.First(m=>!m.Host).Ready && Time.realtimeSinceStartup<deadline)yield return null;
+                Check(app.Room.Lobby.Members.First(m=>!m.Host).Ready && !app.Room.Lobby.Members.First(m=>m.Host).Ready,"guest is ready while host still must confirm");
                 if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "host verifies both account identities");
-                yield return Capture("02-host-ready-room"); yield return Click("lobby-start");
+                yield return Click("lobby-ready");yield return new WaitForSecondsRealtime(.2f);
+                Check(app.Room.CountingDown && root.Q<Label>("lobby-countdown-number").text=="3","all ready automatically shows synchronized three second countdown");
+                yield return Capture("02-host-countdown");yield return Click("lobby-ready");
+                Check(!app.Room.CountingDown && app.Room.Draft==null,"host can cancel readiness and abort countdown");
+                float countdownBegan=Time.realtimeSinceStartup;yield return Click("lobby-ready");
+                deadline=Time.realtimeSinceStartup+6;while(app.Page==AppPage.RoomLobby && Time.realtimeSinceStartup<deadline)yield return null;
+                Check(app.Page==AppPage.CharacterSelect && Time.realtimeSinceStartup-countdownBegan>=2.9f,"three seconds elapse before either team enters selection");
                 yield return ParticipateDraft();
                 Check(app.Page == AppPage.Match && app.IsNetworkMatch, "host start button starts authoritative six-player match");
                 coinsBefore=app.Wallet.Coins;historyBefore=app.History.Matches.Count;
@@ -186,7 +197,12 @@ namespace Soccer.Runtime
                 Check(app.Room.Lobby.RequiresPassword == (route == "internet"), "room password setting arrives through live handshake");
                 if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "verified account identities synchronize internally");
                 Check(root.Q<TextField>("network-join-password").value.Length == 0, "joining clears submitted password field");
-                yield return Capture("01-client-room"); yield return Click("lobby-ready");
+                yield return Capture("01-client-room");
+                deadline=Time.realtimeSinceStartup+12;while(app.Room.Lobby.Bots.Length!=4 && Time.realtimeSinceStartup<deadline)yield return null;
+                Check(app.Room.Lobby.Bots.Length==4 && root.Q<Button>("lobby-fill-bots").ClassListContains("hidden"),"guest receives explicit bots and has no host bot control");
+                yield return Click("lobby-ready");
+                deadline=Time.realtimeSinceStartup+6;while(!app.Room.CountingDown && app.Page==AppPage.RoomLobby && Time.realtimeSinceStartup<deadline)yield return null;
+                Check(app.Room.CountingDown && root.Q<Label>("lobby-countdown-number").text!="0","guest sees countdown before selection");yield return Capture("02-client-countdown");
                 yield return ParticipateDraft();
                 Check(app.IsNetworkMatch && !app.Room.IsHost && app.LocalPlayerId == 3, "client receives start and binds its own player");
                 if (!app.IsNetworkMatch) { Finish(); yield break; }

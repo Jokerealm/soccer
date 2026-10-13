@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "preferredPortOccupied": true,
+  "totalChecks": 159,
+  "runs": [
+    {
+      "route": "internet",
+      "joinMode": "code",
+      "role": "host",
+      "exitCode": 0,
+      "report": "reports/social-025-internet-code-host/network-smoke.json",
+      "passed": true,
+      "checks": 47,
+      "errors": []
+    },
+    {
+      "route": "internet",
+      "joinMode": "code",
+      "role": "client",
+      "exitCode": 0,
+      "report": "reports/social-025-internet-code-client/network-smoke.json",
+      "passed": true,
+      "checks": 37,
+      "errors": []
+    },
+    {
+      "route": "lan",
+      "joinMode": "list",
+      "role": "host",
+      "exitCode": 0,
+      "report": "reports/social-025-lan-list-host/network-smoke.json",
+      "passed": true,
+      "checks": 43,
+      "errors": []
+    },
+    {
+      "route": "lan",
+      "joinMode": "list",
+      "role": "client",
+      "exitCode": 0,
+      "report": "reports/social-025-lan-list-client/network-smoke.json",
+      "passed": true,
+      "checks": 32,
+      "errors": []
+    }
+  ]
+}

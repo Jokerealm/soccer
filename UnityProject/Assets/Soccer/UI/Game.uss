@@ -488,3 +488,51 @@ Button.history-row-selected { border-left-color: rgb(246,193,94); background-col
 .history-list .unity-base-slider__dragger { background-color: rgb(88,129,143); }
 .compact-front-end .history-page { margin: 22px 38px; }
 .compact-front-end .history-detail { padding: 19px; width: 290px; }
+
+/* Profiles and friends share the understated front-end panels. */
+.social-page { flex-grow: 1; margin: 34px 58px; min-height: 0; }
+.social-heading { margin-bottom: 18px; flex-shrink: 0; align-items: center; }
+.social-title { font-size: 37px; color: rgb(238,245,244); -unity-font-definition: url("ChineseBold.asset"); }
+.social-section { font-size: 20px; color: rgb(221,233,235); margin-bottom: 10px; -unity-font-definition: url("ChineseBold.asset"); }
+.social-copy { font-size: 15px; color: rgb(191,211,220); white-space: normal; }
+.social-muted { font-size: 12px; color: rgb(149,179,195); white-space: normal; }
+.social-status { font-size: 13px; color: rgb(244,197,116); white-space: normal; min-height: 20px; flex-shrink: 0; }
+Button.social-action { padding: 8px 13px; margin: 0 0 0 8px; min-height: 32px; background-color: rgb(29,49,65); border-width: 1px; border-color: rgb(57,84,102); border-radius: 0; color: rgb(224,231,225); font-size: 13px; flex-shrink: 0; }
+Button.social-action:hover { background-color: rgb(42,65,83); border-color: rgb(205,170,109); }
+Button.social-action:disabled { color: rgb(111,139,151); background-color: rgb(20,37,48); }
+.profile-metrics { padding: 16px 24px; background-color: rgba(12,28,40,.94); margin-bottom: 16px; flex-shrink: 0; }
+.profile-metric { width: 33%; padding-left: 18px; }
+.profile-number { font-size: 34px; color: rgb(245,207,132); -unity-font-definition: url("ChineseBold.asset"); margin-bottom: 5px; }
+.profile-heroes { flex-shrink: 0; margin-bottom: 18px; }
+Button.profile-hero { flex-basis: 0; flex-grow: 1; flex-direction: row; align-items: center; padding: 14px; margin: 0 12px 0 0; border-color: rgb(47,75,92); border-left-width: 3px; background-color: rgba(17,34,47,.96); }
+Button.profile-hero-selected { border-left-color: rgb(245,193,103); background-color: rgb(31,50,64); }
+.profile-portrait { width: 75px; height: 75px; margin-right: 16px; flex-shrink: 0; -unity-background-scale-mode: scale-to-fit; }
+.profile-hero-name { font-size: 22px; color: rgb(235,240,233); margin-bottom: 6px; -unity-font-definition: url("ChineseBold.asset"); }
+.profile-recent-heading { align-items: center; margin-bottom: 10px; flex-shrink: 0; }
+.profile-recent { flex-grow: 1; min-height: 0; }
+.profile-match { min-height: 58px; padding: 12px 18px; margin-bottom: 7px; background-color: rgba(14,31,44,.94); align-items: center; }
+.profile-score { font-size: 19px; color: rgb(240,217,165); width: 100px; }
+.friends-online { flex-grow: 1; min-height: 0; }
+.friend-search-row { flex-shrink: 0; align-items: center; margin-bottom: 10px; }
+.friend-search-row TextField { max-width: 450px; color: rgb(200,217,225); }
+.friend-search-row .unity-base-field__input { min-height: 38px; background-color: rgb(19,37,51); border-color: rgb(57,83,104); color: rgb(233,240,241); }
+.friends-columns { flex-grow: 1; min-height: 0; margin-top: 20px; }
+.friends-column { flex-grow: 1; flex-basis: 0; min-width: 0; padding: 18px; margin-right: 14px; background-color: rgba(12,28,40,.94); }
+.friends-list { flex-grow: 1; min-height: 0; }
+.social-person { min-height: 65px; align-items: center; padding: 10px 6px; margin-bottom: 8px; background-color: rgb(21,40,54); }
+Button.social-person-name { white-space: normal; -unity-text-align: middle-left; background-color: rgba(0,0,0,0); border-width: 0; margin-left: 0; color: rgb(217,232,236); }
+.social-offline { align-items: center; justify-content: center; flex-grow: 1; }
+.social-offline Button { margin-top: 24px; }
+.compact-front-end .social-page { margin: 22px 38px; }
+.compact-front-end .social-heading { margin-bottom: 10px; }
+.compact-front-end .profile-metrics { padding: 10px 18px; margin-bottom: 12px; }
+.compact-front-end .profile-number { font-size: 29px; }
+.compact-front-end .profile-portrait { width: 58px; height: 58px; }
+.compact-front-end Button.profile-hero { padding: 10px; }
+.compact-front-end .profile-match { min-height: 48px; }
+.home-topbar #home-friends { margin-right: 20px; }
+.network-member { flex-direction: row; align-items: center; }
+Button.lobby-bot-control { font-size: 12px; min-height: 28px; padding: 4px 8px; margin-left: 8px; border-radius: 2px; color: rgb(37,65,76); background-color: rgb(218,230,224); }
+.lobby-countdown { position: absolute; left: 36%; right: 36%; top: 28%; padding: 28px; align-items: center; background-color: rgba(9,25,38,.96); border-width: 1px; border-color: rgb(67,104,120); }
+.lobby-countdown-number { font-size: 88px; color: rgb(255,205,117); -unity-font-definition: url("ChineseBold.asset"); }
+.lobby-countdown-copy { font-size: 16px; color: rgb(219,231,235); margin-bottom: 12px; white-space: normal; }

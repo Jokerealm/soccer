@@ -47,14 +47,22 @@ namespace Soccer.Runtime
             Check(app.UI.Root.Q<TextField>("login-password").isPasswordField, "startup password entry is masked");
             yield return new WaitForSecondsRealtime(.35f);
             yield return Capture("00-startup-login");
-            app.UI.Root.Q<TextField>("login-name").value="a";app.UI.Root.Q<TextField>("login-password").value="a";
+            bool socialPreview=Array.IndexOf(args,"--soccer-social-preview")>=0;
+            app.UI.Root.Q<TextField>("login-name").value="a";app.UI.Root.Q<TextField>("login-password").value=socialPreview ? "incorrect" : "a";
             yield return Click("login-submit");
             deadline=Time.realtimeSinceStartup+10;while(app.LoginBusy && Time.realtimeSinceStartup<deadline)yield return null;
-            Check(app.Page==AppPage.Login && app.Account==null && !app.LoginBusy && app.LoginStatus.Contains("离线进入"),
-                "unavailable login service cannot authenticate locally and keeps offline entry usable");
+            Check(app.Page==AppPage.Login && app.Account==null && !app.LoginBusy && app.LoginStatus.Contains(socialPreview ? "帐号或密码错误" : "离线进入"),
+                socialPreview ? "online social login rejects incorrect credentials" : "unavailable login service cannot authenticate locally and keeps offline entry usable");
             Check(app.UI.Root.Q<TextField>("login-password").value.Length==0,"failed online login clears the password field");
             yield return Click("login-offline");
             Check(app.Page == AppPage.Home && app.EntryMode == GameEntryMode.Offline && app.Account == null, "offline entry needs no login service and retains game access");
+            if(Array.IndexOf(args,"--soccer-social-preview")>=0)
+            {
+                yield return CaptureOnlineSocial();
+                File.WriteAllText(Path.Combine(output,"runtime-smoke.json"),JsonUtility.ToJson(new Report
+                {editor=Application.unityVersion,platform=Application.platform.ToString(),passed=errors.Count==0,checks=checks.ToArray(),errors=errors.ToArray()},true));
+                Application.logMessageReceived-=CaptureError;Application.Quit(errors.Count==0?0:1);yield break;
+            }
             if (Array.IndexOf(args,"--soccer-history-preview") >= 0)
             {
                 yield return CaptureHistoryAndSelection();
@@ -135,9 +143,10 @@ namespace Soccer.Runtime
             Debug.Log($"SOCCER_AUDIO_PROBE signal={signal} playing={musicSource.isPlaying} virtual={musicSource.isVirtual} time={musicSource.time} volume={musicSource.volume} listener={AudioListener.volume} loaded={musicSource.clip.loadState} dsp={AudioSettings.dspTime}");
             Check(signal, "music source produces nonzero audio samples");
             yield return Capture("01-home");
-            string[] modeButtons = { "bots-button", "normal-mode", "train-button", "history-button", "shop-button", "settings-button" };
+            string[] modeButtons = { "bots-button", "normal-mode", "train-button", "profile-button", "shop-button", "settings-button" };
             yield return CaptureMainMenuFlow();
             yield return CaptureHistoryAndSelection();
+            yield return CaptureOfflineProfile();
             yield return CaptureShopAndNavigation();
             yield return CaptureDraftAndTutorial();
             yield return CaptureBindingsAndModels();
@@ -1609,7 +1618,7 @@ namespace Soccer.Runtime
             foreach (var size in new[] { new Vector2Int(1024,768), new Vector2Int(1280,720), new Vector2Int(1920,1080) })
             {
                 Screen.SetResolution(size.x, size.y, false); yield return new WaitForSecondsRealtime(.55f);
-                foreach (string name in new[] { "bots-button", "normal-mode", "train-button", "history-button", "shop-button", "settings-button", "home-account" })
+                foreach (string name in new[] { "bots-button", "normal-mode", "train-button", "profile-button", "shop-button", "settings-button", "home-account" })
                 {
                     var bounds = app.UI.Root.Q(name).worldBound;
                     Check(PicksButton(name) && app.UI.Root.worldBound.Contains(bounds.min) && app.UI.Root.worldBound.Contains(bounds.max),

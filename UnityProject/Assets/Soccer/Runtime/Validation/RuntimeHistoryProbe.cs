@@ -23,7 +23,7 @@ namespace Soccer.Runtime
         private IEnumerator CaptureHistoryAndSelection()
         {
             int width=Screen.width,height=Screen.height;var mode=Screen.fullScreenMode;app.GoHome();yield return new WaitForSecondsRealtime(.35f);
-            int before=app.History.Matches.Count;yield return Click("history-button");
+            int before=app.History.Matches.Count;yield return Click("profile-button");yield return Click("profile-history");
             Check(app.Page==AppPage.History && app.UI.Root.Q<Label>("history-profile").text.Contains("离线玩家"),"home history opens current offline profile");
             if(before==0)Check(HistoryVisible(app.UI.Root.Q("history-empty")) && !HistoryVisible(app.UI.Root.Q("history-detail")),"new profile displays an honest empty history");
             yield return Click("history-back");HistoryFixture(2,1,CharacterId.Marine);yield return null;
@@ -36,7 +36,7 @@ namespace Soccer.Runtime
             Check(loaded.Matches.Count==app.History.Matches.Count && loaded.Matches[0].Result==MatchResult.Draw && loaded.Matches[1].Character==CharacterId.Thor && loaded.Matches[1].Result==MatchResult.Defeat,"actual JSON reload preserves newest draw, loss and heroes");
             int count=app.History.Matches.Count;app.StartTutorial();app.EndSession();app.GoHome();app.BeginLocalDraft();app.BackFromSelection();
             app.OpenSelection(MatchMode.BotMatch);app.StartMatch();app.GoHome();Check(app.History.Matches.Count==count,"tutorial, unfinished game and cancelled draft do not pollute match history");
-            yield return Click("history-button");
+            yield return Click("profile-button");yield return Click("profile-history");
             foreach(var size in new[]{new Vector2Int(1024,768),new Vector2Int(1280,720),new Vector2Int(1920,1080)})
             {
                 Screen.SetResolution(size.x,size.y,false);yield return new WaitForSecondsRealtime(.5f);

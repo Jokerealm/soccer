@@ -37,7 +37,7 @@ namespace Soccer.Runtime
             string host = ""; var args = Environment.GetCommandLineArgs(); int at = Array.IndexOf(args, "--soccer-room-host");
             if (at >= 0 && at + 1 < args.Length) host = args[at + 1];
             return JsonUtility.ToJson(new RoomPublication { code = room.Lobby.Code, roomId = room.Lobby.Id, name = room.Lobby.Name, host = host,
-                port = room.Port, players = room.Lobby.Members.Length, running = room.Running || room.Lobby.Drafting, requiresPassword = room.Lobby.RequiresPassword });
+                port = room.Port, players = room.OccupiedSlots, running = room.Running || room.Lobby.Drafting || room.CountingDown, requiresPassword = room.Lobby.RequiresPassword });
         }
         private static bool ReadDirectoryRoom(UnityWebRequest request, out DirectoryRoom room)
         {

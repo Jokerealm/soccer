@@ -120,6 +120,7 @@ namespace Soccer.Runtime
             var clip = Clip("ui-hover"); if (clip != null) ui.PlayOneShot(clip, 0.1f);
         }
         public void PlayCancel() { var clip = Clip("ui-cancel"); if (clip != null) ui.PlayOneShot(clip, 0.18f); }
+        public void PlayLobbyCountdown(){var clip=Clip("countdown");if(clip!=null)ui.PlayOneShot(clip,.25f);}
         public void PlayFinish() => Play(Clip("finish"), 0.42f, 100);
         public void PlayKick() => Play(Kick, 0.55f, 80);
         public void PlayGoal() => Play(Goal, 0.65f, 100);

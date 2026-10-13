@@ -57,6 +57,8 @@ namespace Soccer.Core.Networking
         public bool RequiresPassword, Running, Drafting;
         public int Port;
         public RoomMember[] Members = new RoomMember[0];
+        public int[] Bots = new int[0];
+        public float CountdownRemaining;
     }
     public sealed class NetworkStart
     {
@@ -120,7 +122,7 @@ namespace Soccer.Core.Networking
         private bool failed;
         private readonly List<MatchEvent> eventBatch = new List<MatchEvent>();
         public string MatchId => matchEpoch>0 ? Lobby.Id+":"+matchEpoch : "";
-        public bool CanStart => IsHost && Connected && !Running && !Lobby.Drafting && Lobby.Members.All(m => m.Host || m.Ready);
+        public bool CanStart => IsHost && Connected && !Running && !Lobby.Drafting && !CountingDown && EveryoneReady;
         public static NetworkRoom Host(RoomOptions value)
         {
             value.Validate(); var room = new NetworkRoom { IsHost = true, options = value };
@@ -136,7 +138,7 @@ namespace Soccer.Core.Networking
                 room.Port = ((IPEndPoint)room.listener.LocalEndpoint).Port;
                 room.LocalSlot = value.Team == Team.Cyan ? 0 : 3;
                 room.Lobby = new RoomLobby { Id = Guid.NewGuid().ToString("N"), Code = RoomCode.Generate(), Name = value.Name, Route = value.Route, Port = room.Port, RequiresPassword = value.UsePassword,
-                    Members = new[] { new RoomMember { Slot = room.LocalSlot, Name = value.PlayerName, AccountId = value.Account?.Id ?? "", Character = value.Character, Ready = true, Host = true } } };
+                    Members = new[] { new RoomMember { Slot = room.LocalSlot, Name = value.PlayerName, AccountId = value.Account?.Id ?? "", Character = value.Character, Ready = false, Host = true } } };
                 room.Connected = true; room.Status = "房间已创建，等待球员加入";
                 if (value.Route == NetworkRoute.LAN)
                     try { room.advertiser = new LanAdvertiser(); }
@@ -237,7 +239,7 @@ namespace Soccer.Core.Networking
                     {
                         guests.Remove(guest);
                         if (guest.Joined)
-                        { Lobby.Members = Lobby.Members.Where(m => m != guest.Member).ToArray(); Draft?.SetHuman(guest.Member.Slot,false); PlayerLeft?.Invoke(guest.Member.Slot); BroadcastLobby(); }
+                        { Lobby.Members = Lobby.Members.Where(m => m != guest.Member).ToArray();CancelCountdown(); Draft?.SetHuman(guest.Member.Slot,false); PlayerLeft?.Invoke(guest.Member.Slot); BroadcastLobby(); }
                     }
                 }
             }
@@ -247,7 +249,7 @@ namespace Soccer.Core.Networking
                 { lastServer = now; try { ClientPacket(packet); } catch (Exception) { Fail("房主消息无效或版本不一致，已停止连接"); return; } }
                 if (!server.Connected || now - lastServer > 10) { Fail("与房主的连接已断开，请重新加入房间"); return; }
             }
-            PumpDraft((float)Math.Min(elapsed,1));
+            PumpCountdown((float)Math.Min(elapsed,1));PumpDraft((float)Math.Min(elapsed,1));
             if (now - lastPing > 1)
             {
                 lastPing = now;
@@ -263,7 +265,7 @@ namespace Soccer.Core.Networking
             if (packet.Kind == PacketKind.Pong) return;
             if (packet.Kind == PacketKind.Hello && !guest.Challenged && !guest.Joined)
             {
-                if (Running || Lobby.Drafting || Lobby.Members.Length >= 6) { Reject(guest.Peer, Running || Lobby.Drafting ? "比赛已经开始，请等待下一局" : "房间已满"); return; }
+                if (Running || Lobby.Drafting || CountingDown || OccupiedSlots >= 6) { Reject(guest.Peer, Running || Lobby.Drafting || CountingDown ? "比赛已经开始，请等待下一局" : "房间已满"); return; }
                 var member = new RoomMember(); Team team = Team.Cyan; NetworkRoute route = NetworkRoute.Internet;
                 NetworkCodec.Read(packet.Body, r =>
                 { if (NetworkCodec.Text(r) != NetworkCodec.Version) throw new InvalidDataException(); member.Name = RoomOptions.Clean(NetworkCodec.Text(r, 24), 24); member.Character = (CharacterId)r.ReadInt32(); team = (Team)r.ReadInt32(); route = (NetworkRoute)r.ReadInt32(); member.AccountId = NetworkCodec.Text(r, 16); });
@@ -283,8 +285,8 @@ namespace Soccer.Core.Networking
                 { Reject(guest.Peer, "帐号验证失败，请重新登录"); return; }
                 bool valid = !Lobby.RequiresPassword && roomProof.Length == 0 || Lobby.RequiresPassword && RoomPassword.Equal(roomProof, RoomPassword.Proof(passwordKey, guest.Nonce, Identity(guest.Member)));
                 if (!valid) { Reject(guest.Peer, "房间密码不正确"); return; }
-                if (Running || Lobby.Drafting || Lobby.Members.Length >= 6 || Lobby.Members.Any(m => m.Slot == guest.Member.Slot)) { Reject(guest.Peer, "该位置已被其他球员占用，请重新加入"); return; }
-                guest.Joined = true; Lobby.Members = Lobby.Members.Concat(new[] { guest.Member }).OrderBy(m => m.Slot).ToArray(); BroadcastLobby(); return;
+                if (Running || Lobby.Drafting || CountingDown || OccupiedSlots >= 6 || Lobby.Bots.Contains(guest.Member.Slot) || Lobby.Members.Any(m => m.Slot == guest.Member.Slot)) { Reject(guest.Peer, "该位置已被其他球员占用，请重新加入"); return; }
+                guest.Joined = true;CancelCountdown();foreach(var existing in Lobby.Members)existing.Ready=false; Lobby.Members = Lobby.Members.Concat(new[] { guest.Member }).OrderBy(m => m.Slot).ToArray(); BroadcastLobby(); return;
             }
             if (!guest.Joined) throw new InvalidDataException();
             if (packet.Kind == PacketKind.DraftLock) { if(Lobby.Drafting)ReceiveDraftLock(guest,packet);return; }
@@ -294,7 +296,7 @@ namespace Soccer.Core.Networking
             if (packet.Kind == PacketKind.Choice && !Running)
                 NetworkCodec.Read(packet.Body, r => { if (!ApplyChoice(guest.Member, (CharacterId)r.ReadInt32(), (Team)r.ReadInt32())) guest.Peer.Send(PacketKind.Notice, NetworkCodec.Pack(w => NetworkCodec.Text(w, "所选队伍已满"))); });
             else if (packet.Kind == PacketKind.Ready && !Running)
-                NetworkCodec.Read(packet.Body, r => { guest.Member.Ready = r.ReadBoolean(); BroadcastLobby(); });
+                NetworkCodec.Read(packet.Body, r => { guest.Member.Ready = r.ReadBoolean();if(!guest.Member.Ready)CancelCountdown(); BroadcastLobby(); });
             else if (packet.Kind == PacketKind.Input && Running)
                 NetworkCodec.Read(packet.Body, r => { int epoch = r.ReadInt32(); long seq = r.ReadInt64(); var input = NetworkCodec.ReadFields<PlayerCommand>(r); if (epoch == matchEpoch && !guest.Input.Accept(seq, input, clock)) throw new InvalidDataException(); });
             else throw new InvalidDataException();
@@ -344,12 +346,12 @@ namespace Soccer.Core.Networking
             throw new InvalidDataException();
         }
         private int FreeSlot(Team team)
-        { int start = team == Team.Cyan ? 0 : 3; for (int i = start; i < start + 3; i++) if (!Lobby.Members.Any(m => m.Slot == i) && !guests.Any(g => g.Challenged && !g.Joined && g.Peer.Connected && g.Member.Slot == i)) return i; return -1; }
+        { int start = team == Team.Cyan ? 0 : 3; for (int i = start; i < start + 3; i++) if (!Lobby.Members.Any(m => m.Slot == i) && !Lobby.Bots.Contains(i) && !guests.Any(g => g.Challenged && !g.Joined && g.Peer.Connected && g.Member.Slot == i)) return i; return -1; }
         private bool ApplyChoice(RoomMember member, CharacterId character, Team team)
         {
             if (!RoomOptions.ValidCharacter(character) || !Enum.IsDefined(typeof(Team), team)) throw new InvalidDataException();
             if (member.Team != team) { int slot = FreeSlot(team); if (slot < 0) { Status = "所选队伍已满"; Changed?.Invoke(); return false; } member.Slot = slot; }
-            member.Character = character; foreach (var m in Lobby.Members) m.Ready = m.Host;
+            CancelCountdown();member.Character = character; foreach (var m in Lobby.Members) m.Ready = false;
             if (member.Host) LocalSlot = member.Slot; Status = "角色与队伍已更新，等待球员准备"; BroadcastLobby(); return true;
         }
         public void SetChoice(CharacterId character, Team team)
@@ -359,7 +361,7 @@ namespace Soccer.Core.Networking
             else server.Send(PacketKind.Choice, NetworkCodec.Pack(w => { w.Write((int)character); w.Write((int)team); }));
         }
         public void SetReady(bool ready)
-        { if (Connected && !Running && !Lobby.Drafting && !IsHost) server.Send(PacketKind.Ready, NetworkCodec.Pack(w => w.Write(ready))); }
+        {if(!Connected || Running || Lobby.Drafting)return;if(IsHost){Lobby.Members.Single(m=>m.Host).Ready=ready;if(!ready)CancelCountdown();BroadcastLobby();}else server.Send(PacketKind.Ready, NetworkCodec.Pack(w => w.Write(ready)));}
         public void StartMatch(MatchRules rules)
         {
             if (!CanStart) throw new InvalidOperationException("等待所有球员准备后才能开始");
@@ -369,7 +371,7 @@ namespace Soccer.Core.Networking
         }
         private void LaunchMatch(NetworkStart start)
         {
-            Lobby.Running=true;Lobby.Drafting=false;Draft=null;matchEpoch++;eventBatch.Clear();
+            CancelCountdown();Lobby.Running=true;Lobby.Drafting=false;Draft=null;matchEpoch++;eventBatch.Clear();
             foreach(var guest in guests) guest.Input.Reset();BroadcastLobby();
             var bytes=NetworkCodec.Pack(w=> { w.Write(matchEpoch);NetworkCodec.WriteFields(w,start.Rules);foreach(var character in start.Lineup)w.Write((int)character);
                 w.Write(start.Positions!=null);if(start.Positions!=null)foreach(var point in start.Positions){w.Write(point.X);w.Write(point.Y);} });
@@ -390,14 +392,15 @@ namespace Soccer.Core.Networking
         }
         public void ReturnToLobby()
         {
-            if (!IsHost || !Connected) return; Lobby.Running = false; Lobby.Drafting=false; Draft=null; eventBatch.Clear();
+            if (!IsHost || !Connected) return;CancelCountdown(); Lobby.Running = false; Lobby.Drafting=false; Draft=null; eventBatch.Clear();
             foreach (var guest in guests) guest.Input.Reset();
-            foreach (var member in Lobby.Members) member.Ready = member.Host; BroadcastLobby(); ReturnedToLobby?.Invoke();
+            foreach (var member in Lobby.Members) member.Ready = false; BroadcastLobby(); ReturnedToLobby?.Invoke();
         }
         internal static void WriteLobby(BinaryWriter w, RoomLobby lobby)
         {
             NetworkCodec.Text(w, NetworkCodec.Version); NetworkCodec.Text(w, lobby.Id, 32); NetworkCodec.Text(w, lobby.Code, 6); NetworkCodec.Text(w, lobby.Name, 32); w.Write((int)lobby.Route); w.Write(lobby.RequiresPassword); w.Write(lobby.Running); w.Write(lobby.Drafting); w.Write(lobby.Port);
             w.Write(lobby.Members.Length); foreach (var m in lobby.Members) { w.Write(m.Slot); NetworkCodec.Text(w, m.Name, 24); NetworkCodec.Text(w, m.AccountId, 16); w.Write((int)m.Character); w.Write(m.Ready); w.Write(m.Host); }
+            w.Write(lobby.Bots.Length);foreach(int slot in lobby.Bots)w.Write(slot);w.Write(lobby.CountdownRemaining);
         }
         internal static RoomLobby ReadLobby(BinaryReader r)
         {
@@ -412,7 +415,10 @@ namespace Soccer.Core.Networking
                 if (m.AccountId.Length > 0 && !DebugAccounts.IsKnown(m.AccountId) || lobby.Route == NetworkRoute.Internet && !DebugAccounts.IsKnown(m.AccountId)) throw new InvalidDataException();
                 if (m.Slot < 0 || m.Slot >= 6 || !RoomOptions.ValidCharacter(m.Character) || members.Any(a => a.Slot == m.Slot)) throw new InvalidDataException(); members.Add(m);
             }
-            if (members.Count(m => m.Host) != 1) throw new InvalidDataException(); lobby.Members = members.ToArray(); return lobby;
+            if (members.Count(m => m.Host) != 1) throw new InvalidDataException(); lobby.Members = members.ToArray();
+            int bots=r.ReadInt32();if(bots<0 || bots+count>6)throw new InvalidDataException();lobby.Bots=new int[bots];
+            for(int i=0;i<bots;i++){int slot=r.ReadInt32();if(slot<0 || slot>=6 || members.Any(m=>m.Slot==slot) || lobby.Bots.Take(i).Contains(slot))throw new InvalidDataException();lobby.Bots[i]=slot;}
+            lobby.CountdownRemaining=r.ReadSingle();if(!Geometry.IsFinite(lobby.CountdownRemaining) || lobby.CountdownRemaining<0 || lobby.CountdownRemaining>3 || lobby.CountdownRemaining>0 && (lobby.Running || lobby.Drafting || count+bots!=6 || members.Any(m=>!m.Ready)))throw new InvalidDataException();return lobby;
         }
         private void BroadcastLobby()
         {
