@@ -15,7 +15,7 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="0.22.0" class="loading-version" />
+            <ui:Label text="0.23.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -31,17 +31,18 @@
         </ui:VisualElement>
 
         <ui:VisualElement name="home-page" class="game-home hidden">
-            <ui:VisualElement class="home-topbar row"><ui:VisualElement class="grow" /><ui:Label name="connection-status" class="home-connection" /><ui:Button name="home-account" text="联网登录" class="home-account" /></ui:VisualElement>
+            <ui:VisualElement class="home-topbar row"><ui:VisualElement class="grow" /><ui:Label name="home-coins" class="home-coins" /><ui:Label name="connection-status" class="home-connection" /><ui:Button name="home-account" text="联网登录" class="home-account" /></ui:VisualElement>
             <ui:VisualElement class="home-body">
                 <ui:VisualElement class="home-wordmark"><ui:Label text="SKILL SOCCER" class="home-brand-en" /><ui:Label text="技能足球" class="home-brand-title" /><ui:VisualElement class="home-brand-line" /></ui:VisualElement>
                 <ui:VisualElement name="home-navigation" class="home-navigation">
                     <ui:Button name="bots-button" class="home-nav home-nav-primary"><ui:Label text="开始游戏" class="home-nav-title" /><ui:Label text="选择模式" class="home-nav-note" /><ui:Label text="›" class="home-nav-arrow" /></ui:Button>
                     <ui:Button name="normal-mode" text="联机对战" class="home-nav" />
                     <ui:Button name="train-button" text="训练场" class="home-nav" />
+                    <ui:Button name="shop-button" text="商城" class="home-nav" />
                     <ui:Button name="settings-button" text="设置" class="home-nav home-nav-small" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.22.0" class="home-version" /></ui:VisualElement>
+            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.23.0" class="home-version" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="play-page" class="play-menu hidden">
@@ -300,6 +301,7 @@
             <ui:Label name="result-title" text="训练完成" class="page-title" />
             <ui:Label name="result-score" text="0 : 0" class="result-score" />
             <ui:Label name="result-subtitle" class="muted" />
+            <ui:VisualElement class="row result-wallet"><ui:Label name="result-reward" class="result-reward grow" /><ui:Label name="result-coins" class="result-coins" /></ui:VisualElement>
             <ui:Label name="combat-summary" class="muted combat-summary" />
             <ui:VisualElement class="result-stats row">
                 <ui:VisualElement class="stat"><ui:Label name="stat-goals" class="stat-number" /><ui:Label text="进球" /></ui:VisualElement>
@@ -308,6 +310,20 @@
                 <ui:VisualElement class="stat"><ui:Label name="stat-passes" class="stat-number" /><ui:Label text="成功传球" /></ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement class="row"><ui:Button name="play-again" text="再来一局    →" class="primary" /><ui:Button name="results-home" text="返回主菜单" class="secondary" /></ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="shop-page" class="shop-page hidden">
+            <ui:VisualElement class="row shop-heading"><ui:Label text="商城" class="shop-title grow" /><ui:Button name="shop-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
+            <ui:VisualElement class="shop-content">
+                <ui:VisualElement class="row shop-wallet"><ui:VisualElement class="grow"><ui:Label name="shop-profile" class="shop-profile" /><ui:Label text="金币" class="shop-currency" /><ui:Label name="shop-coins" class="shop-balance" /></ui:VisualElement><ui:VisualElement class="shop-earning"><ui:Label text="对战胜利" class="shop-earning-title" /><ui:Label text="+100 金币" class="shop-earning-amount" /><ui:Label text="AI 对练 / 局域网 / 互联网" class="shop-note" /></ui:VisualElement></ui:VisualElement>
+                <ui:Label name="shop-status" class="shop-note shop-status" />
+                <ui:VisualElement class="row shop-tabs"><ui:Button name="shop-heroes-tab" text="英雄" class="shop-tab shop-tab-selected" /><ui:Button name="shop-skins-tab" text="皮肤" class="shop-tab" /></ui:VisualElement>
+                <ui:VisualElement name="shop-heroes"><ui:VisualElement class="row shop-items">
+                    <ui:VisualElement class="shop-item"><ui:VisualElement name="shop-marine-art" class="shop-portrait" /><ui:Label text="枪兵" class="shop-item-name" /><ui:Label text="初始英雄 · 已拥有" class="shop-owned" /></ui:VisualElement>
+                    <ui:VisualElement class="shop-item"><ui:VisualElement name="shop-thor-art" class="shop-portrait" /><ui:Label text="雷神" class="shop-item-name" /><ui:Label text="初始英雄 · 已拥有" class="shop-owned" /></ui:VisualElement>
+                </ui:VisualElement><ui:Label text="后续英雄将在这里开放购买" class="shop-note shop-coming" /></ui:VisualElement>
+                <ui:VisualElement name="shop-skins" class="shop-empty hidden"><ui:Label text="皮肤即将上线" class="shop-empty-title" /><ui:Label text="后续可用金币购买角色皮肤" class="shop-note" /></ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="settings-page" class="page settings hidden">

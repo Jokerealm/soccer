@@ -1585,7 +1585,47 @@ Test("tutorial scenarios use normal life and command rules",()=> {
 Test("tutorial setup cannot mutate a competitive match",()=> {
  var sim=StarSim(mode:MatchMode.BotMatch);bool rejected=false;try{sim.SetupTrainingLesson(TrainingLesson.Respawn);}catch(InvalidOperationException){rejected=true;}Assert(rejected && !sim.State.Players[0].IsDead,"training-only setup affected a match");
 });
+Test("wallet rewards the winning local team once per completed match",()=> {
+ var store=new MemoryWalletStore();var wallet=new VictoryWallet(store);var sim=StarSim(mode:MatchMode.BotMatch);sim.State.CyanScore=2;sim.State.AmberScore=1;sim.Finish();
+ Assert(wallet.AwardVictory("one",sim.State,0)==100 && wallet.Coins==100,"cyan victory not credited");
+ Assert(wallet.AwardVictory("one",sim.State,0)==0 && wallet.Coins==100 && store.Saves==1,"duplicate settlement credited again");
+ Assert(wallet.AwardVictory("loser",sim.State,3)==0,"losing guest received coins");
+ sim.State.AmberScore=3;Assert(wallet.AwardVictory("two",sim.State,3)==100 && wallet.Coins==200,"amber victory not credited to guest team");
+});
+Test("wallet never rewards practice, a draw, active game or invalid local player",()=> {
+ var store=new MemoryWalletStore();var wallet=new VictoryWallet(store);var sim=StarSim(mode:MatchMode.BotMatch);sim.State.CyanScore=1;
+ Assert(wallet.AwardVictory("active",sim.State,0)==0,"active match credited");sim.Finish();sim.State.AmberScore=1;
+ Assert(wallet.AwardVictory("draw",sim.State,0)==0,"draw credited");sim.State.AmberScore=0;
+ Assert(wallet.AwardVictory("invalid",sim.State,-1)==0 && wallet.AwardVictory("invalid",sim.State,6)==0,"invalid player credited");
+ var training=StarSim();training.State.CyanScore=10;training.Finish();Assert(wallet.AwardVictory("practice",training.State,0)==0 && wallet.Coins==0 && store.Saves==0,"training credited or wallet written");
+});
+Test("wallet save failure rolls back balance and claim, then allows a retry",()=> {
+ var store=new MemoryWalletStore{FailSave=true};var wallet=new VictoryWallet(store);var sim=StarSim(mode:MatchMode.BotMatch);sim.State.CyanScore=1;sim.Finish();
+ bool failedSave=false;try{wallet.AwardVictory("retry",sim.State,0);}catch(IOException){failedSave=true;}
+ Assert(failedSave && wallet.Coins==0 && store.Data.Coins==0 && store.Data.RewardedMatches.Count==0,"failed save partially credited");
+ store.FailSave=false;Assert(wallet.AwardVictory("retry",sim.State,0)==100 && wallet.Coins==100,"claim lost after failed save");
+});
+Test("reloaded wallet preserves coins and duplicate reward history",()=> {
+ var store=new MemoryWalletStore();var wallet=new VictoryWallet(store);var sim=StarSim(mode:MatchMode.BotMatch);sim.State.CyanScore=1;sim.Finish();wallet.AwardVictory("saved",sim.State,0);
+ var reloaded=new VictoryWallet(store);Assert(reloaded.Coins==100 && reloaded.AwardVictory("saved",sim.State,0)==0 && store.Saves==1,"reload lost currency or ledger");
+});
+Test("wallet rejects malformed persisted balances and reward histories",()=> {
+ foreach(var data in new[]{new WalletData{Coins=-1},new WalletData{Version=2},new WalletData{RewardedMatches=null},new WalletData{RewardedMatches=new List<string>{"same","same"}},new WalletData{RewardedMatches=new List<string>{""}}})
+ {bool rejected=false;try{new VictoryWallet(new MemoryWalletStore{Data=data});}catch(ArgumentException){rejected=true;}Assert(rejected,"malformed wallet accepted");}
+});
+Test("wallet balance overflow cannot corrupt saved money or claim history",()=> {
+ var store=new MemoryWalletStore{Data=new WalletData{Coins=long.MaxValue-50}};var wallet=new VictoryWallet(store);var sim=StarSim(mode:MatchMode.BotMatch);sim.State.CyanScore=1;sim.Finish();
+ bool rejected=false;try{wallet.AwardVictory("overflow",sim.State,0);}catch(OverflowException){rejected=true;}
+ Assert(rejected && wallet.Coins==long.MaxValue-50 && store.Saves==0 && store.Data.RewardedMatches.Count==0,"overflow corrupted wallet");
+});
 string reportDir = args.Length > 0 ? args[0] : Path.GetFullPath("reports");
 Directory.CreateDirectory(reportDir);
 File.WriteAllText(Path.Combine(reportDir, "core-tests.json"), JsonSerializer.Serialize(new { passed = failed == 0, total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));
 return failed == 0 ? 0 : 1;
+
+sealed class MemoryWalletStore : IWalletStore
+{
+ public WalletData Data=new WalletData();public bool FailSave;public int Saves;
+ public WalletData Load()=>Data;
+ public void Save(WalletData data){if(FailSave)throw new IOException("test storage failure");Data=data;Saves++;}
+}

@@ -79,7 +79,7 @@ namespace Soccer.Runtime
             Room.SnapshotReceived += bytes =>
             {
                 if (Simulation == null) return;
-                long tick = Simulation.State.Tick; NetworkCodec.ApplySnapshot(Simulation.State, bytes); lastSnapshotAt = Time.realtimeSinceStartup;
+                long tick = Simulation.State.Tick; NetworkCodec.ApplySnapshot(Simulation.State, bytes);SettleMatchReward(); lastSnapshotAt = Time.realtimeSinceStartup;
                 if (Simulation.State.Tick > tick) foreach (var e in Simulation.State.Events) HandleEvent(e);
             };
             Room.Failed += reason =>
@@ -93,6 +93,7 @@ namespace Soccer.Runtime
             LocalPlayerId = Room.LocalSlot; Selected = start.Lineup[LocalPlayerId]; SelectedMode = MatchMode.BotMatch;
             Simulation = new MatchSimulation(start.Rules, Array.ConvertAll(Characters, c => c.CreateStats()), start.Lineup[0], MatchMode.BotMatch, start.Lineup);
             if(start.Positions!=null)Simulation.ApplyOpeningPositions(start.Positions);
+            BeginRewardSession("network:"+Room.MatchId);
             localInput = new KeyboardMouseInput(WorldCamera,Keys); inputSources = new ICommandSource[6]; commands = new PlayerCommand[6];
             for (int i = 0; i < 6; i++) inputSources[i] = i == LocalPlayerId ? (ICommandSource)localInput : new BotCommandSource(Simulation.Rules);
             View.LocalPlayerId = Audio.LocalPlayerId = LocalPlayerId; View.Bind(Simulation.State, Characters);
@@ -113,6 +114,7 @@ namespace Soccer.Runtime
             var state = Simulation.State;
             if (state.Phase == MatchPhase.Finished)
             {
+                SettleMatchReward();
                 if (CelebratingFinalGoal) FinalGoalRemaining = Mathf.Max(0, FinalGoalRemaining - Mathf.Min(Time.unscaledDeltaTime, .1f));
                 View.Render(state, Simulation.Rules, 1, ShowDebug, !Paused); UI.RefreshMatch();
                 if (FinalGoalRemaining <= 0) ShowResults(); return;

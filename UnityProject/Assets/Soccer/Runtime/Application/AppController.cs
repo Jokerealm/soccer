@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Soccer.Runtime
 {
-    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby, Login, PlayMenu }
+    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby, Login, PlayMenu, Shop }
 
     /// <summary>应用流程编排：创建对局、推进固定 Tick、暂停、结束。业务规则留在 Core。</summary>
     public sealed partial class AppController : MonoBehaviour
@@ -46,6 +46,7 @@ namespace Soccer.Runtime
             if (Array.Find(Characters, d => d.Stats.Id == Selected) == null) Selected = Characters[0].Stats.Id;
             InitializeLoginAddress();
             Keys = new GameKeyBindings();
+            InitializeEconomy();
             UI.Bind(this);
             UI.ShowPage(Page);
             Audio.SetContext(Page, false);
@@ -127,6 +128,7 @@ namespace Soccer.Runtime
             Simulation = new MatchSimulation(RulesAsset.CreateRules(), roster, Selected, SelectedMode,SelectedMode==MatchMode.BotMatch ? preparedLineup : null);
             if(SelectedMode==MatchMode.BotMatch && preparedPositions!=null)Simulation.ApplyOpeningPositions(preparedPositions);
             preparedLineup=null;preparedPositions=null;
+            BeginRewardSession();
             localInput = new KeyboardMouseInput(WorldCamera,Keys);
             inputSources = new ICommandSource[Simulation.State.Players.Count];
             commands = new PlayerCommand[inputSources.Length];
@@ -240,6 +242,7 @@ namespace Soccer.Runtime
         internal void HandleEvent(MatchEvent e)
         {
             Tutorial?.ObserveEvent(e);
+            if(Simulation.State.Phase==MatchPhase.Finished)SettleMatchReward();
             if(e.Kind==MatchEventKind.Restart) WorldCamera.GetComponent<ArenaCamera>().ResetFraming();
             if(e.Kind==MatchEventKind.Goal && Simulation.State.Phase==MatchPhase.Finished) FinalGoalRemaining=2;
             Audio.PlayEvent(e, Simulation.State);
@@ -326,10 +329,11 @@ namespace Soccer.Runtime
         }
         public void EndSession() { Simulation?.Finish(); ShowResults(); }
         private void ShowResults()
-        { FinalGoalRemaining=0;Paused = false; Page = AppPage.Results; UI.ShowPage(Page); Audio.SetContext(Page, false); Audio.PlayFinish(); }
+        { SettleMatchReward();FinalGoalRemaining=0;Paused = false; Page = AppPage.Results; UI.ShowPage(Page); Audio.SetContext(Page, false); Audio.PlayFinish(); }
         public void GoHome()
         {
             if (!EnsureEntered()) return;
+            SettleMatchReward();ReloadWallet();
             CloseNetworking(); LocalPlayerId = 0;
             localDraft=null;Tutorial=null;preparedLineup=null;preparedPositions=null;shownNetworkDraftEpoch=0;
             Page = AppPage.Home; Paused = false; Simulation = null;

@@ -55,6 +55,13 @@ namespace Soccer.Runtime
             Check(app.UI.Root.Q<TextField>("login-password").value.Length==0,"failed online login clears the password field");
             yield return Click("login-offline");
             Check(app.Page == AppPage.Home && app.EntryMode == GameEntryMode.Offline && app.Account == null, "offline entry needs no login service and retains game access");
+            if (Array.IndexOf(args,"--soccer-shop-preview") >= 0)
+            {
+                yield return CaptureShopAndNavigation();
+                File.WriteAllText(Path.Combine(output,"runtime-smoke.json"),JsonUtility.ToJson(new Report
+                { editor=Application.unityVersion,platform=Application.platform.ToString(),passed=errors.Count==0,checks=checks.ToArray(),errors=errors.ToArray() },true));
+                Application.logMessageReceived-=CaptureError;Application.Quit(errors.Count==0?0:1);yield break;
+            }
             if (Array.IndexOf(args,"--soccer-draft-tutorial-preview") >= 0)
             {
                 yield return CaptureDraftAndTutorial();
@@ -121,8 +128,9 @@ namespace Soccer.Runtime
             Debug.Log($"SOCCER_AUDIO_PROBE signal={signal} playing={musicSource.isPlaying} virtual={musicSource.isVirtual} time={musicSource.time} volume={musicSource.volume} listener={AudioListener.volume} loaded={musicSource.clip.loadState} dsp={AudioSettings.dspTime}");
             Check(signal, "music source produces nonzero audio samples");
             yield return Capture("01-home");
-            string[] modeButtons = { "bots-button", "normal-mode", "train-button", "settings-button" };
+            string[] modeButtons = { "bots-button", "normal-mode", "train-button", "shop-button", "settings-button" };
             yield return CaptureMainMenuFlow();
+            yield return CaptureShopAndNavigation();
             yield return CaptureDraftAndTutorial();
             yield return CaptureBindingsAndModels();
             if (Array.IndexOf(args, "--soccer-menu-preview") >= 0)
@@ -1593,7 +1601,7 @@ namespace Soccer.Runtime
             foreach (var size in new[] { new Vector2Int(1024,768), new Vector2Int(1280,720), new Vector2Int(1920,1080) })
             {
                 Screen.SetResolution(size.x, size.y, false); yield return new WaitForSecondsRealtime(.55f);
-                foreach (string name in new[] { "bots-button", "normal-mode", "train-button", "settings-button", "home-account" })
+                foreach (string name in new[] { "bots-button", "normal-mode", "train-button", "shop-button", "settings-button", "home-account" })
                 {
                     var bounds = app.UI.Root.Q(name).worldBound;
                     Check(PicksButton(name) && app.UI.Root.worldBound.Contains(bounds.min) && app.UI.Root.worldBound.Contains(bounds.max),

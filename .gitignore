@@ -45,3 +45,6 @@ assets/packages/*.zip
 *.booproj
 *.opendb
 *.VC.db
+
+# Probe economy profiles stay local.
+reports/**/wallets/

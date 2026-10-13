@@ -8,21 +8,21 @@ namespace Soccer.Runtime
     /// <summary>UXML 负责层级，USS 负责样式，此文件只绑定按钮和刷新展示字段。</summary>
     [RequireComponent(typeof(UIDocument))]
     [DefaultExecutionOrder(200)]
-    public sealed class GameUI : MonoBehaviour
+    public sealed partial class GameUI : MonoBehaviour
     {
         public StyleSheet Styles;
         private VisualElement root;
         private AppController app;
-        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page", "play-page" };
+        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page", "play-page", "shop-page" };
         public CharacterPreviewView CharacterPreview { get; private set; }
         public KeyBindingsUI KeyBindings { get; private set; }
         public bool BlocksKeyNavigation => KeyBindings != null && KeyBindings.BlocksNavigation;
         public MenuStageView MenuStage { get; private set; }
         private Texture2D menuVeil;
-        private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "settings-button" };
-        private readonly System.Collections.Generic.Dictionary<string, Action> homeActions = new System.Collections.Generic.Dictionary<string, Action>();
+        private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "shop-button", "settings-button" };
         private DraftUI draftUI;
         private TutorialUI tutorialUI;
+        private ShopUI shopUI;
         private NetworkUI network;
         private LoginUI login;
         private readonly string[] scoreFields = { "stat-goals", "stat-steals", "stat-kicks", "stat-passes" };
@@ -67,12 +67,14 @@ namespace Soccer.Runtime
             BindButton("tutorial-previous",app.PreviousTutorialStep);
             BindButton("tutorial-retry",app.RestartTutorialStep);
             BindButton("tutorial-exit",()=>{app.GoHome();app.OpenPlayMenu();});
+            BindButton("shop-button",app.OpenShop);
+            BindButton("shop-back",app.GoHome);
             BindButton("settings-button", app.OpenSettings);
             BindButton("select-back", app.BackFromSelection);
             BindButton("normal-mode", () => app.OpenMode(GamePlaylist.Normal));
             BindButton("mode-back", app.BackFromMode);
             BindButton("route-login", app.OpenLogin);
-            root.Q("home-page").RegisterCallback<KeyDownEvent>(NavigateHome, TrickleDown.TrickleDown);
+            BindMenuNavigation();
             BindButton("internet-route", () => app.SelectConnection(ConnectionRoute.Internet));
             BindButton("lan-route", () => app.SelectConnection(ConnectionRoute.LAN));
             BindButton("online-play", () => app.OpenNetwork(true));
@@ -138,7 +140,8 @@ namespace Soccer.Runtime
             login=new LoginUI(app,root);
             BindButton("home-account", app.OpenLogin);
             network=new NetworkUI(app,root);
-            draftUI=new DraftUI(app,root);tutorialUI=new TutorialUI(app,root);
+            draftUI=new DraftUI(app,root);tutorialUI=new TutorialUI(app,root);shopUI=new ShopUI(app,root);
+            SetImage("shop-marine-art","portrait-marine-v2");SetImage("shop-thor-art","portrait-thor-v2");
             SetFullHud(LoadFullHudPreference(), false);
             RefreshAudioSettings();
             RefreshSelection();
@@ -165,24 +168,6 @@ namespace Soccer.Runtime
             Visible(root.Q("route-login"), !online);
             root.Q<Button>("online-play").SetEnabled(true);
             root.Q<Button>("join-room").SetEnabled(true);
-        }
-
-        private void NavigateHome(KeyDownEvent evt)
-        {
-            if (app.Page != AppPage.Home) return;
-            var focused = root.panel.focusController.focusedElement as Button;
-            int index = focused == null ? -1 : Array.IndexOf(homeButtons, focused.name);
-            if (evt.keyCode == KeyCode.UpArrow || evt.keyCode == KeyCode.DownArrow)
-            {
-                index = (index + (evt.keyCode == KeyCode.UpArrow ? homeButtons.Length - 1 : 1) + homeButtons.Length) % homeButtons.Length;
-                root.Q<Button>(homeButtons[index]).Focus();
-                evt.StopImmediatePropagation(); evt.PreventDefault();
-            }
-            else if ((evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter) && index >= 0)
-            {
-                app.Audio.PlayClick(); homeActions[homeButtons[index]]();
-                evt.StopImmediatePropagation(); evt.PreventDefault();
-            }
         }
 
         private void CreateMenuVeil()
@@ -213,7 +198,6 @@ namespace Soccer.Runtime
         private void BindButton(string name, Action action)
         {
             var button = root.Q<Button>(name);
-            if (Array.IndexOf(homeButtons, name) >= 0) homeActions[name] = action;
             if (button == null) throw new InvalidOperationException($"UXML 缺少按钮 {name}");
             button.RegisterCallback<PointerEnterEvent>(_ => app.Audio.PlayHover());
             button.RegisterCallback<FocusInEvent>(_ => app.Audio.PlayHover());
@@ -275,6 +259,8 @@ namespace Soccer.Runtime
             else KeyBindings?.Show(false);
             ShowPause(false);
             RefreshLogin();
+            shopUI?.Refresh();
+            if(page==AppPage.PlayMenu)root.schedule.Execute(()=>{if(app.Page==AppPage.PlayMenu)root.Q<Button>("play-online").Focus();});
             if (page == AppPage.CharacterSelect) RefreshSelection();
             if (page == AppPage.ModeDetails) RefreshModeDetails();
             if (page == AppPage.NetworkMenu || page == AppPage.RoomLobby) RefreshNetwork();
@@ -441,6 +427,8 @@ namespace Soccer.Runtime
             var p = state.Players[app.LocalPlayerId];
             bool training = state.Mode == MatchMode.Training;
             Text("result-title", training ? "训练完成" : state.CyanScore > state.AmberScore ? "青队获胜" : state.CyanScore < state.AmberScore ? "橙队获胜" : "双方平局");
+            Text("result-reward",app.MatchRewardText);
+            Text("result-coins",app.Wallet==null ? "金币余额 —" : "金币余额  "+app.Wallet.Coins.ToString("N0"));
             Text("result-score", $"{state.CyanScore}  :  {state.AmberScore}");
             root.Q<Button>("play-again").text=app.Room!=null ? "返回房间" : "再来一场";
             root.Q<Button>("play-again").SetEnabled(app.Room==null || app.Room.IsHost);

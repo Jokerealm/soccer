@@ -394,3 +394,46 @@ Button.tutorial-utility { font-size: 12px; padding: 5px 8px; min-height: 28px; m
 Button.tutorial-next { font-size: 13px; min-height: 30px; margin: 0 0 4px; padding: 6px 12px; border-width: 1px; border-radius: 2px; color: rgb(32,43,46); background-color: rgb(239,191,91); }
 Button.tutorial-next:disabled { background-color: rgb(42,59,69); color: rgb(103,132,149); border-color: rgb(57,81,96); }
 .tutorial-marker { position: absolute; width: 44px; height: 44px; border-radius: 25px; border-width: 3px; border-color: rgb(255,208,98); background-color: rgba(255,198,80,0.1); }
+
+/* Keyboard selection remains explicit when a menu regains focus. */
+Button.home-nav.home-selected { border-left-color: rgb(255,183,70); background-color: rgba(119,153,171,0.20); color: rgb(255,223,166); }
+Button.home-nav-primary { border-left-color: rgba(255,183,70,0); background-color: rgba(10,23,35,0.18); }
+Button.home-nav-primary.home-selected { background-color: rgba(169,124,54,0.24); border-left-color: rgb(255,183,70); }
+.home-coins { font-size: 14px; color: rgb(239,198,105); margin-right: 26px; }
+/* Prototype shop: actual balance, starter heroes, and future skin category. */
+.shop-page { flex-grow: 1; padding: 38px 58px; }
+.shop-heading { margin-bottom: 25px; }
+.shop-title { font-size: 42px; color: rgb(240,245,245); -unity-font-definition: url("ChineseBold.asset"); }
+.shop-content { width: 780px; max-width: 67%; }
+.shop-wallet { padding: 24px; background-color: rgba(15,32,46,0.95); border-width: 1px; border-color: rgb(64,93,107); }
+.shop-profile { font-size: 12px; color: rgb(158,188,203); margin-bottom: 12px; }
+.shop-currency { font-size: 14px; color: rgb(221,193,131); }
+.shop-balance { font-size: 40px; color: rgb(255,205,104); -unity-font-definition: url("ChineseBold.asset"); }
+.shop-earning { padding-left: 30px; border-left-width: 1px; border-left-color: rgb(64,93,107); }
+.shop-earning-title { font-size: 14px; color: rgb(197,217,226); margin-bottom: 8px; }
+.shop-earning-amount { font-size: 24px; color: rgb(255,205,104); margin-bottom: 9px; }
+.shop-note { color: rgb(149,177,194); font-size: 12px; white-space: normal; }
+.shop-status { margin-top: 10px; }
+.shop-tabs { margin-top: 24px; margin-bottom: 18px; }
+Button.shop-tab { min-width: 100px; background-color: rgba(18,37,52,0.92); color: rgb(170,197,213); border-radius: 0; border-width: 1px; border-color: rgb(53,82,100); }
+Button.shop-tab-selected { color: rgb(251,212,140); border-bottom-width: 2px; border-bottom-color: rgb(246,191,85); }
+.shop-item { width: 48%; padding: 18px; margin-right: 15px; background-color: rgba(15,32,46,0.95); border-width: 1px; border-color: rgb(48,79,96); }
+.shop-portrait { height: 160px; -unity-background-scale-mode: scale-to-fit; }
+.shop-item-name { margin-top: 13px; font-size: 24px; color: rgb(238,241,228); -unity-font-definition: url("ChineseBold.asset"); }
+.shop-owned { margin-top: 9px; font-size: 13px; color: rgb(131,213,188); }
+.shop-coming { margin-top: 15px; }
+.shop-empty { height: 250px; justify-content: center; align-items: center; background-color: rgba(15,32,46,0.95); border-width: 1px; border-color: rgb(48,79,96); }
+.shop-empty-title { font-size: 27px; color: rgb(224,235,239); margin-bottom: 14px; }
+.result-wallet { margin-top: 10px; margin-bottom: 8px; padding: 12px 16px; background-color: rgb(226,232,222); border-radius: 4px; }
+.result-reward { font-size: 19px; color: rgb(130,93,38); white-space: normal; }
+.result-coins { font-size: 14px; color: rgb(99,121,117); }
+.compact-front-end .shop-page { padding-top: 22px; padding-bottom: 22px; }
+.compact-front-end .shop-heading { margin-bottom: 15px; }
+.compact-front-end .shop-wallet { padding: 15px 20px; }
+.compact-front-end .shop-portrait { height: 125px; }
+.compact-front-end .shop-tabs { margin-top: 14px; margin-bottom: 12px; }
+.narrow-front-end .shop-content { max-width: 77%; }
+
+Button.shop-tab:hover { background-color: rgb(34,58,76); border-color: rgb(163,145,105); }
+
+.result-coins { margin-left: 18px; }

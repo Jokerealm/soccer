@@ -42,7 +42,7 @@ namespace Soccer.Runtime
             if (!StartupReady) return;
             if (loginRoutine != null) StopCoroutine(loginRoutine); loginRoutine = null; LoginBusy = false;
             Account?.Dispose(); Account = null; serviceAccessToken = ""; EntryMode = GameEntryMode.Offline; Route = ConnectionRoute.LAN;
-            LoginStatus = ""; GoHome();
+            LoginStatus = "";ReloadWallet(); GoHome();
         }
         public void SignInOnline(string serverAddress, string account, string password)
         {
@@ -83,7 +83,7 @@ namespace Soccer.Runtime
                     if (session != null)
                     {
                         Account?.Dispose(); Account = session; EntryMode = GameEntryMode.Online;
-                        LoginStatus = ""; Route = ConnectionRoute.Internet; GoHome();
+                        LoginStatus = ""; Route = ConnectionRoute.Internet;ReloadWallet(); GoHome();
                     }
                     else LoginStatus = "登录服务器返回无效的帐号信息";
                 }

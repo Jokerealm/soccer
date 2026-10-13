@@ -119,6 +119,7 @@ namespace Soccer.Core.Networking
         private volatile bool disposed;
         private bool failed;
         private readonly List<MatchEvent> eventBatch = new List<MatchEvent>();
+        public string MatchId => matchEpoch>0 ? Lobby.Id+":"+matchEpoch : "";
         public bool CanStart => IsHost && Connected && !Running && !Lobby.Drafting && Lobby.Members.All(m => m.Host || m.Ready);
         public static NetworkRoom Host(RoomOptions value)
         {
