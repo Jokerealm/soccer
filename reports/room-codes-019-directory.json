@@ -1,0 +1,151 @@
+{
+  "passed": true,
+  "total": 36,
+  "checks": [
+    {
+      "name": "network login issues a room-service session for a",
+      "passed": true
+    },
+    {
+      "name": "network login issues a room-service session for b",
+      "passed": true
+    },
+    {
+      "name": "network login issues a room-service session for a",
+      "passed": true
+    },
+    {
+      "name": "separate logins of one debug account have distinct session ownership",
+      "passed": true
+    },
+    {
+      "name": "anonymous room publication is rejected",
+      "passed": true
+    },
+    {
+      "name": "anonymous room lookup is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid session token is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid publication field code is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid publication field code is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid publication field code is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid publication field roomId is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid publication field port is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid publication field players is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid publication field host is rejected",
+      "passed": true
+    },
+    {
+      "name": "invalid publication field name is rejected",
+      "passed": true
+    },
+    {
+      "name": "publication creates a six-character mixed room code",
+      "passed": true
+    },
+    {
+      "name": "service determines host IP and preserves the program-selected port",
+      "passed": true
+    },
+    {
+      "name": "retry is idempotent for the same host session and room identity",
+      "passed": true
+    },
+    {
+      "name": "concurrent preferred-code collisions receive distinct room codes",
+      "passed": true
+    },
+    {
+      "name": "guest resolves lowercase input to the actual room endpoint",
+      "passed": true
+    },
+    {
+      "name": "directory publishes password requirement without accepting or returning passwords",
+      "passed": true
+    },
+    {
+      "name": "another session of the same shared account cannot overwrite the room",
+      "passed": true
+    },
+    {
+      "name": "another account cannot remove the room",
+      "passed": true
+    },
+    {
+      "name": "invalid room-code lookup format is rejected",
+      "passed": true
+    },
+    {
+      "name": "unknown room code returns a clear miss",
+      "passed": true
+    },
+    {
+      "name": "renewal cannot change room identity",
+      "passed": true
+    },
+    {
+      "name": "started match refuses new room-code joins",
+      "passed": true
+    },
+    {
+      "name": "full room refuses new room-code joins",
+      "passed": true
+    },
+    {
+      "name": "host heartbeat updates port and player count",
+      "passed": true
+    },
+    {
+      "name": "host renews the lease before it expires",
+      "passed": true
+    },
+    {
+      "name": "renewed room survives the original expiry time",
+      "passed": true
+    },
+    {
+      "name": "lost host automatically expires without a close request",
+      "passed": true
+    },
+    {
+      "name": "recently expired code is not immediately assigned to a different room",
+      "passed": true
+    },
+    {
+      "name": "host explicitly closes its published room",
+      "passed": true
+    },
+    {
+      "name": "closed room can no longer be resolved",
+      "passed": true
+    },
+    {
+      "name": "recently closed code is reserved against stale-number reuse",
+      "passed": true
+    }
+  ],
+  "leaseSeconds": 3
+}

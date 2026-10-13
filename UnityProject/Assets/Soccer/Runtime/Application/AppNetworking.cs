@@ -28,7 +28,7 @@ namespace Soccer.Runtime
         public void BackFromNetwork()
         { CloseNetworking(); OpenMode(SelectedPlaylist); }
         private void CloseNetworking()
-        { Room?.Dispose(); Room = null; Discovery?.Dispose(); Discovery = null; }
+        { StopRoomDirectory(); Room?.Dispose(); Room = null; Discovery?.Dispose(); Discovery = null; }
         public void CreateNetworkRoom(RoomOptions options)
         {
             try
@@ -36,10 +36,22 @@ namespace Soccer.Runtime
                 Room?.Dispose(); options.Route = (NetworkRoute)Route; options.Account = Account;
                 Room = NetworkRoom.Host(options); AttachRoom(); LocalPlayerId = Room.LocalSlot;
                 NetworkStatus = Room.Status; Page = AppPage.RoomLobby; UI.ShowPage(Page);
+                if (options.Route == NetworkRoute.Internet) StartRoomPublication(Room);
             }
             catch (Exception e) { Room?.Dispose(); Room = null; NetworkStatus = e is ArgumentException ? e.Message : "无法创建房间，请稍后重试或检查系统的网络访问权限"; UI.RefreshNetwork(); }
         }
         public void JoinNetworkRoom(string address, RoomOptions options)
+        {
+            if (NetworkLookupBusy || Room != null) return;
+            if (Route == ConnectionRoute.Internet)
+            {
+                if (!RoomCode.TryNormalize(address, out string code)) { NetworkStatus = "请输入 6 位大写字母和数字组成的房间号"; options.Password = ""; UI.RefreshNetwork(); return; }
+                StartRoomLookup(code, options, true); return;
+            }
+            if (RoomCode.TryNormalize(address, out string lanCode)) { StartRoomLookup(lanCode, options, false); return; }
+            ConnectNetworkRoom(address, options);
+        }
+        private void ConnectNetworkRoom(string address, RoomOptions options)
         {
             try
             {
@@ -52,7 +64,7 @@ namespace Soccer.Runtime
         {
             Room.Changed += () =>
             {
-                if (Room == null) return; LocalPlayerId = Room.LocalSlot; NetworkStatus = Room.Status;
+                if (Room == null) return; publicationDirty = true; LocalPlayerId = Room.LocalSlot; NetworkStatus = Room.Status;
                 if (Room.Connected && Page == AppPage.NetworkMenu) { Page = AppPage.RoomLobby; UI.ShowPage(Page); }
                 UI.RefreshNetwork();
             };
@@ -71,7 +83,7 @@ namespace Soccer.Runtime
             };
             Room.Failed += reason =>
             {
-                Room?.Dispose(); Room = null; NetworkStatus = reason; Simulation = null; Paused = false; LocalPlayerId = 0;
+                StopRoomDirectory(); Room?.Dispose(); Room = null; NetworkStatus = reason; Simulation = null; Paused = false; LocalPlayerId = 0;
                 localInput?.Reset(); View.Clear(); Page = AppPage.NetworkMenu; UI.ShowPage(Page); Audio.SetContext(Page, false);
             };
         }
@@ -122,6 +134,7 @@ namespace Soccer.Runtime
             float alpha = Room.IsHost ? accumulator / MatchSimulation.TickSeconds : Mathf.Clamp01((Time.realtimeSinceStartup - lastSnapshotAt) / .05f);
             Audio.Observe(state, Simulation.Rules); View.Render(state, Simulation.Rules, alpha, ShowDebug, !Paused, localInput.PreviewAim, localInput.SelectingSkillTarget); UI.RefreshMatch();
         }
-        private void OnDestroy() { CloseNetworking(); Account?.Dispose(); Account = null; }
+        private void OnApplicationQuit() { applicationQuitting = true; }
+        private void OnDestroy() { applicationQuitting = true; CloseNetworking(); Account?.Dispose(); Account = null; }
     }
 }

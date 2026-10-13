@@ -15,8 +15,7 @@ namespace Soccer.Runtime
         private readonly VisualElement root;
         private readonly List<string> characters = new List<string> { "枪兵", "雷神" };
         private readonly List<string> teams = new List<string> { "青队", "橙队" };
-        private NetworkRoom shownRoom;
-        private string discoverySignature = "", lobbySignature = "";
+                private string discoverySignature = "", lobbySignature = "";
         private TextField Field(string name) => root.Q<TextField>(name);
         private DropdownField Drop(string name) => root.Q<DropdownField>(name);
         private void Text(string name, string value) => root.Q<Label>(name).text = value;
@@ -27,7 +26,7 @@ namespace Soccer.Runtime
             foreach (string name in new[] { "network-character", "lobby-character" }) { Drop(name).choices = characters; Drop(name).SetValueWithoutNotify(characters[0]); }
             foreach (string name in new[] { "network-team", "lobby-team" }) { Drop(name).choices = teams; Drop(name).SetValueWithoutNotify(teams[0]); }
             Field("network-player-name").maxLength = 24; Field("network-room-name").maxLength = 32;
-            Field("network-address").maxLength = 1600; Field("network-public-address").maxLength = 253;
+            Field("network-address").maxLength = 1600;
             Field("network-player-name").SetValueWithoutNotify(PlayerPrefs.GetString("soccer.playerName", "球员"));
             foreach (string name in new[] { "network-room-password", "network-join-password" }) { Field(name).isPasswordField = true; Field(name).maxLength = 64; }
             root.Q<Toggle>("network-password-enabled").RegisterValueChangedCallback(e => Field("network-room-password").SetEnabled(e.newValue));
@@ -68,15 +67,16 @@ namespace Soccer.Runtime
         {
             if (app.Page == AppPage.NetworkMenu)
             {
-                bool lan = app.Route == ConnectionRoute.LAN; bool busy = app.Room != null;
+                bool lan = app.Route == ConnectionRoute.LAN; bool busy = app.Room != null || app.NetworkLookupBusy;
                 bool canSetUp = lan || app.EntryMode == GameEntryMode.Online;
                 Show("network-profile", canSetUp);
                 Text("network-title", lan ? "局域网房间" : "互联网房间");
-                Text("network-description", lan ? "和同一网络的朋友联机，最多 6 人；空位由 AI 补齐。" : "复制房间邀请给朋友，对方粘贴即可加入；最多 6 人，空位由 AI 补齐。");
+                Text("network-description", lan ? "和同一网络的朋友联机，最多 6 人；空位由 AI 补齐。" : "输入朋友的 6 位房间号加入，最多 6 人；空位由 AI 补齐。");
                 Show("network-create-form", canSetUp && app.NetworkCreating); Show("network-join-form", canSetUp && !app.NetworkCreating);
                 Show("network-internet-options", !lan); Show("network-join-password", !lan); Show("network-lan-discovery", lan);
-                Field("network-address").label = lan ? "房主 IP 或房间邀请" : "房间邀请";
-                Text("network-address-help", lan ? "从下方选择房间，或只输入房主 IP，例如 192.168.1.10；也可粘贴朋友的邀请。" : "粘贴朋友复制的完整房间邀请，再填写房间密码（如有）。");
+                Field("network-address").label = lan ? "房间号或房主 IP" : "房间号";
+                Field("network-address").maxLength = lan ? 1600 : 6;
+                Text("network-address-help", lan ? "从下方选择房间，或输入 6 位房间号；找不到时也可输入房主 IP。" : "输入 6 位大写字母和数字组成的房间号，例如 AB12CD；有密码的房间另填密码。");
                 Text("network-status", app.NetworkStatus);
                 if (lan && app.NetworkStatus.Length == 0) Text("network-status", app.Discovery?.Status ?? "");
                 root.Q("network-create-tab").EnableInClassList("route-selected", app.NetworkCreating);
@@ -90,7 +90,7 @@ namespace Soccer.Runtime
         private void RefreshDiscovered()
         {
             var rooms = app.Discovery?.Rooms ?? new DiscoveredRoom[0];
-            string signature = string.Join("|", rooms.Select(r => r.Address + r.Lobby.Name + r.Lobby.Members.Length + r.Lobby.Running)) + (app.Room != null);
+            string signature = string.Join("|", rooms.Select(r => r.Address + r.Lobby.Code + r.Lobby.Name + r.Lobby.Members.Length + r.Lobby.Running)) + (app.Room != null);
             Show("network-room-list-empty", rooms.Count == 0);
             if (signature == discoverySignature) return; discoverySignature = signature;
             var list = root.Q("network-room-list"); list.Clear();
@@ -98,10 +98,10 @@ namespace Soccer.Runtime
             {
                 var row = new VisualElement(); row.AddToClassList("row"); row.AddToClassList("discovery-room");
                 NetworkRoom.ParseAddress(room.Address, out string host, out int _);
-                row.Add(new Label(room.Lobby.Name + " · " + room.Lobby.Members.Length + "/6\n" + host + (room.Lobby.Running ? " · 比赛中" : "")));
+                row.Add(new Label(room.Lobby.Name + " · " + room.Lobby.Members.Length + "/6 · " + room.Lobby.Code + "\n" + host + (room.Lobby.Running ? " · 比赛中" : "")));
                 string invite = NetworkRoom.CreateInvitation(host, room.Lobby);
                 var join = new Button(() => { Field("network-address").SetValueWithoutNotify(invite); app.JoinNetworkRoom(invite, Options()); }) { text = "加入", name = "network-discovered-" + room.Lobby.Id };
-                join.SetEnabled(!room.Lobby.Running && room.Lobby.Members.Length < 6 && app.Room == null); row.Add(join); list.Add(row);
+                join.SetEnabled(!room.Lobby.Running && room.Lobby.Members.Length < 6 && app.Room == null && !app.NetworkLookupBusy); row.Add(join); list.Add(row);
             }
         }
         private void RefreshLobby()
@@ -117,24 +117,14 @@ namespace Soccer.Runtime
                 root.Q<Button>("lobby-ready").text = local.Ready ? "取消准备" : "准备";
             }
             Show("lobby-ready", !room.IsHost); Show("lobby-start", room.IsHost);
-            root.Q<Button>("lobby-start").SetEnabled(room.CanStart);
+            root.Q<Button>("lobby-start").SetEnabled(room.CanStart && app.RoomCodeReady);
             root.Q<Button>("lobby-ready").SetEnabled(!lobby.Running);
             Drop("lobby-character").SetEnabled(!lobby.Running); Drop("lobby-team").SetEnabled(!lobby.Running);
-            if (shownRoom != room)
-            {
-                shownRoom = room; lobbySignature = "";
-                string host = lobby.Route == NetworkRoute.LAN ? NetworkRoom.LocalAddresses().FirstOrDefault() ?? "127.0.0.1" : Field("network-public-address").value.Trim();
-                string invite = "";
-                if (room.IsHost && host.Length > 0)
-                    try { invite = room.Invitation(host); } catch (ArgumentException) { }
-                else if (!room.IsHost)
-                { NetworkRoom.ParseAddress(Field("network-address").value, out host, out int _); invite = room.Invitation(host); }
-                Field("lobby-address").SetValueWithoutNotify(invite);
-                Field("lobby-address").isReadOnly = true;
-            }
-            Text("lobby-address-note", lobby.Route == NetworkRoute.LAN ? "朋友可搜索房间、粘贴邀请，或输入房主 IP：" + string.Join(" / ", NetworkRoom.LocalAddresses())
-                : room.IsHost ? (Field("lobby-address").value.Length == 0 ? "当前互联网服务尚未部署；直连测试需在建房时填写可访问的房主 IP 或域名。" : "复制邀请给朋友；房间密码请单独告知。") : "可复制邀请重新加入；比赛进行中暂不接收新球员。");
-            root.Q<Button>("lobby-copy-address").SetEnabled(!string.IsNullOrWhiteSpace(Field("lobby-address").value));
+            Field("lobby-address").SetValueWithoutNotify(app.RoomCodeReady ? lobby.Code : "生成中…");
+            Field("lobby-address").isReadOnly = true;
+            Text("lobby-address-note", lobby.Route == NetworkRoute.LAN ? "朋友可以搜索房间、输入房间号，或输入房主 IP：" + string.Join(" / ", NetworkRoom.LocalAddresses())
+                : app.RoomCodeReady ? "把房间号告诉朋友即可加入；房间密码请单独告知。" : "正在连接房间服务，房间号就绪后即可邀请朋友。");
+            root.Q<Button>("lobby-copy-address").SetEnabled(app.RoomCodeReady);
             string signature = string.Join("|", lobby.Members.Select(m => m.Slot + ":" + m.Name + m.AccountId + m.Character + m.Ready)) + room.LocalSlot;
             if (signature == lobbySignature) return; lobbySignature = signature;
             root.Q("lobby-cyan-members").Clear(); root.Q("lobby-amber-members").Clear();

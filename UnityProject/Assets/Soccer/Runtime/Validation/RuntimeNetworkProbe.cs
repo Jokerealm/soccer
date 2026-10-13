@@ -18,7 +18,7 @@ namespace Soccer.Runtime
         private readonly List<string> checks = new List<string>(), errors = new List<string>();
         private AppController app;
         private string output, role, route;
-        private string invitationFile;
+        private string codeFile;
         private const string TestPassword = "network-probe-017";
         private string Argument(string key, string fallback)
         { var args = Environment.GetCommandLineArgs(); int index = Array.IndexOf(args, key); return index >= 0 && index + 1 < args.Length ? args[index + 1] : fallback; }
@@ -26,7 +26,7 @@ namespace Soccer.Runtime
         {
             app = GetComponent<AppController>(); role = Argument("--soccer-network-role", "host"); route = Argument("--soccer-network-route", "lan");
             output = Argument("--soccer-report-dir", Path.Combine(Application.persistentDataPath, "NetworkSmoke")); Directory.CreateDirectory(output);
-            invitationFile = Argument("--soccer-network-invite-file", Path.Combine(Path.GetDirectoryName(output), "room-invitation.txt"));
+            codeFile = Argument("--soccer-network-code-file", Path.Combine(Path.GetDirectoryName(output), "room-code.txt"));
             Application.logMessageReceived += Error;
             float deadline = Time.realtimeSinceStartup + 15;
             while (!app.StartupReady && Time.realtimeSinceStartup < deadline) yield return null;
@@ -67,7 +67,6 @@ namespace Soccer.Runtime
                 {
                     root.Q<Toggle>("network-password-enabled").value = true;
                     root.Q<TextField>("network-room-password").value = TestPassword;
-                    root.Q<TextField>("network-public-address").value = "127.0.0.1";
                     Check(root.Q<TextField>("network-room-password").enabledSelf, "enabling room password enables password entry");
                 }
                 yield return Capture("00-room-setup");
@@ -75,13 +74,17 @@ namespace Soccer.Runtime
                 Check(app.Page == AppPage.RoomLobby && app.Room != null && app.Room.IsHost, "create button opens a real listening room");
                 Check(root.Q<TextField>("network-room-password").value.Length == 0, "created room clears password field");
                 Check(app.Room.Port > 0, "program selects a usable listening port automatically");
+                deadline = Time.realtimeSinceStartup + 18;
+                while (!app.RoomCodeReady && Time.realtimeSinceStartup < deadline) yield return null;
+                Check(app.RoomCodeReady && RoomCode.IsValid(app.Room.Lobby.Code), "room obtains a six-character uppercase alphanumeric code");
+                Check(root.Q("network-public-address") == null, "players do not configure the Internet host endpoint");
                 yield return new WaitForSecondsRealtime(.4f);
                 var copyButton = root.Q<Button>("lobby-copy-address"); var lobbyBounds = root.Q("room-page").worldBound;
                 Check(copyButton.worldBound.width > 0 && lobbyBounds.Contains(copyButton.worldBound.center) && copyButton.worldBound.xMax <= lobbyBounds.xMax,
-                    "copy invitation button remains visible beside the long invitation");
+                    "copy room-code button remains visible");
                 yield return Click("lobby-copy-address");
-                Check(GUIUtility.systemCopyBuffer.StartsWith("SS1-") && root.Q<TextField>("lobby-address").isReadOnly, "copy button supplies a complete read-only room invitation");
-                File.WriteAllText(invitationFile, GUIUtility.systemCopyBuffer);
+                Check(GUIUtility.systemCopyBuffer == app.Room.Lobby.Code && RoomCode.IsValid(GUIUtility.systemCopyBuffer) && root.Q<TextField>("lobby-address").isReadOnly, "copy button supplies exactly the six-character room code");
+                File.WriteAllText(codeFile, GUIUtility.systemCopyBuffer);
                 yield return Capture("01-host-room");
                 deadline = Time.realtimeSinceStartup + 20;
                 while ((app.Room == null || app.Room.Lobby.Members.Length < 2 || !app.Room.CanStart) && Time.realtimeSinceStartup < deadline) yield return null;
@@ -118,17 +121,34 @@ namespace Soccer.Runtime
                     while (found == null && Time.realtimeSinceStartup < deadline)
                     { if (app.Discovery != null) foreach (var room in app.Discovery.Rooms) if (room.Lobby.Name == "联机验证 · " + route) found = room; yield return null; }
                     Check(found != null, "second game process discovers host over UDP");
-                    if (Argument("--soccer-network-join-mode", "list") == "ip")
+                    if (Argument("--soccer-network-join-mode", "list") == "code")
+                        root.Q<TextField>("network-address").value = File.ReadAllText(codeFile).ToLowerInvariant();
+                    else if (Argument("--soccer-network-join-mode", "list") == "ip")
                         root.Q<TextField>("network-address").value = "127.0.0.1";
                     else if (found != null) yield return Click("network-discovered-" + found.Lobby.Id);
                 }
-                else { root.Q<TextField>("network-address").value = File.ReadAllText(invitationFile); root.Q<TextField>("network-join-password").value = TestPassword; }
-                if (app.Room == null) yield return Click("network-join");
+                else { root.Q<TextField>("network-address").value = File.ReadAllText(codeFile).ToLowerInvariant(); root.Q<TextField>("network-join-password").value = TestPassword; }
+                if (route == "internet")
+                {
+                    string realCode = root.Q<TextField>("network-address").value;
+                    root.Q<TextField>("network-address").value = "!BAD!"; yield return Click("network-join");
+                    Check(app.Room == null && !app.NetworkLookupBusy && app.NetworkStatus.Contains("6 位"), "invalid room code is rejected before network lookup");
+                    root.Q<TextField>("network-address").value = "ZZZZZZ"; yield return Click("network-join");
+                    deadline = Time.realtimeSinceStartup + 8; while (app.NetworkLookupBusy && Time.realtimeSinceStartup < deadline) yield return null;
+                    Check(app.Room == null && app.NetworkStatus.Contains("不存在"), "unknown room code reports a directory miss");
+                    root.Q<TextField>("network-address").value = realCode;
+                    root.Q<TextField>("network-join-password").value = "incorrect"; yield return Click("network-join");
+                    deadline = Time.realtimeSinceStartup + 8;
+                    while (!app.NetworkStatus.Contains("密码不正确") && Time.realtimeSinceStartup < deadline) yield return null;
+                    Check(app.Room == null && app.NetworkStatus.Contains("密码不正确"), "code lookup still enforces the room password on the actual host");
+                    root.Q<TextField>("network-join-password").value = TestPassword;
+                }
+                if (app.Room == null && !app.NetworkLookupBusy) yield return Click("network-join");
                 deadline = Time.realtimeSinceStartup + 15;
                 while (app.Page != AppPage.RoomLobby && Time.realtimeSinceStartup < deadline)
                 {
                     // Simultaneous process startup may finish client loading before the host opens its listener.
-                    if (app.Room == null)
+                    if (app.Room == null && !app.NetworkLookupBusy)
                     {
                         if (route == "internet") root.Q<TextField>("network-join-password").value = TestPassword;
                         yield return new WaitForSecondsRealtime(.3f); yield return Click("network-join");
@@ -137,6 +157,7 @@ namespace Soccer.Runtime
                 }
                 Check(app.Room != null && app.Room.Connected && app.LocalPlayerId == 3, "join button admits client to its chosen opposing team");
                 if (app.Room == null || !app.Room.Connected) { errors.Add(app.NetworkStatus); Finish(); yield break; }
+                Check(app.Room.Lobby.Code == File.ReadAllText(codeFile), "room code synchronizes to guest lobby after lookup and admission");
                 Check(app.Room.Lobby.RequiresPassword == (route == "internet"), "room password setting arrives through live handshake");
                 if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "verified account identities synchronize to guest lobby");
                 Check(root.Q<TextField>("network-join-password").value.Length == 0, "joining clears submitted password field");
@@ -167,6 +188,11 @@ namespace Soccer.Runtime
                 Check(app.Simulation.State.Players[3].Kicks == 1 && app.Simulation.State.Players[3].KickCooldown > 0 && app.Simulation.State.Ball.OwnerId != 3,
                     "client receives kick, cooldown and released football from host");
                 yield return new WaitForSecondsRealtime(.3f); yield return Capture("03-client-synchronized-kick");
+            }
+            if (role == "host" && route == "internet")
+            {
+                app.BackFromNetwork(); yield return new WaitForSecondsRealtime(.5f);
+                Check(app.Room == null, "leaving an Internet room cancels heartbeat and removes publication");
             }
             Finish();
         }

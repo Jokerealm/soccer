@@ -221,4 +221,18 @@ Test("malformed, cross-route and stale invitations are rejected",()=> {
  using var guest=NetworkRoom.Join(stale,Options(NetworkRoute.LAN,Team.Amber));string reason="";guest.Failed+=s=>reason=s;
  Until(()=>reason.Length>0,host,guest);Assert(reason.Contains("失效") && !guest.Connected,"reused port admitted stale invitation");
 });
+Test("every room receives a mixed six-character uppercase alphanumeric code",()=> {
+ for(int i=0;i<1000;i++){string code=RoomCode.Generate();Assert(RoomCode.IsValid(code)&&code.Any(char.IsDigit)&&code.Any(char.IsLetter),"invalid generated room code");}
+ Assert(RoomCode.TryNormalize(" ab12cd ",out var normalized)&&normalized=="AB12CD","lowercase paste was not normalized");
+ foreach(string code in new[]{"", "ABC12", "ABC1234", "AB-12C", "ＡB12CD", "AB12 C"})Assert(!RoomCode.TryNormalize(code,out _),"invalid code format accepted");
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var guest=Client(host);Until(()=>guest.Connected,host,guest);
+ Assert(RoomCode.IsValid(host.Lobby.Code)&&host.Lobby.Code==guest.Lobby.Code,"room code was not synchronized");
+ host.SetRoomCode("ZX90AB");Until(()=>guest.Lobby.Code=="ZX90AB",host,guest);
+ bool refused=false;try{guest.SetRoomCode("AB12CD");}catch(ArgumentException){refused=true;}Assert(refused,"guest changed room code");
+});
+Test("LAN discovery includes the current room code",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var discovery=new LanDiscovery();
+ double deadline=Now()+5;while(!discovery.Rooms.Any(r=>r.Lobby.Id==host.Lobby.Id) && Now()<deadline){host.Pump(Now());discovery.Pump(Now());Thread.Sleep(5);}
+ Assert(discovery.Rooms.Single(r=>r.Lobby.Id==host.Lobby.Id).Lobby.Code==host.Lobby.Code,"LAN broadcast lost room code");
+});
 var report=args.Length>0?args[0]:"reports/network-017-transport";Directory.CreateDirectory(report);File.WriteAllText(Path.Combine(report,"network-tests.json"),JsonSerializer.Serialize(new{passed=failed==0,total=results.Count,failed,results},new JsonSerializerOptions{WriteIndented=true}));return failed==0?0:1;

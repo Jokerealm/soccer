@@ -42,11 +42,11 @@ namespace Soccer.Editor
             CreateChineseBoldFont();
             AssetDatabase.ImportAsset(Root + "UI/Game.uss", ImportAssetOptions.ForceUpdate);
             var rules = LoadOrCreate<MatchRulesAsset>(Root + "Data/PrototypeRules.asset");
-            if (rules.Rules.RuleVersion != "star-strikers-prototype-0.18.1")
+            if (rules.Rules.RuleVersion != "star-strikers-prototype-0.19.0")
             {
                 rules.Rules.EnableCombat = true;
                 rules.Rules.EnableOutOfPlay = true; rules.Rules.BallRadius = .27f;
-                rules.Rules.RuleVersion = "star-strikers-prototype-0.18.1";
+                rules.Rules.RuleVersion = "star-strikers-prototype-0.19.0";
                 rules.Rules.MovementSpeedScale = 1.6f;
                 rules.Rules.PossessionSpeed = .8f; rules.Rules.PossessionContactLock = .25f;
                 rules.Rules.KickCooldown = 6; rules.Rules.TackleCooldown = 5; rules.Rules.TackleHealthCostFactor = 10;
@@ -335,7 +335,7 @@ namespace Soccer.Editor
             EditorSettings.defaultBehaviorMode = EditorBehaviorMode.Mode2D;
             PlayerSettings.companyName = "Future City League";
             PlayerSettings.productName = "技能足球";
-            PlayerSettings.bundleVersion = "0.18.1";
+            PlayerSettings.bundleVersion = "0.19.0";
             PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, "com.futurecity.skillsoccer");
             PlayerSettings.defaultScreenWidth = 1600; PlayerSettings.defaultScreenHeight = 900;

@@ -51,6 +51,7 @@ namespace Soccer.Core.Networking
     public sealed class RoomLobby
     {
         public string Id;
+        public string Code;
         public string Name;
         public NetworkRoute Route;
         public bool RequiresPassword, Running;
@@ -132,7 +133,7 @@ namespace Soccer.Core.Networking
                 { room.listener.Stop(); room.listener = new TcpListener(IPAddress.Any, 0); room.listener.Start(8); }
                 room.Port = ((IPEndPoint)room.listener.LocalEndpoint).Port;
                 room.LocalSlot = value.Team == Team.Cyan ? 0 : 3;
-                room.Lobby = new RoomLobby { Id = Guid.NewGuid().ToString("N"), Name = value.Name, Route = value.Route, Port = room.Port, RequiresPassword = value.UsePassword,
+                room.Lobby = new RoomLobby { Id = Guid.NewGuid().ToString("N"), Code = RoomCode.Generate(), Name = value.Name, Route = value.Route, Port = room.Port, RequiresPassword = value.UsePassword,
                     Members = new[] { new RoomMember { Slot = room.LocalSlot, Name = value.PlayerName, AccountId = value.Account?.Id ?? "", Character = value.Character, Ready = true, Host = true } } };
                 room.Connected = true; room.Status = "房间已创建，等待球员加入";
                 if (value.Route == NetworkRoute.LAN)
@@ -180,6 +181,11 @@ namespace Soccer.Core.Networking
         public static void ParseAddress(string address, out string host, out int port)
         {
             var endpoint = RoomAddress.Parse(address); host = endpoint.Host; port = endpoint.Port;
+        }
+        public void SetRoomCode(string code)
+        {
+            if (!IsHost || !Connected || !RoomCode.IsValid(code)) throw new ArgumentException("房间号无效");
+            Lobby.Code = code; BroadcastLobby();
         }
         public static string CreateInvitation(string host, RoomLobby lobby)
         { if (lobby == null) throw new ArgumentException("房间信息无效"); return RoomAddress.Invite(host, lobby.Port, lobby.Route, lobby.Id); }
@@ -376,14 +382,14 @@ namespace Soccer.Core.Networking
         }
         internal static void WriteLobby(BinaryWriter w, RoomLobby lobby)
         {
-            NetworkCodec.Text(w, NetworkCodec.Version); NetworkCodec.Text(w, lobby.Id, 32); NetworkCodec.Text(w, lobby.Name, 32); w.Write((int)lobby.Route); w.Write(lobby.RequiresPassword); w.Write(lobby.Running); w.Write(lobby.Port);
+            NetworkCodec.Text(w, NetworkCodec.Version); NetworkCodec.Text(w, lobby.Id, 32); NetworkCodec.Text(w, lobby.Code, 6); NetworkCodec.Text(w, lobby.Name, 32); w.Write((int)lobby.Route); w.Write(lobby.RequiresPassword); w.Write(lobby.Running); w.Write(lobby.Port);
             w.Write(lobby.Members.Length); foreach (var m in lobby.Members) { w.Write(m.Slot); NetworkCodec.Text(w, m.Name, 24); NetworkCodec.Text(w, m.AccountId, 16); w.Write((int)m.Character); w.Write(m.Ready); w.Write(m.Host); }
         }
         internal static RoomLobby ReadLobby(BinaryReader r)
         {
             if (NetworkCodec.Text(r) != NetworkCodec.Version) throw new InvalidDataException();
-            var lobby = new RoomLobby { Id = NetworkCodec.Text(r, 32), Name = NetworkCodec.Text(r, 32), Route = (NetworkRoute)r.ReadInt32(), RequiresPassword = r.ReadBoolean(), Running = r.ReadBoolean(), Port = r.ReadInt32() };
-            if (!Guid.TryParseExact(lobby.Id, "N", out _)) throw new InvalidDataException();
+            var lobby = new RoomLobby { Id = NetworkCodec.Text(r, 32), Code = NetworkCodec.Text(r, 6), Name = NetworkCodec.Text(r, 32), Route = (NetworkRoute)r.ReadInt32(), RequiresPassword = r.ReadBoolean(), Running = r.ReadBoolean(), Port = r.ReadInt32() };
+            if (!Guid.TryParseExact(lobby.Id, "N", out _) || !RoomCode.IsValid(lobby.Code)) throw new InvalidDataException();
             if (!Enum.IsDefined(typeof(NetworkRoute), lobby.Route) || lobby.Port < 1 || lobby.Port > 65535) throw new InvalidDataException();
             int count = r.ReadInt32(); if (count < 1 || count > 6) throw new InvalidDataException(); var members = new List<RoomMember>();
             for (int i = 0; i < count; i++)

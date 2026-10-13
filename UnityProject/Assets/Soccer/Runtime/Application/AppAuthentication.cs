@@ -14,9 +14,16 @@ namespace Soccer.Runtime
         public bool LoginBusy { get; private set; }
         public string LoginStatus { get; private set; } = "";
         public string LoginServerAddress { get; private set; } = "";
+        private static bool ValidServiceToken(string token)
+        {
+            if (token == null || token.Length != 64) return false;
+            foreach (char c in token) if (!(c >= '0' && c <= '9' || c >= 'A' && c <= 'F')) return false;
+            return true;
+        }
         private Coroutine loginRoutine;
+        private string serviceAccessToken = "";
         [Serializable] private sealed class LoginRequest { public string account, password; }
-        [Serializable] private sealed class LoginResponse { public string accountId, service; }
+        [Serializable] private sealed class LoginResponse { public string accountId, service, accessToken; }
         private void InitializeLoginAddress()
         {
             LoginServerAddress = PlayerPrefs.GetString("soccer.loginServer", "");
@@ -27,14 +34,14 @@ namespace Soccer.Runtime
         {
             if (loginRoutine != null) StopCoroutine(loginRoutine); loginRoutine = null; LoginBusy = false;
             CloseNetworking(); Simulation = null; localInput?.Reset(); View.Clear(); Paused = false;
-            Account?.Dispose(); Account = null; EntryMode = GameEntryMode.NotEntered;
+            Account?.Dispose(); Account = null; serviceAccessToken = ""; EntryMode = GameEntryMode.NotEntered;
             Page = AppPage.Login; UI.ShowPage(Page); Audio.SetContext(Page, false);
         }
         public void EnterOffline()
         {
             if (!StartupReady) return;
             if (loginRoutine != null) StopCoroutine(loginRoutine); loginRoutine = null; LoginBusy = false;
-            Account?.Dispose(); Account = null; EntryMode = GameEntryMode.Offline; Route = ConnectionRoute.LAN;
+            Account?.Dispose(); Account = null; serviceAccessToken = ""; EntryMode = GameEntryMode.Offline; Route = ConnectionRoute.LAN;
             LoginStatus = ""; GoHome();
         }
         public void SignInOnline(string serverAddress, string account, string password)
@@ -69,7 +76,8 @@ namespace Soccer.Runtime
                     try
                     {
                         var response = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
-                        if (response != null && response.service == "SkillSoccer.Login" && response.accountId == id) session = DebugAccounts.Login(id, password);
+                        if (response != null && response.service == "SkillSoccer.Login" && response.accountId == id && ValidServiceToken(response.accessToken))
+                        { session = DebugAccounts.Login(id, password); if (session != null) serviceAccessToken = response.accessToken; }
                     }
                     catch (Exception) { }
                     if (session != null)

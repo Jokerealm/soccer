@@ -17,7 +17,7 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="PC / 乱斗原型 0.18.1" class="loading-version" />
+            <ui:Label text="PC / 乱斗原型 0.19.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -37,7 +37,7 @@
                 <ui:VisualElement class="brand-block row"><ui:VisualElement name="brand-mark" class="brand-mark" /><ui:VisualElement><ui:Label text="技能足球" class="front-brand" /><ui:Label text="合作乱斗 · 城市球场" class="front-brand-sub" /></ui:VisualElement></ui:VisualElement>
                 <ui:VisualElement class="grow" />
                 <ui:Button name="home-account" text="联网登录" class="front-utility" /><ui:Label name="connection-status" text="● 本地 / 联机" class="connection-status" />
-                <ui:Label text="PC / 0.18.1" class="build-label" />
+                <ui:Label text="PC / 0.19.0" class="build-label" />
             </ui:VisualElement>
             <ui:VisualElement class="mode-intro">
                 <ui:Label text="一起开路，一起进球" class="eyebrow" />
@@ -110,7 +110,6 @@
                     <ui:Label text="和朋友一起踢一场" class="skill-heading" />
                     <ui:TextField name="network-room-name" label="房间名称" value="足球房间" />
                     <ui:VisualElement name="network-internet-options">
-                        <ui:TextField name="network-public-address" label="房主 IP 或域名（互联网直连测试）" />
                         <ui:Toggle name="network-password-enabled" label="启用房间密码" />
                         <ui:TextField name="network-room-password" label="房间密码" />
                     </ui:VisualElement>
@@ -142,7 +141,7 @@
                     <ui:VisualElement class="network-card grow"><ui:Label text="青队" class="skill-heading cyan" /><ui:VisualElement name="lobby-cyan-members" /></ui:VisualElement>
                     <ui:VisualElement class="network-card grow"><ui:Label text="橙队" class="skill-heading amber" /><ui:VisualElement name="lobby-amber-members" /></ui:VisualElement>
                 </ui:VisualElement>
-                <ui:VisualElement class="row lobby-invitation"><ui:TextField name="lobby-address" label="房间邀请" class="lobby-invite-field" /><ui:Button name="lobby-copy-address" text="复制邀请" class="secondary" /></ui:VisualElement>
+                <ui:VisualElement class="row lobby-invitation"><ui:TextField name="lobby-address" label="房间号" class="lobby-invite-field" /><ui:Button name="lobby-copy-address" text="复制房间号" class="secondary" /></ui:VisualElement>
                 <ui:Label name="lobby-address-note" class="muted" />
             </ui:ScrollView>
             <ui:VisualElement class="row network-footer"><ui:Label name="lobby-status" class="network-status grow" /><ui:Button name="lobby-ready" text="准备" class="primary" /><ui:Button name="lobby-start" text="开始比赛    →" class="primary" /></ui:VisualElement>

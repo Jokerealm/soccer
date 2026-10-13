@@ -1,0 +1,42 @@
+{
+  "passed": true,
+  "total": 9,
+  "checks": [
+    {
+      "name": "service advertises expected identity",
+      "passed": true
+    },
+    {
+      "name": "server accepts debug account a",
+      "passed": true
+    },
+    {
+      "name": "server accepts debug account b",
+      "passed": true
+    },
+    {
+      "name": "server rejects invalid credentials case 3",
+      "passed": true
+    },
+    {
+      "name": "server rejects invalid credentials case 4",
+      "passed": true
+    },
+    {
+      "name": "server rejects invalid credentials case 5",
+      "passed": true
+    },
+    {
+      "name": "server rejects invalid credentials case 6",
+      "passed": true
+    },
+    {
+      "name": "server rejects invalid credentials case 7",
+      "passed": true
+    },
+    {
+      "name": "server rejects missing credential fields",
+      "passed": true
+    }
+  ]
+}

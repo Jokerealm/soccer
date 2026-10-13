@@ -10,7 +10,7 @@ namespace Soccer.Core.Networking
     // A fixed binary schema of scalar state, never arbitrary object deserialization.
     public static class NetworkCodec
     {
-        public const string Version = "SkillSoccer/0.18.0/3";
+        public const string Version = "SkillSoccer/0.19.0/4";
         public const int MaxFrameBytes = 262144;
         private static readonly Dictionary<Type, PropertyInfo[]> properties = new Dictionary<Type, PropertyInfo[]>();
         private static PropertyInfo[] Props(Type type)

@@ -6,7 +6,7 @@ namespace Soccer.Core
     [Serializable]
     public sealed class MatchRules
     {
-        public string RuleVersion = "star-strikers-prototype-0.18.1";
+        public string RuleVersion = "star-strikers-prototype-0.19.0";
         // 原地图速度保留在角色表；统一倍率用于校准本原型的现实时间跑位。
         public float MovementSpeedScale = 1.6f;
         public bool EnableCombat = true;

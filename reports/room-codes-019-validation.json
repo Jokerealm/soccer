@@ -1,0 +1,102 @@
+{
+  "version": "0.19.0",
+  "date": "2026-10-13",
+  "passed": true,
+  "changes": [
+    "Every room receives a cryptographically random mixed six-character uppercase letter/digit code",
+    "Internet room directory resolves codes to automatically selected TCP endpoints without player address fields",
+    "Authenticated login sessions own room publication, heartbeat and close actions; shared accounts do not imply shared ownership",
+    "Directory checks active and recently retired code collisions, leases expire after host loss and recent codes are retained for ten minutes",
+    "Offline LAN discovery also supports room-code joins alongside list and IP-only joins",
+    "Game-room passwords remain separate and are validated by the actual host"
+  ],
+  "core": {
+    "passed": true,
+    "total": 223,
+    "report": "reports/room-codes-019-core/core-tests.json"
+  },
+  "network": {
+    "passed": true,
+    "total": 35,
+    "report": "reports/room-codes-019-network/network-tests.json"
+  },
+  "loginService": {
+    "passed": true,
+    "total": 9,
+    "report": "reports/room-codes-019-login-service.json"
+  },
+  "roomDirectory": {
+    "passed": true,
+    "total": 36,
+    "report": "reports/room-codes-019-directory.json"
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 160,
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet room-code lookup and password handshake",
+      "LAN discovered list",
+      "LAN IP-only join",
+      "LAN room-code join with login service stopped"
+    ],
+    "closedInternetRoomLookupReturns404": true,
+    "report": "reports/room-codes-019-clients.json"
+  },
+  "fullClientRegression": {
+    "passed": true,
+    "total": 331,
+    "report": "reports/room-codes-019-runtime-full/runtime-smoke.json"
+  },
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413557465
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 382003445
+  },
+  "serviceBuild": {
+    "result": "Succeeded",
+    "target": "net10.0",
+    "errors": 0,
+    "warnings": 0
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.19.0-Windows-x64.zip",
+    "bytes": 144238513,
+    "sha256": "6814a529ddae36a06b6a4d4aa3cc65ce01f004031647868f1c95d9eb894f8f8d",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.19.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "6b69f3d4f2353a55db8e99b30bf451f74dbe51e46fa1ceeb6c8ea696cdf9cbea",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "e082a5c307e7335ad69828af334eb9c17daf130680eb9526ea0a1ce2dc315343",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "02d3ca4afd5aa9d460d48fa0bc697a471c4bc87038033bc730ee49284e8d7571"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "3b476905d69a875e5ab785f4bf23b0ba6ec7c1d8d4cfb1e03af1d986f5238e72",
+    "Soccer.Runtime.dll": "6304090469659969b8e0872ada577031d2ead504ffbf56ff692f939fb7f0db3e"
+  },
+  "limitations": {
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicLoginAndDirectoryDeployed": false,
+    "matchRelayDeployed": false,
+    "roomDirectoryProvidesNatTraversal": false
+  }
+}
