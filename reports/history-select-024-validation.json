@@ -1,0 +1,103 @@
+{
+  "version": "0.24.0",
+  "date": "2026-10-13",
+  "passed": true,
+  "changes": [
+    "Home and results open simple recent match history with selectable details",
+    "Completed AI, LAN and Internet matches store relative score, local hero, timestamp, duration, personal stats and settled coins",
+    "Recent 50 matches persist in separate offline and account profiles using atomic JSON replacement",
+    "Repeated results and final snapshots are deduplicated; practice, tutorial and unfinished matches are excluded",
+    "Load rejects invalid data and save failure preserves previous in-memory records",
+    "Character models use smaller default framing with orbit, zoom, auto rotation and reset preserved",
+    "Role summary and three matching icon cards use concise ability effects",
+    "Health, energy costs and cooldowns are hidden by default and shown through an explicit parameter foldout",
+    "History and both character pages verified at 1024x768,1280x720 and1920x1080"
+  ],
+  "coreTests": {
+    "passed": true,
+    "total": 241,
+    "report": "reports/history-select-024-core/core-tests.json"
+  },
+  "networkTests": {
+    "passed": true,
+    "total": 39,
+    "report": "reports/history-select-024-network/network-tests.json"
+  },
+  "fullClientRegression": {
+    "passed": true,
+    "total": 605,
+    "report": "reports/history-select-024-runtime-full/runtime-smoke.json",
+    "gameplayFpsSample": 120.10924530029297,
+    "profileFixturesUseIsolatedReportDirectory": true
+  },
+  "focusedHistoryAndSelection": {
+    "passed": true,
+    "total": 53,
+    "report": "reports/history-select-024-focused/runtime-smoke.json"
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 145,
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet room-code login and password using loopback service",
+      "Offline LAN list join with login service stopped"
+    ],
+    "winningGuestHistory": true,
+    "losingHostHistory": true,
+    "finalSnapshotHistoryDeduplicated": true,
+    "report": "reports/history-select-024-clients.json",
+    "sameMachineMacProcesses": true
+  },
+  "screenshots": [
+    "reports/history-select-024-runtime-full/history-1280x720.png",
+    "reports/history-select-024-runtime-full/selection-clean-Marine-1280x720.png",
+    "reports/history-select-024-runtime-full/selection-clean-Thor-1280x720.png"
+  ],
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413706621
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 382152601
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.24.0-Windows-x64.zip",
+    "bytes": 144286784,
+    "sha256": "fc705231c2c07ba3675171849cf2790a4488e39ed9ae64225a5e97385cdb0990",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.24.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "31d56ce636de7e43d3aab9162b6f88abce1cf8b00b4c897b2d180b4a74a6ade4",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "4f2d88c6a447b6b8369748f58a7bd685323743c0e1b99c964be5dd15dc744d43",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "cfb49d2d2d192732b7ce915522b317a17b9aa0b96f36aa28c7441c2a6a116511"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "a11abc120486a94d15d8480074ae79470b0a986c7af842e8617057131709e789",
+    "Soccer.Runtime.dll": "83a45a5b3e735dadaf13d3c799229b2f7a270854e81241299fc6c2a2a2246499"
+  },
+  "limitations": {
+    "historyStorage": "local per-device profile; no cloud sync",
+    "replaysImplemented": false,
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicLoginAndDirectoryDeployed": false,
+    "matchRelayDeployed": false
+  }
+}

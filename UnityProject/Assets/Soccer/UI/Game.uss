@@ -437,3 +437,54 @@ Button.shop-tab-selected { color: rgb(251,212,140); border-bottom-width: 2px; bo
 Button.shop-tab:hover { background-color: rgb(34,58,76); border-color: rgb(163,145,105); }
 
 .result-coins { margin-left: 18px; }
+
+/* Character overview keeps effects prominent and parameters available on demand. */
+.character-details { width: 430px; padding: 22px; border-left-width: 0; background-color: rgba(9,21,32,0.86); }
+.narrow-front-end .character-details { width: 335px; padding: 16px; }
+.character-showcase { justify-content: center; }
+.character-preview { max-height: 470px; background-color: rgb(9,17,23); }
+.selection-summary { font-size: 17px; color: rgb(207,221,225); white-space: normal; margin-bottom: 20px; }
+.selection-ability { padding: 13px 10px; margin-bottom: 10px; border-width: 1px; border-color: rgb(41,66,83); background-color: rgba(26,45,60,0.72); align-items: flex-start; }
+.selection-ability-art { width: 48px; height: 48px; flex-shrink: 0; margin-right: 13px; border-radius: 4px; -unity-background-scale-mode: scale-to-fit; }
+.selection .selection-ability .skill-heading { margin-top: 0; margin-bottom: 6px; color: rgb(234,224,192); font-size: 16px; }
+.selection .selection-ability .description { margin-bottom: 0; font-size: 14px; }
+.selection-controls { font-size: 12px; color: rgb(163,185,199); white-space: normal; margin-top: 4px; margin-bottom: 18px; }
+.character-parameters > Toggle { margin-bottom: 12px; color: rgb(147,185,201); font-size: 13px; }
+.character-parameters .stats-copy { font-size: 12px; color: rgb(169,190,201); }
+.parameter-copy { font-size: 12px; color: rgb(154,179,194); white-space: normal; margin-bottom: 15px; }
+.compact-front-end .selection-summary { font-size: 14px; margin-bottom: 13px; }
+.compact-front-end .selection-ability { padding: 10px 8px; margin-bottom: 7px; }
+.compact-front-end .selection-ability-art { width: 39px; height: 39px; margin-right: 10px; }
+.compact-front-end .home-wordmark { margin-bottom: 17px; }
+.compact-front-end Button.home-nav { min-height: 47px; margin-bottom: 5px; }
+/* Simple locally saved match history. */
+.history-page { flex-grow: 1; margin: 34px 58px; }
+.history-heading { margin-bottom: 22px; flex-shrink: 0; }
+.history-title { font-size: 39px; color: rgb(240,244,243); -unity-font-definition: url("ChineseBold.asset"); }
+.history-profile { font-size: 13px; color: rgb(153,183,197); white-space: normal; margin-top: 8px; }
+.history-status { font-size: 13px; color: rgb(235,191,126); white-space: normal; }
+.history-content { flex-grow: 1; min-height: 0; align-items: stretch; }
+.history-list { flex-grow: 1; flex-basis: 0; min-height: 0; margin-right: 20px; }
+.history-detail { width: 340px; max-width: 40%; flex-shrink: 0; padding: 24px; background-color: rgba(12,29,42,0.94); border-width: 1px; border-color: rgb(49,77,94); }
+Button.history-row { padding: 17px 20px; margin: 0 0 10px; border-radius: 0; border-width: 1px; border-left-width: 3px; border-color: rgb(43,69,87); background-color: rgba(15,32,46,0.94); color: rgb(195,218,229); align-items: stretch; }
+Button.history-row:hover { background-color: rgb(32,53,69); }
+Button.history-row-selected { border-left-color: rgb(246,193,94); background-color: rgb(30,49,64); }
+.history-result { font-size: 21px; width: 68px; -unity-font-definition: url("ChineseBold.asset"); }
+.history-victory { color: rgb(117,221,188); }
+.history-defeat { color: rgb(218,149,133); }
+.history-draw { color: rgb(187,195,191); }
+.history-role { font-size: 16px; }
+.history-score { font-size: 22px; color: rgb(240,224,176); }
+.history-meta { margin-top: 10px; font-size: 12px; color: rgb(138,169,188); }
+.history-detail-title { font-size: 29px; color: rgb(239,220,178); -unity-font-definition: url("ChineseBold.asset"); }
+.history-detail-meta { font-size: 14px; color: rgb(153,188,204); white-space: normal; margin-top: 18px; }
+.history-detail-stats { font-size: 16px; color: rgb(195,213,221); white-space: normal; margin-top: 30px; }
+.history-detail-coins { font-size: 17px; color: rgb(240,203,127); margin-top: 30px; }
+.history-empty { position: absolute; top: 27%; left: 0; right: 0; padding: 40px; align-items: center; }
+.history-empty-title { font-size: 28px; color: rgb(229,236,230); }
+.history-list .unity-scroller--vertical { width: 8px; }
+.history-list .unity-scroller__low-button,.history-list .unity-scroller__high-button { display: none; }
+.history-list .unity-base-slider__tracker { background-color: rgb(30,52,67); }
+.history-list .unity-base-slider__dragger { background-color: rgb(88,129,143); }
+.compact-front-end .history-page { margin: 22px 38px; }
+.compact-front-end .history-detail { padding: 19px; width: 290px; }

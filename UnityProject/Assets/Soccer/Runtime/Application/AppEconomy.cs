@@ -27,6 +27,7 @@ namespace Soccer.Runtime
         private void ReloadWallet()
         {
             string key=EntryMode==GameEntryMode.Online && Account!=null ? "account:"+Account.Id : "offline";
+            ReloadHistory(key);
             if(key==walletProfileKey && Wallet!=null)return;
             walletProfileKey=key;WalletStatus="";
             try {Wallet=new VictoryWallet(new WalletStore(walletDirectory,key));}
@@ -40,9 +41,10 @@ namespace Soccer.Runtime
         private void BeginRewardSession(string matchId=null)
         {
             ReloadWallet();rewardWallet=Wallet;rewardMatchId=matchId ?? "local:"+Guid.NewGuid().ToString("N");rewardPlayerId=LocalPlayerId;
-            rewardSettled=false;MatchCoins=0;MatchRewardText="";
+            rewardSettled=false;MatchCoins=0;MatchRewardText="";BeginHistorySession();
         }
-        private void SettleMatchReward()
+        private void SettleMatchReward() {AwardMatchCoins();RecordMatchHistory();}
+        private void AwardMatchCoins()
         {
             if(rewardSettled || Simulation?.State.Phase!=MatchPhase.Finished)return;
             rewardSettled=true;var state=Simulation.State;

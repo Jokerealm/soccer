@@ -103,7 +103,7 @@ namespace Soccer.Runtime
                 float beforeDistance=preview.Distance;
                 using(var evt=WheelEvent.GetPooled(new Event{type=EventType.ScrollWheel,delta=new Vector2(0,3),mousePosition=center}))element.SendEvent(evt);
                 Check(preview.Distance>beforeDistance,"mouse wheel changes the preview camera distance");
-                yield return Click("preview-reset");Check(Mathf.Abs(preview.OrbitYaw-12)<.1f && Mathf.Abs(preview.Distance-4.4f)<.1f,"reset restores framing after orbit and zoom");
+                yield return Click("preview-reset");Check(Mathf.Abs(preview.OrbitYaw-12)<.1f && Mathf.Abs(preview.Distance-6.4f)<.1f,"reset restores framing after orbit and zoom");
                 preview.Orbit(new Vector2(-400,0));yield return new WaitForSecondsRealtime(.3f);yield return Capture("model-marine-back");
                 yield return Click("preview-reset");yield return Click("preview-auto");
                 Screen.SetResolution(1920,1080,false);yield return new WaitForSecondsRealtime(.5f);

@@ -17,7 +17,7 @@ namespace Soccer.Runtime
         private int pointer = -1;
         private Vector2 lastPointer;
         private CharacterId? character;
-        private float yaw = 12, pitch = 14, distance = 4.4f;
+        private float yaw = 12, pitch = 14, distance = 6.4f;
         public bool AutoRotate { get; private set; } = true;
         public bool Visible => stage != null && stage.gameObject.activeSelf;
         public CharacterId? Character => character;
@@ -73,10 +73,10 @@ namespace Soccer.Runtime
             }
         }
         public void ToggleAutoRotate() { AutoRotate = !AutoRotate; UpdateCaption(); }
-        public void ResetView() { yaw = 12; pitch = 14; distance = 4.4f; Frame(); }
+        public void ResetView() { yaw = 12; pitch = 14; distance = 6.4f; Frame(); }
         public void Orbit(Vector2 delta)
         { AutoRotate = false; yaw -= delta.x * .45f; pitch = Mathf.Clamp(pitch + delta.y * .3f,5,55); UpdateCaption(); Frame(); }
-        public void Zoom(float delta) { distance = Mathf.Clamp(distance + delta * .08f,2.6f,6.8f); Frame(); }
+        public void Zoom(float delta) { distance = Mathf.Clamp(distance + delta * .08f,3.8f,9.2f); Frame(); }
         private void Down(PointerDownEvent evt)
         {
             if (evt.button != 0 || !Visible) return;

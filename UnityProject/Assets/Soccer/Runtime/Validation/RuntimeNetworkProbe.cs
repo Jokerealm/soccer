@@ -20,6 +20,7 @@ namespace Soccer.Runtime
         private string output, role, route;
         private string codeFile;
         private long coinsBefore;
+        private int historyBefore;
         private const string TestPassword = "network-probe-017";
         private string Argument(string key, string fallback)
         { var args = Environment.GetCommandLineArgs(); int index = Array.IndexOf(args, key); return index >= 0 && index + 1 < args.Length ? args[index + 1] : fallback; }
@@ -105,7 +106,7 @@ namespace Soccer.Runtime
                 yield return Capture("02-host-ready-room"); yield return Click("lobby-start");
                 yield return ParticipateDraft();
                 Check(app.Page == AppPage.Match && app.IsNetworkMatch, "host start button starts authoritative six-player match");
-                coinsBefore=app.Wallet.Coins;
+                coinsBefore=app.Wallet.Coins;historyBefore=app.History.Matches.Count;
                 Check(app.Simulation.State.Players[3].Stats.Id == CharacterId.Thor, "guest selected character appears in opposing player slot");
                 var remoteOrigin = app.Simulation.State.Players[3].Position;
                 yield return new WaitForSecondsRealtime(4.8f);
@@ -125,6 +126,7 @@ namespace Soccer.Runtime
                 app.Simulation.Finish();app.Room.Publish(app.Simulation.State,true);
                 yield return new WaitForSecondsRealtime(.4f);
                 Check(app.Page==AppPage.Results && app.MatchCoins==0 && app.Wallet.Coins==coinsBefore,"host losing team receives no victory currency");
+                Check(app.History.Matches.Count==Math.Min(50,historyBefore+1) && app.History.Matches[0].Result==MatchResult.Defeat && app.History.Matches[0].Character==CharacterId.Marine && app.History.Matches[0].Source==(route=="lan" ? MatchSource.LAN : MatchSource.Internet),"host records local loss, hero and connection source exactly once");
                 deadline = Time.realtimeSinceStartup + 10;
                 while (app.Room != null && app.Room.Lobby.Members.Length > 1 && Time.realtimeSinceStartup < deadline) yield return null;
                 Check(app.Room != null && !app.Room.IsHumanSlot(3), "client exit releases remote slot for AI takeover");
@@ -189,7 +191,7 @@ namespace Soccer.Runtime
                 Check(app.IsNetworkMatch && !app.Room.IsHost && app.LocalPlayerId == 3, "client receives start and binds its own player");
                 if (!app.IsNetworkMatch) { Finish(); yield break; }
                 Check(app.View.LocalPlayerId == 3 && app.Audio.LocalPlayerId == 3 && root.Q<Label>("local-name").text.Contains("雷神"), "model highlight, sound and HUD follow the local guest rather than host");
-                coinsBefore=app.Wallet.Coins;
+                coinsBefore=app.Wallet.Coins;historyBefore=app.History.Matches.Count;
                 var origin = app.Simulation.State.Players[3].Position;
                 app.NetworkInputOverride = new PlayerCommand { Move = new Vec2(0, 1), Aim = new Vec2(0, 1) };
                 yield return new WaitForSecondsRealtime(1.3f); app.NetworkInputOverride = default(PlayerCommand);
@@ -215,6 +217,7 @@ namespace Soccer.Runtime
                 Check(app.Page==AppPage.Results && app.MatchCoins==100 && app.Wallet.Coins==coinsBefore+100,"winning guest receives exactly one currency reward from authoritative finished snapshot");
                 yield return new WaitForSecondsRealtime(.3f);
                 Check(app.Wallet.Coins==coinsBefore+100,"repeated final snapshots do not duplicate victory currency");
+                Check(app.History.Matches.Count==Math.Min(50,historyBefore+1) && app.History.Matches[0].Result==MatchResult.Victory && app.History.Matches[0].Character==CharacterId.Thor && app.History.Matches[0].Coins==100,"guest records actual local winning hero and coins without duplicate final snapshots");
                 yield return Capture("04-client-victory-coins");
             }
             if (role == "host" && route == "internet")

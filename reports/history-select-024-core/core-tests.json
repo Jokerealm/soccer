@@ -1,0 +1,1212 @@
+{
+  "passed": true,
+  "total": 241,
+  "failed": 0,
+  "results": [
+    {
+      "name": "diagonal movement is normalized",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "opening warmup allows movement and facing without using match time",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "opening shield stops every body and keeps football free and stationary",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "opening shield blocks swept high-speed crossings and permits sliding",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "opening warmup discards combat and kick inputs without costs or queued actions",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "opening shield releases at kickoff without resetting warmup position",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "opening shield repairs body overlap without pushing players into protected area",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "opening warmup bots move but never request attacks or skills",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "self pickup locked after kick",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "kick distance uses square root coefficient",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "cancel precedes same-tick kick release",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "input loss cancels charge and later release cannot shoot",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "no-ball held input does not charge on pickup",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "full charge auto releases",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rear carry contact angle 44 degrees",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rear carry contact angle 45 degrees",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rear carry contact angle 46 degrees",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rear carry contact angle 90 degrees",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rear carry contact angle 180 degrees",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "push without body contact does not affect possession",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "swept push hits first body without automatic ball transfer",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "full protection blocks displacement and ball release",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "controlled target is not displaced or disarmed by repeated push",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "control protection cannot transfer possession to the pusher",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "push cancels charge and repeated push is suppressed",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "partial goal crossing does not score",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "fast ball crosses goal once, round resets to losing side",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "swept goalpost blocks fast shot",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "wall bounces outside goal opening",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "dribbling can score",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "tied match has finite overtime",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "first half ends without finishing or granting overtime",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "half-time preserves score and five second in-place recovery",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "last instant first-half goal celebrates once before second half",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "overtime goal ends match immediately",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "training utilities cannot mutate bot match",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "wind lane needs confirmation and cancel spends no cooldown",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "arc preparation requires ball and replaces previous preparation",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "root reduces push distance but enemy front contact releases ball",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "shield creation overlapping ball cannot award goal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "long bot run stays finite and inside field",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "short recovery buffers skill exactly once",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "buffer expires during long recovery",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "tap during recovery preserves release and shoots once",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "buffered wind preview preserves quick confirmation",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "buffer accepts skill just before cooldown ends",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "buffer does not wait for long cooldown",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "cancel removes buffered skill and same-tick new press",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "pause clears buffered tackle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "control interrupts pending skill",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "training reset clears buffered skill",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "skill event identifies Q and E for each character",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "power kick event keeps preparation and charge intensity",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "fast wall contact emits bounce once with position",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "wind preview release survives the end of a slide",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "expired wind confirmation clears preview instead of firing late",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "losing possession clears buffered shot before reacquisition",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "buffered action uses latest aim at execution",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "combat kits share neutral body and full initial resources",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "one hammer press has windup and consumes one stock without energy cost",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "melee misses behind and beyond reach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "held weapon obeys cooldown and can knock out",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "weapon and stun projectile never damage teammates",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ranged projectile hits first enemy at high speed without tunneling",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ranged projectile can miss and disappears at its range or wall",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Q works without possession, consumes energy and applies stun",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "insufficient energy rejects skills without cooldown or effects",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "energy regeneration observes spend delay and clamps at maximum",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "stun interrupts attacks and charge and cannot chain during protection",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "death drops ball and fully disables movement, combat and body contact",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "exactly five seconds restores resources and cooldowns at death position",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "respawn protection blocks damage and ends on active attack",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "goal restart preserves death location and full five-second timer",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "all-down kickoff uses a free ball without restoring dead players",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "pause cancellation preserves damage, energy and death timer",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "team shield absorbs damage and applies only in friendly range",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "team shield expires and never grants permanent immunity",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "healing pulse restores alive teammates without reviving or overhealing",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "team boost affects nearby allies and expires",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "training reset clears combat projectiles and restores full state",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid combat stats fail before entering a match",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "three-v-three combat bots fight, support, pass and complete finite matches",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "stunned bodies still block a ball but cannot catch it",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "protected first target blocks a projectile without damage or stun",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "combat and same-tick kick release cannot fire both actions",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "relay and team boost use highest bonus with a global cap",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "combat strafing keeps full speed through weapon and skill recovery",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "three stock burst has an empty window and reloads one stock at a time",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "a new attack restarts the reload wait without spending energy",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "short weapon buffer uses current aim and fires only once",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "empty stock and long cooldown presses never replay later",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "cancel pause and stun remove a buffered weapon click",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "dragon control wave rebounds once within its total range",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rice control spreads three projectiles without chaining stun",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rain scatter rewards close range while rice weapon retains long reach",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ordinary kicks always stay on the plane",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "unmarked height values cannot alter ordinary reception",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ordinary goal ignores unused height values",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "only explicit skill launch enables an overhead trajectory",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "skill high ball still scores by the planar goal mouth",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "skill ball uses the same planar goalpost collision",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "skill first landing returns immediately to 2D without vertical rebound",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid skill launch never enables height",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reception and training reset clear the temporary skill flight mode",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "skill high ball cannot be caught by standing below its clearance",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "skill descending low ball can be received",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "star roster contains two reference characters with uniform 100 resources",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "two character roster supports training opponents and a full 3v3 match",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ordinary kick starts a six second cooldown independently of tackle",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "cancelled kick consumes neither cooldown nor health",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "tackle spends inverse force health once and has five second cooldown",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "higher push force costs less health and pushes farther",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "insufficient tackle health rejects without spending or starting cooldown",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "kicking and tackling can be used while the other action cools down",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "marine stim uses table costs and increases speed for five seconds",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reference skill rejects missing energy without spending health",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reference skill health payment cannot kill the caster or waste energy",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "marine bomb is placed at feet without possession",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "marine bomb follows the football across a normal ground kick",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "marine automatic bomb fuse waits three seconds then pushes and stuns",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "marine remote detonation costs ten energy and works during E cooldown",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "remote detonation without a bomb does not spend energy",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "insufficient detonation energy preserves the bomb until its fuse",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "bomb control ignores allies and protected opponents",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "thor drive follows table cost and discrete 0.375 second decay",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "thor thrusters use separate costs and immediately refresh drive",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "thor ground thrusters stop at bodies and never change ball height",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "training reset clears bombs speed buffs and both shared cooldowns",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "knockout clears owned bombs and revival restores both actions in place",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "two character bots respect new cooldowns and remain finite",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "larger field permits running beyond both former boundaries",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "larger field clamps bodies at the new corner",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "football passes the former wall and scores only at the enlarged goal",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "new boundary restarts shots outside the goal mouth",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "center circle radius controls warmup blocking on enlarged field",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "enlarged kickoff circle starts all players outside without corrective teleport",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "larger current map permits running past the previous 48 by 28 bounds",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ordinary movement cannot tunnel through a stationary player",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "head-on simultaneous movement cannot swap players",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "normal movement slides along a contacted body",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "friendly bodies fully separate and larger body moves less",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "crowded boundary separation remains inside field and non-overlapping",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "body radius determines clearance through the same gap",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "single right click persists, routes around enemy and stops on arrival",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "navigation detours around friendly players as well as enemies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "persistent movement replans when a body blocks its next segment",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Shift appends orders and stop clears the entire queue",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "right-click context respects teams, weapons and the football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "right-click enemy chases into weapon range and fires without holding mouse",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "right-click ground replaces attack and no longer fires",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "attack order tracks moving target and clears when target dies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "cancel and pause clear navigation and never restore queued attacks",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "navigation routes around the opening shield using real body clearance",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "moving player receives stationary ball by a continuous relative sweep",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "held football cannot overlap a contacted opponent body",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "whole football must cross the touchline before out of play",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "defender last touch awards correct corner at every end and side",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "attacker last touch outside goal awards defending goal kick",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "body deflection updates last touch without erasing kick attribution",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "diagonal boundary sweep selects first crossed line",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "normal goal has priority over out-of-play and is counted once",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "held football can go out of play and retains owner last touch",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "set-piece preparation freezes game clock and ball while enforcing spacing",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "set-piece allows manual aim and kick after preparation without prior cooldown lock",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "restart kicker second touch awards free kick even inside penalty area",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "another player touch ends restart second-touch restriction",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "throw-in cannot directly score while direct free kick can",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "direct restart own goal awards corner instead of a score",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "weapon attacks and off-ball tackles stay legal in violent football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "AI automatically takes awarded set pieces",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "restart waits for original full respawn when awarded team is dead",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "training exposes corner and free kick and resetting clears restart state",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "3v3 navigation and restarts stay finite and non-overlapping in sustained match",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "being near football outside the physical circles never grants possession",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "surface contact with stationary football grants possession",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "collision acquisition rejects a false remote contact request",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ordinary football collision grants possession at every kick speed",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "right-click pursuit approaches until colliding rather than granting ball remotely",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "front push releases ball in place and never assigns it to pusher",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "side push leaves football at its exact original ground position throughout displacement",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "pushed enemy cannot immediately reacquire the released ball",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "released ball remains free until another physical contact and only then counts capture",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "friendly push retains possession from front side and rear",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "real friendly dash collision pushes ball carrier and ball moves with teammate",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "enemy rear push moves carrier and football together",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rear protection rotates with carrier facing and does not depend on pusher aim",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "pushing without a ball only displaces character",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "front drop creates no catch or capture event until actual collision",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "a third player can collect ball released by someone else\u0027s push",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "bomb push uses explosion contact direction for rear carry and front release",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "displacement capture provenance is cleared by training reset and restart",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "rear protection angle is finite and configurable",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "initial ball contact receives even when fast ball is travelling away",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "standard front push training requires walking into released football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "walking into enemy held ball steals without tackling from (1.00, 0.00)",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "walking into enemy held ball steals without tackling from (0.00, 1.00)",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "walking into enemy held ball steals without tackling from (0.00, -1.00)",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "right-click held football obtains possession without any tackle input",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "standing outside held ball surface does not steal and football does not evade",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "touching carrier from behind cannot reach their front football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "teammate touching held football leaves healthy teammate possession intact",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "held contact lock lasts 0.25 seconds with 1 physics substeps",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "held contact lock lasts 0.25 seconds with 4 physics substeps",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "held contact lock lasts 0.25 seconds with 16 physics substeps",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "stunned player cannot automatically intercept held football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "pushed player cannot automatically intercept held football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "dead player cannot automatically intercept held football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "respawned player cannot automatically intercept held football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "full protection blocks direct held-ball interception",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "fast sideways player intercepts held ball on swept path before passing it",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "fast carrier translation exposes held ball along its continuous path",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "earliest of two opponents receives moving held ball only once",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ordinary pass reception starts contact protection independently of kicker lock",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "turning does not sweep football through the carrier body to a distant receiver",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reception protection clears when pushed ball is released",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "holding football moves at eighty percent of ordinary running speed",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "automatic possession tuning rejects nonfinite or invalid values",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "default movement tuning speeds up reference roster without changing possession ratio",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "passive health recovers two per second and clamps without reviving a downed player",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "default faster navigation reaches a short destination without oscillating",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "left mouse never kicks while keyboard hold and release produce kick edges",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "direction skill waits for mouse confirmation without charging a held football",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "cancel removes skill selection and keyboard charge and push remains a separate key",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "draft alternates teams and allows repeated currently available characters",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "draft rejects other turns and illegal positions without changing progress",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "draft enforces space between selected teammates and AI finds a free fallback",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "draft timeout and disconnection produce valid complete opening placement",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "selected opening positions apply before kickoff while preserving protection",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "tutorial scenarios use normal life and command rules",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "tutorial setup cannot mutate a competitive match",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "wallet rewards the winning local team once per completed match",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "wallet never rewards practice, a draw, active game or invalid local player",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "wallet save failure rolls back balance and claim, then allows a retry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "reloaded wallet preserves coins and duplicate reward history",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "wallet rejects malformed persisted balances and reward histories",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "wallet balance overflow cannot corrupt saved money or claim history",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "history factory records the local guest\u0027s team, hero and copied personal stats",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "history rejects unfinished matches, practice and invalid players",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "history preserves latest fifty results and deduplicates completed matches",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "history save failure leaves existing results intact and permits retry",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "history rejects malformed version, duplicate ids and invalid numerical stats",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

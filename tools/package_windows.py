@@ -35,7 +35,7 @@ def main():
         for path in files:
             z.write(path, package_name + '/' + path.relative_to(build).as_posix())
         z.write(root / 'docs/Windows试玩与开发.md', package_name + '/Windows试玩说明.md')
-        network_guide = root / 'docs/商城与胜利金币0.23.0.md'
+        network_guide = root / 'docs/对局记录与选角界面0.24.0.md'
         z.write(network_guide, package_name + '/' + network_guide.name)
         z.write(root / 'server/README.md', package_name + '/登录服务说明.md')
         z.write(root / 'assets/third_party/noto-sans-cjk/OFL.txt', package_name + '/Licenses/Noto-OFL.txt')
@@ -50,12 +50,14 @@ def main():
                    '帐号密码与房间密码分别填写；局域网不要求登录。\r\n'
                    '开始游戏先选模式；房间只设置队伍，客人准备后由房主开始选人布阵。\r\n'
                    '建房自动选择端口；局域网输入房间号、从列表加入或输入房主IP；互联网输入6位房间号。\r\n'
-                   '联机Esc只打开本机菜单，比赛继续。雷神 E 后左键确认方向；C 取消。步骤见随包 0.23.0 更新说明。同局玩家请使用相同版本。\r\n'
+                   '联机Esc只打开本机菜单，比赛继续。雷神 E 后左键确认方向；C 取消。步骤见随包 0.24.0 更新说明。同局玩家请使用相同版本。\r\n'
                    '选人时两队轮流锁定角色与开局位置；30秒超时自动选择，暂不ban，允许重复角色。\r\n'
                    '开始游戏 → 新手教程：13步实际练习，可跳过、回看和重练。\r\n'
                    '设置 → 按键：点击当前键位后按新键，自动保存；Esc取消，恢复默认可重置。\r\n'
                    '首页方向键上下选择，Enter确认；商城显示金币，正式对局胜利+100金币。\r\n'
                    '金币按离线与帐号分别保存在当前设备，暂不云同步；英雄与皮肤购买后续开放。\r\n'
+                   '首页/结算 → 对局记录：最近50场赛果与个人统计，按离线/帐号保存本机。录像回放后续开放。\r\n'
+                   '选角介绍简化为技能卡片；消耗、冷却等数字展开查看技能参数。\r\n'
                    '选角：左键拖动环绕模型，滚轮缩放，可切换自动旋转与复位。\r\n'
                    '右键走位/追击（不显示路径）；V 蓄力踢球；左键确认技能目标；空格推击；Q/E 技能；Esc 暂停。\r\n'
                    '训练 R 重置，F/T 持球，F1 角度，F2 角球，F3 任意球。\r\n'

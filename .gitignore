@@ -48,3 +48,5 @@ assets/packages/*.zip
 
 # Probe economy profiles stay local.
 reports/**/wallets/
+
+reports/**/history/

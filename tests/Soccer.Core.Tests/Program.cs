@@ -1618,6 +1618,32 @@ Test("wallet balance overflow cannot corrupt saved money or claim history",()=> 
  bool rejected=false;try{wallet.AwardVictory("overflow",sim.State,0);}catch(OverflowException){rejected=true;}
  Assert(rejected && wallet.Coins==long.MaxValue-50 && store.Saves==0 && store.Data.RewardedMatches.Count==0,"overflow corrupted wallet");
 });
+Test("history factory records the local guest's team, hero and copied personal stats",()=> {
+ var sim=StarSim(mode:MatchMode.BotMatch);sim.State.AmberScore=3;sim.State.CyanScore=1;sim.State.ElapsedSeconds=305;sim.State.Players[3].Goals=2;sim.State.Players[3].DamageDealt=87;sim.Finish();
+ var record=MatchRecord.FromFinishedMatch(sim.State,3,"guest",MatchSource.Internet,1000,100);
+ Assert(record.Result==MatchResult.Victory && record.OwnScore==3 && record.OpponentScore==1 && record.Character==sim.State.Players[3].Stats.Id && record.Goals==2 && record.DamageDealt==87 && record.DurationSeconds==305 && record.Coins==100,"guest record contains host stats or scores");
+ sim.State.Players[3].Goals=0;sim.State.AmberScore=0;Assert(record.Goals==2 && record.OwnScore==3,"record remained linked to mutable match state");
+});
+Test("history rejects unfinished matches, practice and invalid players",()=> {
+ foreach(var sim in new[]{StarSim(mode:MatchMode.BotMatch),StarSim()}) {if(sim.State.Mode==MatchMode.Training)sim.Finish();bool rejected=false;try{MatchRecord.FromFinishedMatch(sim.State,0,"bad",MatchSource.AI,1000,0);}catch(ArgumentException){rejected=true;}Assert(rejected,"ineligible match recorded");}
+ var match=StarSim(mode:MatchMode.BotMatch);match.Finish();bool invalid=false;try{MatchRecord.FromFinishedMatch(match.State,6,"bad",MatchSource.LAN,1000,0);}catch(ArgumentException){invalid=true;}Assert(invalid,"invalid player recorded");
+});
+Test("history preserves latest fifty results and deduplicates completed matches",()=> {
+ var store=new MemoryHistoryStore();var history=new MatchHistory(store);var sim=StarSim(mode:MatchMode.BotMatch);sim.Finish();
+ for(int i=0;i<55;i++)history.Add(MatchRecord.FromFinishedMatch(sim.State,0,"match-"+i,MatchSource.AI,1000+i,0));
+ Assert(history.Matches.Count==50 && history.Matches[0].MatchId=="match-54" && history.Matches[49].MatchId=="match-5","retention or order wrong");
+ Assert(!history.Add(MatchRecord.FromFinishedMatch(sim.State,0,"match-54",MatchSource.AI,1054,0)) && store.Saves==55,"duplicate match saved again");
+ var loaded=new MatchHistory(store);Assert(loaded.Matches.Count==50 && loaded.Matches[0].MatchId=="match-54","saved history did not reload");
+});
+Test("history save failure leaves existing results intact and permits retry",()=> {
+ var store=new MemoryHistoryStore{FailSave=true};var history=new MatchHistory(store);var sim=StarSim(mode:MatchMode.BotMatch);sim.Finish();var record=MatchRecord.FromFinishedMatch(sim.State,0,"retry",MatchSource.LAN,1000,0);
+ bool failedSave=false;try{history.Add(record);}catch(IOException){failedSave=true;}Assert(failedSave && history.Matches.Count==0,"failed save committed partial history");store.FailSave=false;Assert(history.Add(record) && history.Matches.Count==1,"retry lost result");
+});
+Test("history rejects malformed version, duplicate ids and invalid numerical stats",()=> {
+ var sim=StarSim(mode:MatchMode.BotMatch);sim.Finish();var record=MatchRecord.FromFinishedMatch(sim.State,0,"one",MatchSource.AI,1000,0);
+ foreach(var data in new[]{new MatchHistoryData{Version=2},new MatchHistoryData{Matches=null},new MatchHistoryData{Matches=new List<MatchRecord>{record,record}}}){bool rejected=false;try{new MatchHistory(new MemoryHistoryStore{Data=data});}catch(ArgumentException){rejected=true;}Assert(rejected,"malformed history accepted");}
+ record.DurationSeconds=float.NaN;bool invalid=false;try{MatchRecord.Validate(record);}catch(ArgumentException){invalid=true;}Assert(invalid,"nonfinite duration accepted");
+});
 string reportDir = args.Length > 0 ? args[0] : Path.GetFullPath("reports");
 Directory.CreateDirectory(reportDir);
 File.WriteAllText(Path.Combine(reportDir, "core-tests.json"), JsonSerializer.Serialize(new { passed = failed == 0, total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));
@@ -1628,4 +1654,11 @@ sealed class MemoryWalletStore : IWalletStore
  public WalletData Data=new WalletData();public bool FailSave;public int Saves;
  public WalletData Load()=>Data;
  public void Save(WalletData data){if(FailSave)throw new IOException("test storage failure");Data=data;Saves++;}
+}
+
+sealed class MemoryHistoryStore : IMatchHistoryStore
+{
+ public MatchHistoryData Data=new MatchHistoryData();public bool FailSave;public int Saves;
+ public MatchHistoryData Load()=>Data;
+ public void Save(MatchHistoryData data){if(FailSave)throw new IOException("test history failure");Data=data;Saves++;}
 }

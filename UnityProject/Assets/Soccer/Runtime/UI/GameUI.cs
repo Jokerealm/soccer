@@ -13,16 +13,17 @@ namespace Soccer.Runtime
         public StyleSheet Styles;
         private VisualElement root;
         private AppController app;
-        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page", "play-page", "shop-page" };
+        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page", "play-page", "shop-page", "history-page" };
         public CharacterPreviewView CharacterPreview { get; private set; }
         public KeyBindingsUI KeyBindings { get; private set; }
         public bool BlocksKeyNavigation => KeyBindings != null && KeyBindings.BlocksNavigation;
         public MenuStageView MenuStage { get; private set; }
         private Texture2D menuVeil;
-        private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "shop-button", "settings-button" };
+        private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "history-button", "shop-button", "settings-button" };
         private DraftUI draftUI;
         private TutorialUI tutorialUI;
         private ShopUI shopUI;
+        private HistoryUI historyUI;
         private NetworkUI network;
         private LoginUI login;
         private readonly string[] scoreFields = { "stat-goals", "stat-steals", "stat-kicks", "stat-passes" };
@@ -67,6 +68,9 @@ namespace Soccer.Runtime
             BindButton("tutorial-previous",app.PreviousTutorialStep);
             BindButton("tutorial-retry",app.RestartTutorialStep);
             BindButton("tutorial-exit",()=>{app.GoHome();app.OpenPlayMenu();});
+            BindButton("history-button",app.OpenHistory);
+            BindButton("history-back",app.BackFromHistory);
+            BindButton("results-history",app.OpenHistory);
             BindButton("shop-button",app.OpenShop);
             BindButton("shop-back",app.GoHome);
             BindButton("settings-button", app.OpenSettings);
@@ -75,6 +79,7 @@ namespace Soccer.Runtime
             BindButton("mode-back", app.BackFromMode);
             BindButton("route-login", app.OpenLogin);
             BindMenuNavigation();
+            root.Q<Foldout>("character-parameters").RegisterValueChangedCallback(e=>root.Q("character-parameter-content").EnableInClassList("hidden",!e.newValue));
             BindButton("internet-route", () => app.SelectConnection(ConnectionRoute.Internet));
             BindButton("lan-route", () => app.SelectConnection(ConnectionRoute.LAN));
             BindButton("online-play", () => app.OpenNetwork(true));
@@ -140,7 +145,7 @@ namespace Soccer.Runtime
             login=new LoginUI(app,root);
             BindButton("home-account", app.OpenLogin);
             network=new NetworkUI(app,root);
-            draftUI=new DraftUI(app,root);tutorialUI=new TutorialUI(app,root);shopUI=new ShopUI(app,root);
+            draftUI=new DraftUI(app,root);tutorialUI=new TutorialUI(app,root);shopUI=new ShopUI(app,root);historyUI=new HistoryUI(app,root);
             SetImage("shop-marine-art","portrait-marine-v2");SetImage("shop-thor-art","portrait-thor-v2");
             SetFullHud(LoadFullHudPreference(), false);
             RefreshAudioSettings();
@@ -261,7 +266,8 @@ namespace Soccer.Runtime
             RefreshLogin();
             shopUI?.Refresh();
             if(page==AppPage.PlayMenu)root.schedule.Execute(()=>{if(app.Page==AppPage.PlayMenu)root.Q<Button>("play-online").Focus();});
-            if (page == AppPage.CharacterSelect) RefreshSelection();
+            if (page == AppPage.History)historyUI.Open();
+            if (page == AppPage.CharacterSelect){root.Q<Foldout>("character-parameters").SetValueWithoutNotify(false);root.Q("character-parameter-content").AddToClassList("hidden");RefreshSelection();}
             if (page == AppPage.ModeDetails) RefreshModeDetails();
             if (page == AppPage.NetworkMenu || page == AppPage.RoomLobby) RefreshNetwork();
             Visible(root.Q("menu-backdrop"), page != AppPage.Match && page != AppPage.Loading);
@@ -289,13 +295,20 @@ namespace Soccer.Runtime
             Text("select-title", app.SelectedMode == MatchMode.Training ? "选择角色 · 训练场" : "选择角色 · 合作乱斗");
             Text("select-subtitle", app.SelectedMode == MatchMode.Training ? "练习移动、传射和角色技能。" : "3v3 AI 对练 · 选择你的角色。");
             Text("selected-name", d.Stats.Name);
-            Text("selected-role", d.Role);
-            Text("selected-stats", $"生命 100  ·  能量 100\n移动速度 {d.Stats.Speed * app.RulesAsset.Rules.MovementSpeedScale:0.##}  ·  推力 {d.Stats.PushPower:0.##}\nV 键踢球 6 秒冷却  ·  空格铲球 5 秒冷却\n铲球消耗 {app.RulesAsset.Rules.TackleHealthCost(d.Stats):0.#} 生命  ·  原地复活 5 秒");
-            Text("passive-copy", d.PassiveDescription);
-            Text("q-name", $"Q / {d.QName}  · {d.Stats.Loadout.QEnergy:0} 能量 + {d.Stats.QHealthCost:0} 生命 / {d.Stats.QCooldown:0.#} 秒");
-            Text("q-copy", d.QDescription);
-            Text("e-name", $"E / {d.EName}  · {d.Stats.Loadout.EEnergy:0} 能量" + (d.Stats.EHealthCost > 0 ? $" + {d.Stats.EHealthCost:0} 生命" : "") + $" / {d.Stats.ECooldown:0.#} 秒");
-            Text("e-copy", d.EDescription);
+            bool marine=d.Stats.Id==CharacterId.Marine;
+            Text("selected-role",marine ? "灵活推进 · 区域控制" : "重装突进 · 阵地突破");
+            Text("selected-summary",marine ? "利用速度抢位，用炸弹为队伍打开进攻空间。" : "顶住正面压力，用突进打散对手站位。");
+            Text("selected-stats",$"生命 {d.Stats.MaxHealth:0} · 能量 {d.Stats.MaxEnergy:0}\n移动速度 {d.Stats.Speed*app.RulesAsset.Rules.MovementSpeedScale:0.##} · 推力 {d.Stats.PushPower:0.##}\nV 键踢球 {app.RulesAsset.Rules.KickCooldown:0.#} 秒冷却\n空格推抢 {app.RulesAsset.Rules.TackleCooldown:0.#} 秒冷却 · 消耗 {app.RulesAsset.Rules.TackleHealthCost(d.Stats):0.#} 生命");
+            Text("passive-name",marine ? "脉冲步枪" : "双联机炮");
+            Text("passive-copy",marine ? "追击目标，持续火力压制。" : "近距离重火力，逼退防守球员。");
+            Text("q-name",$"Q / {d.QName}");Text("q-copy",marine ? "短时加速，快速抢位或脱离围堵。" : "高速驱动，快速调整进攻位置。");
+            Text("e-name",$"E / {d.EName}");Text("e-copy",marine ? "布置炸弹制造击退，也可装在足球上。" : "选择方向后突进，突破对手站位。");
+            Text("selection-controls",marine ? "V 传射 · 空格推抢 · G 引爆" : "V 传射 · 空格推抢 · E 后左键确认");
+            Text("q-detail",$"{d.QName} · {d.Stats.Loadout.QEnergy:0} 能量"+(d.Stats.QHealthCost>0 ? $" + {d.Stats.QHealthCost:0} 生命" : "")+$" · 冷却 {d.Stats.QCooldown:0.#} 秒\n"+d.QDescription);
+            Text("e-detail",$"{d.EName} · {d.Stats.Loadout.EEnergy:0} 能量"+(d.Stats.EHealthCost>0 ? $" + {d.Stats.EHealthCost:0} 生命" : "")+$" · 冷却 {d.Stats.ECooldown:0.#} 秒\n"+d.EDescription);
+            Text("weapon-detail",d.PassiveDescription);
+            SetImage("selection-weapon-art",marine ? "skill-rifle-v2" : "skill-cannons-v2");
+            SetImage("selection-q-art",marine ? "skill-stim-v2" : "skill-drive-v2");SetImage("selection-e-art",marine ? "skill-bomb-v2" : "skill-thruster-v2");
             root.Q<Button>("start-button").text = app.SelectedMode == MatchMode.Training ? "开始训练" : "开始比赛";
             root.Q<Button>("start-button").SetEnabled(true);root.Q<Button>("select-back").text="‹ 返回";
             for (int i = 0; i < app.Characters.Length; i++)
