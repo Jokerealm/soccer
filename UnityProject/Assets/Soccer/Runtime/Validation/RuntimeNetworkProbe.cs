@@ -55,19 +55,29 @@ namespace Soccer.Runtime
             }
             app.OpenMode(GamePlaylist.Normal); app.SelectConnection(route == "lan" ? ConnectionRoute.LAN : ConnectionRoute.Internet); app.OpenNetwork(role == "host");
             yield return new WaitForSecondsRealtime(.4f);
+            Check(!root.Q<Foldout>("network-profile").value, "player setup starts collapsed");
+            Check(!PointerHits(root.Q("network-player-name")), "collapsed player setup hides its fields from interaction");
+            Check(!root.Q<Foldout>("network-join-secret").value, "optional join password stays collapsed initially");
+            yield return Capture("00-default-room-form");
+            if (role == "host") yield return CheckRoomSizes("network-page", "network-create", "setup");
+            yield return Expand("network-profile");
+            Check(Visible(root.Q("network-player-name")) && Visible(root.Q("network-character")), "expanded player settings expose nickname and character controls");
             root.Q<TextField>("network-player-name").value = role == "host" ? "联机房主" : "联机客人";
             root.Q<DropdownField>("network-character").value = role == "host" ? "枪兵" : "雷神";
             root.Q<DropdownField>("network-team").value = role == "host" ? "青队" : "橙队";
+            root.Q<Foldout>("network-profile").value = false;
             Check(root.Q<TextField>("network-room-password").isPasswordField && root.Q<TextField>("network-join-password").isPasswordField, "both room passwords use masked fields");
             if (role == "host")
             {
                 root.Q<TextField>("network-room-name").value = "联机验证 · " + route;
+                Check(!Visible(root.Q("network-room-password")), "create password field stays hidden until enabled");
                 Check(root.Q("network-port") == null, "players create rooms without port fields");
                 if (route == "internet")
                 {
                     root.Q<Toggle>("network-password-enabled").value = true;
                     root.Q<TextField>("network-room-password").value = TestPassword;
-                    Check(root.Q<TextField>("network-room-password").enabledSelf, "enabling room password enables password entry");
+                    yield return null;
+                    Check(root.Q<TextField>("network-room-password").enabledSelf && Visible(root.Q("network-room-password")), "enabling room password reveals password entry");
                 }
                 yield return Capture("00-room-setup");
                 yield return Click("network-create");
@@ -84,13 +94,14 @@ namespace Soccer.Runtime
                     "copy room-code button remains visible");
                 yield return Click("lobby-copy-address");
                 Check(GUIUtility.systemCopyBuffer == app.Room.Lobby.Code && RoomCode.IsValid(GUIUtility.systemCopyBuffer) && root.Q<TextField>("lobby-address").isReadOnly, "copy button supplies exactly the six-character room code");
+                yield return CheckRoomSizes("room-page", "lobby-copy-address", "lobby");
                 File.WriteAllText(codeFile, GUIUtility.systemCopyBuffer);
                 yield return Capture("01-host-room");
                 deadline = Time.realtimeSinceStartup + 20;
                 while ((app.Room == null || app.Room.Lobby.Members.Length < 2 || !app.Room.CanStart) && Time.realtimeSinceStartup < deadline) yield return null;
                 Check(app.Room != null && app.Room.Lobby.Members.Length == 2 && app.Room.CanStart, "second process joins and readiness reaches host");
                 if (app.Room == null || app.Room.Lobby.Members.Length < 2 || !app.Room.CanStart) { Finish(); yield break; }
-                if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "host verifies and displays both account identities");
+                if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "host verifies both account identities");
                 yield return Capture("02-host-ready-room"); yield return Click("lobby-start");
                 Check(app.Page == AppPage.Match && app.IsNetworkMatch, "host start button starts authoritative six-player match");
                 Check(app.Simulation.State.Players[3].Stats.Id == CharacterId.Thor, "guest selected character appears in opposing player slot");
@@ -130,6 +141,8 @@ namespace Soccer.Runtime
                 else { root.Q<TextField>("network-address").value = File.ReadAllText(codeFile).ToLowerInvariant(); root.Q<TextField>("network-join-password").value = TestPassword; }
                 if (route == "internet")
                 {
+                    yield return Expand("network-join-secret");
+                    Check(Visible(root.Q("network-join-password")), "optional join-password expander exposes masked entry");
                     string realCode = root.Q<TextField>("network-address").value;
                     root.Q<TextField>("network-address").value = "!BAD!"; yield return Click("network-join");
                     Check(app.Room == null && !app.NetworkLookupBusy && app.NetworkStatus.Contains("6 位"), "invalid room code is rejected before network lookup");
@@ -157,9 +170,13 @@ namespace Soccer.Runtime
                 }
                 Check(app.Room != null && app.Room.Connected && app.LocalPlayerId == 3, "join button admits client to its chosen opposing team");
                 if (app.Room == null || !app.Room.Connected) { errors.Add(app.NetworkStatus); Finish(); yield break; }
+                Check(!root.Q<Foldout>("lobby-options").value && !Visible(root.Q("lobby-character")), "lobby role and team controls start collapsed");
+                yield return Expand("lobby-options");
+                Check(Visible(root.Q("lobby-character")) && Visible(root.Q("lobby-team")), "lobby choice controls remain available when expanded");
+                root.Q<Foldout>("lobby-options").value = false;
                 Check(app.Room.Lobby.Code == File.ReadAllText(codeFile), "room code synchronizes to guest lobby after lookup and admission");
                 Check(app.Room.Lobby.RequiresPassword == (route == "internet"), "room password setting arrives through live handshake");
-                if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "verified account identities synchronize to guest lobby");
+                if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "verified account identities synchronize internally");
                 Check(root.Q<TextField>("network-join-password").value.Length == 0, "joining clears submitted password field");
                 yield return Capture("01-client-room"); yield return Click("lobby-ready");
                 deadline = Time.realtimeSinceStartup + 15;
@@ -197,6 +214,37 @@ namespace Soccer.Runtime
             Finish();
         }
         private static void Set(object obj, string name, object value) => obj.GetType().GetProperty(name).SetValue(obj, value);
+        private static bool PointerHits(VisualElement element)
+        {
+            if (element == null || element.worldBound.width <= 0 || element.worldBound.height <= 0) return false;
+            var hit = element.panel.Pick(element.worldBound.center);
+            return hit == element || element.Contains(hit);
+        }
+        private static bool Visible(VisualElement element)
+        {
+            for (var current = element; current != null; current = current.parent) if (current.resolvedStyle.display == DisplayStyle.None || current.style.display == new StyleEnum<DisplayStyle>(DisplayStyle.None)) return false;
+            return element != null;
+        }
+        private IEnumerator CheckRoomSizes(string pageName, string actionName, string label)
+        {
+            int width = Screen.width, height = Screen.height; var mode = Screen.fullScreenMode;
+            foreach (var size in new[] { new Vector2Int(1024, 768), new Vector2Int(1280, 720) })
+            {
+                Screen.SetResolution(size.x, size.y, false); yield return new WaitForSecondsRealtime(.6f);
+                var root = app.UI.Root; var page = root.Q(pageName).worldBound; var bounds = root.worldBound;
+                var button = root.Q<Button>(actionName); var hit = root.panel.Pick(button.worldBound.center);
+                Check(page.xMin >= bounds.xMin && page.xMax <= bounds.xMax && page.yMin >= bounds.yMin && page.yMax <= bounds.yMax,
+                    label + " panel fits " + size.x + "x" + size.y);
+                Check(hit == button || button.Contains(hit), label + " primary control accepts pointer at " + size.x + "x" + size.y);
+                yield return Capture("00-" + label + "-" + size.x + "x" + size.y);
+            }
+            Screen.SetResolution(width, height, mode); yield return new WaitForSecondsRealtime(.5f);
+        }
+        private IEnumerator Expand(string name)
+        {
+            var toggle = app.UI.Root.Q<Foldout>(name).Q<Toggle>(); toggle.Focus(); yield return null;
+            using (var evt = NavigationSubmitEvent.GetPooled()) toggle.SendEvent(evt); yield return null;
+        }
         private IEnumerator Click(string name)
         {
             var button = app.UI.Root.Q<Button>(name); button.Focus(); yield return null;

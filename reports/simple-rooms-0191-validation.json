@@ -1,0 +1,107 @@
+{
+  "version": "0.19.1",
+  "date": "2026-10-13",
+  "passed": true,
+  "changes": [
+    "Compact centered create/join and room lobby panels",
+    "Nickname, character and team settings are collapsed until needed",
+    "Room password input is hidden until enabled; join password is an optional expander",
+    "Routine lobby text, account labels and repeated AI explanations are removed",
+    "Login test-account help and fallback LAN-address instructions are collapsed",
+    "Actual navigation and pointer checks cover 1024x768 and 1280x720 layouts"
+  ],
+  "core": {
+    "passed": true,
+    "total": 223,
+    "report": "reports/room-codes-019-core/core-tests.json"
+  },
+  "network": {
+    "passed": true,
+    "total": 35,
+    "report": "reports/room-codes-019-network/network-tests.json"
+  },
+  "loginService": {
+    "passed": true,
+    "total": 9,
+    "report": "reports/simple-rooms-0191-login-service.json"
+  },
+  "roomDirectory": {
+    "passed": true,
+    "total": 36,
+    "report": "reports/room-codes-019-directory.json"
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 237,
+    "viewportSizes": [
+      "1024x768",
+      "1280x720"
+    ],
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet room-code lookup and password handshake",
+      "LAN discovered list",
+      "LAN IP-only join",
+      "LAN room-code join with login service stopped"
+    ],
+    "closedInternetRoomLookupReturns404": true,
+    "report": "reports/simple-rooms-0191-clients.json"
+  },
+  "fullClientRegression": {
+    "passed": true,
+    "total": 331,
+    "report": "reports/simple-rooms-0191-runtime-full/runtime-smoke.json"
+  },
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413563985
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 382009965
+  },
+  "serviceBuild": {
+    "result": "Succeeded",
+    "target": "net10.0",
+    "errors": 0,
+    "warnings": 0
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.19.1-Windows-x64.zip",
+    "bytes": 144239090,
+    "sha256": "2e08ea28c1590aa88eb1c94c7df458fbdc5a7dd5f5f7e81caf80280d98e95ce4",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.19.1-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "03e6813a7a539c39b7d92f0a226308b44f080d535d5ce18e9c2008d0e668d554",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "4d0b27bba75b2fee16ae2b7b029d3b164556dc0966ec1f3190c055da68242c22",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "5972ff684e775f4611725c4f9aff233c0fa860aa9465cab1f8e7ccca38931b09"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "f50c0b72b872cc24de3655cc872288eb6af958bf65bec397d3d8d7bc4ff89d69",
+    "Soccer.Runtime.dll": "d6f9381b9d4d8ad54f8b09880f7b3a12d4e7cbfd0492df0bf287a38063f53bd8"
+  },
+  "limitations": {
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicLoginAndDirectoryDeployed": false,
+    "matchRelayDeployed": false,
+    "roomDirectoryProvidesNatTraversal": false
+  },
+  "reusedUnchangedChecksFromVersion": "0.19.0: core rules, networking protocol and room-directory implementation"
+}

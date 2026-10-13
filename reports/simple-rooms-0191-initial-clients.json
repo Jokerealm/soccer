@@ -1,0 +1,104 @@
+{
+  "passed": false,
+  "preferredPortOccupied": true,
+  "totalChecks": 197,
+  "runs": [
+    {
+      "route": "internet",
+      "joinMode": "code",
+      "role": "host",
+      "exitCode": 1,
+      "report": "reports/simple-rooms-0191-internet-code-host/network-smoke.json",
+      "passed": false,
+      "checks": 28,
+      "errors": [
+        "player setup stays collapsed on first room entry",
+        "enabling room password reveals password entry"
+      ]
+    },
+    {
+      "route": "internet",
+      "joinMode": "code",
+      "role": "client",
+      "exitCode": 1,
+      "report": "reports/simple-rooms-0191-internet-code-client/network-smoke.json",
+      "passed": false,
+      "checks": 28,
+      "errors": [
+        "player setup stays collapsed on first room entry"
+      ]
+    },
+    {
+      "route": "lan",
+      "joinMode": "list",
+      "role": "host",
+      "exitCode": 1,
+      "report": "reports/simple-rooms-0191-lan-list-host/network-smoke.json",
+      "passed": false,
+      "checks": 24,
+      "errors": [
+        "player setup stays collapsed on first room entry"
+      ]
+    },
+    {
+      "route": "lan",
+      "joinMode": "list",
+      "role": "client",
+      "exitCode": 1,
+      "report": "reports/simple-rooms-0191-lan-list-client/network-smoke.json",
+      "passed": false,
+      "checks": 23,
+      "errors": [
+        "player setup stays collapsed on first room entry"
+      ]
+    },
+    {
+      "route": "lan",
+      "joinMode": "ip",
+      "role": "host",
+      "exitCode": 1,
+      "report": "reports/simple-rooms-0191-lan-ip-host/network-smoke.json",
+      "passed": false,
+      "checks": 24,
+      "errors": [
+        "player setup stays collapsed on first room entry"
+      ]
+    },
+    {
+      "route": "lan",
+      "joinMode": "ip",
+      "role": "client",
+      "exitCode": 1,
+      "report": "reports/simple-rooms-0191-lan-ip-client/network-smoke.json",
+      "passed": false,
+      "checks": 23,
+      "errors": [
+        "player setup stays collapsed on first room entry"
+      ]
+    },
+    {
+      "route": "lan",
+      "joinMode": "code",
+      "role": "host",
+      "exitCode": 1,
+      "report": "reports/simple-rooms-0191-lan-code-host/network-smoke.json",
+      "passed": false,
+      "checks": 24,
+      "errors": [
+        "player setup stays collapsed on first room entry"
+      ]
+    },
+    {
+      "route": "lan",
+      "joinMode": "code",
+      "role": "client",
+      "exitCode": 1,
+      "report": "reports/simple-rooms-0191-lan-code-client/network-smoke.json",
+      "passed": false,
+      "checks": 23,
+      "errors": [
+        "player setup stays collapsed on first room entry"
+      ]
+    }
+  ]
+}

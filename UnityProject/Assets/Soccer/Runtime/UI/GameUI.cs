@@ -148,8 +148,8 @@ namespace Soccer.Runtime
             root.Q("lan-route").EnableInClassList("route-selected", app.Route == ConnectionRoute.LAN);
             Text("connection-heading", app.Route == ConnectionRoute.Internet ? "互联网对战" : "局域网房间");
             Text("connection-copy", app.Route == ConnectionRoute.Internet
-                ? "创建公网直连房间，自选是否启用密码；朋友使用房主地址加入。"
-                : "同一网络自动发现房间，也支持输入房主地址加入。最多 6 人，空位由 AI 补齐。");
+                ? "用房间号邀请朋友。"
+                : "和同一网络的朋友联机。");
             bool networkAvailable=app.SelectedPlaylist==GamePlaylist.Normal;
             root.Q<Button>("online-play").text = networkAvailable ? "创建房间" : "联机规则 · 待开放";
             root.Q<Button>("join-room").text = "加入房间";
@@ -157,7 +157,7 @@ namespace Soccer.Runtime
             root.Q<Button>("join-room").SetEnabled(networkAvailable);
             Visible(root.Q("join-room"), true);
             Visible(root.Q("mode-practice"), app.SelectedPlaylist == GamePlaylist.Normal);
-            Text("mode-availability", app.SelectedPlaylist == GamePlaylist.Normal ? "可玩：联机房间 / 本地 AI 对练" : "玩法尚未开放 · 可以先进入训练场");
+            Text("mode-availability", app.SelectedPlaylist == GamePlaylist.Normal ? "" : "玩法尚未开放 · 可以先进入训练场");
         }
 
         private void BindButton(string name, Action action)
