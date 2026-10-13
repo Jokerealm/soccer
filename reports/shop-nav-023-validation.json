@@ -1,0 +1,109 @@
+{
+  "version": "0.23.0",
+  "date": "2026-10-13",
+  "passed": true,
+  "changes": [
+    "Home and mode selection handle both native navigation events and polled keyboard edges",
+    "Up/Down wrap choices, lost root focus recovers, Enter activates the actual button callback, duplicate same-frame inputs are suppressed",
+    "Queued forwarded submit events preserve actual button clicks across page transitions",
+    "Home shows a fifth Shop action and current coin balance, with explicit selected styling",
+    "Shop includes starter hero cards, upcoming skin category, balance and victory reward description",
+    "Completed winning AI, LAN and Internet matches pay 100 coins to the local player based on actual team",
+    "Each match pays at most once; repeated results, final snapshots and home return do not pay twice",
+    "No coins for training, tutorial, active/abandoned games, losing team or draw",
+    "Separate hashed-file offline/account profiles persist balances and reward ledgers with atomic replacement",
+    "Save errors roll back in-memory credit; invalid wallet data is rejected without overwriting an existing save",
+    "Shop and five-action home layout verified at 1024x768,1280x720 and1920x1080"
+  ],
+  "coreTests": {
+    "passed": true,
+    "total": 236,
+    "report": "reports/shop-nav-023-core/core-tests.json"
+  },
+  "networkTests": {
+    "passed": true,
+    "total": 39,
+    "report": "reports/shop-nav-023-network/network-tests.json"
+  },
+  "fullClientRegression": {
+    "passed": true,
+    "total": 548,
+    "report": "reports/shop-nav-023-runtime-full/runtime-smoke.json",
+    "gameplayFpsSample": 119.98695373535156,
+    "walletFixturesUseIsolatedReportDirectory": true
+  },
+  "focusedShopNavigation": {
+    "passed": true,
+    "total": 65,
+    "report": "reports/shop-nav-023-focused/runtime-smoke.json",
+    "finalRewardSpacingChecked": true,
+    "fullRegressionAssembliesMatchFinalPlayer": true
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 141,
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet room-code login and password using loopback service",
+      "Offline LAN list join with login service stopped"
+    ],
+    "winningGuestReceives100": true,
+    "losingHostReceives0": true,
+    "finalSnapshotRewardDeduplicated": true,
+    "report": "reports/shop-nav-023-clients.json",
+    "sameMachineMacProcesses": true
+  },
+  "screenshots": [
+    "reports/shop-nav-023-runtime-full/shop-heroes-1920x1080.png",
+    "reports/shop-nav-023-runtime-full/shop-earned-balance.png",
+    "reports/shop-nav-023-runtime-full/shop-victory-reward.png"
+  ],
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413673281
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 382119261
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.23.0-Windows-x64.zip",
+    "bytes": 144278292,
+    "sha256": "288680c4c6b09bdf6d8daff7459303d5079ba7b1a274a420cadab01fe5214d87",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.23.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "f8ba9aacc025580339eeda1a8544aed90967e421d27cfa7dfb7fdf7327984091",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "d1b5ed4dfbaf0760300b4643d04529b916d37ef2293d3caa888e99a36bb351c2",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "b0adc0cb3dd1060c83c1e99580b9fb61635815ea902ef193b934fdfb2f3777ff"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "3d74b09b5381d348ef56cb6a4d31b054488523220e6173852fe81529bcb59266",
+    "Soccer.Runtime.dll": "9514b31059a1b94e860b4f53778bed7a5cf728b69b32ee763186220fd0c39c1b"
+  },
+  "limitations": {
+    "walletStorage": "local per-device prototype; no cloud sync or authoritative economic service",
+    "heroPurchases": false,
+    "skinPurchasesAndEquipment": false,
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicMatchmakingDeployed": false,
+    "publicLoginAndDirectoryDeployed": false,
+    "matchRelayDeployed": false
+  }
+}
