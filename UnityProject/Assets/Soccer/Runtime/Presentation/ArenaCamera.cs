@@ -10,6 +10,7 @@ namespace Soccer.Runtime
         private AppController app;
         private Vector2 focus;
         private int followedRound=-1;
+        private bool menuMode;
         public Vector2 FocusGround => focus;
         public bool RevealingGoal { get; private set; }
         public Vector2 VisibleGroundSize => new Vector2(viewCamera.orthographicSize*2*viewCamera.aspect,
@@ -25,6 +26,7 @@ namespace Soccer.Runtime
         }
         private void LateUpdate()
         {
+            if (menuMode) { FrameMenu(); return; }
             if(app==null) app=FindObjectOfType<AppController>();
             if(app==null || app.Page!=AppPage.Match || app.Simulation==null || app.Paused) return;
             var state=app.Simulation.State;
@@ -44,11 +46,25 @@ namespace Soccer.Runtime
             else focus=Vector2.Lerp(focus,target,1-Mathf.Exp(-Mathf.Min(Time.unscaledDeltaTime,.1f)/.16f));
             PositionCamera();
         }
+        public void SetMenuMode(bool enabled)
+        {
+            menuMode = enabled;
+            if (enabled) FrameMenu();
+            else transform.rotation = Quaternion.Euler(55, 0, 0);
+        }
+        private void FrameMenu()
+        {
+            transform.rotation = Quaternion.Euler(18, 195, 0);
+            viewCamera.orthographicSize = Mathf.Max(3.25f, 4.9f / viewCamera.aspect);
+            var center = new Vector3(4.8f, 1.55f, 0) - transform.right * (viewCamera.orthographicSize * viewCamera.aspect * .37f);
+            transform.position = center - transform.forward * 25;
+        }
         public void ResetFraming()
         {
             if(app==null) app=FindObjectOfType<AppController>();
             if(app?.Simulation==null) return;
             var p=app.Simulation.State.Players[app.LocalPlayerId];
+            menuMode = false; transform.rotation = Quaternion.Euler(55, 0, 0);
             RevealingGoal=false;
             viewCamera.orthographicSize=Mathf.Min(6.8f,15/viewCamera.aspect);
             var state=app.Simulation.State;

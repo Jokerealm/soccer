@@ -23,45 +23,30 @@ Button:disabled { color: rgb(127,143,151); background-color: rgb(214,223,222); b
 .page .eyebrow { color: rgb(32,133,131); }
 .page .skill-heading { color: rgb(37,108,112); }
 .page-heading { margin-bottom: 20px; }
-/* Lobby */
-.mode-home { flex-grow: 1; padding: 24px 58px 18px; }
-.front-topbar { height: 62px; flex-shrink: 0; }
-.brand-mark { width: 44px; height: 44px; margin-right: 14px; -unity-background-scale-mode: scale-to-fit; }
-.front-brand { font-size: 28px; }
-.front-brand-sub { font-size: 11px; margin-top: 3px; margin-bottom: 0; }
-.connection-status { font-size: 13px; padding: 8px 15px; background-color: rgba(20,46,62,0.82); border-width: 1px; border-color: rgba(168,208,211,0.3); border-radius: 20px; color: rgb(194,229,222); }
-.build-label { font-size: 12px; color: rgb(176,190,199); margin-left: 18px; }
-.mode-intro { flex-grow: 1; justify-content: center; min-height: 190px; padding-top: 18px; padding-bottom: 22px; }
-.mode-page-title { font-size: 58px; color: rgb(255,249,226); margin-top: 2px; }
-.mode-intro-copy { font-size: 19px; color: rgb(192,218,222); margin-top: 14px; }
-.mode-deck { height: 330px; flex-shrink: 0; align-items: stretch; }
-Button.mode-card { flex-grow: 1; flex-basis: 0; min-width: 0; margin: 0 18px 0 0; padding: 0; border-width: 1px; border-bottom-width: 6px; border-radius: 18px; overflow: hidden; flex-direction: column; align-items: stretch; background-color: rgb(244,249,240); }
-Button.mode-card.party { margin-right: 0; background-color: rgb(246,240,252); border-bottom-color: rgb(144,116,181); }
-Button.mode-card.normal { border-bottom-color: rgb(49,135,137); }
-Button.mode-card.ranked { background-color: rgb(252,246,227); border-bottom-color: rgb(187,147,74); }
-Button.mode-card:hover { background-color: rgb(255,255,252); border-color: rgb(255,217,127); border-bottom-width: 6px; }
-Button.mode-card:focus { border-top-width: 3px; border-left-width: 3px; border-right-width: 3px; border-color: rgb(255,210,99); }
-.mode-card-top { padding: 18px 22px 0; justify-content: space-between; }
-.mode-kicker { color: rgb(111,133,139); font-size: 11px; letter-spacing: 1px; }
-.mode-tag { color: rgb(44,123,118); font-size: 12px; padding: 4px 9px; border-radius: 6px; background-color: rgb(211,235,221); }
-.ranked .mode-tag { color: rgb(151,112,54); background-color: rgb(241,228,194); }
-.party .mode-tag { color: rgb(126,91,166); background-color: rgb(232,216,246); }
-.mode-card-art { position: absolute; right: 14px; top: 60px; width: 130px; height: 145px; }
-.mode-icon { position: absolute; top: 0; right: 0; width: 126px; height: 126px; -unity-background-scale-mode: scale-to-fit; }
-.mode-number, .mode-player-art { display: none; }
-.mode-card-copy { flex-grow: 1; padding: 25px 22px 19px; }
-.mode-card-copy Label { -unity-text-align: upper-left; }
-.mode-card-title { font-size: 34px; margin-top: 7px; }
-.mode-card-subtitle { font-size: 16px; margin-top: 13px; color: rgb(81,112,121); max-width: 73%; white-space: normal; }
-.mode-card-description { font-size: 13px; margin-top: 12px; color: rgb(118,141,148); max-width: 73%; white-space: normal; }
-.mode-card-line { flex-grow: 1; min-height: 10px; }
-.mode-card-action { color: rgb(33,112,111); font-size: 17px; -unity-font-definition: url("ChineseBold.asset"); border-top-width: 1px; border-top-color: rgb(211,225,216); padding-top: 16px; }
-.ranked .mode-card-action { color: rgb(153,112,48); }
-.party .mode-card-action { color: rgb(132,91,169); }
-.front-footer { height: 66px; flex-shrink: 0; padding-top: 10px; }
-Button.front-utility { background-color: rgba(23,46,64,0.92); color: rgb(229,242,235); border-color: rgba(189,219,218,0.22); border-bottom-color: rgb(8,23,37); font-size: 15px; min-height: 38px; padding: 8px 17px; border-radius: 9px; margin-right: 10px; }
-Button.front-utility:hover { background-color: rgb(46,86,96); }
-.front-footer-note { color: rgb(165,186,197); font-size: 12px; }
+/* Main menu: a live arena with a single vertical navigation rail. */
+.game-home { flex-grow: 1; padding: 28px 58px 22px; }
+.home-topbar { height: 44px; flex-shrink: 0; }
+.home-connection { color: rgb(188,203,214); font-size: 13px; margin-right: 18px; }
+Button.home-account { min-height: 38px; margin: 0; padding: 7px 18px; border-radius: 2px; border-width: 1px; border-color: rgba(184,205,214,0.4); color: rgb(229,237,242); background-color: rgba(8,19,29,0.65); }
+Button.home-account:hover { background-color: rgb(43,68,78); border-color: rgb(216,232,237); }
+.home-body { flex-grow: 1; justify-content: center; padding-bottom: 12px; }
+.home-wordmark { margin-bottom: 42px; }
+.home-brand-en { font-size: 13px; letter-spacing: 5px; color: rgb(171,192,206); margin-bottom: 7px; }
+.home-brand-title { font-size: 68px; letter-spacing: 4px; -unity-font-definition: url("ChineseBold.asset"); color: rgb(242,245,245); }
+.home-brand-line { width: 54px; height: 3px; margin-top: 18px; background-color: rgb(255,183,70); }
+.home-navigation { width: 340px; max-width: 43%; }
+Button.home-nav { width: 100%; min-height: 61px; flex-shrink: 0; margin: 0 0 7px; padding: 9px 20px; border-width: 0; border-left-width: 3px; border-left-color: rgba(255,183,70,0); border-radius: 0; color: rgb(214,225,232); background-color: rgba(10,23,35,0.18); font-size: 28px; -unity-font-definition: url("ChineseBold.asset"); -unity-text-align: middle-left; }
+Button.home-nav:hover, Button.home-nav:focus { border-left-color: rgb(255,183,70); background-color: rgba(119,153,171,0.17); color: rgb(255,244,223); }
+Button.home-nav:active { padding-top: 9px; background-color: rgba(174,189,196,0.22); }
+Button.home-nav-primary { min-height: 85px; padding-top: 13px; padding-bottom: 13px; margin-bottom: 12px; background-color: rgba(169,124,54,0.18); border-left-color: rgb(255,183,70); }
+.home-nav-title { font-size: 34px; color: rgb(255,202,111); -unity-text-align: middle-left; }
+.home-nav-note { font-size: 12px; color: rgb(186,194,193); margin-top: 3px; -unity-font-definition: url("ChineseFont.asset"); }
+.home-nav-arrow { position: absolute; right: 18px; top: 15px; font-size: 40px; color: rgb(255,202,111); }
+Button.home-nav-small { font-size: 22px; min-height: 51px; margin-top: 10px; }
+.home-bottom { height: 34px; flex-shrink: 0; border-top-width: 1px; border-top-color: rgba(152,179,193,0.17); padding-top: 14px; }
+.home-keyboard, .home-version { font-size: 11px; color: rgb(151,169,184); }
+Button.front-utility { background-color: rgba(10,23,35,0.7); color: rgb(229,238,242); border-color: rgba(189,219,218,0.25); border-width: 1px; font-size: 15px; min-height: 38px; padding: 8px 17px; border-radius: 2px; margin-right: 10px; }
+Button.front-utility:hover { background-color: rgb(46,76,86); }
 /* Launch */
 .loading-page { flex-grow: 1; background-color: rgb(12,28,48); }
 .loading-shade { position: absolute; top: 0; bottom: 0; left: 0; width: 44%; background-color: rgba(9,28,50,0.26); }
@@ -77,31 +62,22 @@ Button.front-utility:hover { background-color: rgb(46,86,96); }
 .loading-fill { height: 8px; width: 0; background-color: rgb(247,196,91); border-radius: 4px; }
 .loading-tip { font-size: 13px; margin-top: 16px; color: rgb(171,201,210); white-space: normal; }
 .loading-version { position: absolute; right: 32px; bottom: 24px; font-size: 12px; color: rgb(161,183,198); }
-/* Mode information */
-.mode-details { flex-grow: 1; padding: 30px 58px 36px; }
-.detail-topbar { height: 46px; margin-bottom: 24px; }
-.detail-content { flex-grow: 1; align-items: stretch; }
-.detail-overview { flex-grow: 1; flex-basis: 0; margin-right: 24px; padding: 34px; border-radius: 20px; background-color: rgba(17,40,58,0.94); border-width: 1px; border-color: rgba(207,230,223,0.22); overflow: hidden; }
-.detail-eyebrow { font-size: 12px; color: rgb(146,222,208); margin-bottom: 18px; letter-spacing: 2px; }
-.detail-title { font-size: 58px; color: rgb(255,244,217); }
-.detail-subtitle { font-size: 23px; margin-top: 14px; }
-.detail-description { font-size: 18px; margin-top: 20px; max-width: 470px; color: rgb(178,205,211); white-space: normal; }
-.detail-rules { margin-top: 32px; max-width: 430px; padding: 20px; border-left-width: 3px; border-left-color: rgb(241,197,106); background-color: rgba(7,24,39,0.5); }
-.detail-section-label { font-size: 13px; color: rgb(137,174,188); margin-bottom: 14px; }
-.detail-rule { font-size: 17px; margin-bottom: 13px; white-space: normal; }
-.detail-player-art { position: absolute; right: 24px; bottom: 30px; width: 190px; height: 190px; -unity-background-scale-mode: scale-to-fit; opacity: 0.95; }
-.connection-panel { width: 410px; flex-shrink: 0; border-radius: 20px; padding: 28px; background-color: rgb(245,247,237); color: rgb(30,48,62); border-bottom-width: 6px; border-bottom-color: rgb(124,149,158); }
-.connection-panel .detail-section-label { color: rgb(103,136,142); }
-.connection-tabs { padding: 4px; background-color: rgb(218,228,223); border-radius: 10px; margin-bottom: 26px; }
-Button.route-button { flex-grow: 1; flex-basis: 0; min-height: 40px; font-size: 17px; margin: 0; padding: 8px; border-width: 0; background-color: rgba(0,0,0,0); }
-Button.route-button.route-selected { background-color: rgb(41,125,126); color: rgb(245,249,240); }
-.connection-title { font-size: 26px; -unity-font-definition: url("ChineseBold.asset"); margin-bottom: 14px; }
-.network-unavailable { font-size: 13px; color: rgb(161,122,57); margin-bottom: 15px; }
-.connection-copy { font-size: 17px; color: rgb(110,135,143); white-space: normal; margin-bottom: 22px; }
-Button.network-action { min-height: 44px; font-size: 16px; margin: 0 0 8px; }
-.connection-divider { height: 1px; background-color: rgb(209,222,216); margin: 20px 0; }
-.practice-availability { font-size: 14px; color: rgb(50,126,118); white-space: normal; margin-bottom: 10px; }
-.connection-panel Button.primary, .connection-panel Button.secondary { min-height: 46px; margin-top: 8px; font-size: 18px; }
+/* Multiplayer entry exposes connection choice and two actions. */
+.multiplayer-menu { flex-grow: 1; padding: 30px 58px; }
+.multiplayer-topbar { height: 44px; flex-shrink: 0; }
+.multiplayer-body { flex-grow: 1; justify-content: center; width: 460px; max-width: 48%; padding-bottom: 35px; }
+.multiplayer-title { font-size: 44px; color: rgb(242,245,245); -unity-font-definition: url("ChineseBold.asset"); margin-bottom: 28px; }
+.connection-panel { padding: 0; }
+.connection-tabs { padding: 3px; border-width: 1px; border-color: rgba(155,185,203,0.3); background-color: rgba(8,18,29,0.8); margin-bottom: 22px; }
+Button.route-button { flex-grow: 1; flex-basis: 0; min-height: 42px; font-size: 17px; margin: 0; padding: 8px; border-width: 0; background-color: rgba(0,0,0,0); }
+.connection-panel Button.route-button { color: rgb(174,195,209); border-radius: 0; }
+.connection-panel Button.route-button.route-selected { background-color: rgb(48,72,86); color: rgb(255,208,130); }
+.connection-panel Button.route-button:hover { background-color: rgb(41,60,76); }
+.connection-panel Button.route-button:disabled { background-color: rgba(8,18,29,0); color: rgb(93,115,132); }
+.connection-panel Button.network-action { min-height: 66px; margin: 0 0 12px; padding: 15px 22px; color: rgb(237,243,244); background-color: rgba(23,44,61,0.87); border-width: 1px; border-color: rgba(159,188,202,0.25); border-left-width: 3px; border-radius: 0; font-size: 25px; -unity-font-definition: url("ChineseBold.asset"); -unity-text-align: middle-left; }
+.connection-panel Button.network-action:hover, .connection-panel Button.network-action:focus { border-left-color: rgb(255,183,70); background-color: rgba(60,83,101,0.94); }
+.connection-copy { font-size: 13px; color: rgb(160,181,197); margin-top: 11px; white-space: normal; }
+Button.multiplayer-login { align-self: flex-start; background-color: rgba(0,0,0,0); color: rgb(255,203,116); border-width: 0; border-radius: 0; padding: 5px 0; margin: 5px 0 0; min-height: 30px; font-size: 14px; }
 /* Equipment selection, held for later character definitions. */
 .selection-content { flex-grow: 1; flex-basis: 0; min-height: 0; align-items: stretch; }
 .roster-cards { width: 59%; align-items: stretch; }
@@ -262,32 +238,23 @@ Button.character-card.selected { background-color: rgb(207,234,223); border-widt
 .settings .settings-toggles Button { margin-right: 12px; font-size: 16px; }
 .settings Button { align-self: flex-start; }
 .settings .hud-setting-copy { font-size: 13px; margin-bottom: 8px; }
-/* 4:3 and small-window layout */
-.compact-front-end .mode-home { padding-top: 18px; padding-bottom: 12px; }
-.compact-front-end .mode-intro { min-height: 142px; padding: 15px 0; }
-.compact-front-end .mode-page-title { font-size: 48px; }
-.compact-front-end .mode-deck { height: 295px; }
-.compact-front-end .mode-card-copy { padding-top: 18px; }
-.compact-front-end .mode-card-title { font-size: 30px; }
-.compact-front-end .mode-card-art { width: 106px; right: 10px; }
-.compact-front-end .mode-icon { width: 100px; height: 100px; }
-.compact-front-end .front-footer { height: 58px; }
-.compact-front-end .detail-overview { padding: 24px; }
-.compact-front-end .detail-title { font-size: 48px; }
-.compact-front-end .detail-rules { margin-top: 20px; padding: 15px; }
-.compact-front-end .connection-panel { padding: 22px; }
-.compact-front-end .connection-tabs { margin-bottom: 18px; }
-.compact-front-end .connection-copy { margin-bottom: 16px; }
+/* Smaller windows keep every main action in view. */
+.compact-front-end .game-home { padding-top: 18px; padding-bottom: 18px; }
+.compact-front-end .home-wordmark { margin-bottom: 27px; }
+.compact-front-end .home-brand-title { font-size: 58px; }
+.compact-front-end .home-brand-line { margin-top: 12px; }
+.compact-front-end Button.home-nav { min-height: 53px; font-size: 25px; }
+.compact-front-end Button.home-nav-primary { min-height: 77px; }
+.compact-front-end .home-nav-title { font-size: 31px; }
+.compact-front-end Button.home-nav-small { min-height: 45px; font-size: 21px; margin-top: 5px; }
 .compact-front-end .page { margin: 25px 38px; padding: 25px; }
 .compact-front-end .selection .page-title { font-size: 30px; }
 .compact-front-end .selection .description { font-size: 14px; }
 .compact-front-end .settings .description { font-size: 16px; }
-.narrow-front-end .mode-home, .narrow-front-end .mode-details { padding-left: 38px; padding-right: 38px; }
-.narrow-front-end .front-footer-note { display: none; }
-.narrow-front-end .connection-panel { width: 355px; }
-.narrow-front-end .detail-overview { margin-right: 18px; }
-.narrow-front-end .detail-description, .narrow-front-end .detail-rules { max-width: 350px; }
-.narrow-front-end .detail-player-art { width: 130px; height: 130px; opacity: 0.7; }
+.narrow-front-end .game-home, .narrow-front-end .multiplayer-menu { padding-left: 38px; padding-right: 38px; }
+.narrow-front-end .home-connection { font-size: 12px; margin-right: 12px; }
+.narrow-front-end .home-navigation { width: 320px; }
+.narrow-front-end .multiplayer-title { font-size: 40px; }
 
 /* Shared actions expose separate cooldowns and health costs. */
 

@@ -14,6 +14,10 @@ namespace Soccer.Runtime
         private VisualElement root;
         private AppController app;
         private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page" };
+        public MenuStageView MenuStage { get; private set; }
+        private Texture2D menuVeil;
+        private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "settings-button" };
+        private readonly System.Collections.Generic.Dictionary<string, Action> homeActions = new System.Collections.Generic.Dictionary<string, Action>();
         private NetworkUI network;
         private LoginUI login;
         private readonly string[] scoreFields = { "stat-goals", "stat-steals", "stat-kicks", "stat-passes" };
@@ -48,19 +52,16 @@ namespace Soccer.Runtime
             if (Styles != null) root.styleSheets.Add(Styles);
             BindButton("train-button", () => app.OpenSelection(MatchMode.Training));
             BindButton("bots-button", () => app.OpenSelection(MatchMode.BotMatch));
-            BindButton("roster-button", () => app.OpenSelection(MatchMode.Training));
             BindButton("settings-button", app.OpenSettings);
             BindButton("select-back", app.BackFromSelection);
             BindButton("normal-mode", () => app.OpenMode(GamePlaylist.Normal));
-            BindButton("ranked-mode", () => app.OpenMode(GamePlaylist.Ranked));
-            BindButton("party-mode", () => app.OpenMode(GamePlaylist.Entertainment));
             BindButton("mode-back", app.GoHome);
+            BindButton("route-login", app.OpenLogin);
+            root.Q("home-page").RegisterCallback<KeyDownEvent>(NavigateHome, TrickleDown.TrickleDown);
             BindButton("internet-route", () => app.SelectConnection(ConnectionRoute.Internet));
             BindButton("lan-route", () => app.SelectConnection(ConnectionRoute.LAN));
             BindButton("online-play", () => app.OpenNetwork(true));
             BindButton("join-room", () => app.OpenNetwork(false));
-            BindButton("mode-practice", () => app.OpenSelection(MatchMode.BotMatch));
-            BindButton("mode-training", () => app.OpenSelection(MatchMode.Training));
             BindButton("settings-back", app.GoHome);
             BindButton("start-button", app.StartMatch);
             BindButton("pause-button", () => app.SetPaused(true));
@@ -85,12 +86,6 @@ namespace Soccer.Runtime
                 BindButton($"character-{i}", () => app.SelectCharacter(character.Stats.Id));
                 SetImage($"equipment-{i}", character.Stats.Id == CharacterId.Marine ? "equipment-marine" : "equipment-thor");
             }
-            string[] modeNames = { "normal", "ranked", "party" };
-            for (int i = 0; i < modeNames.Length; i++)
-            {
-                SetImage(modeNames[i] + "-icon", "badge-" + modeNames[i]);
-            }
-            SetImage("brand-mark", "brand-mark");
             string[] symbols = { "weapon", "tackle", "kick", "g" };
             string[] assets = { "rifle", "tackle", "kick", "trigger" };
             for (int i=0;i<symbols.Length;i++) SetImage(symbols[i]+"-symbol", "skill-"+assets[i]+"-v2");
@@ -98,8 +93,11 @@ namespace Soccer.Runtime
             if (splash != null)
             {
                 root.Q("loading-art").style.backgroundImage = new StyleBackground(splash);
-                root.Q("menu-backdrop").style.backgroundImage = new StyleBackground(splash);
+
             }
+            CreateMenuVeil();
+            MenuStage = new GameObject("Main menu presentation").AddComponent<MenuStageView>();
+            MenuStage.Initialize(app);
             var volume = root.Q<Slider>("volume-slider");
             volume.SetValueWithoutNotify(app.Audio.SavedMasterVolume);
             volume.RegisterValueChangedCallback(e => app.Audio.SetVolume(e.newValue));
@@ -135,34 +133,63 @@ namespace Soccer.Runtime
 
         public void RefreshModeDetails()
         {
-            var mode = GameModeCatalog.Get(app.SelectedPlaylist);
-            Text("detail-name", mode.Name); Text("detail-english", mode.EnglishName);
-            Text("detail-subtitle", mode.Subtitle); Text("detail-description", mode.Description);
-            Text("detail-rule-one", mode.RuleOne); Text("detail-rule-two", mode.RuleTwo); Text("detail-rule-three", mode.RuleThree);
-            string[] names = { "normal", "ranked", "party" };
-            for (int i = 0; i < names.Length; i++) root.Q("mode-details-page").EnableInClassList(names[i], i == (int)app.SelectedPlaylist);
-            SetImage("detail-art", "badge-" + names[(int)app.SelectedPlaylist]);
-            root.Q<Button>("internet-route").SetEnabled(app.EntryMode == GameEntryMode.Online);
-            root.Q<Button>("lan-route").SetEnabled(GameModeCatalog.SupportsLAN(app.SelectedPlaylist));
+            bool online = app.EntryMode == GameEntryMode.Online;
+            root.Q<Button>("internet-route").SetEnabled(online);
+            root.Q<Button>("lan-route").SetEnabled(true);
             root.Q("internet-route").EnableInClassList("route-selected", app.Route == ConnectionRoute.Internet);
             root.Q("lan-route").EnableInClassList("route-selected", app.Route == ConnectionRoute.LAN);
-            Text("connection-heading", app.Route == ConnectionRoute.Internet ? "互联网对战" : "局域网房间");
-            Text("connection-copy", app.Route == ConnectionRoute.Internet
-                ? "用房间号邀请朋友。"
-                : "和同一网络的朋友联机。");
-            bool networkAvailable=app.SelectedPlaylist==GamePlaylist.Normal;
-            root.Q<Button>("online-play").text = networkAvailable ? "创建房间" : "联机规则 · 待开放";
-            root.Q<Button>("join-room").text = "加入房间";
-            root.Q<Button>("online-play").SetEnabled(networkAvailable);
-            root.Q<Button>("join-room").SetEnabled(networkAvailable);
-            Visible(root.Q("join-room"), true);
-            Visible(root.Q("mode-practice"), app.SelectedPlaylist == GamePlaylist.Normal);
-            Text("mode-availability", app.SelectedPlaylist == GamePlaylist.Normal ? "" : "玩法尚未开放 · 可以先进入训练场");
+            Text("connection-copy", online ? "" : "联网登录后可使用互联网房间。" );
+            Visible(root.Q("connection-copy"), !online);
+            Visible(root.Q("route-login"), !online);
+            root.Q<Button>("online-play").SetEnabled(true);
+            root.Q<Button>("join-room").SetEnabled(true);
+        }
+
+        private void NavigateHome(KeyDownEvent evt)
+        {
+            if (app.Page != AppPage.Home) return;
+            var focused = root.panel.focusController.focusedElement as Button;
+            int index = focused == null ? -1 : Array.IndexOf(homeButtons, focused.name);
+            if (evt.keyCode == KeyCode.UpArrow || evt.keyCode == KeyCode.DownArrow)
+            {
+                index = (index + (evt.keyCode == KeyCode.UpArrow ? homeButtons.Length - 1 : 1) + homeButtons.Length) % homeButtons.Length;
+                root.Q<Button>(homeButtons[index]).Focus();
+                evt.StopImmediatePropagation(); evt.PreventDefault();
+            }
+            else if ((evt.keyCode == KeyCode.Return || evt.keyCode == KeyCode.KeypadEnter) && index >= 0)
+            {
+                app.Audio.PlayClick(); homeActions[homeButtons[index]]();
+                evt.StopImmediatePropagation(); evt.PreventDefault();
+            }
+        }
+
+        private void CreateMenuVeil()
+        {
+            // Native gradient keeps the menu legible while the actual game world stays visible.
+            menuVeil = new Texture2D(256, 128, TextureFormat.RGBA32, false) { name = "Main menu lighting veil", wrapMode = TextureWrapMode.Clamp };
+            var pixels = new Color[256 * 128];
+            for (int y = 0; y < 128; y++) for (int x = 0; x < 256; x++)
+            {
+                float horizontal = 1 - Mathf.SmoothStep(0, 1, Mathf.InverseLerp(.20f, .73f, x / 255f));
+                float edge = Mathf.Pow(Mathf.Abs(y / 127f * 2 - 1), 3);
+                pixels[y * 256 + x] = new Color(.025f, .055f, .09f, Mathf.Clamp01(.12f + horizontal * .78f + edge * .24f));
+            }
+            menuVeil.SetPixels(pixels); menuVeil.Apply(false, true);
+            var veil = root.Q("menu-backdrop"); veil.style.backgroundColor = Color.clear;
+            veil.style.backgroundImage = new StyleBackground(menuVeil); veil.style.backgroundSize = new BackgroundSize(Length.Percent(100), Length.Percent(100)); veil.pickingMode = PickingMode.Ignore;
+            var shade = veil.Q(className: "menu-shade"); shade.style.backgroundColor = Color.clear; shade.pickingMode = PickingMode.Ignore;
+        }
+
+        private void OnDestroy()
+        {
+            if (menuVeil != null) Destroy(menuVeil);
+            if (MenuStage != null) Destroy(MenuStage.gameObject);
         }
 
         private void BindButton(string name, Action action)
         {
             var button = root.Q<Button>(name);
+            if (Array.IndexOf(homeButtons, name) >= 0) homeActions[name] = action;
             if (button == null) throw new InvalidOperationException($"UXML 缺少按钮 {name}");
             button.RegisterCallback<PointerEnterEvent>(_ => app.Audio.PlayHover());
             button.RegisterCallback<FocusInEvent>(_ => app.Audio.PlayHover());
@@ -217,13 +244,14 @@ namespace Soccer.Runtime
             ballLocator?.Hide();
             MiniMap?.Hide();
             for (int i = 0; i < pageNames.Length; i++) Visible(root.Q(pageNames[i]), i == (int)page);
+            MenuStage?.SetVisible(page != AppPage.Match && page != AppPage.Results);
             ShowPause(false);
             RefreshLogin();
             if (page == AppPage.CharacterSelect) RefreshSelection();
             if (page == AppPage.ModeDetails) RefreshModeDetails();
             if (page == AppPage.NetworkMenu || page == AppPage.RoomLobby) RefreshNetwork();
             Visible(root.Q("menu-backdrop"), page != AppPage.Match && page != AppPage.Loading);
-            if (page == AppPage.Home) root.schedule.Execute(() => root.Q<Button>("normal-mode").Focus());
+            if (page == AppPage.Home) root.schedule.Execute(() => root.Q<Button>("bots-button").Focus());
             if (page == AppPage.Match)
             {
                 RefreshMatch();
@@ -238,7 +266,7 @@ namespace Soccer.Runtime
         {
             var d = app.SelectedDefinition;
             Text("select-title", app.SelectedMode == MatchMode.Training ? "选择角色 · 训练场" : "选择角色 · 合作乱斗");
-            Text("select-subtitle", app.SelectedMode == MatchMode.Training ? "枪兵与雷神先上场，试试炸弹控制与高速抢位。" : "你与两名 AI 配合对战三名 AI；两种角色允许重复选择。");
+            Text("select-subtitle", app.SelectedMode == MatchMode.Training ? "练习移动、传射和角色技能。" : "3v3 AI 对练 · 选择你的角色。");
             Text("selected-name", d.Stats.Name);
             Text("selected-role", d.Role);
             Text("selected-stats", $"生命 100  ·  能量 100\n移动速度 {d.Stats.Speed * app.RulesAsset.Rules.MovementSpeedScale:0.##}  ·  推力 {d.Stats.PushPower:0.##}\nV 键踢球 6 秒冷却  ·  空格铲球 5 秒冷却\n铲球消耗 {app.RulesAsset.Rules.TackleHealthCost(d.Stats):0.#} 生命  ·  原地复活 5 秒");
@@ -247,7 +275,7 @@ namespace Soccer.Runtime
             Text("q-copy", d.QDescription);
             Text("e-name", $"E / {d.EName}  · {d.Stats.Loadout.EEnergy:0} 能量" + (d.Stats.EHealthCost > 0 ? $" + {d.Stats.EHealthCost:0} 生命" : "") + $" / {d.Stats.ECooldown:0.#} 秒");
             Text("e-copy", d.EDescription);
-            root.Q<Button>("start-button").text = app.SelectedMode == MatchMode.Training ? "准备好了 · 开始训练    →" : "准备好了 · 开始对练    →";
+            root.Q<Button>("start-button").text = app.SelectedMode == MatchMode.Training ? "开始训练" : "开始比赛";
             for (int i = 0; i < app.Characters.Length; i++)
                 root.Q($"character-{i}").EnableInClassList("selected", app.Characters[i].Stats.Id == app.Selected);
         }

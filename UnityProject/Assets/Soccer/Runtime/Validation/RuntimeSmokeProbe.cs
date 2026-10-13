@@ -84,9 +84,10 @@ namespace Soccer.Runtime
                 "arena image is a lit shadow-receiving ground material");
             Check(arena.KeyLight.shadows == LightShadows.Soft && arena.GetComponentsInChildren<Light>().Length == 3,
                 "warm key light and two colored fill lights run in the actual scene");
-            Check(app.UI.Root.Q("normal-icon").resolvedStyle.backgroundImage.texture != null &&
-                app.UI.Root.Q("normal-icon").resolvedStyle.backgroundImage.texture.width == 768,
-                "mode badge uses 768-pixel vector export");
+            Check(app.UI.MenuStage.Visible && app.UI.MenuStage.ActorCount == 2 && app.Simulation == null,
+                "main menu presents the two playable 3D models without starting a match");
+            Check(app.UI.Root.Q("ranked-mode") == null && app.UI.Root.Q("party-mode") == null && app.UI.Root.Q("roster-button") == null,
+                "main menu exposes working entrances and removes future-mode placeholders and duplicate training");
             Check(app.Characters.Length == 2 && app.Characters[0].Stats.Id == CharacterId.Marine && app.Characters[1].Stats.Id == CharacterId.Thor && app.Characters[0].Animations.Run.Length == 14, "two star reference characters and placeholder animation imports");
             Check(Array.TrueForAll(app.Characters, c => c.Stats.MaxHealth == 100 && c.Stats.MaxEnergy == 100), "both characters use 100 health and 100 energy");
             Check(app.UI.Root.Q<Button>("character-2") == null, "selection exposes exactly two playable characters");
@@ -106,30 +107,14 @@ namespace Soccer.Runtime
             Debug.Log($"SOCCER_AUDIO_PROBE signal={signal} playing={musicSource.isPlaying} virtual={musicSource.isVirtual} time={musicSource.time} volume={musicSource.volume} listener={AudioListener.volume} loaded={musicSource.clip.loadState} dsp={AudioSettings.dspTime}");
             Check(signal, "music source produces nonzero audio samples");
             yield return Capture("01-home");
-            string[] modeButtons = { "normal-mode", "ranked-mode", "party-mode" };
-            for (int i = 0; i < modeButtons.Length; i++)
+            string[] modeButtons = { "bots-button", "normal-mode", "train-button", "settings-button" };
+            yield return CaptureMainMenuFlow();
+            if (Array.IndexOf(args, "--soccer-menu-preview") >= 0)
             {
-                Check(PicksButton(modeButtons[i]), $"mode {i} card receives pointer hit");
-                yield return Click(modeButtons[i]);
-                Check(app.Page == AppPage.ModeDetails && (int)app.SelectedPlaylist == i, $"mode {i} opens matching details");
-                Check(app.UI.Root.Q<Button>("online-play").enabledSelf == (i==0), $"mode {i} room availability matches implemented rules");
-                Check(app.UI.Root.Q<Button>("lan-route").enabledSelf == (i != 1), $"mode {i} LAN availability");
-                yield return Capture($"01-mode-{i}-internet");
-                if (i != 1)
-                {
-                    yield return Click("lan-route");
-                    Check(app.Route == ConnectionRoute.LAN && app.UI.Root.Q<Button>("join-room").enabledSelf == (i==0),
-                        $"mode {i} LAN route displays honest room state");
-                    yield return Capture($"01-mode-{i}-lan");
-                }
-                if (i == 0)
-                {
-                    yield return Click("mode-practice");
-                    Check(app.Page == AppPage.CharacterSelect && app.SelectedMode == MatchMode.BotMatch, "normal mode enters local practice selection");
-                    yield return Click("select-back");
-                    Check(app.Page == AppPage.ModeDetails, "character back returns to originating mode");
-                }
-                yield return Click("mode-back");
+                File.WriteAllText(Path.Combine(output, "runtime-smoke.json"), JsonUtility.ToJson(new Report
+                { editor = Application.unityVersion, platform = Application.platform.ToString(), passed = errors.Count == 0,
+                  checks = checks.ToArray(), errors = errors.ToArray() }, true));
+                Application.logMessageReceived -= CaptureError; Application.Quit(errors.Count == 0 ? 0 : 1); yield break;
             }
             yield return Click("settings-button");
             yield return null;
@@ -395,6 +380,7 @@ namespace Soccer.Runtime
             Debug.Log("SOCCER_SMOKE_BOT_SELECTION " + app.Page);
             yield return Click("character-1");
             yield return Click("start-button");
+            Check(!app.UI.MenuStage.Visible && app.View.ActorRoot.gameObject.activeSelf, "starting a match restores game actors and removes the menu lineup");
             Debug.Log("SOCCER_SMOKE_BOT_START " + app.Page + " simulation=" + (app.Simulation != null));
             yield return new WaitForSecondsRealtime(4.3f);
             Check(app.Simulation.State.Players.Count == 6 && app.Simulation.State.ElapsedSeconds > 0, "3v3 bot simulation running");
@@ -408,11 +394,11 @@ namespace Soccer.Runtime
             Screen.SetResolution(1024, 768, false);
             yield return new WaitForSecondsRealtime(0.5f);
             Check(app.WorldCamera.rect==new Rect(0,0,1,1), "4:3 menus use the whole screen without arena letterboxing");
-            foreach (string name in modeButtons) Check(PicksButton(name), "4:3 mode card remains accessible: " + name);
+            foreach (string name in modeButtons) Check(PicksButton(name), "4:3 main menu action remains accessible: " + name);
             yield return Capture("08-home-4x3");
             yield return Click("normal-mode");
             yield return Capture("09-normal-4x3");
-            Check(PicksButton("mode-practice") && PicksButton("mode-training"), "4:3 mode details actions remain accessible");
+            Check(PicksButton("online-play") && PicksButton("join-room"), "4:3 multiplayer create and join actions remain accessible");
             app.OpenSelection(MatchMode.Training); app.SelectCharacter(CharacterId.Marine); app.StartMatch();
             yield return new WaitForSecondsRealtime(3.4f);
             var dock = app.UI.Root.Q("battle-dock").worldBound;
@@ -436,7 +422,7 @@ namespace Soccer.Runtime
             app.GoHome();
             Screen.SetResolution(1920, 800, false);
             yield return new WaitForSecondsRealtime(0.5f);
-            foreach (string name in modeButtons) Check(PicksButton(name), "ultrawide mode card remains accessible: " + name);
+            foreach (string name in modeButtons) Check(PicksButton(name), "ultrawide main menu action remains accessible: " + name);
             Check(PicksButton("train-button") && PicksButton("settings-button"), "ultrawide utility buttons remain accessible");
             yield return Capture("10-home-ultrawide");
             Check(!app.UI.MiniMap.Visible,"home page never displays a stale minimap");
@@ -1554,6 +1540,56 @@ namespace Soccer.Runtime
                 sum+=c.r*.2126f+c.g*.7152f+c.b*.0722f;
             }
             return sum/169;
+        }
+
+        private IEnumerator CaptureMainMenuFlow()
+        {
+            var home = app.UI.Root.Q("home-page");
+            app.UI.Root.Q<Button>("bots-button").Focus();
+            using (var evt = KeyDownEvent.GetPooled('\0', KeyCode.DownArrow, EventModifiers.None)) home.SendEvent(evt);
+            Check(app.UI.Root.panel.focusController.focusedElement == app.UI.Root.Q<Button>("normal-mode"), "arrow down selects multiplayer from primary entry");
+            using (var evt = KeyDownEvent.GetPooled('\0', KeyCode.Return, EventModifiers.None)) home.SendEvent(evt);
+            yield return null;
+            Check(app.Page == AppPage.ModeDetails && app.Route == ConnectionRoute.LAN, "Enter opens offline multiplayer directly on LAN");
+            yield return new WaitForSecondsRealtime(.35f);
+            Check(!app.UI.Root.Q<Button>("internet-route").enabledSelf && PicksButton("route-login"), "offline multiplayer offers login beside disabled Internet tab");
+            yield return Click("online-play");
+            Check(app.Page == AppPage.NetworkMenu && app.NetworkCreating, "main menu multiplayer creates room without a mode-information screen");
+            app.BackFromNetwork(); yield return null;
+            yield return Click("join-room");
+            Check(app.Page == AppPage.NetworkMenu && !app.NetworkCreating, "main menu multiplayer joins room without a mode-information screen");
+            app.BackFromNetwork(); yield return null;
+            yield return Click("mode-back");
+            yield return Click("bots-button");
+            Check(app.Page == AppPage.CharacterSelect && app.SelectedMode == MatchMode.BotMatch, "primary start entry opens 3v3 AI character selection directly");
+            yield return Click("select-back");
+            Check(app.Page == AppPage.Home, "AI selection returns directly to home");
+            yield return Click("train-button");
+            Check(app.Page == AppPage.CharacterSelect && app.SelectedMode == MatchMode.Training, "training entry opens training character selection directly");
+            yield return Click("select-back");
+            foreach (var size in new[] { new Vector2Int(1024,768), new Vector2Int(1280,720), new Vector2Int(1920,1080) })
+            {
+                Screen.SetResolution(size.x, size.y, false); yield return new WaitForSecondsRealtime(.55f);
+                foreach (string name in new[] { "bots-button", "normal-mode", "train-button", "settings-button", "home-account" })
+                {
+                    var bounds = app.UI.Root.Q(name).worldBound;
+                    Check(PicksButton(name) && app.UI.Root.worldBound.Contains(bounds.min) && app.UI.Root.worldBound.Contains(bounds.max),
+                        size + " main menu control fits and receives pointer: " + name);
+                }
+                var marine = GameObject.Find("Marine menu model"); var thor = GameObject.Find("Thor menu model");
+                Check(marine != null && thor != null && app.WorldCamera.WorldToViewportPoint(marine.transform.position + Vector3.up * 1.7f).x > .46f &&
+                    app.WorldCamera.WorldToViewportPoint(thor.transform.position + Vector3.up * 1.9f).x > .46f,
+                    size + " live character lineup stays on the display side of the menu");
+                yield return Capture("menu-home-" + size.x + "x" + size.y);
+                yield return Click("normal-mode");
+                Check(PicksButton("online-play") && PicksButton("join-room") && PicksButton("mode-back"), size + " multiplayer entrances receive pointer");
+                yield return new WaitForSecondsRealtime(.35f);
+                yield return Capture("menu-multiplayer-" + size.x + "x" + size.y);
+                yield return Click("mode-back");
+            }
+            app.UI.Root.Q<Button>("bots-button").Focus();
+            using (var evt = KeyDownEvent.GetPooled('\0', KeyCode.UpArrow, EventModifiers.None)) home.SendEvent(evt);
+            Check(app.UI.Root.panel.focusController.focusedElement == app.UI.Root.Q<Button>("settings-button"), "arrow up wraps main navigation to settings");
         }
 
         private IEnumerator Click(string name)

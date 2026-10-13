@@ -1,0 +1,92 @@
+{
+  "version": "0.20.0",
+  "date": "2026-10-13",
+  "passed": true,
+  "changes": [
+    "Live arena and two playable 3D models replace the static image on front-end pages",
+    "Four main entries: 3v3 AI match, multiplayer, training, settings",
+    "Marketing slogans, unimplemented ranked/party cards and duplicate training entry removed",
+    "Multiplayer opens directly into route selection and create/join",
+    "Keyboard up/down/Enter navigation and pointer interaction",
+    "Menu lighting and actors are disabled when gameplay restores its camera"
+  ],
+  "fullClientRegression": {
+    "passed": true,
+    "total": 349,
+    "report": "reports/game-menu-020-runtime-full/runtime-smoke.json",
+    "screenshots": [
+      "reports/game-menu-020-runtime-full/menu-home-1920x1080.png",
+      "reports/game-menu-020-runtime-full/menu-multiplayer-1280x720.png"
+    ],
+    "viewportSizes": [
+      "1024x768",
+      "1280x720",
+      "1920x1080",
+      "1920x800",
+      "2560x1440"
+    ],
+    "gameplayFpsSample": 119.982666015625
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 123,
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet room-code lookup with local login/directory service and room password handshake",
+      "LAN discovered list with login service stopped"
+    ],
+    "closedInternetRoomLookupReturns404": true,
+    "report": "reports/game-menu-020-clients.json"
+  },
+  "previousUnchangedLogicValidation": {
+    "rules": "reports/room-codes-019-core/core-tests.json",
+    "network": "reports/room-codes-019-network/network-tests.json",
+    "directory": "reports/room-codes-019-directory.json",
+    "note": "Core rules, networking implementation, and directory server are unchanged; these reports were not rerun for this UI update."
+  },
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413554461
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 382000441
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.20.0-Windows-x64.zip",
+    "bytes": 144239062,
+    "sha256": "0645b779a31daf50ba3351ade2a83309f502b90986f45c9625b5f53fa7c797af",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.20.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "ce6e96fc2a3c44248602e0f234cc4251fcfe6dea993662de1e195c72b7081a17",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "4d0b27bba75b2fee16ae2b7b029d3b164556dc0966ec1f3190c055da68242c22",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "5d42ce1e14e8825a22f62a4bbedc43467248b751fa655fbed02189797ac271ea"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "f50c0b72b872cc24de3655cc872288eb6af958bf65bec397d3d8d7bc4ff89d69",
+    "Soccer.Runtime.dll": "c32bc95eeb5644328270fb9ffd3c6d3f2d2d74a52ae3ff8aec2652e3ce0d06a1"
+  },
+  "limitations": {
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicLoginAndDirectoryDeployed": false,
+    "matchRelayDeployed": false,
+    "characterModelsRemainPrototype": true
+  }
+}

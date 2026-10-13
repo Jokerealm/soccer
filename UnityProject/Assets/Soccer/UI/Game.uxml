@@ -6,18 +6,16 @@
             <ui:VisualElement name="loading-art" class="loading-art" />
             <ui:VisualElement class="loading-shade" />
             <ui:VisualElement class="loading-brand">
-                <ui:Label text="合作乱斗 · 城市球场" class="loading-eyebrow" />
+                <ui:Label text="SKILL SOCCER" class="loading-eyebrow" />
                 <ui:Label text="技能足球" class="loading-title" />
-                <ui:Label text="一起开路，一起进球。" class="loading-tagline" />
                 <ui:VisualElement class="loading-rule" />
-                <ui:Label text="TEAM UP. MAKE THE PLAY." class="loading-motto" />
             </ui:VisualElement>
             <ui:VisualElement class="loading-bottom">
                 <ui:VisualElement class="row loading-caption"><ui:Label name="loading-status" text="正在准备赛场…" class="grow" /><ui:Label name="loading-percent" text="00%" /></ui:VisualElement>
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="PC / 乱斗原型 0.19.1" class="loading-version" />
+            <ui:Label text="0.20.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -32,63 +30,29 @@
             <ui:VisualElement class="row login-actions"><ui:Button name="login-offline" text="离线进入" class="secondary" /><ui:Button name="login-submit" text="联网登录    →" class="primary" /></ui:VisualElement>
         </ui:VisualElement>
 
-        <ui:VisualElement name="home-page" class="mode-home hidden">
-            <ui:VisualElement class="front-topbar row">
-                <ui:VisualElement class="brand-block row"><ui:VisualElement name="brand-mark" class="brand-mark" /><ui:VisualElement><ui:Label text="技能足球" class="front-brand" /><ui:Label text="合作乱斗 · 城市球场" class="front-brand-sub" /></ui:VisualElement></ui:VisualElement>
-                <ui:VisualElement class="grow" />
-                <ui:Button name="home-account" text="联网登录" class="front-utility" /><ui:Label name="connection-status" text="● 本地 / 联机" class="connection-status" />
-                <ui:Label text="PC / 0.19.1" class="build-label" />
+        <ui:VisualElement name="home-page" class="game-home hidden">
+            <ui:VisualElement class="home-topbar row"><ui:VisualElement class="grow" /><ui:Label name="connection-status" class="home-connection" /><ui:Button name="home-account" text="联网登录" class="home-account" /></ui:VisualElement>
+            <ui:VisualElement class="home-body">
+                <ui:VisualElement class="home-wordmark"><ui:Label text="SKILL SOCCER" class="home-brand-en" /><ui:Label text="技能足球" class="home-brand-title" /><ui:VisualElement class="home-brand-line" /></ui:VisualElement>
+                <ui:VisualElement name="home-navigation" class="home-navigation">
+                    <ui:Button name="bots-button" class="home-nav home-nav-primary"><ui:Label text="开始比赛" class="home-nav-title" /><ui:Label text="3v3 · AI 对练" class="home-nav-note" /><ui:Label text="›" class="home-nav-arrow" /></ui:Button>
+                    <ui:Button name="normal-mode" text="联机对战" class="home-nav" />
+                    <ui:Button name="train-button" text="训练场" class="home-nav" />
+                    <ui:Button name="settings-button" text="设置" class="home-nav home-nav-small" />
+                </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="mode-intro">
-                <ui:Label text="一起开路，一起进球" class="eyebrow" />
-                <ui:Label text="把默契，打进球门。" class="mode-page-title" />
-                <ui:Label text="武器、控制和传球，合力打出进球机会。" class="mode-intro-copy" />
-            </ui:VisualElement>
-            <ui:VisualElement class="mode-deck row">
-                <ui:Button name="normal-mode" class="mode-card normal">
-                    <ui:VisualElement class="mode-card-top row"><ui:Label text="01 / CASUAL" class="mode-kicker" /><ui:Label text="现在可玩" class="mode-tag" /></ui:VisualElement>
-                    <ui:VisualElement class="mode-card-art"><ui:Label text="01" class="mode-number" /><ui:VisualElement name="normal-icon" class="mode-icon" /><ui:VisualElement name="normal-art" class="mode-player-art" /></ui:VisualElement>
-                    <ui:VisualElement class="mode-card-copy"><ui:Label text="普通模式" class="mode-card-title" /><ui:Label text="开路，救援，配合进球。" class="mode-card-subtitle" /><ui:Label text="武器乱斗 · 5 秒原地复活" class="mode-card-description" /><ui:VisualElement class="mode-card-line" /><ui:Label text="进入普通模式    →" class="mode-card-action" /></ui:VisualElement>
-                </ui:Button>
-                <ui:Button name="ranked-mode" class="mode-card ranked">
-                    <ui:VisualElement class="mode-card-top row"><ui:Label text="02 / RANKED" class="mode-kicker" /><ui:Label text="筹备中" class="mode-tag" /></ui:VisualElement>
-                    <ui:VisualElement class="mode-card-art"><ui:Label text="02" class="mode-number" /><ui:VisualElement name="ranked-icon" class="mode-icon" /><ui:VisualElement name="ranked-art" class="mode-player-art" /></ui:VisualElement>
-                    <ui:VisualElement class="mode-card-copy"><ui:Label text="排位模式" class="mode-card-title" /><ui:Label text="每一场，都是向上一步。" class="mode-card-subtitle" /><ui:Label text="团队竞技 · 赛季段位" class="mode-card-description" /><ui:VisualElement class="mode-card-line" /><ui:Label text="查看排位模式    →" class="mode-card-action" /></ui:VisualElement>
-                </ui:Button>
-                <ui:Button name="party-mode" class="mode-card party">
-                    <ui:VisualElement class="mode-card-top row"><ui:Label text="03 / PARTY" class="mode-kicker" /><ui:Label text="筹备中" class="mode-tag" /></ui:VisualElement>
-                    <ui:VisualElement class="mode-card-art"><ui:Label text="03" class="mode-number" /><ui:VisualElement name="party-icon" class="mode-icon" /><ui:VisualElement name="party-art" class="mode-player-art" /></ui:VisualElement>
-                    <ui:VisualElement class="mode-card-copy"><ui:Label text="娱乐模式" class="mode-card-title" /><ui:Label text="让意想不到，成为好球。" class="mode-card-subtitle" /><ui:Label text="技能强化 · 球场事件" class="mode-card-description" /><ui:VisualElement class="mode-card-line" /><ui:Label text="查看娱乐模式    →" class="mode-card-action" /></ui:VisualElement>
-                </ui:Button>
-            </ui:VisualElement>
-            <ui:VisualElement class="front-footer row">
-                <ui:Button name="train-button" text="训练场" class="front-utility" /><ui:Button name="bots-button" text="AI 对练" class="front-utility" /><ui:Button name="roster-button" text="乐子打法" class="front-utility" /><ui:Button name="settings-button" text="设置" class="front-utility" />
-                <ui:VisualElement class="grow" /><ui:Label text="局域网房间 · 互联网直连" class="front-footer-note" />
-            </ui:VisualElement>
+            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.20.0" class="home-version" /></ui:VisualElement>
         </ui:VisualElement>
 
-        <ui:VisualElement name="mode-details-page" class="mode-details normal hidden">
-            <ui:VisualElement class="detail-topbar row"><ui:Button name="mode-back" text="← 模式选择" class="front-utility" /><ui:VisualElement class="grow" /><ui:Label text="选择玩法 / 准备比赛" class="front-brand-sub" /></ui:VisualElement>
-            <ui:VisualElement class="detail-content row">
-                <ui:VisualElement class="detail-overview">
-                    <ui:Label name="detail-english" text="CASUAL PLAY" class="detail-eyebrow" />
-                    <ui:Label name="detail-name" text="普通模式" class="detail-title" />
-                    <ui:Label name="detail-subtitle" class="detail-subtitle" />
-                    <ui:Label name="detail-description" class="detail-description" />
-                    <ui:VisualElement class="detail-rules"><ui:Label text="玩法概览" class="detail-section-label" /><ui:Label name="detail-rule-one" class="detail-rule" /><ui:Label name="detail-rule-two" class="detail-rule" /><ui:Label name="detail-rule-three" class="detail-rule" /></ui:VisualElement>
-                    <ui:VisualElement name="detail-art" class="detail-player-art" />
-                </ui:VisualElement>
+        <ui:VisualElement name="mode-details-page" class="multiplayer-menu hidden">
+            <ui:VisualElement class="multiplayer-topbar row"><ui:Button name="mode-back" text="‹  返回" class="front-utility" /><ui:VisualElement class="grow" /></ui:VisualElement>
+            <ui:VisualElement class="multiplayer-body">
+                <ui:Label text="联机对战" class="multiplayer-title" />
                 <ui:VisualElement class="connection-panel">
-                    <ui:Label text="选择连接方式" class="detail-section-label" />
                     <ui:VisualElement class="connection-tabs row"><ui:Button name="internet-route" text="互联网" class="route-button route-selected" /><ui:Button name="lan-route" text="局域网" class="route-button" /></ui:VisualElement>
-                    <ui:Label name="connection-heading" text="互联网对战" class="connection-title" />
-                                        <ui:Label name="connection-copy" class="connection-copy" />
-                    <ui:Button name="online-play" text="在线匹配 · 即将开放" class="network-action" enabled="false" />
-                    <ui:Button name="join-room" text="加入房间 · 即将开放" class="network-action hidden" enabled="false" />
-                    <ui:VisualElement class="connection-divider" />
-                    <ui:Label name="mode-availability" text="现在可玩：本地 3v3 AI 对练" class="practice-availability" />
-                    <ui:Button name="mode-practice" text="本地 3v3 对练    →" class="primary" />
-                    <ui:Button name="mode-training" text="进入训练场" class="secondary" />
+                    <ui:VisualElement class="multiplayer-actions"><ui:Button name="online-play" text="创建房间" class="network-action" /><ui:Button name="join-room" text="加入房间" class="network-action" /></ui:VisualElement>
+                    <ui:Label name="connection-copy" class="connection-copy hidden" />
+                    <ui:Button name="route-login" text="联网登录" class="multiplayer-login hidden" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>
