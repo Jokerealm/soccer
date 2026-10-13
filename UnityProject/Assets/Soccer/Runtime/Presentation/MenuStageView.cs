@@ -7,7 +7,7 @@ namespace Soccer.Runtime
     public sealed class MenuStageView : MonoBehaviour
     {
         private AppController app;
-        private Transform actors;
+        private Transform actors, football;
         private readonly Transform[] models = new Transform[2];
         private readonly float[] yaw = { -5, 18 };
         public bool Visible => actors != null && actors.gameObject.activeSelf;
@@ -30,7 +30,7 @@ namespace Soccer.Runtime
             fill.color = new Color(.78f, .88f, 1); fill.intensity = 1.05f;
             lightObject.transform.rotation = Quaternion.LookRotation(new Vector3(-3, -5, -7));
             var ball = new GameObject("Menu football"); ball.transform.SetParent(actors, false);
-            ball.AddComponent<BallModelView>().Initialize();
+            ball.AddComponent<BallModelView>().Initialize(); football = ball.transform;
             ball.transform.localPosition = new Vector3(4.8f, .42f, 1.25f); ball.transform.localScale = Vector3.one * 1.55f;
         }
         public void SetVisible(bool visible)
@@ -39,6 +39,8 @@ namespace Soccer.Runtime
             app.View.ActorRoot.gameObject.SetActive(!visible);
             app.WorldCamera.GetComponent<ArenaCamera>().SetMenuMode(visible);
         }
+        public void SetLineupVisible(bool visible)
+        { foreach (var model in models) model.gameObject.SetActive(visible); football.gameObject.SetActive(visible); }
         private void Update()
         {
             if (!Visible) return;

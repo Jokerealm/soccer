@@ -91,7 +91,7 @@ namespace Soccer.Runtime
         {
             LocalPlayerId = Room.LocalSlot; Selected = start.Lineup[LocalPlayerId]; SelectedMode = MatchMode.BotMatch;
             Simulation = new MatchSimulation(start.Rules, Array.ConvertAll(Characters, c => c.CreateStats()), start.Lineup[0], MatchMode.BotMatch, start.Lineup);
-            localInput = new KeyboardMouseInput(WorldCamera); inputSources = new ICommandSource[6]; commands = new PlayerCommand[6];
+            localInput = new KeyboardMouseInput(WorldCamera,Keys); inputSources = new ICommandSource[6]; commands = new PlayerCommand[6];
             for (int i = 0; i < 6; i++) inputSources[i] = i == LocalPlayerId ? (ICommandSource)localInput : new BotCommandSource(Simulation.Rules);
             View.LocalPlayerId = Audio.LocalPlayerId = LocalPlayerId; View.Bind(Simulation.State, Characters);
             accumulator = 0; lastSnapshotAt = Time.realtimeSinceStartup; FinalGoalRemaining = 0; Paused = false;

@@ -9,7 +9,7 @@ using UnityEngine.UIElements;
 namespace Soccer.Runtime
 {
     /// <summary>仅 --soccer-smoke 显式启动时执行的真实 Player 检查；不参与正常游戏流程。</summary>
-    public sealed class RuntimeSmokeProbe : MonoBehaviour
+    public sealed partial class RuntimeSmokeProbe : MonoBehaviour
     {
         [Serializable] private sealed class Report
         {
@@ -55,6 +55,13 @@ namespace Soccer.Runtime
             Check(app.UI.Root.Q<TextField>("login-password").value.Length==0,"failed online login clears the password field");
             yield return Click("login-offline");
             Check(app.Page == AppPage.Home && app.EntryMode == GameEntryMode.Offline && app.Account == null, "offline entry needs no login service and retains game access");
+            if (Array.IndexOf(args,"--soccer-settings-preview") >= 0)
+            {
+                yield return CaptureBindingsAndModels();
+                File.WriteAllText(Path.Combine(output,"runtime-smoke.json"),JsonUtility.ToJson(new Report
+                { editor=Application.unityVersion, platform=Application.platform.ToString(), passed=errors.Count==0, checks=checks.ToArray(),errors=errors.ToArray() },true));
+                Application.logMessageReceived-=CaptureError; Application.Quit(errors.Count==0?0:1); yield break;
+            }
             if(Array.IndexOf(args,"--soccer-contact-quick")>=0)
             {
                 bool quickSavedHud=app.UI.FullHudEnabled;
@@ -109,6 +116,7 @@ namespace Soccer.Runtime
             yield return Capture("01-home");
             string[] modeButtons = { "bots-button", "normal-mode", "train-button", "settings-button" };
             yield return CaptureMainMenuFlow();
+            yield return CaptureBindingsAndModels();
             if (Array.IndexOf(args, "--soccer-menu-preview") >= 0)
             {
                 File.WriteAllText(Path.Combine(output, "runtime-smoke.json"), JsonUtility.ToJson(new Report
@@ -1602,7 +1610,7 @@ namespace Soccer.Runtime
             button.clicked += observe;
             button.Focus();
             yield return null;
-            using (var evt = NavigationSubmitEvent.GetPooled()) button.SendEvent(evt);
+            using (var evt = NavigationSubmitEvent.GetPooled()) { evt.target=button; button.SendEvent(evt); }
             yield return null;
             if (activated) { button.clicked -= observe; yield break; }
             var position = button.worldBound.center;
@@ -1618,7 +1626,7 @@ namespace Soccer.Runtime
         private void Check(bool condition, string description)
         {
             checks.Add((condition ? "PASS " : "FAIL ") + description);
-            if (!condition) errors.Add(description);
+            if (!condition) { errors.Add(description); Debug.Log("SOCCER_CHECK_FAIL " + description + " page=" + app.Page + " mode=" + app.SelectedMode); }
         }
         private bool PicksButton(string name)
         {

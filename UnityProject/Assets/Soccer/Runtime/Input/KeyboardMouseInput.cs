@@ -7,12 +7,14 @@ namespace Soccer.Runtime
     public sealed class KeyboardMouseInput : ICommandSource
     {
         private readonly Camera camera;
+        private readonly GameKeyBindings bindings;
+        private readonly IPlayerInputState input;
         private PlayerCommand pending;
         private readonly GameplayGesture gesture = new GameplayGesture();
         private int localPlayerId;
         public bool SelectingSkillTarget => gesture.Targeting;
         public Vec2 PreviewAim => pending.KickHeld || gesture.Targeting ? pending.Aim : Vec2.Zero;
-        public KeyboardMouseInput(Camera camera) { this.camera = camera; }
+        public KeyboardMouseInput(Camera camera, GameKeyBindings bindings, IPlayerInputState input = null) { this.camera = camera; this.bindings = bindings; this.input = input ?? UnityPlayerInputState.Instance; }
         public void Reset() { pending = default; gesture.Reset(); }
 
         public void Sample(MatchState state, MatchRules rules, bool pointerBlocked, bool movementOnly = false, int playerId = 0)
@@ -20,23 +22,23 @@ namespace Soccer.Runtime
             localPlayerId = playerId;
             var player = state.Players[playerId];
             if (player.IsDead || player.RespawnedThisTick) { Reset(); return; }
-            var ray = camera.ScreenPointToRay(Input.mousePosition);
+            var ray = camera.ScreenPointToRay(input.MousePosition);
             var plane = new Plane(Vector3.up, Vector3.zero);
             var ground = plane.Raycast(ray, out float distance) ? ArenaProjection.ToGround(ray.GetPoint(distance)) : player.Position;
-            bool onField = !pointerBlocked && camera.pixelRect.Contains(Input.mousePosition);
+            bool onField = !pointerBlocked && camera.pixelRect.Contains(input.MousePosition);
             if (onField) pending.Aim = ground - player.Position;
             if (pending.Aim.LengthSquared < .001f) pending.Aim = player.Facing;
-            if (onField && Input.GetMouseButtonDown(1))
+            if (onField && input.MouseDown(1))
             {
                 int target = PickPlayer(state);
                 bool ball = target < 0 && Vec2.Distance(ground, state.Ball.Position) < rules.BallRadius + .25f;
                 var order = ContextOrder.Create(state, rules, playerId, ground, target, ball,
-                    Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
+                    bindings.Held(GameAction.Queue,input));
                 pending.OrderPressed = true; pending.OrderKind = order.OrderKind;
                 pending.OrderPosition = order.OrderPosition; pending.OrderTargetId = order.OrderTargetId;
                 pending.QueueOrder = order.QueueOrder;
             }
-            pending.StopPressed |= Input.GetKeyDown(KeyCode.S) || Input.GetKeyDown(KeyCode.H);
+            pending.StopPressed |= bindings.Down(GameAction.Stop,input) || bindings.Down(GameAction.StopAlternate,input);
             if (movementOnly)
             {
                 pending.KickPressed = pending.KickHeld = pending.KickReleased = pending.TacklePressed = pending.QPressed = pending.EPressed = pending.EReleased = pending.SpecialPressed = false;
@@ -44,9 +46,9 @@ namespace Soccer.Runtime
                 return;
             }
             gesture.Apply(ref pending, player.Stats.Id, new GameplayButtons { OnField = onField,
-                Cancel = Input.GetKeyDown(KeyCode.C), KickDown = Input.GetKeyDown(KeyCode.V), KickHeld = Input.GetKey(KeyCode.V), KickUp = Input.GetKeyUp(KeyCode.V),
-                PushDown = Input.GetKeyDown(KeyCode.Space), QDown = Input.GetKeyDown(KeyCode.Q), EDown = Input.GetKeyDown(KeyCode.E),
-                LeftDown = Input.GetMouseButtonDown(0), SpecialDown = Input.GetKeyDown(KeyCode.G) });
+                Cancel = bindings.Down(GameAction.Cancel,input), KickDown = bindings.Down(GameAction.Kick,input), KickHeld = bindings.Held(GameAction.Kick,input), KickUp = bindings.Up(GameAction.Kick,input),
+                PushDown = bindings.Down(GameAction.Push,input), QDown = bindings.Down(GameAction.SkillQ,input), EDown = bindings.Down(GameAction.SkillE,input),
+                LeftDown = input.MouseDown(0), SpecialDown = bindings.Down(GameAction.Special,input) });
         }
         private int PickPlayer(MatchState state)
         {
@@ -58,8 +60,8 @@ namespace Soccer.Runtime
                 var head = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position, p.Stats.Id == CharacterId.Thor ? 1.9f : 1.8f));
                 var edge = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position + new Vec2(p.Stats.Radius, 0), .8f));
                 float width = Mathf.Max(12, Mathf.Abs(edge.x - foot.x));
-                float dx = Mathf.Abs(Input.mousePosition.x - foot.x);
-                bool inBody = foot.z > 0 && dx <= width && Input.mousePosition.y >= Mathf.Min(foot.y, head.y) - 8 && Input.mousePosition.y <= Mathf.Max(foot.y, head.y) + 8;
+                float dx = Mathf.Abs(input.MousePosition.x - foot.x);
+                bool inBody = foot.z > 0 && dx <= width && input.MousePosition.y >= Mathf.Min(foot.y, head.y) - 8 && input.MousePosition.y <= Mathf.Max(foot.y, head.y) + 8;
                 if (inBody && foot.z < closest) { closest = foot.z; result = p.Id; }
             }
             return result;

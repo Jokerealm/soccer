@@ -21,6 +21,7 @@ namespace Soccer.Runtime
         public GamePlaylist SelectedPlaylist { get; private set; } = GamePlaylist.Normal;
         public ConnectionRoute Route { get; private set; } = ConnectionRoute.Internet;
         private AppPage selectionOrigin = AppPage.Home;
+        public GameKeyBindings Keys { get; private set; }
         public MatchSimulation Simulation { get; private set; }
         public CharacterId Selected { get; private set; } = CharacterId.Marine;
         public MatchMode SelectedMode { get; private set; } = MatchMode.Training;
@@ -43,6 +44,7 @@ namespace Soccer.Runtime
             foreach (var definition in Characters) definition.EnsureCombatPrototype();
             if (Array.Find(Characters, d => d.Stats.Id == Selected) == null) Selected = Characters[0].Stats.Id;
             InitializeLoginAddress();
+            Keys = new GameKeyBindings();
             UI.Bind(this);
             UI.ShowPage(Page);
             Audio.SetContext(Page, false);
@@ -114,7 +116,7 @@ namespace Soccer.Runtime
             LocalPlayerId = 0; View.LocalPlayerId = Audio.LocalPlayerId = 0;
             var roster = Array.ConvertAll(Characters, c => c.CreateStats());
             Simulation = new MatchSimulation(RulesAsset.CreateRules(), roster, Selected, SelectedMode);
-            localInput = new KeyboardMouseInput(WorldCamera);
+            localInput = new KeyboardMouseInput(WorldCamera,Keys);
             inputSources = new ICommandSource[Simulation.State.Players.Count];
             commands = new PlayerCommand[inputSources.Length];
             inputSources[0] = localInput;
@@ -135,6 +137,7 @@ namespace Soccer.Runtime
         private void Update()
         {
             PumpNetworking();
+            if (UI.BlocksKeyNavigation) return;
             if (Page != AppPage.Match && Page != AppPage.Loading && Page != AppPage.Login && Input.GetKeyDown(KeyCode.Escape))
             {
                 Audio.PlayClick();
@@ -142,7 +145,7 @@ namespace Soccer.Runtime
                 else if (Page == AppPage.NetworkMenu || Page == AppPage.RoomLobby) BackFromNetwork(); else GoHome();
             }
             if (Page != AppPage.Match || Simulation == null) return;
-            if (Input.GetKeyDown(KeyCode.Escape)) { Audio.PlayClick(); SetPaused(!Paused); }
+            if (Input.GetKeyDown(KeyCode.Escape) || Keys.Down(GameAction.Pause)) { Audio.PlayClick(); SetPaused(!Paused); }
             if (IsNetworkMatch) { UpdateNetworkMatch(); return; }
             if (Paused) { View.Render(Simulation.State, Simulation.Rules, 1, ShowDebug, false); return; }
             var state = Simulation.State;
@@ -160,12 +163,12 @@ namespace Soccer.Runtime
             }
             if (state.Mode == MatchMode.Training && !state.IsOpeningWarmup)
             {
-                if (Input.GetKeyDown(KeyCode.R)) { Audio.PlayClick(); ResetTraining(false); }
-                if (Input.GetKeyDown(KeyCode.F)) { Audio.PlayClick(); ResetTraining(true); }
-                if (Input.GetKeyDown(KeyCode.T)) { Audio.PlayClick(); GiveTargetBall(); }
-                if (Input.GetKeyDown(KeyCode.F2)) SetupTrainingRestart(RestartKind.Corner);
-                if (Input.GetKeyDown(KeyCode.F3)) SetupTrainingRestart(RestartKind.FreeKick);
-                if (Input.GetKeyDown(KeyCode.F1)) { Audio.PlayClick(); ToggleDebug(); }
+                if (Keys.Down(GameAction.Reset)) { Audio.PlayClick(); ResetTraining(false); }
+                if (Keys.Down(GameAction.OwnBall)) { Audio.PlayClick(); ResetTraining(true); }
+                if (Keys.Down(GameAction.TargetBall)) { Audio.PlayClick(); GiveTargetBall(); }
+                if (Keys.Down(GameAction.Corner)) SetupTrainingRestart(RestartKind.Corner);
+                if (Keys.Down(GameAction.FreeKick)) SetupTrainingRestart(RestartKind.FreeKick);
+                if (Keys.Down(GameAction.Debug)) { Audio.PlayClick(); ToggleDebug(); }
             }
             if (state.Phase == MatchPhase.Playing || state.IsOpeningWarmup || state.Phase == MatchPhase.SetPiece)
                 localInput.Sample(state, Simulation.Rules, UI.IsPointerOverControl(),state.IsOpeningWarmup);

@@ -78,26 +78,36 @@ Button.route-button { flex-grow: 1; flex-basis: 0; min-height: 42px; font-size: 
 .connection-panel Button.network-action:hover, .connection-panel Button.network-action:focus { border-left-color: rgb(255,183,70); background-color: rgba(60,83,101,0.94); }
 .connection-copy { font-size: 13px; color: rgb(160,181,197); margin-top: 11px; white-space: normal; }
 Button.multiplayer-login { align-self: flex-start; background-color: rgba(0,0,0,0); color: rgb(255,203,116); border-width: 0; border-radius: 0; padding: 5px 0; margin: 5px 0 0; min-height: 30px; font-size: 14px; }
-/* Equipment selection, held for later character definitions. */
+/* Character selection displays the actual playable model in a dedicated orbit viewport. */
+.selection { flex-grow: 1; margin: 28px 58px; }
+.selection-heading { margin-bottom: 22px; flex-shrink: 0; }
+.selection .page-title { color: rgb(233,242,245); font-size: 34px; }
+.selection-subtitle { color: rgb(158,182,197); font-size: 13px; }
 .selection-content { flex-grow: 1; flex-basis: 0; min-height: 0; align-items: stretch; }
-.roster-cards { width: 59%; align-items: stretch; }
-Button.character-card { width: 47%; min-width: 0; padding: 18px 12px; margin-right: 12px; background-color: rgb(224,234,228); border-bottom-color: rgb(146,177,175); flex-direction: column; justify-content: flex-end; }
-Button.character-card.selected { background-color: rgb(207,234,223); border-width: 2px; border-color: rgb(49,153,146); border-bottom-width: 6px; }
-.portrait { width: 100%; min-height: 100px; flex-grow: 1; -unity-background-scale-mode: scale-to-fit; }
-.loadout-symbol { align-items: center; justify-content: center; }
-.loadout-number { display: none; }
-.loadout-weapon { margin-top: 12px; font-size: 16px; color: rgb(80,118,122); }
-.equipment-art { width: 168px; height: 168px; max-width: 90%; -unity-background-scale-mode: scale-to-fit; }
-.card-name { font-size: 24px; margin: 14px 0 8px; }
-.character-details { width: 41%; flex-grow: 1; padding: 14px 0 0 26px; min-height: 0; }
-.selection .character-details .page-title { font-size: 28px; margin-bottom: 6px; }
-.selection .character-details .eyebrow { font-size: 14px; margin-bottom: 12px; }
-.stats-copy { color: rgb(170,126,56); font-size: 16px; margin-bottom: 12px; white-space: normal; }
+.roster-cards { width: 176px; flex-shrink: 0; margin-right: 20px; }
+Button.character-card { min-height: 105px; margin: 0 0 12px; padding: 18px; background-color: rgba(18,36,50,0.92); border-width: 1px; border-color: rgba(152,177,193,0.25); border-left-width: 3px; border-radius: 0; color: rgb(205,220,230); align-items: flex-start; }
+Button.character-card.selected { background-color: rgb(37,62,79); border-left-color: rgb(255,193,89); }
+Button.character-card:hover { background-color: rgb(46,73,91); }
+.card-name { font-size: 26px; margin: 0 0 9px; color: rgb(242,245,245); }
+.character-type { font-size: 13px; color: rgb(157,186,203); }
+.character-showcase { flex-grow: 1; flex-basis: 0; min-width: 0; margin-right: 24px; }
+.character-preview { flex-grow: 1; min-height: 180px; background-color: rgb(9,17,23); border-width: 1px; border-color: rgba(152,183,200,0.23); -unity-background-scale-mode: scale-to-fit; }
+.preview-controls { flex-wrap: wrap; margin-top: 9px; }
+.preview-hint { font-size: 12px; color: rgb(160,181,194); margin-right: 10px; }
+.preview-controls Button { font-size: 12px; padding: 6px 10px; min-height: 30px; }
+.character-details { width: 324px; flex-shrink: 0; min-height: 0; padding: 18px; border-left-width: 1px; border-left-color: rgba(135,166,185,0.22); background-color: rgba(9,21,32,0.8); }
+.selection .character-details .page-title { font-size: 28px; margin-bottom: 7px; }
+.selection .character-details .eyebrow { color: rgb(113,204,209); font-size: 13px; margin-bottom: 16px; }
+.stats-copy { color: rgb(234,193,122); font-size: 14px; margin-bottom: 18px; white-space: normal; }
 .skill-heading { -unity-font-definition: url("ChineseBold.asset"); color: rgb(50,118,119); font-size: 16px; margin: 7px 0; }
 .description { white-space: normal; font-size: 17px; margin-bottom: 10px; }
-.selection .description { font-size: 15px; }
-.selection-footer { margin-top: 18px; }
-.selection-footer .muted { font-size: 13px; }
+.selection .skill-heading { color: rgb(158,218,219); font-size: 15px; }
+.selection .description { color: rgb(175,196,209); font-size: 14px; margin-bottom: 19px; }
+.selection-footer { margin-top: 12px; flex-shrink: 0; }
+.narrow-front-end .selection { margin-left: 38px; margin-right: 38px; }
+.narrow-front-end .roster-cards { width: 150px; margin-right: 16px; }
+.narrow-front-end .character-details { width: 292px; padding: 15px; }
+.narrow-front-end .character-showcase { margin-right: 16px; }
 .character-details .unity-scroller--vertical { width: 7px; margin-left: 7px; }
 .character-details .unity-scroller__low-button, .character-details .unity-scroller__high-button { display: none; }
 .character-details .unity-slider__tracker { background-color: rgb(215,227,220); }
@@ -225,7 +235,7 @@ Button.character-card.selected { background-color: rgb(207,234,223); border-widt
 .stat { width: 165px; align-items: center; border-right-width: 1px; border-right-color: rgb(198,214,209); }
 .stat-number { font-size: 42px; color: rgb(171,126,52); margin-bottom: 7px; }
 .combat-summary { margin-top: 10px; }
-.settings { max-width: 860px; align-self: center; width: 80%; }
+.settings { max-width: 860px; align-self: center; width: 80%; min-height: 0; }
 .settings .description { font-size: 17px; margin-bottom: 14px; }
 .settings Slider { margin: 10px 0; height: 28px; }
 .settings .unity-base-field__label { min-width: 112px; color: rgb(69,105,116); font-size: 17px; }
@@ -234,7 +244,7 @@ Button.character-card.selected { background-color: rgb(207,234,223); border-widt
 .settings .unity-base-slider__tracker { height: 5px; background-color: rgb(185,206,199); border-width: 0; border-radius: 3px; }
 .settings .unity-base-slider__dragger { width: 20px; height: 20px; background-image: none; background-color: rgb(57,144,136); border-width: 3px; border-color: rgb(246,249,239); border-radius: 12px; }
 .settings .unity-base-slider__dragger-border { display: none; }
-.settings-toggles { margin: 12px 0; }
+.settings-toggles { margin: 18px 0; align-items: flex-start; }
 .settings .settings-toggles Button { margin-right: 12px; font-size: 16px; }
 .settings Button { align-self: flex-start; }
 .settings .hud-setting-copy { font-size: 13px; margin-bottom: 8px; }
@@ -309,3 +319,45 @@ Button.character-card.selected { background-color: rgb(207,234,223); border-widt
 .login-actions { margin-top: 20px; justify-content: space-between; }
 .login-actions Button { min-width: 220px; min-height: 46px; }
 .compact-front-end .login-page { margin-top: 28px; padding: 24px; }
+
+/* Bindings occupy their own scrollable tab. */
+.settings-heading { flex-shrink: 0; margin-bottom: 6px; }
+.settings-heading .page-title { margin-bottom: 0; }
+.settings-tabs { margin-bottom: 18px; border-bottom-width: 1px; border-bottom-color: rgb(197,212,207); }
+.settings Button.settings-tab { min-width: 100px; min-height: 40px; margin: 0 12px 0 0; border-width: 0; border-bottom-width: 3px; border-radius: 0; background-color: rgba(0,0,0,0); color: rgb(101,128,140); }
+.settings Button.settings-tab-selected { color: rgb(32,100,111); border-bottom-color: rgb(44,129,129); }
+.settings-general { flex-grow: 1; }
+.settings-keys { flex-grow: 1; min-height: 0; }
+.keys-heading { flex-shrink: 0; margin-bottom: 8px; }
+.keys-heading Button { margin: 0; min-height: 36px; font-size: 14px; }
+.keys-scroll { flex-grow: 1; min-height: 0; }
+.binding-group { color: rgb(33,108,117); font-size: 14px; margin: 13px 0 6px; -unity-font-definition: url("ChineseBold.asset"); }
+.binding-row { flex-direction: row; align-items: center; border-bottom-width: 1px; border-bottom-color: rgb(217,227,220); padding: 3px 0; }
+.binding-row Label { font-size: 16px; }
+.settings Button.binding-key { width: 150px; min-height: 35px; padding: 5px 10px; margin: 2px 12px 2px 0; font-size: 14px; border-width: 1px; border-radius: 3px; -unity-text-align: middle-center; }
+.settings Button.binding-capturing { background-color: rgb(255,218,134); border-color: rgb(163,123,52); }
+.fixed-mouse-keys { font-size: 13px; color: rgb(105,130,142); white-space: normal; margin: 20px 0; }
+.keys-status { height: 42px; flex-shrink: 0; font-size: 13px; color: rgb(144,101,39); padding-top: 12px; white-space: normal; }
+
+/* Settings share the front end's dark surfaces and readable action rows. */
+.settings { background-color: rgb(14,29,43); color: rgb(221,233,241); border-width: 1px; border-color: rgba(157,186,203,0.28); border-radius: 3px; }
+.settings .page-title { color: rgb(238,244,245); }
+.settings .muted, .settings .fixed-mouse-keys { color: rgb(146,174,193); }
+.settings .unity-base-field__label { color: rgb(191,212,225); }
+.settings Button.secondary { color: rgb(207,225,235); background-color: rgb(31,53,70); border-width: 1px; border-color: rgb(67,94,112); border-radius: 2px; }
+.settings Button.secondary:hover { background-color: rgb(45,70,89); }
+.settings .unity-base-slider__tracker { background-color: rgb(59,83,100); }
+.settings .unity-base-slider__dragger { border-color: rgb(203,226,236); background-color: rgb(98,180,187); }
+.settings-tabs { border-bottom-color: rgb(56,78,95); }
+.settings Button.settings-tab { color: rgb(149,176,195); border-bottom-color: rgba(0,0,0,0); }
+.settings Button.settings-tab-selected { color: rgb(255,205,116); border-bottom-color: rgb(255,183,70); }
+.binding-group { color: rgb(125,203,210); }
+.binding-row { border-bottom-color: rgb(38,59,77); }
+.settings Button.binding-key { background-color: rgb(28,49,66); color: rgb(222,234,242); border-color: rgb(71,96,114); }
+.settings Button.binding-key:hover { background-color: rgb(44,70,89); }
+.settings Button.binding-capturing { background-color: rgb(122,89,42); border-color: rgb(255,193,89); color: rgb(255,234,194); }
+.keys-status { color: rgb(245,197,117); }
+.keys-scroll .unity-scroller--vertical { width: 8px; margin-left: 10px; }
+.keys-scroll .unity-scroller__low-button, .keys-scroll .unity-scroller__high-button { display: none; }
+.keys-scroll .unity-base-slider__tracker { background-color: rgb(35,54,70); }
+.keys-scroll .unity-base-slider__dragger { background-color: rgb(92,137,156); border-width: 0; border-radius: 3px; }

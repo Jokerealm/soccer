@@ -1,0 +1,105 @@
+{
+  "version": "0.21.0",
+  "date": "2026-10-13",
+  "passed": true,
+  "changes": [
+    "16 editable per-action keyboard bindings saved locally, with conflict detection, Escape cancellation and restore defaults",
+    "Actual gameplay sampler, local and network input, pause and training shortcuts use configured keys",
+    "HUD, selection text and skill help display configured keys",
+    "Selection uses a lit isolated model studio with real playable models, captured pointer orbit, wheel zoom, auto rotation and reset",
+    "Preview cameras stop rendering outside character selection; studio lights only affect the preview layer",
+    "Settings have general and keys tabs with dark styling and scrollable actions",
+    "Deferred home focus respects the current page and explicit navigation"
+  ],
+  "fullClientRegression": {
+    "passed": true,
+    "total": 391,
+    "report": "reports/keys-model-021-runtime-full/runtime-smoke.json",
+    "viewportSizes": [
+      "1024x768",
+      "1280x720",
+      "1920x1080",
+      "1920x800",
+      "2560x1440"
+    ],
+    "keyTests": [
+      "UI capture and preference reload",
+      "Conflict and reserved-key rejection",
+      "Escape cancels without leaving settings",
+      "Custom kick down/hold/release and old-key rejection",
+      "Push, both skills, detonation, cancel, stop and modifier-queued context order",
+      "HUD and character hints update",
+      "Default restoration"
+    ],
+    "viewerTests": [
+      "Live render texture for each selected character",
+      "Pointer drag changes yaw and disables auto rotation",
+      "Mouse wheel changes distance",
+      "Auto rotation advances camera",
+      "Reset restores framing",
+      "Viewer fits small windows",
+      "Leaving selection and entering gameplay disables preview camera"
+    ],
+    "gameplayFpsSample": 119.96493530273438
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 123,
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet room-code lookup with local login/directory service and room password handshake",
+      "LAN discovered list with login service stopped"
+    ],
+    "report": "reports/keys-model-021-clients.json"
+  },
+  "screenshots": [
+    "reports/keys-model-021-runtime-full/keys-custom-bindings.png",
+    "reports/keys-model-021-runtime-full/model-thor-1920x1080.png",
+    "reports/keys-model-021-runtime-full/model-marine-back.png"
+  ],
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413591837
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 382037817
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.21.0-Windows-x64.zip",
+    "bytes": 144251643,
+    "sha256": "eca2888f3a3b1e1e1fca93a64e9b34236748a8c241a31d769f2bacef771cc991",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.21.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "7e0047145d2dc9755f83449f27e166505294d82440a1a5a534d7edec715b84a3",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "4d0b27bba75b2fee16ae2b7b029d3b164556dc0966ec1f3190c055da68242c22",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "c6f7971f833d2c666a65727f18129b16a99435f1214396375bc5139904d8cd19"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "f50c0b72b872cc24de3655cc872288eb6af958bf65bec397d3d8d7bc4ff89d69",
+    "Soccer.Runtime.dll": "c43a74a7944bb11e7bf74e348c824695c453c51345f1bd34acf93ef104913f1d"
+  },
+  "limitations": {
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicLoginAndDirectoryDeployed": false,
+    "matchRelayDeployed": false,
+    "characterModelsRemainPrototype": true
+  }
+}

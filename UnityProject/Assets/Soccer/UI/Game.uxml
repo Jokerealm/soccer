@@ -15,7 +15,7 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="0.20.0" class="loading-version" />
+            <ui:Label text="0.21.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -41,7 +41,7 @@
                     <ui:Button name="settings-button" text="设置" class="home-nav home-nav-small" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.20.0" class="home-version" /></ui:VisualElement>
+            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.21.0" class="home-version" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="mode-details-page" class="multiplayer-menu hidden">
@@ -113,39 +113,25 @@
             <ui:VisualElement class="row network-footer"><ui:Label name="lobby-status" class="network-status grow hidden" /><ui:VisualElement class="grow" /><ui:Button name="lobby-ready" text="准备" class="primary" /><ui:Button name="lobby-start" text="开始比赛" class="primary" /></ui:VisualElement>
         </ui:VisualElement>
 
-        <ui:VisualElement name="select-page" class="page selection hidden">
-            <ui:VisualElement class="page-heading row">
-                <ui:VisualElement class="grow">
-                    <ui:Label text="CHOOSE YOUR LOADOUT" class="eyebrow" />
-                    <ui:Label name="select-title" text="选择乐子打法" class="page-title" />
-                    <ui:Label name="select-subtitle" class="muted" />
-                </ui:VisualElement>
-                <ui:Button name="select-back" text="返回" class="secondary" />
-            </ui:VisualElement>
+        <ui:VisualElement name="select-page" class="selection hidden">
+            <ui:VisualElement class="selection-heading row"><ui:VisualElement class="grow"><ui:Label name="select-title" text="选择角色" class="page-title" /><ui:Label name="select-subtitle" class="selection-subtitle" /></ui:VisualElement><ui:Button name="select-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
             <ui:VisualElement class="selection-content row">
-                <ui:VisualElement class="roster-cards row">
-                    <ui:Button name="character-0" class="character-card selected">
-                        <ui:VisualElement name="portrait-0" class="portrait loadout-symbol"><ui:VisualElement name="equipment-0" class="equipment-art" /><ui:Label text="脉冲步枪" class="loadout-weapon" /></ui:VisualElement>
-                        <ui:Label text="枪兵" class="card-name" /><ui:Label text="加速 / 炸弹" class="muted" />
-                    </ui:Button>
-                    <ui:Button name="character-1" class="character-card">
-                        <ui:VisualElement name="portrait-1" class="portrait loadout-symbol"><ui:VisualElement name="equipment-1" class="equipment-art" /><ui:Label text="双联机炮" class="loadout-weapon" /></ui:VisualElement>
-                        <ui:Label text="雷神" class="card-name" /><ui:Label text="驱动 / 突进" class="muted" />
-                    </ui:Button>
+                <ui:VisualElement class="roster-cards">
+                    <ui:Button name="character-0" class="character-card selected"><ui:Label text="枪兵" class="card-name" /><ui:Label text="加速 / 炸弹" class="character-type" /></ui:Button>
+                    <ui:Button name="character-1" class="character-card"><ui:Label text="雷神" class="card-name" /><ui:Label text="驱动 / 突进" class="character-type" /></ui:Button>
                 </ui:VisualElement>
-                <ui:ScrollView class="character-details" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto">
-                    <ui:Label name="selected-name" class="page-title" />
-                    <ui:Label name="selected-role" class="eyebrow" />
-                    <ui:Label name="selected-stats" class="stats-copy" />
+                <ui:VisualElement class="character-showcase">
+                    <ui:VisualElement name="character-preview" class="character-preview" />
+                    <ui:VisualElement class="preview-controls row"><ui:Label text="拖动环绕 · 滚轮缩放" class="preview-hint grow" /><ui:Button name="preview-auto" text="自动旋转：开" class="front-utility" /><ui:Button name="preview-reset" text="复位" class="front-utility" /></ui:VisualElement>
+                </ui:VisualElement>
+                <ui:ScrollView name="character-details" class="character-details" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto">
+                    <ui:Label name="selected-name" class="page-title" /><ui:Label name="selected-role" class="eyebrow" /><ui:Label name="selected-stats" class="stats-copy" />
                     <ui:Label text="武器与储备" class="skill-heading" /><ui:Label name="passive-copy" class="description" />
                     <ui:Label name="q-name" class="skill-heading" /><ui:Label name="q-copy" class="description" />
                     <ui:Label name="e-name" class="skill-heading" /><ui:Label name="e-copy" class="description" />
                 </ui:ScrollView>
             </ui:VisualElement>
-            <ui:VisualElement class="selection-footer row">
-                <ui:Label text="枪兵与雷神先试玩法；角色外观后续再定。" class="muted grow" />
-                <ui:Button name="start-button" text="准备好了 · 开始训练    →" class="primary" />
-            </ui:VisualElement>
+            <ui:VisualElement class="selection-footer row"><ui:VisualElement class="grow" /><ui:Button name="start-button" text="开始训练" class="primary" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="match-page" class="match-page hidden">
@@ -306,16 +292,20 @@
         </ui:VisualElement>
 
         <ui:VisualElement name="settings-page" class="page settings hidden">
-            <ui:Label text="PREFERENCES" class="eyebrow" /><ui:Label text="设置" class="page-title" />
-            <ui:Slider name="volume-slider" label="总音量" low-value="0" high-value="1" value="0.6" />
-            <ui:Slider name="music-slider" label="背景音乐" low-value="0" high-value="1" value="0.55" />
-            <ui:Slider name="effects-slider" label="音效" low-value="0" high-value="1" value="0.8" />
-            <ui:VisualElement class="row settings-toggles"><ui:Button name="mute-toggle" text="静音：关" class="secondary" /><ui:Button name="feedback-toggle" text="命中反馈：开" class="secondary" /><ui:Button name="hud-mode-setting" text="完整技能栏：开" class="secondary" /></ui:VisualElement>
-            <ui:Label text="新手可开启完整技能栏；关闭后只在左上角显示头像、生命和能量。比赛中也可随时切换。" class="muted hud-setting-copy" />
-            <ui:Label text="电脑操作" class="skill-heading" />
-            <ui:Label text="右键地面移动，右键敌人自动追击，右键队友跟随；Shift 追加路线，S/H 停止。&#10;V 键按住蓄力，松开踢球，冷却 6 秒；C 取消。&#10;空格推开角色腾出空间，冷却 5 秒并消耗生命。推队友／背后推保留持球；正面和侧面推敌人时球留原地，碰撞球接球。&#10;进入射程自动武器普攻，三格储备会自动补充；Q/E 角色技能；雷神 E 选择方向后左键确认，C 取消。&#10;枪兵 G 消耗 10 能量提前引爆炸弹；Esc 暂停。&#10;被击倒后掉球，5 秒后在原地满状态复活。&#10;训练中 R 重置、F 持球、T 目标持球、F1 判定显示，F2 角球，F3 任意球。" class="description" />
-            <ui:Label text="固定全场视野 · 后续添加按键重映射、手柄与触屏。" class="muted" />
-            <ui:Button name="settings-back" text="返回主菜单" class="primary" />
+            <ui:VisualElement class="row settings-heading"><ui:Label text="设置" class="page-title grow" /><ui:Button name="settings-back" text="‹ 返回主菜单" class="secondary" /></ui:VisualElement>
+            <ui:VisualElement class="row settings-tabs"><ui:Button name="settings-general-tab" text="通用" class="settings-tab settings-tab-selected" /><ui:Button name="settings-keys-tab" text="按键" class="settings-tab" /></ui:VisualElement>
+            <ui:VisualElement name="settings-general" class="settings-general">
+                <ui:Slider name="volume-slider" label="总音量" low-value="0" high-value="1" value="0.6" />
+                <ui:Slider name="music-slider" label="背景音乐" low-value="0" high-value="1" value="0.55" />
+                <ui:Slider name="effects-slider" label="音效" low-value="0" high-value="1" value="0.8" />
+                <ui:VisualElement class="settings-toggles"><ui:Button name="mute-toggle" text="静音：关" class="secondary" /><ui:Button name="feedback-toggle" text="命中反馈：开" class="secondary" /><ui:Button name="hud-mode-setting" text="完整技能栏：开" class="secondary" /></ui:VisualElement>
+                <ui:Label text="关闭完整技能栏后显示简洁的头像、生命与能量。" class="muted hud-setting-copy" />
+            </ui:VisualElement>
+            <ui:VisualElement name="settings-keys" class="settings-keys hidden">
+                <ui:VisualElement class="row keys-heading"><ui:Label text="点击按键后修改 · 自动保存" class="muted grow" /><ui:Button name="keys-reset" text="恢复默认" class="secondary" /></ui:VisualElement>
+                <ui:ScrollView name="keys-scroll" class="keys-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden"><ui:VisualElement name="keybinding-list" /><ui:Label text="鼠标右键：移动 / 追击&#10;鼠标左键：确认技能目标&#10;Esc：始终可以返回或打开比赛菜单" class="fixed-mouse-keys" /></ui:ScrollView>
+                <ui:Label name="keys-status" text="" class="keys-status" />
+            </ui:VisualElement>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

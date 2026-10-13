@@ -35,7 +35,7 @@ def main():
         for path in files:
             z.write(path, package_name + '/' + path.relative_to(build).as_posix())
         z.write(root / 'docs/Windows试玩与开发.md', package_name + '/Windows试玩说明.md')
-        network_guide = root / 'docs/游戏主菜单0.20.0.md'
+        network_guide = root / 'docs/按键设置与三维选角0.21.0.md'
         z.write(network_guide, package_name + '/' + network_guide.name)
         z.write(root / 'server/README.md', package_name + '/登录服务说明.md')
         z.write(root / 'assets/third_party/noto-sans-cjk/OFL.txt', package_name + '/Licenses/Noto-OFL.txt')
@@ -50,7 +50,9 @@ def main():
                    '帐号密码与房间密码分别填写；局域网不要求登录。\r\n'
                    '进入房间后按需展开角色与队伍；客人准备，由房主开始。互联网建房可开启密码。\r\n'
                    '建房自动选择端口；局域网输入房间号、从列表加入或输入房主IP；互联网输入6位房间号。\r\n'
-                   '联机Esc只打开本机菜单，比赛继续。雷神 E 后左键确认方向；C 取消。步骤见随包 0.20.0 更新说明。\r\n'
+                   '联机Esc只打开本机菜单，比赛继续。雷神 E 后左键确认方向；C 取消。步骤见随包 0.21.0 更新说明。\r\n'
+                   '设置 → 按键：点击当前键位后按新键，自动保存；Esc取消，恢复默认可重置。\r\n'
+                   '选角：左键拖动环绕模型，滚轮缩放，可切换自动旋转与复位。\r\n'
                    '右键走位/追击（不显示路径）；V 蓄力踢球；左键确认技能目标；空格推击；Q/E 技能；Esc 暂停。\r\n'
                    '训练 R 重置，F/T 持球，F1 角度，F2 角球，F3 任意球。\r\n'
                    '详细步骤见 Windows试玩说明.md。\r\n'

@@ -1,0 +1,7 @@
+{
+  "passed": false,
+  "stage": "Full smoke sequence after focused settings/viewer checks",
+  "issue": "Scheduled home focus selected the AI start entry during the next scripted navigation; the training-only HUD probe then received a six-player match.",
+  "resolution": "Home focus now checks the current page and existing button focus; probe submit events target the requested button and wait for home entry to settle.",
+  "finalReport": "reports/keys-model-021-runtime-full/runtime-smoke.json"
+}

@@ -14,6 +14,9 @@ namespace Soccer.Runtime
         private VisualElement root;
         private AppController app;
         private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page" };
+        public CharacterPreviewView CharacterPreview { get; private set; }
+        public KeyBindingsUI KeyBindings { get; private set; }
+        public bool BlocksKeyNavigation => KeyBindings != null && KeyBindings.BlocksNavigation;
         public MenuStageView MenuStage { get; private set; }
         private Texture2D menuVeil;
         private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "settings-button" };
@@ -84,7 +87,6 @@ namespace Soccer.Runtime
             {
                 var character = app.Characters[i];
                 BindButton($"character-{i}", () => app.SelectCharacter(character.Stats.Id));
-                SetImage($"equipment-{i}", character.Stats.Id == CharacterId.Marine ? "equipment-marine" : "equipment-thor");
             }
             string[] symbols = { "weapon", "tackle", "kick", "g" };
             string[] assets = { "rifle", "tackle", "kick", "trigger" };
@@ -98,6 +100,13 @@ namespace Soccer.Runtime
             CreateMenuVeil();
             MenuStage = new GameObject("Main menu presentation").AddComponent<MenuStageView>();
             MenuStage.Initialize(app);
+            CharacterPreview = new GameObject("Character selection presentation").AddComponent<CharacterPreviewView>();
+            CharacterPreview.Initialize(app,root.Q("character-preview"));
+            BindButton("preview-auto",CharacterPreview.ToggleAutoRotate);
+            BindButton("preview-reset",CharacterPreview.ResetView);
+            KeyBindings = new KeyBindingsUI(root,app.Keys);
+            app.Keys.Changed += RefreshBindingHints;
+            RefreshBindingHints();
             var volume = root.Q<Slider>("volume-slider");
             volume.SetValueWithoutNotify(app.Audio.SavedMasterVolume);
             volume.RegisterValueChangedCallback(e => app.Audio.SetVolume(e.newValue));
@@ -184,6 +193,8 @@ namespace Soccer.Runtime
         {
             if (menuVeil != null) Destroy(menuVeil);
             if (MenuStage != null) Destroy(MenuStage.gameObject);
+            if (CharacterPreview != null) Destroy(CharacterPreview.gameObject);
+            if (app?.Keys != null) app.Keys.Changed -= RefreshBindingHints;
         }
 
         private void BindButton(string name, Action action)
@@ -231,7 +242,7 @@ namespace Soccer.Runtime
             if (element.EndsWith("-symbol") && element != "hero-symbol" && element != "compact-hero-symbol")
                 Motion?.BindIcon(element.Replace("-symbol", ""), image, Resources.Load<Texture2D>("FrontEnd/" + asset + "-gray"));
         }
-        private void Text(string name, string text) => root.Q<Label>(name).text = text;
+        private void Text(string name, string text) => root.Q<Label>(name).text = app.Keys.FormatHint(text);
         private void RefreshAudioSettings()
         {
             Motion?.SetEnabled(app.View.FeedbackEnabled);
@@ -245,13 +256,22 @@ namespace Soccer.Runtime
             MiniMap?.Hide();
             for (int i = 0; i < pageNames.Length; i++) Visible(root.Q(pageNames[i]), i == (int)page);
             MenuStage?.SetVisible(page != AppPage.Match && page != AppPage.Results);
+            MenuStage?.SetLineupVisible(page != AppPage.CharacterSelect);
+            CharacterPreview?.SetVisible(page == AppPage.CharacterSelect);
+            if (page != AppPage.Settings) KeyBindings?.Cancel();
+            else KeyBindings?.Show(false);
             ShowPause(false);
             RefreshLogin();
             if (page == AppPage.CharacterSelect) RefreshSelection();
             if (page == AppPage.ModeDetails) RefreshModeDetails();
             if (page == AppPage.NetworkMenu || page == AppPage.RoomLobby) RefreshNetwork();
             Visible(root.Q("menu-backdrop"), page != AppPage.Match && page != AppPage.Loading);
-            if (page == AppPage.Home) root.schedule.Execute(() => root.Q<Button>("bots-button").Focus());
+            if (page == AppPage.Home) root.schedule.Execute(() =>
+            {
+                var focused = root.panel.focusController.focusedElement as VisualElement;
+                if (app.Page == AppPage.Home && !(focused is Button && root.Q("home-page").Contains(focused)))
+                    root.Q<Button>("bots-button").Focus();
+            });
             if (page == AppPage.Match)
             {
                 RefreshMatch();
@@ -265,6 +285,7 @@ namespace Soccer.Runtime
         public void RefreshSelection()
         {
             var d = app.SelectedDefinition;
+            CharacterPreview?.Select(d);
             Text("select-title", app.SelectedMode == MatchMode.Training ? "选择角色 · 训练场" : "选择角色 · 合作乱斗");
             Text("select-subtitle", app.SelectedMode == MatchMode.Training ? "练习移动、传射和角色技能。" : "3v3 AI 对练 · 选择你的角色。");
             Text("selected-name", d.Stats.Name);
@@ -285,7 +306,7 @@ namespace Soccer.Runtime
             bool online=app.IsNetworkMatch;
             Text("pause-title",online ? "联机菜单" : "比赛已暂停");
             Text("pause-copy",online ? "比赛继续进行，关闭菜单后恢复操作。" : "准备好了，就继续回到球场。");
-            root.Q<Button>("pause-button").text=online ? "菜单  Esc" : "暂停  Esc";
+            root.Q<Button>("pause-button").text=app.Keys.FormatHint(online ? "菜单  Esc" : "暂停  Esc");
             root.Q<Button>("restart-button").text=online ? "返回房间" : "重新开始";
             root.Q<Button>("restart-button").SetEnabled(!online || app.Room.IsHost);
             skillHelp?.Hide();
@@ -329,12 +350,12 @@ namespace Soccer.Runtime
                 SetImage("weapon-symbol", marine ? "skill-rifle-v2" : "skill-cannons-v2");
                 SetImage("q-symbol", marine ? "skill-stim-v2" : "skill-drive-v2");
                 SetImage("e-symbol", marine ? "skill-bomb-v2" : "skill-thruster-v2");
-                root.Q("q-tile").tooltip = "Q · " + d.QName + "\n" + d.QDescription;
-                root.Q("e-tile").tooltip = "E · " + d.EName + "\n" + d.EDescription;
-                root.Q("g-tile").tooltip = "G · 提前引爆自己的炸弹，消耗10能量；与E冷却独立。";
-                root.Q("kick-tile").tooltip = "V 键 · 按住蓄力，松开踢球；6秒冷却，C取消蓄力。";
-                root.Q("tackle-tile").tooltip = "空格 · 铲球与推人，5秒冷却；推力越大，生命消耗越低。";
-                root.Q("weapon-tile").tooltip = "右键敌方球员 · 自动追击，进入射程攻击；S 停止。";
+                root.Q("q-tile").tooltip = app.Keys.FormatHint("Q · " + d.QName + "\n" + d.QDescription);
+                root.Q("e-tile").tooltip = app.Keys.FormatHint("E · " + d.EName + "\n" + d.EDescription);
+                root.Q("g-tile").tooltip = app.Keys.FormatHint("G · 提前引爆自己的炸弹，消耗10能量；与E冷却独立。");
+                root.Q("kick-tile").tooltip = app.Keys.FormatHint("V 键 · 按住蓄力，松开踢球；6秒冷却，C取消蓄力。");
+                root.Q("tackle-tile").tooltip = app.Keys.FormatHint("空格 · 铲球与推人，5秒冷却；推力越大，生命消耗越低。");
+                root.Q("weapon-tile").tooltip = app.Keys.FormatHint("右键敌方球员 · 自动追击，进入射程攻击；S 停止。");
             }
             Text("hud-stats", $"移速 {(p.Stats.Speed + p.SkillSpeedBonus) * app.Simulation.Rules.MovementSpeedScale:0.00}   ·   推力 {p.Stats.PushPower:0.00}");
             Text("weapon-cd", p.Ammo==0 ? "装填中" : "右键追击");
@@ -368,7 +389,7 @@ namespace Soccer.Runtime
             charge.title = charge.value >= 100 ? "满蓄力 · 松开踢球" : $"蓄力 {charge.value:0}%";
             Visible(root.Q("training-tools"), training && !state.IsOpeningWarmup);
             root.Q("feedback-label").style.top = training && !state.IsOpeningWarmup ? Mathf.Max(141,root.Q("training-tools").layout.yMax+6) : 141;
-            root.Q<Button>("debug-toggle").text = $"F1  判定显示：{(app.ShowDebug ? "开" : "关")}";
+            root.Q<Button>("debug-toggle").text = app.Keys.FormatHint($"F1  判定显示：{(app.ShowDebug ? "开" : "关")}");
             root.Q<Button>("moving-target").text = $"目标：{(app.MovingTrainingTarget ? "移动" : "静止")}";
             bool phaseVisible = state.Phase == MatchPhase.GoalCelebration || state.Phase == MatchPhase.SetPiece || p.IsDead;
             Visible(root.Q("phase-label"), phaseVisible);
@@ -421,6 +442,15 @@ namespace Soccer.Runtime
             Motion?.Cooldown(id, p.IsDead ? 0 : seconds, total, blocked);
             Text(label, p.IsDead ? "恢复中" : seconds > 0 ? $"{Mathf.Ceil(seconds*10)/10f:0.0}" : p.Health <= health ? "缺生命" : p.Energy < energy ? "缺能量" : "");
         }
+        private void RefreshBindingHints()
+        {
+            foreach (var pair in new[] { ("q",GameAction.SkillQ), ("e",GameAction.SkillE), ("g",GameAction.Special), ("kick",GameAction.Kick), ("tackle",GameAction.Push) })
+                root.Q(pair.Item1 + "-tile").Q<Label>(className:"ability-key").text = app.Keys.Label(pair.Item2);
+            foreach (var pair in new[] { ("reset-ball","R  重置球场"), ("give-ball","F  自己持球"), ("target-ball","T  目标持球"), ("training-corner","F2  角球"), ("training-free-kick","F3  任意球") })
+                root.Q<Button>(pair.Item1).text = app.Keys.FormatHint(pair.Item2);
+            hudCharacter = null;
+            if (app.Page == AppPage.CharacterSelect) RefreshSelection();
+        }
         private static string Clock(float seconds) { int whole = Mathf.CeilToInt(seconds); return $"{whole / 60:00}:{whole % 60:00}"; }
 
         private SkillHelp DescribeSkill(string id)
@@ -466,6 +496,7 @@ namespace Soccer.Runtime
                     if(!bomb) help.State="先使用 E 放置遥控炸弹";
                 }
             }
+            help.Title = app.Keys.FormatHint(help.Title); help.Body = app.Keys.FormatHint(help.Body); help.State = app.Keys.FormatHint(help.State);
             return help;
         }
 
