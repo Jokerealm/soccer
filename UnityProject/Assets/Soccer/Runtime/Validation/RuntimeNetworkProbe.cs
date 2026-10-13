@@ -61,9 +61,8 @@ namespace Soccer.Runtime
             yield return Capture("00-default-room-form");
             if (role == "host") yield return CheckRoomSizes("network-page", "network-create", "setup");
             yield return Expand("network-profile");
-            Check(Visible(root.Q("network-player-name")) && Visible(root.Q("network-character")), "expanded player settings expose nickname and character controls");
+            Check(Visible(root.Q("network-player-name")) && !Visible(root.Q("network-character")) && Visible(root.Q("network-team")), "room setup exposes nickname and team while role selection waits for draft");
             root.Q<TextField>("network-player-name").value = role == "host" ? "联机房主" : "联机客人";
-            root.Q<DropdownField>("network-character").value = role == "host" ? "枪兵" : "雷神";
             root.Q<DropdownField>("network-team").value = role == "host" ? "青队" : "橙队";
             root.Q<Foldout>("network-profile").value = false;
             Check(root.Q<TextField>("network-room-password").isPasswordField && root.Q<TextField>("network-join-password").isPasswordField, "both room passwords use masked fields");
@@ -103,6 +102,7 @@ namespace Soccer.Runtime
                 if (app.Room == null || app.Room.Lobby.Members.Length < 2 || !app.Room.CanStart) { Finish(); yield break; }
                 if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "host verifies both account identities");
                 yield return Capture("02-host-ready-room"); yield return Click("lobby-start");
+                yield return ParticipateDraft();
                 Check(app.Page == AppPage.Match && app.IsNetworkMatch, "host start button starts authoritative six-player match");
                 Check(app.Simulation.State.Players[3].Stats.Id == CharacterId.Thor, "guest selected character appears in opposing player slot");
                 var remoteOrigin = app.Simulation.State.Players[3].Position;
@@ -172,15 +172,14 @@ namespace Soccer.Runtime
                 if (app.Room == null || !app.Room.Connected) { errors.Add(app.NetworkStatus); Finish(); yield break; }
                 Check(!root.Q<Foldout>("lobby-options").value && !Visible(root.Q("lobby-character")), "lobby role and team controls start collapsed");
                 yield return Expand("lobby-options");
-                Check(Visible(root.Q("lobby-character")) && Visible(root.Q("lobby-team")), "lobby choice controls remain available when expanded");
+                Check(!Visible(root.Q("lobby-character")) && Visible(root.Q("lobby-team")), "lobby exposes team control and defers roles to the draft");
                 root.Q<Foldout>("lobby-options").value = false;
                 Check(app.Room.Lobby.Code == File.ReadAllText(codeFile), "room code synchronizes to guest lobby after lookup and admission");
                 Check(app.Room.Lobby.RequiresPassword == (route == "internet"), "room password setting arrives through live handshake");
                 if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "verified account identities synchronize internally");
                 Check(root.Q<TextField>("network-join-password").value.Length == 0, "joining clears submitted password field");
                 yield return Capture("01-client-room"); yield return Click("lobby-ready");
-                deadline = Time.realtimeSinceStartup + 15;
-                while (app.Page != AppPage.Match && Time.realtimeSinceStartup < deadline) yield return null;
+                yield return ParticipateDraft();
                 Check(app.IsNetworkMatch && !app.Room.IsHost && app.LocalPlayerId == 3, "client receives start and binds its own player");
                 if (!app.IsNetworkMatch) { Finish(); yield break; }
                 Check(app.View.LocalPlayerId == 3 && app.Audio.LocalPlayerId == 3 && root.Q<Label>("local-name").text.Contains("雷神"), "model highlight, sound and HUD follow the local guest rather than host");
@@ -212,6 +211,30 @@ namespace Soccer.Runtime
                 Check(app.Room == null, "leaving an Internet room cancels heartbeat and removes publication");
             }
             Finish();
+        }
+        private IEnumerator ParticipateDraft()
+        {
+            float deadline=Time.realtimeSinceStartup+18;bool sawDraft=false,locked=false;
+            Vec2 position=role=="host" ? new Vec2(-14,2) : new Vec2(14,-2);
+            while(app.Page!=AppPage.Match && Time.realtimeSinceStartup<deadline)
+            {
+                if(app.InDraft)
+                {
+                    if(!sawDraft)
+                    {
+                        sawDraft=true;Check(app.Simulation==null && app.Room.Lobby.Drafting,"selection begins after readiness, before simulation");
+                        yield return Capture("02-"+role+"-draft");
+                    }
+                    if(app.MyDraftTurn && !locked)
+                    {
+                        app.SelectCharacter(role=="host" ? CharacterId.Marine : CharacterId.Thor);app.SelectDraftPosition(position);
+                        yield return Click("start-button");locked=true;
+                    }
+                }
+                yield return null;
+            }
+            Check(sawDraft && locked && app.Page==AppPage.Match,"both peers select and lock their own role and position before kickoff");
+            if(app.Simulation!=null)Check(Vec2.Distance(app.Simulation.State.Players[app.LocalPlayerId].Position,position)<.1f,"selected local opening position synchronizes through match start");
         }
         private static void Set(object obj, string name, object value) => obj.GetType().GetProperty(name).SetValue(obj, value);
         private static bool PointerHits(VisualElement element)
@@ -248,7 +271,7 @@ namespace Soccer.Runtime
         private IEnumerator Click(string name)
         {
             var button = app.UI.Root.Q<Button>(name); button.Focus(); yield return null;
-            using (var evt = NavigationSubmitEvent.GetPooled()) button.SendEvent(evt); yield return null;
+            using (var evt = NavigationSubmitEvent.GetPooled()) {evt.target=button;button.SendEvent(evt);} yield return null;
         }
         private IEnumerator Capture(string name)
         { yield return new WaitForEndOfFrame(); ScreenCapture.CaptureScreenshot(Path.Combine(output, name + ".png")); yield return null; yield return null; }

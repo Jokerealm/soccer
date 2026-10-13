@@ -35,7 +35,7 @@ def main():
         for path in files:
             z.write(path, package_name + '/' + path.relative_to(build).as_posix())
         z.write(root / 'docs/Windows试玩与开发.md', package_name + '/Windows试玩说明.md')
-        network_guide = root / 'docs/按键设置与三维选角0.21.0.md'
+        network_guide = root / 'docs/模式选人与新手教程0.22.0.md'
         z.write(network_guide, package_name + '/' + network_guide.name)
         z.write(root / 'server/README.md', package_name + '/登录服务说明.md')
         z.write(root / 'assets/third_party/noto-sans-cjk/OFL.txt', package_name + '/Licenses/Noto-OFL.txt')
@@ -48,9 +48,11 @@ def main():
                    '联机：联机对战 → 局域网/互联网 → 创建/加入房间。最多6人，空位由AI补齐。\r\n'
                    '登录服务地址由部署配置提供；调试帐号：帐号 a / 密码 a，或帐号 b / 密码 b。\r\n'
                    '帐号密码与房间密码分别填写；局域网不要求登录。\r\n'
-                   '进入房间后按需展开角色与队伍；客人准备，由房主开始。互联网建房可开启密码。\r\n'
+                   '开始游戏先选模式；房间只设置队伍，客人准备后由房主开始选人布阵。\r\n'
                    '建房自动选择端口；局域网输入房间号、从列表加入或输入房主IP；互联网输入6位房间号。\r\n'
-                   '联机Esc只打开本机菜单，比赛继续。雷神 E 后左键确认方向；C 取消。步骤见随包 0.21.0 更新说明。\r\n'
+                   '联机Esc只打开本机菜单，比赛继续。雷神 E 后左键确认方向；C 取消。步骤见随包 0.22.0 更新说明。同局玩家请使用相同版本。\r\n'
+                   '选人时两队轮流锁定角色与开局位置；30秒超时自动选择，暂不ban，允许重复角色。\r\n'
+                   '开始游戏 → 新手教程：13步实际练习，可跳过、回看和重练。\r\n'
                    '设置 → 按键：点击当前键位后按新键，自动保存；Esc取消，恢复默认可重置。\r\n'
                    '选角：左键拖动环绕模型，滚轮缩放，可切换自动旋转与复位。\r\n'
                    '右键走位/追击（不显示路径）；V 蓄力踢球；左键确认技能目标；空格推击；Q/E 技能；Esc 暂停。\r\n'

@@ -3,7 +3,7 @@ using System;
 namespace Soccer.Core
 {
     /// <summary>固定步长的本地权威模拟。先处理取消/输入，再分步移动和接触，最后结算时钟。</summary>
-    public sealed class MatchSimulation
+    public sealed partial class MatchSimulation
     {
         public const float TickSeconds = 1f / 60f;
         public MatchRules Rules { get; }

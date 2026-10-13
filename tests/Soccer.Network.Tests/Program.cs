@@ -235,4 +235,33 @@ Test("LAN discovery includes the current room code",()=> {
  double deadline=Now()+5;while(!discovery.Rooms.Any(r=>r.Lobby.Id==host.Lobby.Id) && Now()<deadline){host.Pump(Now());discovery.Pump(Now());Thread.Sleep(5);}
  Assert(discovery.Rooms.Single(r=>r.Lobby.Id==host.Lobby.Id).Lobby.Code==host.Lobby.Code,"LAN broadcast lost room code");
 });
+Test("room enters replicated draft after ready and cannot join or change teams during selection",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);
+ bool rejected=false;try{host.BeginDraft(new MatchRules());}catch(InvalidOperationException){rejected=true;}Assert(rejected,"unready guest admitted draft");
+ client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
+ Assert(host.Lobby.Drafting && client.Lobby.Drafting && !host.Running && !host.CanStart && host.Draft.CurrentSlot==0 && client.Draft.CurrentSlot==0,"draft was not replicated");
+ client.SetChoice(CharacterId.Thor,Team.Cyan);client.SetReady(false);for(int i=0;i<4;i++){host.Pump(Now());client.Pump(Now());Thread.Sleep(5);}Assert(client.LocalSlot==3 && host.Lobby.Members.Last().Ready,"draft allowed lobby changes");
+ using var late=Client(host);string reason="";late.Failed+=x=>reason=x;Until(()=>reason.Length>0,host,client,late);Assert(!late.Connected,"late join entered draft");
+});
+Test("only current player's lock is accepted and final lineup and positions start both peers",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);client.SetReady(true);Until(()=>host.CanStart,host,client);
+ NetworkStart local=null,remote=null;host.Started+=x=>local=x;client.Started+=x=>remote=x;host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
+ client.LockDraft(CharacterId.Thor,client.Draft.Picks[3].Position);Until(()=>client.Status.Contains("等待"),host,client);Assert(host.Draft.TurnIndex==0,"wrong peer advanced draft");
+ var hostPosition=new Vec2(-14,2);Assert(host.LockDraft(CharacterId.Thor,hostPosition),"host pick rejected");Until(()=>client.Draft.CurrentSlot==3,host,client);
+ client.LockDraft(CharacterId.Thor,new Vec2(-10,0));Until(()=>client.Status.Contains("半场"),host,client);Assert(host.Draft.CurrentSlot==3,"enemy-half client position accepted");
+ var clientPosition=new Vec2(14,-2);client.LockDraft(CharacterId.Marine,clientPosition);Until(()=>remote!=null,host,client);
+ Assert(local!=null && local.Lineup[0]==CharacterId.Thor && remote.Lineup[3]==CharacterId.Marine && remote.Positions.Length==6,"draft lineup or positions lost on start");
+ Assert(Vec2.Distance(local.Positions[0],hostPosition)<.001f && Vec2.Distance(remote.Positions[3],clientPosition)<.001f,"selected placement was not transmitted");MatchDraft.ValidateOpening(remote.Rules,remote.Positions);
+});
+Test("draft cancellation returns both players to lobby and rematch starts a new selection epoch",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
+ int old=client.Draft.Epoch;bool returned=false;client.ReturnedToLobby+=()=>returned=true;host.ReturnToLobby();Until(()=>returned,host,client);Assert(client.Draft==null && !client.Lobby.Drafting,"canceled selection stayed visible");
+ client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginDraft(new MatchRules());Until(()=>client.Draft?.Epoch>old,host,client);Assert(client.Draft.TurnIndex==0 && client.Draft.Picks.All(x=>!x.Locked),"new round retained locked picks");
+});
+Test("draft snapshot rejects impossible locked order and nonfinite placement",()=> {
+ var rules=new MatchRules();var draft=new MatchDraft(rules,new bool[6]);draft.Picks[3].Locked=true;bool rejected=false;
+ try{NetworkCodec.Read(NetworkCodec.Pack(w=>NetworkRoom.WriteDraft(w,draft)),r=>NetworkRoom.ReadDraft(r));}catch(ArgumentException){rejected=true;}Assert(rejected,"malformed pick order accepted");
+ draft.Picks[3].Locked=false;draft.Picks[0].Position=new Vec2(float.NaN,0);rejected=false;
+ try{NetworkCodec.Read(NetworkCodec.Pack(w=>NetworkRoom.WriteDraft(w,draft)),r=>NetworkRoom.ReadDraft(r));}catch(ArgumentException){rejected=true;}Assert(rejected,"nonfinite placement accepted");
+});
 var report=args.Length>0?args[0]:"reports/network-017-transport";Directory.CreateDirectory(report);File.WriteAllText(Path.Combine(report,"network-tests.json"),JsonSerializer.Serialize(new{passed=failed==0,total=results.Count,failed,results},new JsonSerializerOptions{WriteIndented=true}));return failed==0?0:1;

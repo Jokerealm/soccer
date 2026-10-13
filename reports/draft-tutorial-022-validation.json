@@ -1,0 +1,111 @@
+{
+  "version": "0.22.0",
+  "date": "2026-10-13",
+  "passed": true,
+  "changes": [
+    "Start game chooses normal online/LAN, AI, tutorial or free training first",
+    "Room role controls removed from player-facing setup; ready room begins authoritative draft",
+    "Each game alternates team slots 0,3,1,4,2,5 to lock a character and legal own-half opening position",
+    "No ban phase; both currently available characters can repeat",
+    "30-second human timeout, AI vacant slots, and disconnected players automatically complete choices",
+    "Draft snapshots validate epoch, turn, locked-prefix order, characters and placement; guest identity selects the only permitted slot",
+    "Selected six-player lineup and actual positions apply before protected kickoff; each rematch drafts again",
+    "13 playable tutorial steps complete using commands, normal combat/ball rules and actual state/events",
+    "Tutorial offers next, explicit skip, previous, retry and exit; hints use saved action bindings",
+    "Current lesson tools and target marker fit 1024x768,1280x720 and1920x1080",
+    "Entering match initializes HUD observations before the first action; each lesson resets visual resource trails"
+  ],
+  "coreTests": {
+    "passed": true,
+    "total": 230,
+    "report": "reports/draft-tutorial-022-core/core-tests.json"
+  },
+  "networkTests": {
+    "passed": true,
+    "total": 39,
+    "report": "reports/draft-tutorial-022-network/network-tests.json"
+  },
+  "fullClientRegression": {
+    "passed": true,
+    "total": 484,
+    "report": "reports/draft-tutorial-022-runtime-full/runtime-smoke.json",
+    "viewportSizes": [
+      "1024x768",
+      "1280x720",
+      "1920x1080",
+      "1920x800",
+      "2560x1440"
+    ],
+    "tutorialSteps": 13,
+    "gameplayFpsSample": 118.82329559326172
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 135,
+    "preferredPortOccupied": true,
+    "routes": [
+      "Internet room-code lookup, password and draft using loopback login/directory service",
+      "LAN discovered list, draft and match with login service stopped"
+    ],
+    "report": "reports/draft-tutorial-022-clients.json",
+    "sameMachineMacProcesses": true
+  },
+  "screenshots": [
+    "reports/draft-tutorial-022-runtime-full/modes-1920x1080.png",
+    "reports/draft-tutorial-022-runtime-full/draft-1920x1080.png",
+    "reports/draft-tutorial-022-runtime-full/tutorial-1280x720.png"
+  ],
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 413642365
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 382088345
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.22.0-Windows-x64.zip",
+    "bytes": 144269643,
+    "sha256": "b0c9fd630331ca78aad3d6f70d4262d05523810789ffd1b4b5b3deb3879c02ea",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.22.0-Windows-x64.zip.sha256",
+    "playerFiles": 140,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "3d5a8ac5a334ef157dc358d1fedefb780b1bb8c8a4a17f8a9bcfc02c78d62cc2",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "df916e37b6a84d8af66cc946b7ee3fb06eac5f84e4ac6be1d4cbabac7bc0b1e0",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "bf2f722a92f7866faf9fae59863e7c07366b0d02276c4e7ea3530a504814f1a7"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "39b29cfa815d245af24c37299aa56f7302e33384073f93af29c88a79b9bb3321",
+    "Soccer.Runtime.dll": "af8cff82876a0657757a8e984b641df678cd813757f33163b835dbade5c51088"
+  },
+  "initialIssue": {
+    "report": "reports/draft-tutorial-022-initial-full-issue.json",
+    "fixed": true,
+    "explanation": "Initialize HUD observations before action after page entry; reset lesson resource trails; corrected paused probe to observe initial state before testing resource-loss animation"
+  },
+  "limitations": {
+    "windowsRuntimeVerified": false,
+    "crossPublicInternetVerified": false,
+    "publicMatchmakingDeployed": false,
+    "publicLoginAndDirectoryDeployed": false,
+    "matchRelayDeployed": false,
+    "characterModelsRemainPrototype": true,
+    "onlyTwoPlayableCharacters": true,
+    "banPhase": false
+  }
+}

@@ -361,3 +361,36 @@ Button.character-card:hover { background-color: rgb(46,73,91); }
 .keys-scroll .unity-scroller__low-button, .keys-scroll .unity-scroller__high-button { display: none; }
 .keys-scroll .unity-base-slider__tracker { background-color: rgb(35,54,70); }
 .keys-scroll .unity-base-slider__dragger { background-color: rgb(92,137,156); border-width: 0; border-radius: 3px; }
+
+/* Choose mode before assembling a match. */
+.play-menu { flex-grow: 1; padding: 46px 58px; }
+.play-heading { margin-bottom: 36px; }
+.play-title { font-size: 42px; -unity-font-definition: url("ChineseBold.asset"); color: rgb(239,245,245); }
+.play-options { width: 510px; max-width: 48%; flex-grow: 1; justify-content: center; padding-bottom: 50px; }
+Button.play-option { background-color: rgba(24,43,59,0.94); color: rgb(225,237,242); border-width: 1px; border-left-width: 3px; border-color: rgb(62,86,102); border-radius: 0; margin: 0 0 13px; padding: 19px 23px; align-items: flex-start; }
+Button.play-option:hover, Button.play-option:focus { background-color: rgb(44,68,87); border-left-color: rgb(255,183,70); }
+.play-option-name { font-size: 27px; -unity-font-definition: url("ChineseBold.asset"); }
+.play-option-note { font-size: 13px; color: rgb(158,185,203); margin-top: 7px; }
+/* Draft reuses the 3D selection viewport and adds roster and opening placement. */
+.draft-roster { margin-top: 14px; }
+.draft-section-label { color: rgb(154,192,209); font-size: 12px; margin-bottom: 8px; }
+.draft-member { font-size: 12px; white-space: normal; padding: 8px; margin-bottom: 4px; background-color: rgba(13,31,45,0.9); color: rgb(147,174,191); border-left-width: 2px; border-left-color: rgba(0,0,0,0); }
+.draft-member-current { color: rgb(255,213,135); border-left-color: rgb(255,193,89); }
+.draft-member-locked { color: rgb(136,214,199); }
+.draft-placement { margin-top: 9px; padding: 10px 12px; height: 225px; flex-shrink: 0; background-color: rgba(10,25,37,0.95); border-width: 1px; border-color: rgb(44,76,94); }
+.draft-map { flex-grow: 1; min-height: 0; }
+.draft-turn { font-size: 13px; color: rgb(244,204,131); }
+.draft-position-note { font-size: 12px; color: rgb(161,185,203); white-space: normal; margin-top: 2px; }
+.narrow-front-end .draft-placement { height: 210px; }
+/* Guided exercises keep the pitch interactive and use current bindings in their copy. */
+.tutorial-panel { position: absolute; left: 22px; top: 120px; width: 370px; max-width: 36%; padding: 18px; background-color: rgba(10,24,37,0.94); border-width: 1px; border-color: rgb(62,100,118); border-radius: 3px; }
+.tutorial-progress { font-size: 12px; color: rgb(112,189,201); }
+.tutorial-title { font-size: 24px; color: rgb(243,236,213); -unity-font-definition: url("ChineseBold.asset"); margin-top: 13px; margin-bottom: 12px; white-space: normal; }
+.tutorial-body { font-size: 14px; color: rgb(177,203,218); white-space: normal; margin-bottom: 17px; }
+.tutorial-objective { font-size: 15px; color: rgb(249,207,119); white-space: normal; margin-bottom: 9px; }
+.tutorial-status { font-size: 12px; color: rgb(140,176,189); white-space: normal; }
+.tutorial-actions { margin-top: 15px; flex-wrap: wrap; }
+Button.tutorial-utility { font-size: 12px; padding: 5px 8px; min-height: 28px; margin: 0 5px 4px 0; border-width: 1px; border-color: rgb(56,91,111); border-radius: 2px; color: rgb(184,211,224); background-color: rgb(25,46,62); }
+Button.tutorial-next { font-size: 13px; min-height: 30px; margin: 0 0 4px; padding: 6px 12px; border-width: 1px; border-radius: 2px; color: rgb(32,43,46); background-color: rgb(239,191,91); }
+Button.tutorial-next:disabled { background-color: rgb(42,59,69); color: rgb(103,132,149); border-color: rgb(57,81,96); }
+.tutorial-marker { position: absolute; width: 44px; height: 44px; border-radius: 25px; border-width: 3px; border-color: rgb(255,208,98); background-color: rgba(255,198,80,0.1); }

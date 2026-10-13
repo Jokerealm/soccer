@@ -11,14 +11,14 @@ namespace Soccer.Runtime
     {
         private sealed class ProbeInput : IPlayerInputState
         {
-            public KeyCode Pressed, HeldKey, Released; public bool Right;
+            public KeyCode Pressed, HeldKey, Released; public bool Right, Left;
             public Vector3 Position;
             public bool Down(KeyCode key) => key == Pressed;
             public bool Held(KeyCode key) => key == HeldKey;
             public bool Up(KeyCode key) => key == Released;
-            public bool MouseDown(int button) => button == 1 && Right;
+            public bool MouseDown(int button) => button == 1 && Right || button == 0 && Left;
             public Vector3 MousePosition => Position;
-            public void Clear() { Pressed = HeldKey = Released = KeyCode.None; Right = false; }
+            public void Clear() { Pressed = HeldKey = Released = KeyCode.None; Right = Left = false; }
         }
         private void BindingKey(KeyCode key)
         { using (var evt = KeyDownEvent.GetPooled('\0',key,EventModifiers.None)) app.UI.Root.SendEvent(evt); }

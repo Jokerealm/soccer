@@ -6,7 +6,7 @@ using System.Threading;
 
 namespace Soccer.Core.Networking
 {
-    internal enum PacketKind : byte { Hello = 1, Challenge, Authenticate, Lobby, Reject, Choice, Ready, Start, Input, Snapshot, Ping, Pong, Notice }
+    internal enum PacketKind : byte { Hello = 1, Challenge, Authenticate, Lobby, Reject, Choice, Ready, Start, Input, Snapshot, Ping, Pong, Notice, Draft, DraftLock }
     internal sealed class WirePacket
     {
         public PacketKind Kind;

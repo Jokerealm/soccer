@@ -47,7 +47,7 @@ namespace Soccer.Runtime
             { var options = Options(); options.Password = Field("network-join-password").value; app.JoinNetworkRoom(Field("network-address").value, options); Field("network-join-password").SetValueWithoutNotify(""); });
             Button("network-refresh", () => { app.Discovery?.Pump(Time.realtimeSinceStartup, true); Refresh(); });
             Button("lobby-ready", () => { var member = app.Room?.Lobby.Members.FirstOrDefault(m => m.Slot == app.Room.LocalSlot); if (member != null) app.Room.SetReady(!member.Ready); });
-            Button("lobby-start", () => { if (app.Room?.CanStart == true) app.Room.StartMatch(app.RulesAsset.CreateRules()); });
+            Button("lobby-start", () => { if (app.Room?.CanStart == true) app.Room.BeginDraft(app.RulesAsset.CreateRules()); });
             Button("lobby-copy-address", () => { GUIUtility.systemCopyBuffer = Field("lobby-address").value; });
             Drop("lobby-character").RegisterValueChangedCallback(e => Choice()); Drop("lobby-team").RegisterValueChangedCallback(e => Choice());
         }
@@ -88,6 +88,7 @@ namespace Soccer.Runtime
                 root.Q("network-join-tab").EnableInClassList("route-selected", !app.NetworkCreating);
                 foreach (string name in new[] { "network-create", "network-join" }) root.Q<Button>(name).SetEnabled(!busy && canSetUp);
                 foreach (string name in new[] { "network-create-tab", "network-join-tab" }) root.Q<Button>(name).SetEnabled(!busy);
+                Show("network-character",false);
                 RefreshDiscovered();
             }
             if (app.Page == AppPage.RoomLobby && app.Room?.Lobby != null) RefreshLobby();
@@ -95,7 +96,7 @@ namespace Soccer.Runtime
         private void RefreshDiscovered()
         {
             var rooms = app.Discovery?.Rooms ?? new DiscoveredRoom[0];
-            string signature = string.Join("|", rooms.Select(r => r.Address + r.Lobby.Code + r.Lobby.Name + r.Lobby.Members.Length + r.Lobby.Running)) + (app.Room != null);
+            string signature = string.Join("|", rooms.Select(r => r.Address + r.Lobby.Code + r.Lobby.Name + r.Lobby.Members.Length + r.Lobby.Running + r.Lobby.Drafting)) + (app.Room != null);
             Show("network-room-list-empty", rooms.Count == 0);
             if (signature == discoverySignature) return; discoverySignature = signature;
             var list = root.Q("network-room-list"); list.Clear();
@@ -103,10 +104,10 @@ namespace Soccer.Runtime
             {
                 var row = new VisualElement(); row.AddToClassList("row"); row.AddToClassList("discovery-room");
                 NetworkRoom.ParseAddress(room.Address, out string host, out int _);
-                row.Add(new Label(room.Lobby.Name + " · " + room.Lobby.Members.Length + "/6" + (room.Lobby.Running ? " · 比赛中" : "")));
+                row.Add(new Label(room.Lobby.Name + " · " + room.Lobby.Members.Length + "/6" + (room.Lobby.Drafting ? " · 选人中" : room.Lobby.Running ? " · 比赛中" : "")));
                 string invite = NetworkRoom.CreateInvitation(host, room.Lobby);
                 var join = new Button(() => { Field("network-address").SetValueWithoutNotify(invite); app.JoinNetworkRoom(invite, Options()); }) { text = "加入", name = "network-discovered-" + room.Lobby.Id };
-                join.SetEnabled(!room.Lobby.Running && room.Lobby.Members.Length < 6 && app.Room == null && !app.NetworkLookupBusy); row.Add(join); list.Add(row);
+                join.SetEnabled(!room.Lobby.Running && !room.Lobby.Drafting && room.Lobby.Members.Length < 6 && app.Room == null && !app.NetworkLookupBusy); row.Add(join); list.Add(row);
             }
         }
         private void RefreshLobby()
@@ -127,7 +128,8 @@ namespace Soccer.Runtime
             Show("lobby-ready", !room.IsHost); Show("lobby-start", room.IsHost);
             root.Q<Button>("lobby-start").SetEnabled(room.CanStart && app.RoomCodeReady);
             root.Q<Button>("lobby-ready").SetEnabled(!lobby.Running);
-            Drop("lobby-character").SetEnabled(!lobby.Running); Drop("lobby-team").SetEnabled(!lobby.Running);
+            Show("lobby-character",false);
+            Drop("lobby-character").SetEnabled(false); Drop("lobby-team").SetEnabled(!lobby.Running);
             Field("lobby-address").SetValueWithoutNotify(app.RoomCodeReady ? lobby.Code : "生成中…");
             Field("lobby-address").isReadOnly = true;
             Text("lobby-address-note", lobby.Route == NetworkRoute.LAN ? "房主 IP：" + string.Join(" / ", NetworkRoom.LocalAddresses()) : "");
@@ -144,7 +146,7 @@ namespace Soccer.Runtime
                 if (member != null)
                 {
                     name.tooltip = member.Name;
-                    var detail = new Label((member.Character == CharacterId.Thor ? "雷神" : "枪兵") + " · " + (member.Host ? "房主" : member.Ready ? "已准备" : "未准备"));
+                    var detail = new Label((member.Host ? "房主" : member.Ready ? "已准备" : "未准备"));
                     detail.AddToClassList("network-member-detail"); row.Add(detail);
                 }
                 row.EnableInClassList("empty-member", member == null);

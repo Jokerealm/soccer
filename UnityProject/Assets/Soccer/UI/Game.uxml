@@ -15,7 +15,7 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="0.21.0" class="loading-version" />
+            <ui:Label text="0.22.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -35,13 +35,23 @@
             <ui:VisualElement class="home-body">
                 <ui:VisualElement class="home-wordmark"><ui:Label text="SKILL SOCCER" class="home-brand-en" /><ui:Label text="技能足球" class="home-brand-title" /><ui:VisualElement class="home-brand-line" /></ui:VisualElement>
                 <ui:VisualElement name="home-navigation" class="home-navigation">
-                    <ui:Button name="bots-button" class="home-nav home-nav-primary"><ui:Label text="开始比赛" class="home-nav-title" /><ui:Label text="3v3 · AI 对练" class="home-nav-note" /><ui:Label text="›" class="home-nav-arrow" /></ui:Button>
+                    <ui:Button name="bots-button" class="home-nav home-nav-primary"><ui:Label text="开始游戏" class="home-nav-title" /><ui:Label text="选择模式" class="home-nav-note" /><ui:Label text="›" class="home-nav-arrow" /></ui:Button>
                     <ui:Button name="normal-mode" text="联机对战" class="home-nav" />
                     <ui:Button name="train-button" text="训练场" class="home-nav" />
                     <ui:Button name="settings-button" text="设置" class="home-nav home-nav-small" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.21.0" class="home-version" /></ui:VisualElement>
+            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.22.0" class="home-version" /></ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="play-page" class="play-menu hidden">
+            <ui:VisualElement class="row play-heading"><ui:Label text="选择模式" class="play-title grow" /><ui:Button name="play-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
+            <ui:VisualElement class="play-options">
+                <ui:Button name="play-online" class="play-option"><ui:Label text="普通对战" class="play-option-name" /><ui:Label text="互联网 / 局域网 · 3v3" class="play-option-note" /></ui:Button>
+                <ui:Button name="play-ai" class="play-option"><ui:Label text="AI 对练" class="play-option-name" /><ui:Label text="本地 3v3" class="play-option-note" /></ui:Button>
+                <ui:Button name="play-tutorial" class="play-option"><ui:Label text="新手教程" class="play-option-name" /><ui:Label text="操作与比赛机制" class="play-option-note" /></ui:Button>
+                <ui:Button name="play-training" class="play-option"><ui:Label text="训练场" class="play-option-name" /><ui:Label text="自由练习" class="play-option-note" /></ui:Button>
+            </ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="mode-details-page" class="multiplayer-menu hidden">
@@ -88,7 +98,7 @@
                 </ui:VisualElement>
                 <ui:Foldout name="network-profile" text="玩家设置" value="false" class="network-disclosure">
                     <ui:TextField name="network-player-name" label="昵称" value="球员" />
-                    <ui:DropdownField name="network-character" label="角色" />
+                    <ui:DropdownField name="network-character" label="角色" class="hidden" />
                     <ui:DropdownField name="network-team" label="队伍" />
                 </ui:Foldout>
             </ui:ScrollView>
@@ -105,12 +115,12 @@
                     <ui:VisualElement class="network-card grow"><ui:Label text="青队" class="skill-heading cyan" /><ui:VisualElement name="lobby-cyan-members" /></ui:VisualElement>
                     <ui:VisualElement class="network-card grow"><ui:Label text="橙队" class="skill-heading amber" /><ui:VisualElement name="lobby-amber-members" /></ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Foldout name="lobby-options" text="角色与队伍" value="false" class="network-disclosure">
-                    <ui:DropdownField name="lobby-character" label="角色" /><ui:DropdownField name="lobby-team" label="队伍" />
+                <ui:Foldout name="lobby-options" text="队伍" value="false" class="network-disclosure">
+                    <ui:DropdownField name="lobby-character" label="角色" class="hidden" /><ui:DropdownField name="lobby-team" label="队伍" />
                     <ui:Label name="lobby-address-note" class="muted small" />
                 </ui:Foldout>
             </ui:ScrollView>
-            <ui:VisualElement class="row network-footer"><ui:Label name="lobby-status" class="network-status grow hidden" /><ui:VisualElement class="grow" /><ui:Button name="lobby-ready" text="准备" class="primary" /><ui:Button name="lobby-start" text="开始比赛" class="primary" /></ui:VisualElement>
+            <ui:VisualElement class="row network-footer"><ui:Label name="lobby-status" class="network-status grow hidden" /><ui:VisualElement class="grow" /><ui:Button name="lobby-ready" text="准备" class="primary" /><ui:Button name="lobby-start" text="开始选人" class="primary" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="select-page" class="selection hidden">
@@ -119,10 +129,12 @@
                 <ui:VisualElement class="roster-cards">
                     <ui:Button name="character-0" class="character-card selected"><ui:Label text="枪兵" class="card-name" /><ui:Label text="加速 / 炸弹" class="character-type" /></ui:Button>
                     <ui:Button name="character-1" class="character-card"><ui:Label text="雷神" class="card-name" /><ui:Label text="驱动 / 突进" class="character-type" /></ui:Button>
+                    <ui:VisualElement name="draft-roster" class="draft-roster hidden"><ui:Label text="两队阵容" class="draft-section-label" /><ui:VisualElement name="draft-members" /></ui:VisualElement>
                 </ui:VisualElement>
                 <ui:VisualElement class="character-showcase">
                     <ui:VisualElement name="character-preview" class="character-preview" />
                     <ui:VisualElement class="preview-controls row"><ui:Label text="拖动环绕 · 滚轮缩放" class="preview-hint grow" /><ui:Button name="preview-auto" text="自动旋转：开" class="front-utility" /><ui:Button name="preview-reset" text="复位" class="front-utility" /></ui:VisualElement>
+                    <ui:VisualElement name="draft-placement" class="draft-placement hidden"><ui:VisualElement class="row"><ui:Label name="draft-turn" class="draft-turn grow" /></ui:VisualElement><ui:VisualElement name="draft-map" class="draft-map" /><ui:Label name="draft-position-note" class="draft-position-note" /></ui:VisualElement>
                 </ui:VisualElement>
                 <ui:ScrollView name="character-details" class="character-details" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto">
                     <ui:Label name="selected-name" class="page-title" /><ui:Label name="selected-role" class="eyebrow" /><ui:Label name="selected-stats" class="stats-copy" />
@@ -163,6 +175,13 @@
             <ui:VisualElement name="countdown-overlay" class="countdown-overlay hidden" picking-mode="Ignore">
                 <ui:Label name="countdown-number" text="3" class="countdown-number" picking-mode="Ignore" />
                 <ui:Label name="countdown-caption" text="准备开球" class="countdown-caption" picking-mode="Ignore" />
+            </ui:VisualElement>
+            <ui:VisualElement name="tutorial-marker" class="tutorial-marker hidden" picking-mode="Ignore" />
+            <ui:VisualElement name="tutorial-panel" class="tutorial-panel hidden">
+                <ui:VisualElement class="row"><ui:Label name="tutorial-progress" class="tutorial-progress grow" /><ui:Button name="tutorial-exit" text="退出教程" class="tutorial-utility" /></ui:VisualElement>
+                <ui:Label name="tutorial-title" class="tutorial-title" /><ui:Label name="tutorial-body" class="tutorial-body" />
+                <ui:Label name="tutorial-objective" class="tutorial-objective" /><ui:Label name="tutorial-status" class="tutorial-status" />
+                <ui:VisualElement class="row tutorial-actions"><ui:Button name="tutorial-previous" text="上一步" class="tutorial-utility" /><ui:Button name="tutorial-retry" text="重练" class="tutorial-utility" /><ui:Button name="tutorial-skip" text="跳过" class="tutorial-utility" /><ui:Button name="tutorial-next" text="下一步" class="tutorial-next" /></ui:VisualElement>
             </ui:VisualElement>
             <ui:VisualElement name="training-tools" class="training-tools">
                 <ui:Label text="训练工具" class="skill-heading" />

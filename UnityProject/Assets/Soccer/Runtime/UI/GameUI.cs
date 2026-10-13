@@ -13,7 +13,7 @@ namespace Soccer.Runtime
         public StyleSheet Styles;
         private VisualElement root;
         private AppController app;
-        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page" };
+        private readonly string[] pageNames = { "home-page", "select-page", "match-page", "results-page", "settings-page", "loading-page", "mode-details-page", "network-page", "room-page", "login-page", "play-page" };
         public CharacterPreviewView CharacterPreview { get; private set; }
         public KeyBindingsUI KeyBindings { get; private set; }
         public bool BlocksKeyNavigation => KeyBindings != null && KeyBindings.BlocksNavigation;
@@ -21,6 +21,8 @@ namespace Soccer.Runtime
         private Texture2D menuVeil;
         private readonly string[] homeButtons = { "bots-button", "normal-mode", "train-button", "settings-button" };
         private readonly System.Collections.Generic.Dictionary<string, Action> homeActions = new System.Collections.Generic.Dictionary<string, Action>();
+        private DraftUI draftUI;
+        private TutorialUI tutorialUI;
         private NetworkUI network;
         private LoginUI login;
         private readonly string[] scoreFields = { "stat-goals", "stat-steals", "stat-kicks", "stat-passes" };
@@ -54,11 +56,21 @@ namespace Soccer.Runtime
             });
             if (Styles != null) root.styleSheets.Add(Styles);
             BindButton("train-button", () => app.OpenSelection(MatchMode.Training));
-            BindButton("bots-button", () => app.OpenSelection(MatchMode.BotMatch));
+            BindButton("bots-button", app.OpenPlayMenu);
+            BindButton("play-back",app.GoHome);
+            BindButton("play-online",()=>app.OpenMode(GamePlaylist.Normal));
+            BindButton("play-ai",app.BeginLocalDraft);
+            BindButton("play-training",()=>app.OpenSelection(MatchMode.Training));
+            BindButton("play-tutorial",app.StartTutorial);
+            BindButton("tutorial-next",()=>app.NextTutorialStep());
+            BindButton("tutorial-skip",()=>app.NextTutorialStep(true));
+            BindButton("tutorial-previous",app.PreviousTutorialStep);
+            BindButton("tutorial-retry",app.RestartTutorialStep);
+            BindButton("tutorial-exit",()=>{app.GoHome();app.OpenPlayMenu();});
             BindButton("settings-button", app.OpenSettings);
             BindButton("select-back", app.BackFromSelection);
             BindButton("normal-mode", () => app.OpenMode(GamePlaylist.Normal));
-            BindButton("mode-back", app.GoHome);
+            BindButton("mode-back", app.BackFromMode);
             BindButton("route-login", app.OpenLogin);
             root.Q("home-page").RegisterCallback<KeyDownEvent>(NavigateHome, TrickleDown.TrickleDown);
             BindButton("internet-route", () => app.SelectConnection(ConnectionRoute.Internet));
@@ -66,15 +78,15 @@ namespace Soccer.Runtime
             BindButton("online-play", () => app.OpenNetwork(true));
             BindButton("join-room", () => app.OpenNetwork(false));
             BindButton("settings-back", app.GoHome);
-            BindButton("start-button", app.StartMatch);
+            BindButton("start-button", app.ConfirmSelection);
             BindButton("pause-button", () => app.SetPaused(true));
             BindButton("hud-mode-toggle", () => SetFullHud(!FullHudEnabled));
             BindButton("hud-mode-setting", () => SetFullHud(!FullHudEnabled));
             BindButton("resume-button", () => app.SetPaused(false));
-            BindButton("restart-button", app.StartMatch);
+            BindButton("restart-button", app.ReplaySession);
             BindButton("pause-home", app.GoHome);
             BindButton("results-home", app.GoHome);
-            BindButton("play-again", app.StartMatch);
+            BindButton("play-again", app.ReplaySession);
             BindButton("reset-ball", () => app.ResetTraining(false));
             BindButton("give-ball", () => app.ResetTraining(true));
             BindButton("target-ball", app.GiveTargetBall);
@@ -126,6 +138,7 @@ namespace Soccer.Runtime
             login=new LoginUI(app,root);
             BindButton("home-account", app.OpenLogin);
             network=new NetworkUI(app,root);
+            draftUI=new DraftUI(app,root);tutorialUI=new TutorialUI(app,root);
             SetFullHud(LoadFullHudPreference(), false);
             RefreshAudioSettings();
             RefreshSelection();
@@ -272,6 +285,7 @@ namespace Soccer.Runtime
                 if (app.Page == AppPage.Home && !(focused is Button && root.Q("home-page").Contains(focused)))
                     root.Q<Button>("bots-button").Focus();
             });
+            Motion?.Enter(root.Q(pageNames[(int)page]), page == AppPage.Match);
             if (page == AppPage.Match)
             {
                 RefreshMatch();
@@ -279,9 +293,9 @@ namespace Soccer.Runtime
                 root.schedule.Execute(() => root.Focus());
             }
             if (page == AppPage.Results) RefreshResults();
-            Motion?.Enter(root.Q(pageNames[(int)page]), page == AppPage.Match);
         }
 
+        public void RefreshDraft() => draftUI?.Refresh();
         public void RefreshSelection()
         {
             var d = app.SelectedDefinition;
@@ -297,8 +311,10 @@ namespace Soccer.Runtime
             Text("e-name", $"E / {d.EName}  · {d.Stats.Loadout.EEnergy:0} 能量" + (d.Stats.EHealthCost > 0 ? $" + {d.Stats.EHealthCost:0} 生命" : "") + $" / {d.Stats.ECooldown:0.#} 秒");
             Text("e-copy", d.EDescription);
             root.Q<Button>("start-button").text = app.SelectedMode == MatchMode.Training ? "开始训练" : "开始比赛";
+            root.Q<Button>("start-button").SetEnabled(true);root.Q<Button>("select-back").text="‹ 返回";
             for (int i = 0; i < app.Characters.Length; i++)
-                root.Q($"character-{i}").EnableInClassList("selected", app.Characters[i].Stats.Id == app.Selected);
+            { root.Q($"character-{i}").EnableInClassList("selected", app.Characters[i].Stats.Id == app.Selected);root.Q<Button>($"character-{i}").SetEnabled(true); }
+            RefreshDraft();
         }
 
         public void ShowPause(bool paused)
@@ -320,7 +336,7 @@ namespace Soccer.Runtime
             var p = state.Players[app.LocalPlayerId];
             var d = app.SelectedDefinition;
             bool training = state.Mode == MatchMode.Training;
-            Text("mode-label", training ? "训练场" : app.IsNetworkMatch ? $"{(app.Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.LAN ? "局域网" : "互联网")} · {(state.Overtime ? "加时" : state.Half==1 ? "上半场" : "下半场")}" : state.Overtime ? "AI 对练 · 金球加时" : $"3 v 3 · {(state.Half==1 ? "上半场" : "下半场")}");
+            Text("mode-label", app.Tutorial!=null ? "新手教程" : training ? "训练场" : app.IsNetworkMatch ? $"{(app.Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.LAN ? "局域网" : "互联网")} · {(state.Overtime ? "加时" : state.Half==1 ? "上半场" : "下半场")}" : state.Overtime ? "AI 对练 · 金球加时" : $"3 v 3 · {(state.Half==1 ? "上半场" : "下半场")}");
             Text("cyan-score", state.CyanScore.ToString());
             Text("amber-score", state.AmberScore.ToString());
             Text("clock-label", training ? "练习" : Clock(state.PeriodRemainingSeconds(app.Simulation.Rules)));
@@ -387,7 +403,8 @@ namespace Soccer.Runtime
             float max = p.Preparation == ShotPreparation.Power ? p.Stats.PowerChargeSeconds : app.Simulation.Rules.ChargeSeconds;
             charge.value = Mathf.Clamp01(p.ChargeTime / max) * 100;
             charge.title = charge.value >= 100 ? "满蓄力 · 松开踢球" : $"蓄力 {charge.value:0}%";
-            Visible(root.Q("training-tools"), training && !state.IsOpeningWarmup);
+            Visible(root.Q("training-tools"), training && !state.IsOpeningWarmup && app.Tutorial==null);
+            Visible(root.Q("feedback-label"),FullHudEnabled && app.Tutorial==null);
             root.Q("feedback-label").style.top = training && !state.IsOpeningWarmup ? Mathf.Max(141,root.Q("training-tools").layout.yMax+6) : 141;
             root.Q<Button>("debug-toggle").text = app.Keys.FormatHint($"F1  判定显示：{(app.ShowDebug ? "开" : "关")}");
             root.Q<Button>("moving-target").text = $"目标：{(app.MovingTrainingTarget ? "移动" : "静止")}";
@@ -399,7 +416,7 @@ namespace Soccer.Runtime
             else if (p.IsDead) Text("phase-label", $"原地复活 {p.RespawnRemaining:0.0}s");
             Motion.Observe(p, state.Ball.OwnerId == app.LocalPlayerId, phaseVisible ? root.Q<Label>("phase-label").text : "");
             Motion.ObserveCountdown(state);
-            skillHelp?.Refresh();
+            skillHelp?.Refresh();tutorialUI?.Refresh();
         }
 
         public void PlayEvent(MatchEvent e)
@@ -512,6 +529,7 @@ namespace Soccer.Runtime
                 ballLocator?.Refresh(app.WorldCamera,app.Simulation.State,MiniMap?.BoundsInRoot ?? default,app.LocalPlayerId);
             }
             else { ballLocator?.Hide(); MiniMap?.Hide(); }
+            tutorialUI?.Refresh();
         }
 
         public bool IsPointerOverControl()
@@ -521,7 +539,7 @@ namespace Soccer.Runtime
             var picked = root.panel.Pick(point);
             while (picked != null)
             {
-                if (picked is Button || picked is Slider || picked is Toggle || picked is TextField || picked is DropdownField || picked.ClassListContains("skill-tile")) return true;
+                if (picked is Button || picked is Slider || picked is Toggle || picked is TextField || picked is DropdownField || picked.ClassListContains("skill-tile") || picked.ClassListContains("tutorial-panel")) return true;
                 picked = picked.parent;
             }
             return false;

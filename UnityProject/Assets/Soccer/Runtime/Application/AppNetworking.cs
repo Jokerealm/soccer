@@ -28,7 +28,7 @@ namespace Soccer.Runtime
         public void BackFromNetwork()
         { CloseNetworking(); OpenMode(SelectedPlaylist); }
         private void CloseNetworking()
-        { StopRoomDirectory(); Room?.Dispose(); Room = null; Discovery?.Dispose(); Discovery = null; }
+        { shownNetworkDraftEpoch=0; StopRoomDirectory(); Room?.Dispose(); Room = null; Discovery?.Dispose(); Discovery = null; }
         public void CreateNetworkRoom(RoomOptions options)
         {
             try
@@ -69,6 +69,7 @@ namespace Soccer.Runtime
                 UI.RefreshNetwork();
             };
             Room.Started += BeginNetworkMatch;
+            Room.DraftChanged += ShowNetworkDraft;
             Room.ReturnedToLobby += () =>
             {
                 Simulation = null; View.Clear(); localInput?.Reset(); Paused = false; FinalGoalRemaining = 0;
@@ -91,6 +92,7 @@ namespace Soccer.Runtime
         {
             LocalPlayerId = Room.LocalSlot; Selected = start.Lineup[LocalPlayerId]; SelectedMode = MatchMode.BotMatch;
             Simulation = new MatchSimulation(start.Rules, Array.ConvertAll(Characters, c => c.CreateStats()), start.Lineup[0], MatchMode.BotMatch, start.Lineup);
+            if(start.Positions!=null)Simulation.ApplyOpeningPositions(start.Positions);
             localInput = new KeyboardMouseInput(WorldCamera,Keys); inputSources = new ICommandSource[6]; commands = new PlayerCommand[6];
             for (int i = 0; i < 6; i++) inputSources[i] = i == LocalPlayerId ? (ICommandSource)localInput : new BotCommandSource(Simulation.Rules);
             View.LocalPlayerId = Audio.LocalPlayerId = LocalPlayerId; View.Bind(Simulation.State, Characters);

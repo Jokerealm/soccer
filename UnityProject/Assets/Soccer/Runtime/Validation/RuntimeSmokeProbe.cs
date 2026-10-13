@@ -55,6 +55,13 @@ namespace Soccer.Runtime
             Check(app.UI.Root.Q<TextField>("login-password").value.Length==0,"failed online login clears the password field");
             yield return Click("login-offline");
             Check(app.Page == AppPage.Home && app.EntryMode == GameEntryMode.Offline && app.Account == null, "offline entry needs no login service and retains game access");
+            if (Array.IndexOf(args,"--soccer-draft-tutorial-preview") >= 0)
+            {
+                yield return CaptureDraftAndTutorial();
+                File.WriteAllText(Path.Combine(output,"runtime-smoke.json"),JsonUtility.ToJson(new Report
+                { editor=Application.unityVersion,platform=Application.platform.ToString(),passed=errors.Count==0,checks=checks.ToArray(),errors=errors.ToArray() },true));
+                Application.logMessageReceived-=CaptureError;Application.Quit(errors.Count==0?0:1);yield break;
+            }
             if (Array.IndexOf(args,"--soccer-settings-preview") >= 0)
             {
                 yield return CaptureBindingsAndModels();
@@ -116,6 +123,7 @@ namespace Soccer.Runtime
             yield return Capture("01-home");
             string[] modeButtons = { "bots-button", "normal-mode", "train-button", "settings-button" };
             yield return CaptureMainMenuFlow();
+            yield return CaptureDraftAndTutorial();
             yield return CaptureBindingsAndModels();
             if (Array.IndexOf(args, "--soccer-menu-preview") >= 0)
             {
@@ -385,9 +393,12 @@ namespace Soccer.Runtime
             yield return null;
             yield return null;
             yield return Click("bots-button");
+            yield return Click("play-ai");
             Debug.Log("SOCCER_SMOKE_BOT_SELECTION " + app.Page);
             yield return Click("character-1");
             yield return Click("start-button");
+            float draftDeadline=Time.realtimeSinceStartup+5;
+            while(app.InDraft && Time.realtimeSinceStartup<draftDeadline)yield return null;
             Check(!app.UI.MenuStage.Visible && app.View.ActorRoot.gameObject.activeSelf, "starting a match restores game actors and removes the menu lineup");
             Debug.Log("SOCCER_SMOKE_BOT_START " + app.Page + " simulation=" + (app.Simulation != null));
             yield return new WaitForSecondsRealtime(4.3f);
@@ -714,6 +725,7 @@ namespace Soccer.Runtime
                 Resources.Load<Texture2D>("FrontEnd/skill-bomb-v2").width>=1024,
                 "painted portraits and ability art import at high resolution");
             motion.Enter(app.UI.Root.Q("match-page"),true);
+            app.UI.RefreshMatch();
             yield return null;
             yield return new WaitForEndOfFrame();
             Check(motion.TransitionRunning && app.UI.Root.Q("battle-dock").resolvedStyle.opacity<1,
@@ -1569,9 +1581,12 @@ namespace Soccer.Runtime
             app.BackFromNetwork(); yield return null;
             yield return Click("mode-back");
             yield return Click("bots-button");
-            Check(app.Page == AppPage.CharacterSelect && app.SelectedMode == MatchMode.BotMatch, "primary start entry opens 3v3 AI character selection directly");
+            Check(app.Page == AppPage.PlayMenu && app.Simulation==null, "primary start entry chooses mode before character selection");
+            yield return Click("play-ai");
+            Check(app.InDraft && app.ActiveDraft.CurrentSlot==0, "AI mode first opens alternating character and position draft");
             yield return Click("select-back");
-            Check(app.Page == AppPage.Home, "AI selection returns directly to home");
+            Check(app.Page == AppPage.PlayMenu, "AI draft returns to mode selection");
+            yield return Click("play-back");
             yield return Click("train-button");
             Check(app.Page == AppPage.CharacterSelect && app.SelectedMode == MatchMode.Training, "training entry opens training character selection directly");
             yield return Click("select-back");

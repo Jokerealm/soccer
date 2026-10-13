@@ -18,7 +18,7 @@ MonoBehaviour:
     10/\u63A8\u529B\uFF08\u539F\u578B\u516C\u5F0F\uFF09\u3002\u5E38\u89C4\u4E8C\u7EF4\u89C4\u5219\u4E0E\u4E09\u7EF4\u7F8E\u672F\u4FDD\u7559\uFF0C5
     \u79D2\u539F\u5730\u590D\u6D3B\u3002\u96F7\u795E\u9A71\u52A8\u65F6\u957F\u3001\u7A81\u8FDB\u8DDD\u79BB\u3001\u70B8\u5F39\u8303\u56F4\u4E0E\u6B66\u5668\u6570\u503C\u4E3A\u53EF\u8C03\u539F\u578B\u503C\u3002"
   Rules:
-    RuleVersion: star-strikers-prototype-0.21.0
+    RuleVersion: star-strikers-prototype-0.22.0
     EnableCombat: 1
     MovementSpeedScale: 1.6
     RespawnSeconds: 5

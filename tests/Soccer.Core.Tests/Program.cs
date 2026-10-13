@@ -1544,6 +1544,47 @@ Test("cancel removes skill selection and keyboard charge and push remains a sepa
  gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{Cancel=true});input=default;gesture.Apply(ref input,CharacterId.Marine,new GameplayButtons{OnField=true,KickUp=true,PushDown=true});
  Assert(input.TacklePressed && !input.KickReleased && !input.KickPressed,"push or canceled charge affected kick");
 });
+Test("draft alternates teams and allows repeated currently available characters",()=> {
+ var draft=new MatchDraft(new MatchRules(),new[]{true,true,true,true,true,true});
+ foreach(int slot in new[]{0,3,1,4,2,5}) { Assert(draft.CurrentSlot==slot,"wrong pick order");Assert(draft.TryLock(slot,CharacterId.Marine,draft.Picks[slot].Position,out _),"repeated character blocked"); }
+ Assert(draft.Complete && draft.CurrentSlot==-1 && draft.Lineup().All(x=>x==CharacterId.Marine),"draft did not finish with repeated heroes");
+});
+Test("draft rejects other turns and illegal positions without changing progress",()=> {
+ var draft=new MatchDraft(new MatchRules(),new[]{true,true,true,true,true,true});
+ Assert(!draft.TryLock(3,CharacterId.Thor,draft.Picks[3].Position,out _) && draft.TurnIndex==0,"wrong turn accepted");
+ foreach(var point in new[]{Vec2.Zero,new Vec2(10,0),new Vec2(-100,0),new Vec2(float.NaN,0),new Vec2(-10,float.PositiveInfinity)})
+  Assert(!draft.TryLock(0,CharacterId.Marine,point,out _) && draft.TurnIndex==0,"illegal position accepted");
+ Assert(!draft.TryLock(0,CharacterId.WindShuttle,draft.Picks[0].Position,out _),"unavailable character accepted");
+});
+Test("draft enforces space between selected teammates and AI finds a free fallback",()=> {
+ var draft=new MatchDraft(new MatchRules(),new[]{true,false,false,false,false,false});var blocked=draft.Picks[1].Position;
+ Assert(draft.TryLock(0,CharacterId.Thor,blocked,out _),"legal opening placement rejected");draft.Tick(.4f);
+ Assert(draft.CurrentSlot==1 && !draft.TryLock(1,CharacterId.Marine,blocked,out _),"overlapping teammate accepted");
+ draft.Tick(.4f);Assert(draft.Picks[1].Locked && draft.Picks[1].Automatic && Vec2.Distance(draft.Picks[1].Position,blocked)>=MatchDraft.Separation,"AI fallback overlapped locked position");
+});
+Test("draft timeout and disconnection produce valid complete opening placement",()=> {
+ var draft=new MatchDraft(new MatchRules(),new[]{true,false,false,true,false,false});draft.Tick(31);
+ Assert(draft.Picks[0].Automatic && draft.CurrentSlot==3,"timeout did not advance human turn");draft.SetHuman(3,false);
+ for(int i=0;i<6;i++)draft.Tick(.4f);Assert(draft.Complete,"disconnected player left draft blocked");MatchDraft.ValidateOpening(draft.Rules,draft.Positions());
+});
+Test("selected opening positions apply before kickoff while preserving protection",()=> {
+ var rules=new MatchRules();var draft=new MatchDraft(rules,new bool[6]);for(int i=0;i<6;i++)draft.Tick(.4f);
+ var sim=new MatchSimulation(rules,StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch,draft.Lineup());
+ sim.ApplyOpeningPositions(draft.Positions());for(int i=0;i<6;i++) {Near(Vec2.Distance(sim.State.Players[i].Position,draft.Picks[i].Position),0);Near(Vec2.Distance(sim.State.Players[i].PreviousPosition,draft.Picks[i].Position),0);}
+ Assert(sim.State.IsOpeningWarmup && sim.State.Ball.OwnerId==-1,"placement bypassed opening protection");sim.Step(new PlayerCommand[6]);bool rejected=false;try{sim.ApplyOpeningPositions(draft.Positions());}catch(InvalidOperationException){rejected=true;}Assert(rejected,"live match allowed arbitrary reposition");
+});
+Test("tutorial scenarios use normal life and command rules",()=> {
+ var sim=new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.Training);
+ sim.SetupTrainingLesson(TrainingLesson.Stop);Assert(sim.State.Players[0].Order==UnitOrderKind.Move,"stop lesson had no active movement order");
+ sim.SetupTrainingLesson(TrainingLesson.Catch);Assert(sim.State.Phase==MatchPhase.Playing && sim.State.Ball.OwnerId==1,"catch lesson not ready for physical interception");
+ sim.SetupTrainingLesson(TrainingLesson.Kick);Assert(sim.State.Ball.OwnerId==0,"kick lesson omitted held ball");
+ sim.SetupTrainingLesson(TrainingLesson.Recovery);float hp=sim.State.Players[0].Health,energy=sim.State.Players[0].Energy;Steps(sim,180);Assert(sim.State.Players[0].Health>hp+5 && sim.State.Players[0].Energy>energy,"normal resource recovery did not run");
+ sim.SetupTrainingLesson(TrainingLesson.Respawn);var position=sim.State.Players[0].Position;Assert(sim.State.Players[0].IsDead,"respawn lesson did not use damage knockout");Steps(sim,301);
+ Assert(!sim.State.Players[0].IsDead && sim.State.Players[0].Health==100 && sim.State.Players[0].Energy==100 && Vec2.Distance(position,sim.State.Players[0].Position)<.001f,"normal full-state in-place revival failed");
+});
+Test("tutorial setup cannot mutate a competitive match",()=> {
+ var sim=StarSim(mode:MatchMode.BotMatch);bool rejected=false;try{sim.SetupTrainingLesson(TrainingLesson.Respawn);}catch(InvalidOperationException){rejected=true;}Assert(rejected && !sim.State.Players[0].IsDead,"training-only setup affected a match");
+});
 string reportDir = args.Length > 0 ? args[0] : Path.GetFullPath("reports");
 Directory.CreateDirectory(reportDir);
 File.WriteAllText(Path.Combine(reportDir, "core-tests.json"), JsonSerializer.Serialize(new { passed = failed == 0, total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));
