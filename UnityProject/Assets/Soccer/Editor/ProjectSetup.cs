@@ -335,7 +335,7 @@ namespace Soccer.Editor
             EditorSettings.defaultBehaviorMode = EditorBehaviorMode.Mode2D;
             PlayerSettings.companyName = "Future City League";
             PlayerSettings.productName = "技能足球";
-            PlayerSettings.bundleVersion = "0.25.0";
+            PlayerSettings.bundleVersion = "0.26.0";
             PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, "com.futurecity.skillsoccer");
             PlayerSettings.defaultScreenWidth = 1600; PlayerSettings.defaultScreenHeight = 900;
@@ -371,6 +371,11 @@ namespace Soccer.Editor
                 scenes = new[] { ScenePath }, target = target, locationPathName = output,
                 options = options
             });
+            if(report.summary.result==BuildResult.Succeeded)
+            {
+                string appDirectory=target==BuildTarget.StandaloneOSX ? Path.Combine(output,"Contents/MacOS") : Path.GetDirectoryName(output);
+                File.WriteAllText(Path.Combine(appDirectory,"steam_appid.txt"),"480\n");
+            }
             var summary = new BuildSummary
             {
                 target = target.ToString(), result = report.summary.result.ToString(), editor = Application.unityVersion,

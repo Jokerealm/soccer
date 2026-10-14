@@ -16,7 +16,7 @@ namespace Soccer.Runtime
         public bool IsNetworkMatch => Room != null && Room.Connected && Room.Running && Simulation != null;
         private float nextNetworkUi, lastSnapshotAt;
         internal PlayerCommand? NetworkInputOverride;
-        public void OpenNetwork(bool create)
+        public void OpenNetwork(bool create,bool browseSteam=true)
         {
             if (SelectedPlaylist != GamePlaylist.Normal || !EnsureEntered()) return;
             if (Route == ConnectionRoute.Internet && EntryMode != GameEntryMode.Online) { OpenLogin(); return; }
@@ -24,13 +24,15 @@ namespace Soccer.Runtime
             if (Route == ConnectionRoute.LAN)
                 try { Discovery = new LanDiscovery(); } catch (Exception) { NetworkStatus = "自动发现不可用，可以使用房主地址加入"; }
             Page = AppPage.NetworkMenu; UI.ShowPage(Page); Audio.SetContext(Page, false);
+            if(Route==ConnectionRoute.Steam && !create && browseSteam)Steam.FindRooms();
         }
         public void BackFromNetwork()
         { CloseNetworking(); OpenMode(SelectedPlaylist); }
         private void CloseNetworking()
-        { shownNetworkDraftEpoch=0; StopRoomDirectory(); Room?.Dispose(); Room = null; Discovery?.Dispose(); Discovery = null; }
+        { shownNetworkDraftEpoch=0; StopRoomDirectory(); Room?.Dispose(); Room = null; Discovery?.Dispose(); Discovery = null;CloseSteamRoom(); }
         public void CreateNetworkRoom(RoomOptions options)
         {
+            if(Route==ConnectionRoute.Steam){CreateSteamRoom(options);return;}
             try
             {
                 Room?.Dispose(); options.Route = (NetworkRoute)Route; options.Account = Account;
@@ -42,6 +44,7 @@ namespace Soccer.Runtime
         }
         public void JoinNetworkRoom(string address, RoomOptions options)
         {
+            if(Route==ConnectionRoute.Steam){LookupSteamRoom(address,options);return;}
             if (NetworkLookupBusy || Room != null) return;
             if (Route == ConnectionRoute.Internet)
             {
@@ -84,7 +87,7 @@ namespace Soccer.Runtime
             };
             Room.Failed += reason =>
             {
-                StopRoomDirectory(); Room?.Dispose(); Room = null; NetworkStatus = reason; Simulation = null; Paused = false; LocalPlayerId = 0;
+                StopRoomDirectory();if(Route==ConnectionRoute.Steam)CloseSteamRoom(); Room?.Dispose(); Room = null; NetworkStatus = reason; Simulation = null; Paused = false; LocalPlayerId = 0;
                 localInput?.Reset(); View.Clear(); Page = AppPage.NetworkMenu; UI.ShowPage(Page); Audio.SetContext(Page, false);
             };
         }
@@ -140,6 +143,6 @@ namespace Soccer.Runtime
             Audio.Observe(state, Simulation.Rules); View.Render(state, Simulation.Rules, alpha, ShowDebug, !Paused, localInput.PreviewAim, localInput.SelectingSkillTarget); UI.RefreshMatch();
         }
         private void OnApplicationQuit() { applicationQuitting = true; }
-        private void OnDestroy() { applicationQuitting = true; CloseNetworking(); Account?.Dispose(); Account = null; }
+        private void OnDestroy() { applicationQuitting = true; CloseNetworking(); Account?.Dispose(); Account = null;Steam.Dispose(); }
     }
 }

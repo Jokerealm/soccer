@@ -1,0 +1,123 @@
+{
+  "version": "0.26.0",
+  "date": "2026-10-14",
+  "passed": true,
+  "changes": [
+    "Steam login and SteamID-specific local wallet, match history and personal profile",
+    "Valve lobby discovery and six-character code join with optional room password",
+    "Authenticated Steam Networking Sockets P2P transport shares the authoritative existing room protocol",
+    "Steam connection identity and owner verification, duplicate-account rejection and bounded message frames",
+    "Native Steam friends and invitation button with room-code clipboard fallback if overlay is unavailable",
+    "Manual bots, every human ready, cancelable three-second countdown and alternating character/position draft retained",
+    "Steam listener, lobby, callback and peer cleanup; live connection-state guard for queued callbacks after leaving"
+  ],
+  "steamSDK": {
+    "wrapper": "Steamworks.NET",
+    "version": "2025.164.1",
+    "testAppId": 480,
+    "embeddedPackage": "UnityProject/Packages/com.rlabrecque.steamworks.net",
+    "nativeMacArchitecture": "arm64+x86_64",
+    "nativeWindowsArchitecture": "x86_64"
+  },
+  "steamNative": {
+    "passed": true,
+    "total": 19,
+    "report": "reports/steam-026-native/steam-smoke.json",
+    "realLoggedInAccount": true,
+    "actualValveLobbyAndCodeSearch": true,
+    "encryptedNativeUDPLoopback": true,
+    "socketPairNativeIdentities": "Both sides use the logged-in account certificate",
+    "secondRoomIdentity": "Isolated protocol fixture adapter, not another authenticated Steam account",
+    "crossAccountP2PVerified": false,
+    "relayRoutingVerified": false
+  },
+  "coreTests": {
+    "passed": true,
+    "total": 243,
+    "report": "reports/steam-026-core/core-tests.json"
+  },
+  "networkTests": {
+    "passed": true,
+    "total": 49,
+    "report": "reports/steam-026-network/network-tests.json",
+    "SteamTestsUseMemoryFixtures": true
+  },
+  "fullClientRegression": {
+    "passed": true,
+    "total": 612,
+    "report": "reports/steam-026-runtime-full/runtime-smoke.json",
+    "gameplayFpsSample": 119.99210357666016,
+    "scope": "Normal offline, UI and TCP flows. Subsequent changes to Steam lifecycle and pre-admission failure cleanup are covered by the final Steam and dual-client runs."
+  },
+  "focusedSocialRegression": {
+    "passed": true,
+    "total": 24,
+    "report": "reports/steam-026-focused/runtime-smoke.json",
+    "isolatedLoginServer": true
+  },
+  "dualClients": {
+    "passed": true,
+    "total": 159,
+    "report": "reports/steam-026-clients.json",
+    "routes": [
+      "TCP Internet room code and password through loopback service",
+      "Offline LAN room-list join"
+    ],
+    "sameMachineMacProcesses": true,
+    "preferredPortOccupied": true
+  },
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 414641514
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 383007287
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.26.0-Windows-x64.zip",
+    "bytes": 144605320,
+    "sha256": "05c30bbd6af5e2328717d33af7dd0c0b3836687f817a03077583bb2ef134ad25",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.26.0-Windows-x64.zip.sha256",
+    "playerFiles": 144,
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer.exe": "3936cf9527601ec080b59762f8e454b35ce46c194602bc04b4e4e2ff19b7623e",
+    "SkillSoccer_Data/globalgamemanagers": "2d6adb3230abfed7210234e752452d61bc89ca3d9c16aaf7ce74028c82fca0ca",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "c796eac915e3b09e9426eb91288d57d7c14ca4342e14fd73ce2bf6551a085e39",
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "f9a8248d4cc01da76c96a02f559d44de590d2323d6c8e7fcb835ee13e9aa723b",
+    "SkillSoccer_Data/Managed/com.rlabrecque.steamworks.net.dll": "8525995ff321127b116128ec884b1903ddbc1ba355fe6da696caa77400456bf0",
+    "SkillSoccer_Data/Plugins/x86_64/steam_api64.dll": "eb17909a76668cf9ae0b92a618a34a50f6c73d3a6787cb4dd8ce36a8b10bfb75",
+    "steam_appid.txt": "66c342932aa7c18f7bf1fa212aa011069fc2e50e0c7e9e4c73fcaa6851854c47"
+  },
+  "testedMacAssemblies": {
+    "Soccer.Core.dll": "eae00a08df04b790603cf3f6ce7f597d1fef828ecb2223ff77c378f013abee4f",
+    "Soccer.Runtime.dll": "630a16b5e44c44a82bd2e56e4f0a611eeea241782b30b287d5bc7b762d60ccb9",
+    "com.rlabrecque.steamworks.net.dll": "590cc03e1f403683b1dd3ea76f5511b3992431fda2cf3f40950ed5c1a81bc704"
+  },
+  "limitations": {
+    "windowsRuntimeVerified": false,
+    "twoRealSteamAccountsVerified": false,
+    "crossPublicInternetVerified": false,
+    "SDRRouteVerified": false,
+    "officialSteamAppIdConfigured": false,
+    "SteamStoreDistributionConfigured": false,
+    "autoLaunchOnInviteImplemented": false,
+    "SteamCloudSavesImplemented": false,
+    "SteamFriendsRemoteGameStatsImplemented": false,
+    "statsAreClientSubmitted": true
+  }
+}

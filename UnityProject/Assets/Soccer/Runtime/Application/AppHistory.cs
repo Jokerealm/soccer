@@ -19,7 +19,7 @@ namespace Soccer.Runtime
         private void BeginHistorySession()
         {
             sessionHistory=History;historyRecorded=false;
-            historySource=Room==null ? MatchSource.AI : Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.LAN ? MatchSource.LAN : MatchSource.Internet;
+            historySource=Room==null ? MatchSource.AI : Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.LAN ? MatchSource.LAN : Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.Steam ? MatchSource.Steam : MatchSource.Internet;
         }
         private void RecordMatchHistory()
         {

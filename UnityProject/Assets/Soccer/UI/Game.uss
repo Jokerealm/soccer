@@ -536,3 +536,5 @@ Button.lobby-bot-control { font-size: 12px; min-height: 28px; padding: 4px 8px; 
 .lobby-countdown { position: absolute; left: 36%; right: 36%; top: 28%; padding: 28px; align-items: center; background-color: rgba(9,25,38,.96); border-width: 1px; border-color: rgb(67,104,120); }
 .lobby-countdown-number { font-size: 88px; color: rgb(255,205,117); -unity-font-definition: url("ChineseBold.asset"); }
 .lobby-countdown-copy { font-size: 16px; color: rgb(219,231,235); margin-bottom: 12px; white-space: normal; }
+.steam-login { margin-top: 16px; }
+.connection-tabs Button.route-button { min-width: 0; flex-grow: 1; flex-basis: 0; }

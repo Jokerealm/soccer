@@ -15,7 +15,7 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="0.25.0" class="loading-version" />
+            <ui:Label text="0.26.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -28,6 +28,7 @@
             <ui:Foldout text="试玩帐号" value="false" class="network-disclosure"><ui:Label text="a / a，b / b（帐号 / 密码）" class="muted" /></ui:Foldout>
             <ui:Label name="login-status" class="network-status" />
             <ui:VisualElement class="row login-actions"><ui:Button name="login-offline" text="离线进入" class="secondary" /><ui:Button name="login-submit" text="联网登录    →" class="primary" /></ui:VisualElement>
+            <ui:Button name="login-steam" text="使用 Steam 进入" class="secondary steam-login" />
         </ui:VisualElement>
 
         <ui:VisualElement name="home-page" class="game-home hidden">
@@ -43,7 +44,7 @@
                     <ui:Button name="settings-button" text="设置" class="home-nav home-nav-small" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.25.0" class="home-version" /></ui:VisualElement>
+            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.26.0" class="home-version" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="play-page" class="play-menu hidden">
@@ -61,7 +62,7 @@
             <ui:VisualElement class="multiplayer-body">
                 <ui:Label text="联机对战" class="multiplayer-title" />
                 <ui:VisualElement class="connection-panel">
-                    <ui:VisualElement class="connection-tabs row"><ui:Button name="internet-route" text="互联网" class="route-button route-selected" /><ui:Button name="lan-route" text="局域网" class="route-button" /></ui:VisualElement>
+                    <ui:VisualElement class="connection-tabs row"><ui:Button name="steam-route" text="Steam" class="route-button" /><ui:Button name="internet-route" text="互联网" class="route-button route-selected" /><ui:Button name="lan-route" text="局域网" class="route-button" /></ui:VisualElement>
                     <ui:VisualElement class="multiplayer-actions"><ui:Button name="online-play" text="创建房间" class="network-action" /><ui:Button name="join-room" text="加入房间" class="network-action" /></ui:VisualElement>
                     <ui:Label name="connection-copy" class="connection-copy hidden" />
                     <ui:Button name="route-login" text="联网登录" class="multiplayer-login hidden" />
@@ -111,7 +112,7 @@
                 <ui:VisualElement class="grow"><ui:Label name="lobby-route" class="eyebrow" /><ui:Label name="lobby-title" class="page-title" /><ui:Label name="lobby-summary" class="muted" /></ui:VisualElement>
                 <ui:Button name="lobby-leave" text="离开" class="secondary" />
             </ui:VisualElement>
-            <ui:VisualElement class="row lobby-invitation"><ui:TextField name="lobby-address" label="房间号" class="lobby-invite-field" /><ui:Button name="lobby-copy-address" text="复制" class="secondary" /></ui:VisualElement>
+            <ui:VisualElement class="row lobby-invitation"><ui:TextField name="lobby-address" label="房间号" class="lobby-invite-field" /><ui:Button name="lobby-copy-address" text="复制" class="secondary" /><ui:Button name="lobby-steam-invite" text="邀请 Steam 好友" class="secondary hidden" /></ui:VisualElement>
             <ui:ScrollView class="network-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
                 <ui:VisualElement class="row network-teams">
                     <ui:VisualElement class="network-card grow"><ui:Label text="青队" class="skill-heading cyan" /><ui:VisualElement name="lobby-cyan-members" /></ui:VisualElement>
@@ -336,6 +337,7 @@
         <ui:VisualElement name="friends-page" class="social-page hidden">
             <ui:VisualElement class="row social-heading"><ui:Label text="好友" class="social-title grow" /><ui:Button name="friends-refresh" text="刷新" class="front-utility" /><ui:Button name="friends-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
             <ui:VisualElement name="friends-offline" class="social-offline"><ui:Label text="联网登录后可添加好友" class="social-section" /><ui:Button name="friends-login" text="联网登录" class="primary" /></ui:VisualElement>
+            <ui:VisualElement name="friends-steam" class="friends-online hidden"><ui:VisualElement class="row"><ui:Label name="steam-friends-count" class="social-section grow" /><ui:Button name="steam-friends-open" text="管理 Steam 好友" class="social-action" /></ui:VisualElement><ui:Label text="在房间内邀请好友，或分享房间号。" class="social-muted" /><ui:Label name="steam-friends-empty" text="暂无 Steam 好友。" class="social-muted" /><ui:ScrollView name="steam-friends-list" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement>
             <ui:VisualElement name="friends-online" class="friends-online"><ui:VisualElement class="row friend-search-row"><ui:TextField name="friend-account" label="帐号 ID" class="grow" /><ui:Button name="friend-search" text="查找玩家" class="social-action" /></ui:VisualElement><ui:Label name="friends-status" class="social-status" /><ui:VisualElement name="friend-result" />
                 <ui:VisualElement class="row friends-columns"><ui:VisualElement class="friends-column"><ui:Label name="friends-count" text="好友 · 0" class="social-section" /><ui:Label name="friends-empty" text="暂无好友，可以通过帐号 ID 添加。" class="social-muted" /><ui:ScrollView name="friends-list" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement><ui:VisualElement class="friends-column"><ui:Label name="friends-requests-title" text="申请 · 0" class="social-section" /><ui:ScrollView name="friends-requests" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement></ui:VisualElement>
             </ui:VisualElement>

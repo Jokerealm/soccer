@@ -54,6 +54,7 @@ namespace Soccer.Runtime
             if (Array.IndexOf(args, "--soccer-smoke") >= 0) gameObject.AddComponent<RuntimeSmokeProbe>();
             if (Array.IndexOf(args, "--soccer-input-probe") >= 0) gameObject.AddComponent<RuntimeInputProbe>();
             if (Array.IndexOf(args, "--soccer-network-smoke") >= 0) gameObject.AddComponent<RuntimeNetworkProbe>();
+            if(Array.IndexOf(args,"--soccer-steam-smoke")>=0)gameObject.AddComponent<RuntimeSteamProbe>();
             float began = Time.realtimeSinceStartup;
             UI.SetLoading(0.08f, "正在准备球员与球场…");
             yield return null;
@@ -149,6 +150,7 @@ namespace Soccer.Runtime
 
         private void Update()
         {
+            PumpSteam();
             PumpNetworking();
             TickSocial();
             TickDraft();

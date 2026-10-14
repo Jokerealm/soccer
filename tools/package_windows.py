@@ -21,7 +21,7 @@ def main():
         raise SystemExit('A successful Windows x64 build is required before packaging.')
     required = ['SkillSoccer.exe', 'TuanjiePlayer.dll', 'TuanjieCrashHandler64.exe',
                 'SkillSoccer_Data/globalgamemanagers', 'SkillSoccer_Data/Managed/Soccer.Core.dll',
-                'SkillSoccer_Data/Managed/Soccer.Runtime.dll', 'MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll']
+                'SkillSoccer_Data/Managed/Soccer.Runtime.dll', 'SkillSoccer_Data/Plugins/x86_64/steam_api64.dll', 'steam_appid.txt', 'MonoBleedingEdge/EmbedRuntime/mono-2.0-bdwgc.dll']
     for name in required:
         if not (build / name).is_file():
             raise SystemExit('Missing player file: ' + name)
@@ -35,8 +35,9 @@ def main():
         for path in files:
             z.write(path, package_name + '/' + path.relative_to(build).as_posix())
         z.write(root / 'docs/Windows试玩与开发.md', package_name + '/Windows试玩说明.md')
-        network_guide = root / 'docs/个人主页好友与房间准备0.25.0.md'
+        network_guide = root / 'docs/Steam联机0.26.0.md'
         z.write(network_guide, package_name + '/' + network_guide.name)
+        z.write(root / 'UnityProject/Packages/com.rlabrecque.steamworks.net/LICENSE.md', package_name + '/Licenses/Steamworks.NET-MIT.md')
         z.write(root / 'server/README.md', package_name + '/登录服务说明.md')
         z.write(root / 'assets/third_party/noto-sans-cjk/OFL.txt', package_name + '/Licenses/Noto-OFL.txt')
         for path in sorted((root / 'assets/licenses').glob('*.txt')):
@@ -44,8 +45,9 @@ def main():
         z.writestr(package_name + '/开始试玩.txt',
                    '技能足球 ' + version + ' · Windows x64\r\n\r\n'
                    '完整解压后双击 SkillSoccer.exe。请保留所有同目录文件和文件夹。\r\n'
-                   '无需安装 Git、团结或 .NET SDK。启动先联网登录或离线进入；离线可训练、AI 对练与局域网联机。\r\n'
-                   '联机：联机对战 → 局域网/互联网 → 创建/加入房间。最多6人，机器人由房主手动添加。\r\n'
+                   '无需安装 Git、团结或 .NET SDK。启动先 Steam 登录、联网登录或离线进入；离线可训练、AI 对练与局域网联机。\r\n'
+                   '联机：联机对战 → Steam/局域网/互联网 → 创建/加入房间。最多6人，机器人由房主手动添加。\r\n'
+                   'Steam测试：两端Steam登录不同帐号，游戏内选择Steam，以房间号加入；不需要a/b登录服务。测试AppID为480。\r\n'
                    '登录服务地址由部署配置提供；调试帐号：帐号 a / 密码 a，或帐号 b / 密码 b。\r\n'
                    '帐号密码与房间密码分别填写；局域网不要求登录。\r\n'
                    '开始游戏先选模式；房间只设置队伍，房主与玩家全员准备后，倒计时3秒进入选人布阵。\r\n'

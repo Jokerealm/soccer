@@ -16,7 +16,7 @@ namespace Soccer.Runtime
         { public string code, roomId, name, host; public int port, players, expiresInSeconds; public bool running, requiresPassword; }
         [Serializable] private sealed class DirectoryError { public string error; }
         public bool NetworkLookupBusy { get; private set; }
-        public bool RoomCodeReady => Room?.Connected == true && (Room.Lobby.Route == NetworkRoute.LAN || !Room.IsHost ||
+        public bool RoomCodeReady => Room?.Connected == true && (Room.Lobby.Route==NetworkRoute.Steam ? Steam.LobbyId!=0 : Room.Lobby.Route == NetworkRoute.LAN || !Room.IsHost ||
             publishedRoom == Room && publishedCode == Room.Lobby.Code && Time.realtimeSinceStartup < directoryExpiresAt);
         private Coroutine publicationRoutine, lookupRoutine;
         private UnityWebRequest publicationRequest, lookupRequest;

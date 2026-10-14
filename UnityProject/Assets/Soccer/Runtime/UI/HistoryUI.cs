@@ -10,7 +10,7 @@ namespace Soccer.Runtime
         public HistoryUI(AppController controller,VisualElement ui){app=controller;root=ui;}
         public static string Hero(CharacterId id)=>id==CharacterId.Marine ? "枪兵" : id==CharacterId.Thor ? "雷神" : id.ToString();
         public static string Result(MatchResult value)=>value==MatchResult.Victory ? "胜利" : value==MatchResult.Defeat ? "失败" : "平局";
-        public static string Source(MatchSource value)=>value==MatchSource.AI ? "AI 对练" : value==MatchSource.LAN ? "局域网" : "互联网";
+        public static string Source(MatchSource value)=>value==MatchSource.AI ? "AI 对练" : value==MatchSource.LAN ? "局域网" : value==MatchSource.Steam ? "Steam" : "互联网";
         private static string Date(MatchRecord value)=>DateTimeOffset.FromUnixTimeSeconds(value.FinishedUnixSeconds).ToLocalTime().ToString("MM-dd HH:mm");
         private static string Duration(float seconds){int value=(int)seconds;return value/60+":"+(value%60).ToString("00");}
         public void Open(){selected=null;Refresh();root.Q<ScrollView>("history-list").scrollOffset=UnityEngine.Vector2.zero;}

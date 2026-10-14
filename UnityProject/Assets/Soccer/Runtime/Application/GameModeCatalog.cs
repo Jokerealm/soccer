@@ -2,7 +2,7 @@ namespace Soccer.Runtime
 {
     /// <summary>前端玩法入口独立于离线模拟模式；房间联机与离线训练共用比赛规则，排位仍独立于本地对练。</summary>
     public enum GamePlaylist { Normal, Ranked, Entertainment }
-    public enum ConnectionRoute { Internet, LAN }
+    public enum ConnectionRoute { Internet, LAN, Steam }
 
     public sealed class GameModeInfo
     {

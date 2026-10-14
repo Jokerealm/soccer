@@ -23,6 +23,13 @@ namespace Soccer.Runtime
         private long coinsBefore;
         private int historyBefore;
         private const string TestPassword = "network-probe-017";
+        private void TraceRoom()
+        {
+            var room=app.Room;Debug.Log("SOCCER_ROOM_TRACE role="+role+" status="+app.NetworkStatus+" room="+(room!=null));if(room==null)return;
+            var flags=System.Reflection.BindingFlags.Instance|System.Reflection.BindingFlags.NonPublic;
+            foreach(var name in new[]{"clock","lastServer","lastPing","server","guests","accepted","completed"})
+            {var value=typeof(NetworkRoom).GetField(name,flags).GetValue(room);var count=value?.GetType().GetProperty("Count");Debug.Log("SOCCER_ROOM_TRACE "+name+"="+(count!=null ? count.GetValue(value) : value));}
+        }
         private string Argument(string key, string fallback)
         { var args = Environment.GetCommandLineArgs(); int index = Array.IndexOf(args, key); return index >= 0 && index + 1 < args.Length ? args[index + 1] : fallback; }
         private IEnumerator Start()
@@ -102,7 +109,7 @@ namespace Soccer.Runtime
                 Check(app.Room.Lobby.Bots.Length==0 && !app.Room.Lobby.Members[0].Ready,"created room has empty slots and unready host");
                 deadline = Time.realtimeSinceStartup + 20;
                 while ((app.Room == null || app.Room.Lobby.Members.Length < 2) && Time.realtimeSinceStartup < deadline) yield return null;
-                if(app.Room==null || app.Room.Lobby.Members.Length<2){Check(false,"second process joins room");Finish();yield break;}
+                if(app.Room==null || app.Room.Lobby.Members.Length<2){TraceRoom();Check(false,"second process joins room");Finish();yield break;}
                 yield return Click("lobby-fill-bots");
                 Check(app.Room.Lobby.Bots.Length==4 && app.Room.OccupiedSlots==6,"host explicitly fills four vacant positions with bots");
                 deadline=Time.realtimeSinceStartup+12;while(!app.Room.Lobby.Members.First(m=>!m.Host).Ready && Time.realtimeSinceStartup<deadline)yield return null;
@@ -172,7 +179,7 @@ namespace Soccer.Runtime
                     root.Q<TextField>("network-join-password").value = "incorrect"; yield return Click("network-join");
                     deadline = Time.realtimeSinceStartup + 8;
                     while (!app.NetworkStatus.Contains("密码不正确") && Time.realtimeSinceStartup < deadline) yield return null;
-                    Check(app.Room == null && app.NetworkStatus.Contains("密码不正确"), "code lookup still enforces the room password on the actual host");
+                    TraceRoom();Check(app.Room == null && app.NetworkStatus.Contains("密码不正确"), "code lookup still enforces the room password on the actual host");
                     root.Q<TextField>("network-join-password").value = TestPassword;
                 }
                 if (app.Room == null && !app.NetworkLookupBusy) yield return Click("network-join");

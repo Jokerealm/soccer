@@ -32,3 +32,9 @@ assets/licenses/** -whitespace
 *.psd filter=lfs diff=lfs merge=lfs -text
 *.psb filter=lfs diff=lfs merge=lfs -text
 *.kra filter=lfs diff=lfs merge=lfs -text
+
+# Preserve the embedded upstream Steamworks package formatting.
+UnityProject/Packages/com.rlabrecque.steamworks.net/** -whitespace
+*.dll binary
+*.dylib binary
+*.so binary

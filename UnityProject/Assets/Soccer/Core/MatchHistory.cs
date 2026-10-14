@@ -4,7 +4,7 @@ using System.Linq;
 
 namespace Soccer.Core
 {
-    public enum MatchSource { AI, LAN, Internet }
+    public enum MatchSource { AI, LAN, Internet, Steam }
     public enum MatchResult { Victory, Defeat, Draw }
     [Serializable] public sealed class MatchRecord
     {

@@ -9,7 +9,7 @@ namespace Soccer.Runtime
     {
         public VictoryWallet Wallet { get; private set; }
         public string WalletStatus { get; private set; }="";
-        public string WalletProfile => EntryMode==GameEntryMode.Online && Account!=null ? "帐号 "+Account.Id : "离线玩家";
+        public string WalletProfile => SteamEntry ? Steam.Name : EntryMode==GameEntryMode.Online && Account!=null ? "帐号 "+Account.Id : "离线玩家";
         public int MatchCoins { get; private set; }
         public string MatchRewardText { get; private set; }="";
         private string walletDirectory,walletProfileKey,rewardMatchId;
@@ -20,13 +20,13 @@ namespace Soccer.Runtime
         {
             walletDirectory=Path.Combine(Application.persistentDataPath,"wallets");
             var args=Environment.GetCommandLineArgs();int index=Array.IndexOf(args,"--soccer-report-dir");
-            if(index>=0 && index+1<args.Length && (Array.IndexOf(args,"--soccer-smoke")>=0 || Array.IndexOf(args,"--soccer-network-smoke")>=0))
+            if(index>=0 && index+1<args.Length && (Array.IndexOf(args,"--soccer-smoke")>=0 || Array.IndexOf(args,"--soccer-network-smoke")>=0 || Array.IndexOf(args,"--soccer-steam-smoke")>=0))
                 walletDirectory=Path.Combine(args[index+1],"wallets");
             ReloadWallet();
         }
         private void ReloadWallet()
         {
-            string key=EntryMode==GameEntryMode.Online && Account!=null ? "account:"+Account.Id : "offline";
+            string key=SteamEntry ? Steam.AccountId : EntryMode==GameEntryMode.Online && Account!=null ? "account:"+Account.Id : "offline";
             ReloadHistory(key);
             if(key==walletProfileKey && Wallet!=null)return;
             walletProfileKey=key;WalletStatus="";

@@ -79,6 +79,7 @@ namespace Soccer.Runtime
             BindButton("normal-mode", () => app.OpenMode(GamePlaylist.Normal));
             BindButton("mode-back", app.BackFromMode);
             BindButton("route-login", app.OpenLogin);
+            BindButton("login-steam",()=>app.EnterSteam());BindButton("steam-route",app.SelectSteamConnection);
             BindMenuNavigation();
             root.Q<Foldout>("character-parameters").RegisterValueChangedCallback(e=>root.Q("character-parameter-content").EnableInClassList("hidden",!e.newValue));
             BindButton("internet-route", () => app.SelectConnection(ConnectionRoute.Internet));
@@ -169,9 +170,10 @@ namespace Soccer.Runtime
             root.Q<Button>("lan-route").SetEnabled(true);
             root.Q("internet-route").EnableInClassList("route-selected", app.Route == ConnectionRoute.Internet);
             root.Q("lan-route").EnableInClassList("route-selected", app.Route == ConnectionRoute.LAN);
-            Text("connection-copy", online ? "" : "联网登录后可使用互联网房间。" );
-            Visible(root.Q("connection-copy"), !online);
-            Visible(root.Q("route-login"), !online);
+            root.Q("steam-route").EnableInClassList("route-selected",app.Route==ConnectionRoute.Steam);
+            Text("connection-copy",app.Route==ConnectionRoute.Steam ? app.Steam.Ready ? "" : app.Steam.Status : online ? "" : "联网登录后可使用互联网房间。" );
+            Visible(root.Q("connection-copy"),app.Route==ConnectionRoute.Steam ? !app.Steam.Ready : !online);
+            Visible(root.Q("route-login"),!online && !app.SteamEntry);
             root.Q<Button>("online-play").SetEnabled(true);
             root.Q<Button>("join-room").SetEnabled(true);
         }
@@ -338,7 +340,7 @@ namespace Soccer.Runtime
             var p = state.Players[app.LocalPlayerId];
             var d = app.SelectedDefinition;
             bool training = state.Mode == MatchMode.Training;
-            Text("mode-label", app.Tutorial!=null ? "新手教程" : training ? "训练场" : app.IsNetworkMatch ? $"{(app.Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.LAN ? "局域网" : "互联网")} · {(state.Overtime ? "加时" : state.Half==1 ? "上半场" : "下半场")}" : state.Overtime ? "AI 对练 · 金球加时" : $"3 v 3 · {(state.Half==1 ? "上半场" : "下半场")}");
+            Text("mode-label", app.Tutorial!=null ? "新手教程" : training ? "训练场" : app.IsNetworkMatch ? $"{(app.Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.Steam ? "Steam" : app.Room.Lobby.Route==Soccer.Core.Networking.NetworkRoute.LAN ? "局域网" : "互联网")} · {(state.Overtime ? "加时" : state.Half==1 ? "上半场" : "下半场")}" : state.Overtime ? "AI 对练 · 金球加时" : $"3 v 3 · {(state.Half==1 ? "上半场" : "下半场")}");
             Text("cyan-score", state.CyanScore.ToString());
             Text("amber-score", state.AmberScore.ToString());
             Text("clock-label", training ? "练习" : Clock(state.PeriodRemainingSeconds(app.Simulation.Rules)));

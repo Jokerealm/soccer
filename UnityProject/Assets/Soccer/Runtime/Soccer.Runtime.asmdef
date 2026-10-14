@@ -1,5 +1,5 @@
 {
   "name": "Soccer.Runtime",
   "rootNamespace": "Soccer.Runtime",
-  "references": ["Soccer.Core"]
+  "references": ["Soccer.Core", "com.rlabrecque.steamworks.net"]
 }

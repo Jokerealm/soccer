@@ -40,16 +40,17 @@ namespace Soccer.Runtime
             Button("network-create", () =>
             {
                 var options = Options(); options.Name = Field("network-room-name").value;
-                options.UsePassword = app.Route == ConnectionRoute.Internet && root.Q<Toggle>("network-password-enabled").value;
+                options.UsePassword = app.Route != ConnectionRoute.LAN && root.Q<Toggle>("network-password-enabled").value;
                 options.Password = Field("network-room-password").value;
                 app.CreateNetworkRoom(options); Field("network-room-password").SetValueWithoutNotify("");
             });
             Button("network-join", () =>
             { var options = Options(); options.Password = Field("network-join-password").value; app.JoinNetworkRoom(Field("network-address").value, options); Field("network-join-password").SetValueWithoutNotify(""); });
-            Button("network-refresh", () => { app.Discovery?.Pump(Time.realtimeSinceStartup, true); Refresh(); });
+            Button("network-refresh", () => {if(app.Route==ConnectionRoute.Steam)app.Steam.FindRooms();else app.Discovery?.Pump(Time.realtimeSinceStartup, true); Refresh(); });
             Button("lobby-ready", () => { var member = app.Room?.Lobby.Members.FirstOrDefault(m => m.Slot == app.Room.LocalSlot); if (member != null) app.Room.SetReady(!member.Ready); });
             Button("lobby-fill-bots",()=>app.Room?.FillBots());Button("lobby-clear-bots",()=>app.Room?.ClearBots());
             Button("lobby-copy-address", () => { GUIUtility.systemCopyBuffer = Field("lobby-address").value; });
+            Button("lobby-steam-invite",app.InviteSteamFriends);
             Drop("lobby-character").RegisterValueChangedCallback(e => Choice()); Drop("lobby-team").RegisterValueChangedCallback(e => Choice());
         }
         private void Button(string name, Action action)
@@ -73,13 +74,13 @@ namespace Soccer.Runtime
         {
             if (app.Page == AppPage.NetworkMenu)
             {
-                bool lan = app.Route == ConnectionRoute.LAN; bool busy = app.Room != null || app.NetworkLookupBusy;
-                bool canSetUp = lan || app.EntryMode == GameEntryMode.Online;
-                Show("network-profile", canSetUp);
+                bool lan = app.Route == ConnectionRoute.LAN,steam=app.Route==ConnectionRoute.Steam; bool busy = app.Room != null || app.NetworkLookupBusy || steam && app.Steam.Busy;
+                bool canSetUp = lan || steam && app.Steam.Ready || app.EntryMode == GameEntryMode.Online;
+                Show("network-profile", canSetUp);Show("network-player-name",!steam);
                 Text("network-title", app.NetworkCreating ? "创建房间" : "加入房间");
-                Text("network-route", lan ? "局域网" : "互联网");
+                Text("network-route", steam ? "Steam" : lan ? "局域网" : "互联网");
                 Show("network-create-form", canSetUp && app.NetworkCreating); Show("network-join-form", canSetUp && !app.NetworkCreating);
-                Show("network-internet-options", !lan); Show("network-join-secret", !lan); Show("network-lan-discovery", lan);
+                Show("network-internet-options", !lan); Show("network-join-secret", !lan); Show("network-lan-discovery", (lan || steam) && !app.NetworkCreating);
                 Field("network-address").label = lan ? "房间号或房主 IP" : "房间号";
                 Field("network-address").maxLength = lan ? 1600 : 6;
                 Text("network-address-help", "例如 AB12CD");
@@ -90,7 +91,7 @@ namespace Soccer.Runtime
                 foreach (string name in new[] { "network-create", "network-join" }) root.Q<Button>(name).SetEnabled(!busy && canSetUp);
                 foreach (string name in new[] { "network-create-tab", "network-join-tab" }) root.Q<Button>(name).SetEnabled(!busy);
                 Show("network-character",false);
-                RefreshDiscovered();
+                if(steam)RefreshSteamRooms();else RefreshDiscovered();
             }
             if (app.Page == AppPage.RoomLobby && app.Room?.Lobby != null) RefreshLobby();
         }
@@ -111,15 +112,27 @@ namespace Soccer.Runtime
                 join.SetEnabled(!room.Lobby.Running && !room.Lobby.Drafting && room.Lobby.CountdownRemaining==0 && room.Lobby.Members.Length+room.Lobby.Bots.Length < 6 && app.Room == null && !app.NetworkLookupBusy); row.Add(join); list.Add(row);
             }
         }
+        private void RefreshSteamRooms()
+        {
+            var rooms=app.Steam.Rooms;Show("network-room-list-empty",rooms.Length==0);var list=root.Q("network-room-list");
+            string signature="steam:"+string.Join("|",rooms.Select(r=>r.LobbyId+":"+r.Code+":"+r.Occupied+":"+r.Busy+":"+r.Password))+app.Steam.Busy+(app.Room!=null);
+            if(signature==discoverySignature)return;discoverySignature=signature;list.Clear();
+            foreach(var room in rooms)
+            {
+                var captured=room;var row=new VisualElement();row.AddToClassList("row");row.AddToClassList("discovery-room");row.Add(new Label(room.Name+" · "+room.Occupied+"/6"+(room.Password ? " · 有密码" : "")));
+                var join=new Button(()=>{var options=Options();options.Password=Field("network-join-password").value;Field("network-join-password").SetValueWithoutNotify("");app.JoinSteamRoom(captured.LobbyId,options);}){text="加入",name="steam-room-"+room.LobbyId};
+                join.SetEnabled(!room.Busy && room.Occupied<6 && !app.Steam.Busy && app.Room==null);row.Add(join);list.Add(row);
+            }
+        }
         private void RefreshLobby()
         {
             var room = app.Room; var lobby = room.Lobby; var local = lobby.Members.FirstOrDefault(m => m.Slot == room.LocalSlot);
-            Text("lobby-route", lobby.Route == NetworkRoute.LAN ? "局域网" : "互联网"); Text("lobby-title", lobby.Name);
+            Text("lobby-route", lobby.Route==NetworkRoute.Steam ? "Steam" : lobby.Route == NetworkRoute.LAN ? "局域网" : "互联网"); Text("lobby-title", lobby.Name);
             Text("lobby-summary", $"{lobby.Members.Length} 位玩家 · {lobby.Bots.Length} 位机器人" + (lobby.RequiresPassword ? " · 有密码" : ""));
             string status = app.NetworkStatus;
             if (status == room.Status || status.StartsWith("房间号 ")) status = room.IsHost && !room.CanStart ? "等待玩家准备" : "";
             if (status.StartsWith("正在生成")) status = "";
-            if(room.OccupiedSlots<6)status="等待玩家加入，或由房主补齐机器人";
+            if(room.OccupiedSlots<6 && string.IsNullOrEmpty(status))status="等待玩家加入，或由房主补齐机器人";
             Status("lobby-status", status);
             if (local != null)
             {
@@ -140,6 +153,7 @@ namespace Soccer.Runtime
             Text("lobby-address-note", lobby.Route == NetworkRoute.LAN ? "房主 IP：" + string.Join(" / ", NetworkRoom.LocalAddresses()) : "");
             Show("lobby-address-note", lobby.Route == NetworkRoute.LAN);
             root.Q<Button>("lobby-copy-address").SetEnabled(app.RoomCodeReady);
+            Show("lobby-steam-invite",lobby.Route==NetworkRoute.Steam);root.Q<Button>("lobby-steam-invite").SetEnabled(app.Steam.LobbyId!=0 && !lobby.Running);
             string signature = string.Join("|", lobby.Members.Select(m => m.Slot + ":" + m.Name + m.AccountId + m.Character + m.Ready)) + room.LocalSlot+":"+string.Join(",",lobby.Bots);
             if (signature == lobbySignature) return; lobbySignature = signature;
             root.Q("lobby-cyan-members").Clear(); root.Q("lobby-amber-members").Clear();

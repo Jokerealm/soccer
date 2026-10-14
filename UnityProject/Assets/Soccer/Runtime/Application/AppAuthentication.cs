@@ -7,7 +7,7 @@ using UnityEngine.Networking;
 
 namespace Soccer.Runtime
 {
-    public enum GameEntryMode { NotEntered, Offline, Online }
+    public enum GameEntryMode { NotEntered, Offline, Online, Steam }
     public sealed partial class AppController
     {
         public GameEntryMode EntryMode { get; private set; }

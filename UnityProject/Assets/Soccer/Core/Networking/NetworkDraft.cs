@@ -29,7 +29,7 @@ namespace Soccer.Core.Networking
             NetworkCodec.Read(packet.Body,r=>{epoch=r.ReadInt32();character=(CharacterId)r.ReadInt32();point=new Vec2(r.ReadSingle(),r.ReadSingle());});
             ApplyDraftLock(guest.Member.Slot,epoch,character,point,guest.Peer);
         }
-        private bool ApplyDraftLock(int slot,int epoch,CharacterId character,Vec2 point,RoomPeer peer)
+        private bool ApplyDraftLock(int slot,int epoch,CharacterId character,Vec2 point,IRoomPeer peer)
         {
             if(Draft==null || epoch!=Draft.Epoch) return false;
             if(!Draft.TryLock(slot,character,point,out var error))

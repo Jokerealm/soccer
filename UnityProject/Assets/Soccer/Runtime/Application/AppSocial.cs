@@ -21,13 +21,13 @@ namespace Soccer.Runtime
         private int socialGeneration;private float nextFriendsRefresh;
         private readonly HashSet<string> uploadedMatches=new HashSet<string>();
         public bool SocialOnline=>EntryMode==GameEntryMode.Online && Account!=null && serviceAccessToken.Length>0;
-        public bool OwnProfile=>ProfileOwner==(Account?.Id ?? "");
+        public bool OwnProfile=>ProfileOwner==PlayerAccountId;
         public PlayerProfileData VisibleProfile
         {
             get
             {
                 if(!OwnProfile)return remoteProfile;
-                var local=new PlayerProfileData {AccountId=Account?.Id ?? "",DisplayName=WalletProfile,Heroes=History?.Heroes ?? HeroRecord.Empty(),Recent=History?.Matches.ToArray() ?? new MatchRecord[0]};
+                var local=new PlayerProfileData {AccountId=PlayerAccountId,DisplayName=WalletProfile,Heroes=History?.Heroes ?? HeroRecord.Empty(),Recent=History?.Matches.ToArray() ?? new MatchRecord[0]};
                 return onlineProfile!=null && onlineProfile.Heroes.Sum(h=>h.Matches)>=local.Heroes.Sum(h=>h.Matches) ? onlineProfile : local;
             }
         }
@@ -38,7 +38,7 @@ namespace Soccer.Runtime
         }
         public void OpenProfile(string account=null)
         {
-            if(!EnsureEntered())return;ProfileOwner=account ?? Account?.Id ?? "";remoteProfile=null;ProfileStatus="";
+            if(!EnsureEntered())return;ProfileOwner=account ?? PlayerAccountId;remoteProfile=null;ProfileStatus="";
             Page=AppPage.Profile;UI.ShowPage(Page);Audio.SetContext(Page,false);
             if(SocialOnline){if(OwnProfile)SyncSocialProfile();else StartCoroutine(FetchRemoteProfile(ProfileOwner,socialGeneration));}
         }

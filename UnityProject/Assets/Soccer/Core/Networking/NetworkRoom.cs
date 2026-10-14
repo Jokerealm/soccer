@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Soccer.Core.Networking
 {
-    public enum NetworkRoute { Internet, LAN }
+    public enum NetworkRoute { Internet, LAN, Steam }
     public sealed class RoomOptions
     {
         public NetworkRoute Route;
@@ -23,12 +23,14 @@ namespace Soccer.Core.Networking
         public CharacterId Character = CharacterId.Marine;
         public Team Team = Team.Cyan;
         public DebugAccountSession Account;
+        public string PlatformAccountId="";
         public void Validate()
         {
             Name = Clean(Name, 32); PlayerName = Clean(PlayerName, 24);
             if (Port < 0 || Port > 65535 || !Enum.IsDefined(typeof(NetworkRoute), Route) || !Enum.IsDefined(typeof(Team), Team) || !ValidCharacter(Character)) throw new ArgumentException("房间设置无效");
             if (Route == NetworkRoute.Internet && (Account == null || !DebugAccounts.IsKnown(Account.Id))) throw new ArgumentException("请先登录调试帐号 a 或 b");
-            if (UsePassword && (Route != NetworkRoute.Internet || string.IsNullOrWhiteSpace(Password) || Password.Length > 64)) throw new ArgumentException("开启密码后请输入 1—64 个字符的密码");
+            if(Route==NetworkRoute.Steam && !SteamAccount.IsValid(PlatformAccountId))throw new ArgumentException("请先登录 Steam");
+            if (UsePassword && (Route == NetworkRoute.LAN || string.IsNullOrWhiteSpace(Password) || Password.Length > 64)) throw new ArgumentException("开启密码后请输入 1—64 个字符的密码");
             if (!UsePassword) Password = "";
         }
         internal static bool ValidCharacter(CharacterId id) => id == CharacterId.Marine || id == CharacterId.Thor;
@@ -86,7 +88,7 @@ namespace Soccer.Core.Networking
     {
         private sealed class Guest
         {
-            public RoomPeer Peer;
+            public IRoomPeer Peer;
             public RoomMember Member;
             public byte[] Nonce;
             public bool Challenged, Joined;
@@ -110,7 +112,7 @@ namespace Soccer.Core.Networking
         private string expectedRoomId;
         private TcpListener listener;
         private LanAdvertiser advertiser;
-        private RoomPeer server;
+        private IRoomPeer server;
         private readonly List<Guest> guests = new List<Guest>();
         private readonly ConcurrentQueue<TcpClient> accepted = new ConcurrentQueue<TcpClient>();
         private readonly ConcurrentQueue<Action> completed = new ConcurrentQueue<Action>();
@@ -125,6 +127,7 @@ namespace Soccer.Core.Networking
         public bool CanStart => IsHost && Connected && !Running && !Lobby.Drafting && !CountingDown && EveryoneReady;
         public static NetworkRoom Host(RoomOptions value)
         {
+            if(value.Route==NetworkRoute.Steam)throw new ArgumentException("Steam房间需要Steam传输");
             value.Validate(); var room = new NetworkRoom { IsHost = true, options = value };
             try
             {
@@ -149,6 +152,7 @@ namespace Soccer.Core.Networking
         }
         public static NetworkRoom Join(string address, RoomOptions value)
         {
+            if(value.Route==NetworkRoute.Steam)throw new ArgumentException("Steam房间需要Steam传输");
             string password = value.Password ?? "";
             if (password.Length > 64) throw new ArgumentException("密码不能超过 64 个字符");
             value.UsePassword = false; value.Validate(); value.Password = password;
@@ -175,7 +179,7 @@ namespace Soccer.Core.Networking
                     {
                         if (room.disposed) { socket.Close(); return; }
                         room.Port = endpoint.Port; room.server = new RoomPeer(socket); room.lastServer = room.clock;
-                        room.server.Send(PacketKind.Hello, NetworkCodec.Pack(w => { NetworkCodec.Text(w, NetworkCodec.Version); NetworkCodec.Text(w, value.PlayerName, 24); w.Write((int)value.Character); w.Write((int)value.Team); w.Write((int)value.Route); NetworkCodec.Text(w, value.Account?.Id ?? "", 16); }));
+                        room.SendHello();
                     });
                 }
                 catch (Exception e) { socket.Close(); room.completed.Enqueue(() => room.Fail(e is ArgumentException ? e.Message : "无法加入房间，请确认房主在线，或重新复制房间邀请")); }
@@ -229,6 +233,8 @@ namespace Soccer.Core.Networking
                 }
                 foreach (var guest in guests.ToArray())
                 {
+                    guest.Peer.Pump();
+                    if(guest.Began<0){guest.Began=now;guest.LastSeen=now;}
                     while (guest.Peer.TryRead(out var packet))
                     {
                         guest.LastSeen = now;
@@ -245,6 +251,8 @@ namespace Soccer.Core.Networking
             }
             else if (server != null)
             {
+                server.Pump();
+                if(lastServer<0)lastServer=now;
                 while (server.TryRead(out var packet))
                 { lastServer = now; try { ClientPacket(packet); } catch (Exception) { Fail("房主消息无效或版本不一致，已停止连接"); return; } }
                 if (!server.Connected || now - lastServer > 10) { Fail("与房主的连接已断开，请重新加入房间"); return; }
@@ -257,7 +265,7 @@ namespace Soccer.Core.Networking
                 else server?.Send(PacketKind.Ping, new byte[0]);
             }
         }
-        private static void Reject(RoomPeer peer, string reason) => peer.Send(PacketKind.Reject, NetworkCodec.Pack(w => NetworkCodec.Text(w, reason)));
+        private static void Reject(IRoomPeer peer, string reason) => peer.Send(PacketKind.Reject, NetworkCodec.Pack(w => NetworkCodec.Text(w, reason)));
         private string Identity(RoomMember member) => NetworkCodec.Version + "|" + member.AccountId + "|" + member.Name + "|" + (int)member.Character + "|" + (int)member.Team;
         private void HostPacket(Guest guest, WirePacket packet)
         {
@@ -268,9 +276,10 @@ namespace Soccer.Core.Networking
                 if (Running || Lobby.Drafting || CountingDown || OccupiedSlots >= 6) { Reject(guest.Peer, Running || Lobby.Drafting || CountingDown ? "比赛已经开始，请等待下一局" : "房间已满"); return; }
                 var member = new RoomMember(); Team team = Team.Cyan; NetworkRoute route = NetworkRoute.Internet;
                 NetworkCodec.Read(packet.Body, r =>
-                { if (NetworkCodec.Text(r) != NetworkCodec.Version) throw new InvalidDataException(); member.Name = RoomOptions.Clean(NetworkCodec.Text(r, 24), 24); member.Character = (CharacterId)r.ReadInt32(); team = (Team)r.ReadInt32(); route = (NetworkRoute)r.ReadInt32(); member.AccountId = NetworkCodec.Text(r, 16); });
+                { if (NetworkCodec.Text(r) != NetworkCodec.Version) throw new InvalidDataException(); member.Name = RoomOptions.Clean(NetworkCodec.Text(r, 24), 24); member.Character = (CharacterId)r.ReadInt32(); team = (Team)r.ReadInt32(); route = (NetworkRoute)r.ReadInt32(); member.AccountId = NetworkCodec.Text(r, 32); });
                 if (!RoomOptions.ValidCharacter(member.Character) || !Enum.IsDefined(typeof(Team), team) || route != Lobby.Route) throw new InvalidDataException();
-                if (route == NetworkRoute.Internet && !DebugAccounts.IsKnown(member.AccountId) || member.AccountId.Length > 0 && !DebugAccounts.IsKnown(member.AccountId))
+                if(route==NetworkRoute.Steam && (member.AccountId!=guest.Peer.AuthenticatedAccountId || !SteamAccount.IsValid(member.AccountId))){Reject(guest.Peer,"Steam身份与连接不一致");return;}
+                if (route!=NetworkRoute.Steam && (route == NetworkRoute.Internet && !DebugAccounts.IsKnown(member.AccountId) || member.AccountId.Length > 0 && !DebugAccounts.IsKnown(member.AccountId)))
                 { Reject(guest.Peer, "帐号验证失败，请使用调试帐号 a 或 b 登录"); return; }
                 member.Slot = FreeSlot(team); if (member.Slot < 0) { Reject(guest.Peer, "所选队伍已满，请换队后加入"); return; }
                 guest.Member = member; guest.Nonce = RoomPassword.Random(32); guest.Challenged = true;
@@ -281,11 +290,12 @@ namespace Soccer.Core.Networking
                 guest.Challenged = false;
                 byte[] accountProof = null, roomProof = null;
                 NetworkCodec.Read(packet.Body, r => { accountProof = ReadProof(r); roomProof = ReadProof(r); });
-                if (guest.Member.AccountId.Length > 0 && !DebugAccounts.Verify(guest.Member.AccountId, guest.Nonce, Identity(guest.Member), accountProof))
+                if (Lobby.Route!=NetworkRoute.Steam && guest.Member.AccountId.Length > 0 && !DebugAccounts.Verify(guest.Member.AccountId, guest.Nonce, Identity(guest.Member), accountProof))
                 { Reject(guest.Peer, "帐号验证失败，请重新登录"); return; }
                 bool valid = !Lobby.RequiresPassword && roomProof.Length == 0 || Lobby.RequiresPassword && RoomPassword.Equal(roomProof, RoomPassword.Proof(passwordKey, guest.Nonce, Identity(guest.Member)));
                 if (!valid) { Reject(guest.Peer, "房间密码不正确"); return; }
                 if (Running || Lobby.Drafting || CountingDown || OccupiedSlots >= 6 || Lobby.Bots.Contains(guest.Member.Slot) || Lobby.Members.Any(m => m.Slot == guest.Member.Slot)) { Reject(guest.Peer, "该位置已被其他球员占用，请重新加入"); return; }
+                if (Lobby.Route==NetworkRoute.Steam && Lobby.Members.Any(m=>m.AccountId==guest.Member.AccountId)) { Reject(guest.Peer,"该Steam帐号已在房间内"); return; }
                 guest.Joined = true;CancelCountdown();foreach(var existing in Lobby.Members)existing.Ready=false; Lobby.Members = Lobby.Members.Concat(new[] { guest.Member }).OrderBy(m => m.Slot).ToArray(); BroadcastLobby(); return;
             }
             if (!guest.Joined) throw new InvalidDataException();
@@ -317,11 +327,11 @@ namespace Soccer.Core.Networking
                 if (locked)
                 {
                     if (string.IsNullOrEmpty(options.Password)) { Fail("此房间需要密码，请输入密码后重新加入"); return; }
-                    var identity = NetworkCodec.Version + "|" + (options.Account?.Id ?? "") + "|" + options.PlayerName + "|" + (int)options.Character + "|" + (int)options.Team;
+                    var identity = NetworkCodec.Version + "|" + OwnAccountId + "|" + options.PlayerName + "|" + (int)options.Character + "|" + (int)options.Team;
                     proof = RoomPassword.Proof(RoomPassword.Derive(options.Password, roomSalt), nonce, identity);
                 }
-                var accountIdentity = NetworkCodec.Version + "|" + (options.Account?.Id ?? "") + "|" + options.PlayerName + "|" + (int)options.Character + "|" + (int)options.Team;
-                var accountProof = options.Account?.Proof(nonce, accountIdentity) ?? new byte[0];
+                var accountIdentity = NetworkCodec.Version + "|" + OwnAccountId + "|" + options.PlayerName + "|" + (int)options.Character + "|" + (int)options.Team;
+                var accountProof = options.Route==NetworkRoute.Steam ? new byte[0] : options.Account?.Proof(nonce, accountIdentity) ?? new byte[0];
                 options.Password = "";
                 server.Send(PacketKind.Authenticate, NetworkCodec.Pack(w => { w.Write((byte)accountProof.Length); w.Write(accountProof); w.Write((byte)proof.Length); w.Write(proof); })); return;
             }
@@ -330,6 +340,7 @@ namespace Soccer.Core.Networking
                 bool wasRunning = Running, wasDrafting=Lobby?.Drafting==true;
                 NetworkCodec.Read(packet.Body, r => { LocalSlot = r.ReadInt32(); Lobby = ReadLobby(r); });
                 if (!Lobby.Members.Any(m => m.Slot == LocalSlot)) throw new InvalidDataException();
+                if(Lobby.Route==NetworkRoute.Steam && (Lobby.Members.Single(m=>m.Host).AccountId!=server.AuthenticatedAccountId || Lobby.Members.Single(m=>m.Slot==LocalSlot).AccountId!=OwnAccountId))throw new InvalidDataException("Steam身份无效");
                 if (expectedRoomId != null && Lobby.Id != expectedRoomId) { Fail("这个房间邀请已失效，请让房主重新复制邀请"); return; }
                 if(!Lobby.Drafting)Draft=null;
                 Connected = true; Status = "已加入房间"; Changed?.Invoke(); if ((wasRunning || wasDrafting) && !Running && !Lobby.Drafting) ReturnedToLobby?.Invoke(); return;
@@ -399,7 +410,7 @@ namespace Soccer.Core.Networking
         internal static void WriteLobby(BinaryWriter w, RoomLobby lobby)
         {
             NetworkCodec.Text(w, NetworkCodec.Version); NetworkCodec.Text(w, lobby.Id, 32); NetworkCodec.Text(w, lobby.Code, 6); NetworkCodec.Text(w, lobby.Name, 32); w.Write((int)lobby.Route); w.Write(lobby.RequiresPassword); w.Write(lobby.Running); w.Write(lobby.Drafting); w.Write(lobby.Port);
-            w.Write(lobby.Members.Length); foreach (var m in lobby.Members) { w.Write(m.Slot); NetworkCodec.Text(w, m.Name, 24); NetworkCodec.Text(w, m.AccountId, 16); w.Write((int)m.Character); w.Write(m.Ready); w.Write(m.Host); }
+            w.Write(lobby.Members.Length); foreach (var m in lobby.Members) { w.Write(m.Slot); NetworkCodec.Text(w, m.Name, 24); NetworkCodec.Text(w, m.AccountId, 32); w.Write((int)m.Character); w.Write(m.Ready); w.Write(m.Host); }
             w.Write(lobby.Bots.Length);foreach(int slot in lobby.Bots)w.Write(slot);w.Write(lobby.CountdownRemaining);
         }
         internal static RoomLobby ReadLobby(BinaryReader r)
@@ -411,8 +422,8 @@ namespace Soccer.Core.Networking
             int count = r.ReadInt32(); if (count < 1 || count > 6) throw new InvalidDataException(); var members = new List<RoomMember>();
             for (int i = 0; i < count; i++)
             {
-                var m = new RoomMember { Slot = r.ReadInt32(), Name = NetworkCodec.Text(r, 24), AccountId = NetworkCodec.Text(r, 16), Character = (CharacterId)r.ReadInt32(), Ready = r.ReadBoolean(), Host = r.ReadBoolean() };
-                if (m.AccountId.Length > 0 && !DebugAccounts.IsKnown(m.AccountId) || lobby.Route == NetworkRoute.Internet && !DebugAccounts.IsKnown(m.AccountId)) throw new InvalidDataException();
+                var m = new RoomMember { Slot = r.ReadInt32(), Name = NetworkCodec.Text(r, 24), AccountId = NetworkCodec.Text(r, 32), Character = (CharacterId)r.ReadInt32(), Ready = r.ReadBoolean(), Host = r.ReadBoolean() };
+                if(lobby.Route==NetworkRoute.Steam ? !SteamAccount.IsValid(m.AccountId) : m.AccountId.Length > 0 && !DebugAccounts.IsKnown(m.AccountId) || lobby.Route == NetworkRoute.Internet && !DebugAccounts.IsKnown(m.AccountId))throw new InvalidDataException();
                 if (m.Slot < 0 || m.Slot >= 6 || !RoomOptions.ValidCharacter(m.Character) || members.Any(a => a.Slot == m.Slot)) throw new InvalidDataException(); members.Add(m);
             }
             if (members.Count(m => m.Host) != 1) throw new InvalidDataException(); lobby.Members = members.ToArray();

@@ -6,20 +6,39 @@ using System.Threading;
 
 namespace Soccer.Core.Networking
 {
-    internal enum PacketKind : byte { Hello = 1, Challenge, Authenticate, Lobby, Reject, Choice, Ready, Start, Input, Snapshot, Ping, Pong, Notice, Draft, DraftLock }
-    internal sealed class WirePacket
+    public enum PacketKind : byte { Hello = 1, Challenge, Authenticate, Lobby, Reject, Choice, Ready, Start, Input, Snapshot, Ping, Pong, Notice, Draft, DraftLock }
+    public sealed class WirePacket
     {
         public PacketKind Kind;
         public byte[] Body;
         public WirePacket(PacketKind kind, byte[] body) { Kind = kind; Body = body; }
     }
-    internal sealed class RoomPeer : IDisposable
+    public interface IRoomPeer : IDisposable
+    {
+        bool Connected {get;}
+        string AuthenticatedAccountId {get;}
+        bool Send(PacketKind kind,byte[] body);
+        bool TryRead(out WirePacket packet);
+        void Pump();
+    }
+    public static class RoomFrame
+    {
+        public static byte[] Encode(PacketKind kind,byte[] body)
+        {Validate(kind,body);var bytes=new byte[body.Length+1];bytes[0]=(byte)kind;Buffer.BlockCopy(body,0,bytes,1,body.Length);return bytes;}
+        public static WirePacket Decode(byte[] bytes)
+        {if(bytes==null || bytes.Length<1 || bytes.Length>NetworkCodec.MaxFrameBytes+1)throw new InvalidDataException();var body=new byte[bytes.Length-1];Buffer.BlockCopy(bytes,1,body,0,body.Length);var kind=(PacketKind)bytes[0];Validate(kind,body);return new WirePacket(kind,body);}
+        public static void Validate(PacketKind kind,byte[] body)
+        {int limit=kind==PacketKind.Snapshot ? NetworkCodec.MaxFrameBytes : kind==PacketKind.Input ? 512 : 8192;if(body==null || !Enum.IsDefined(typeof(PacketKind),kind) || body.Length>limit)throw new InvalidDataException("网络消息无效");}
+    }
+    internal sealed class RoomPeer : IRoomPeer
     {
         private readonly TcpClient client;
         private readonly BlockingCollection<WirePacket> outgoing = new BlockingCollection<WirePacket>(128);
         private readonly ConcurrentQueue<WirePacket> incoming = new ConcurrentQueue<WirePacket>();
         private int incomingCount, disposed;
         public bool Connected => Volatile.Read(ref disposed) == 0;
+        public string AuthenticatedAccountId=>"";
+        public void Pump(){}
         public RoomPeer(TcpClient socket)
         {
             client = socket; client.NoDelay = true;

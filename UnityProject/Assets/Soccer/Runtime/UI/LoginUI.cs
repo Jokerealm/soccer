@@ -21,10 +21,10 @@ namespace Soccer.Runtime
         public void Refresh()
         {
             root.Q<Label>("login-status").text = app.LoginStatus;
-            foreach (string name in new[] { "login-name", "login-password", "login-submit" }) root.Q(name).SetEnabled(!app.LoginBusy);
+            foreach (string name in new[] { "login-name", "login-password", "login-submit", "login-steam" }) root.Q(name).SetEnabled(!app.LoginBusy);
             root.Q<Button>("login-submit").text = app.LoginBusy ? "登录中…" : "联网登录    →";
-            root.Q<Label>("connection-status").text = app.EntryMode == GameEntryMode.Online ? "● 已登录 · 帐号 " + app.Account?.Id : "● 离线 · 局域网可用";
-            root.Q<Button>("home-account").text = app.EntryMode == GameEntryMode.Online ? "切换帐号" : "联网登录";
+            root.Q<Label>("connection-status").text = app.SteamEntry ? "● Steam · "+app.Steam.Name : app.EntryMode == GameEntryMode.Online ? "● 已登录 · 帐号 " + app.Account?.Id : "● 离线 · 局域网可用";
+            root.Q<Button>("home-account").text = app.EntryMode == GameEntryMode.Online || app.SteamEntry ? "切换帐号" : "联网登录";
         }
     }
 }

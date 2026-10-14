@@ -14,7 +14,7 @@ namespace Soccer.Runtime
             this.app=app;this.root=root;
             Button("profile-back",app.BackFromProfile);Button("profile-friends",app.OpenFriends);Button("profile-history",app.OpenHistory);
             Button("profile-all",()=>{hero=null;RefreshProfile();});Button("friends-back",app.GoHome);Button("friends-login",app.OpenLogin);
-            Button("friends-refresh",app.RefreshFriends);Button("friend-search",()=>app.SearchFriend(root.Q<TextField>("friend-account").value));
+            Button("friends-refresh",()=>{if(app.SteamEntry)RefreshFriends();else app.RefreshFriends();});Button("steam-friends-open",app.Steam.OpenFriends);Button("friend-search",()=>app.SearchFriend(root.Q<TextField>("friend-account").value));
             root.Q<TextField>("friend-account").maxLength=16;
         }
         private void Button(string name,Action action){root.Q<Button>(name).clicked+=()=>{app.Audio.PlayClick();action();};}
@@ -57,7 +57,13 @@ namespace Soccer.Runtime
         }
         private void RefreshFriends()
         {
-            bool online=app.SocialOnline;Show("friends-online",online);Show("friends-offline",!online);Text("friends-status",app.SocialStatus);
+            bool online=app.SocialOnline,steam=app.SteamEntry;Show("friends-steam",steam);Show("friends-online",online);Show("friends-offline",!online && !steam);
+            if(steam)
+            {
+                root.Q<Button>("friends-refresh").SetEnabled(app.Steam.Ready);var list=root.Q<ScrollView>("steam-friends-list");list.Clear();
+                var steamFriends=app.Steam.GetFriends();Text("steam-friends-count","Steam好友 · "+steamFriends.Length);Show("steam-friends-empty",steamFriends.Length==0);
+                foreach(var friend in steamFriends){var captured=friend;var row=new VisualElement();row.AddToClassList("social-person");row.AddToClassList("row");var name=new Label(friend.Name+" · "+(friend.Online ? "在线" : "离线"));name.AddToClassList("social-copy");name.AddToClassList("grow");row.Add(name);row.Add(ActionButton("Steam主页","steam-profile-"+friend.Id,()=>app.Steam.OpenFriendProfile(captured.Id)));list.Add(row);}return;
+            }Text("friends-status",app.SocialStatus);
             root.Q<Button>("friend-search").SetEnabled(online && !app.FriendsBusy);root.Q<Button>("friends-refresh").SetEnabled(online && !app.FriendsBusy);
             var result=root.Q("friend-result");result.Clear();var person=app.SearchPerson;
             if(person!=null)

@@ -282,4 +282,51 @@ Test("leaving or changing the roster cancels a pending countdown",()=> {
  using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginCountdown(new MatchRules());
  host.SetBot(1,false);Assert(!host.CountingDown && host.Draft==null && !host.CanStart,"bot removal did not cancel launch");host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginCountdown(new MatchRules());client.Dispose();Until(()=>host.Lobby.Members.Length==1,host);Assert(!host.CountingDown && host.Draft==null,"disconnect did not cancel launch");
 });
+RoomOptions SteamOptions(ulong id,Team team=Team.Cyan,string password="")=>new RoomOptions {Route=NetworkRoute.Steam,PlatformAccountId=SteamAccount.FromId(id),PlayerName="Steam测试球员",Team=team,UsePassword=password.Length>0,Password=password};
+Test("Steam identity keys are canonical and TCP cannot impersonate a Steam transport",()=> {
+ foreach(var key in new[]{"", "a", "steam:0", "steam:01", "steam:-1", "Steam:42", "steam:18446744073709551616"})Assert(!SteamAccount.IsValid(key),"invalid platform identity accepted");
+ Assert(SteamAccount.IsValid(SteamAccount.FromId(42)),"canonical fixture id rejected");
+ foreach(bool host in new[]{true,false}){bool rejected=false;try{using var room=host ? NetworkRoom.Host(SteamOptions(42)) : NetworkRoom.Join("localhost",SteamOptions(42));}catch(ArgumentException){rejected=true;}Assert(rejected,"plain TCP claimed authenticated Steam transport");}
+});
+Test("Steam framing round trips and rejects invalid packet kind and per-kind length",()=> {
+ foreach(var kind in Enum.GetValues<PacketKind>()){var bytes=new byte[]{1,2,3};var frame=RoomFrame.Decode(RoomFrame.Encode(kind,bytes));Assert(frame.Kind==kind && frame.Body.SequenceEqual(bytes),"frame lost message boundary");}
+ foreach(var bytes in new[]{Array.Empty<byte>(),new byte[]{255},new byte[8194].Select((_,i)=>i==0 ? (byte)PacketKind.Hello : (byte)0).ToArray(),new byte[514].Select((_,i)=>i==0 ? (byte)PacketKind.Input : (byte)0).ToArray()}){bool rejected=false;try{RoomFrame.Decode(bytes);}catch(System.IO.InvalidDataException){rejected=true;}Assert(rejected,"invalid Steam frame accepted");}
+ Assert(RoomFrame.Decode(RoomFrame.Encode(PacketKind.Snapshot,new byte[NetworkCodec.MaxFrameBytes])).Body.Length==NetworkCodec.MaxFrameBytes,"snapshot maximum rejected");
+});
+Test("Steam room admission works after a long-running Unity clock without HTTP login",()=> {
+ using var host=NetworkRoom.HostSteam(SteamOptions(42));var pair=MemoryPeer.Pair(43,42);Assert(host.AcceptSteamPeer(pair.a),"authenticated transport rejected");using var guest=NetworkRoom.JoinSteam(pair.b,SteamOptions(43,Team.Amber),host.Lobby.Id);
+ for(int i=0;i<20 && !guest.Connected;i++){host.Pump(1000000+i*.01);guest.Pump(1000000+i*.01);}
+ Assert(guest.Connected && guest.LocalSlot==3 && guest.Lobby.Members[0].AccountId==SteamAccount.FromId(42),"late-clock admission failed or lost owner identity");
+ Assert(host.Lobby.Bots.Length==0 && host.Lobby.Members.All(m=>!m.Ready),"Steam silently inserted bots or readiness");
+});
+Test("Steam rejects hello identity spoofing and authenticated owner substitution",()=> {
+ foreach(bool spoofGuest in new[]{true,false}){
+ using var host=NetworkRoom.HostSteam(SteamOptions(42));var pair=MemoryPeer.Pair(43,spoofGuest ? 42UL : 99UL);host.AcceptSteamPeer(pair.a);using var guest=NetworkRoom.JoinSteam(pair.b,SteamOptions(spoofGuest ? 99UL : 43UL,Team.Amber),host.Lobby.Id);string reason="";guest.Failed+=x=>reason=x;Until(()=>reason.Length>0,host,guest);Assert(!guest.Connected,"identity substitution admitted");}
+});
+Test("Steam optional password and stale lobby protection remain enforced",()=> {
+ foreach(var value in new[]{("wrong",false,false),("",false,false),("secret",true,false),("secret",false,true)}){
+ using var host=NetworkRoom.HostSteam(SteamOptions(42,password:"secret"));var pair=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(pair.a);using var guest=NetworkRoom.JoinSteam(pair.b,SteamOptions(43,Team.Amber,value.Item1),value.Item3 ? Guid.NewGuid().ToString("N") : host.Lobby.Id);string reason="";guest.Failed+=x=>reason=x;Until(()=>guest.Connected || reason.Length>0,host,guest);Assert(guest.Connected==value.Item2,"password or stale lobby bypassed");}
+});
+Test("one authenticated Steam account cannot occupy two player slots",()=> {
+ using var host=NetworkRoom.HostSteam(SteamOptions(42));var one=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(one.a);using var first=NetworkRoom.JoinSteam(one.b,SteamOptions(43,Team.Amber),host.Lobby.Id);Until(()=>first.Connected,host,first);
+ var two=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(two.a);using var second=NetworkRoom.JoinSteam(two.b,SteamOptions(43,Team.Cyan),host.Lobby.Id);string reason="";second.Failed+=x=>reason=x;Until(()=>reason.Length>0,host,first,second);Assert(host.Lobby.Members.Length==2 && !second.Connected,"duplicate account occupied another slot");
+});
+Test("Steam transport reuses cancelable countdown and authoritative player input",()=> {
+ using var host=NetworkRoom.HostSteam(SteamOptions(42));var pair=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(pair.a);using var guest=NetworkRoom.JoinSteam(pair.b,SteamOptions(43,Team.Amber),host.Lobby.Id);Until(()=>guest.Connected,host,guest);host.FillBots();host.SetReady(true);guest.SetReady(true);Until(()=>host.CanStart,host,guest);host.BeginCountdown(new MatchRules());Until(()=>guest.CountingDown,host,guest);guest.SetReady(false);Until(()=>!host.CountingDown && !guest.CountingDown,host,guest);Assert(host.Draft==null,"unready Steam client entered draft");
+ guest.SetReady(true);Until(()=>host.CanStart,host,guest);MatchSimulation replica=null;host.Started+=x=>{};guest.Started+=x=>replica=Simulation(x.Lineup);host.StartMatch(new MatchRules());Until(()=>replica!=null,host,guest);guest.SendInput(new PlayerCommand {Move=new Vec2(0,1)});Until(()=>host.ReadInput(3).Move.Y==1,host,guest);Assert(host.ReadInput(0).Move.Y==0,"guest commanded host slot");
+ guest.Dispose();Until(()=>host.Lobby.Members.Length==1,host);Assert(!host.IsHumanSlot(3),"Steam disconnect retained human control");
+});
 var report=args.Length>0?args[0]:"reports/network-017-transport";Directory.CreateDirectory(report);File.WriteAllText(Path.Combine(report,"network-tests.json"),JsonSerializer.Serialize(new{passed=failed==0,total=results.Count,failed,results},new JsonSerializerOptions{WriteIndented=true}));return failed==0?0:1;
+
+// Protocol fixtures: these are in-memory peers, never evidence of a real Steam login or Internet connection.
+sealed class MemoryPeer : IRoomPeer
+{
+ private readonly Queue<WirePacket> incoming=new();private MemoryPeer other;private bool disposed;
+ public string AuthenticatedAccountId {get;private set;}
+ public bool Connected=>!disposed && !other.disposed;
+ public static (MemoryPeer a,MemoryPeer b) Pair(ulong remoteOfA,ulong remoteOfB){var a=new MemoryPeer {AuthenticatedAccountId=SteamAccount.FromId(remoteOfA)};var b=new MemoryPeer {AuthenticatedAccountId=SteamAccount.FromId(remoteOfB)};a.other=b;b.other=a;return(a,b);}
+ public bool Send(PacketKind kind,byte[] body){if(!Connected)return false;other.incoming.Enqueue(RoomFrame.Decode(RoomFrame.Encode(kind,body)));return true;}
+ public bool TryRead(out WirePacket packet)=>incoming.TryDequeue(out packet);
+ public void Pump(){}
+ public void Dispose()=>disposed=true;
+}
