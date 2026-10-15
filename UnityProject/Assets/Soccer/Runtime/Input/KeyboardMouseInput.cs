@@ -16,6 +16,7 @@ namespace Soccer.Runtime
         public Vec2 PreviewAim => pending.KickHeld || gesture.Targeting ? pending.Aim : Vec2.Zero;
         public KeyboardMouseInput(Camera camera, GameKeyBindings bindings, IPlayerInputState input = null) { this.camera = camera; this.bindings = bindings; this.input = input ?? UnityPlayerInputState.Instance; }
         public void Reset() { pending = default; gesture.Reset(); }
+        public void SuppressActions() { pending=new PlayerCommand {BlockActions=true};gesture.Reset(); }
 
         public void Sample(MatchState state, MatchRules rules, bool pointerBlocked, bool movementOnly = false, int playerId = 0)
         {
@@ -58,7 +59,7 @@ namespace Soccer.Runtime
                 if (p.Id == localPlayerId || p.IsDead) continue;
                 var foot = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position));
                 var head = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position, p.Stats.Id == CharacterId.Thor ? 1.9f : 1.8f));
-                var edge = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position + new Vec2(p.Stats.Radius, 0), .8f));
+                var edge = camera.WorldToScreenPoint(ArenaProjection.ToWorld(p.Position,.8f)+camera.transform.right*p.Stats.Radius);
                 float width = Mathf.Max(12, Mathf.Abs(edge.x - foot.x));
                 float dx = Mathf.Abs(input.MousePosition.x - foot.x);
                 bool inBody = foot.z > 0 && dx <= width && input.MousePosition.y >= Mathf.Min(foot.y, head.y) - 8 && input.MousePosition.y <= Mathf.Max(foot.y, head.y) + 8;

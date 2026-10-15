@@ -10,6 +10,7 @@ namespace Soccer.Runtime
         private static Material material;
         private Mesh mesh;
         private MeshRenderer meshRenderer;
+        private CameraBillboard billboard;
         private readonly Vector3[] vertices=new Vector3[320];
         private readonly Color[] colors=new Color[320];
         private readonly int[] indices=new int[900];
@@ -26,6 +27,7 @@ namespace Soccer.Runtime
             teamTint=local ? new Color(.95f,.80f,.46f,.78f) : team==Team.Cyan
                 ? new Color(.43f,.75f,.72f,.70f) : new Color(.88f,.61f,.40f,.70f);
             transform.localRotation=Quaternion.Euler(55,0,0);
+            billboard=gameObject.AddComponent<CameraBillboard>();
             if(material==null) material=new Material(Shader.Find("Sprites/Default")) { name="Quiet Player Resource UI" };
             mesh=new Mesh {name="Rounded Two Resource Bars"}; mesh.MarkDynamic();
             gameObject.AddComponent<MeshFilter>().sharedMesh=mesh;
@@ -40,6 +42,7 @@ namespace Soccer.Runtime
             EnergyFraction=Mathf.Clamp01(state.Energy/state.Stats.MaxEnergy);
             if(state.IsDead) { healthTrail=previousHealth=HealthFraction; damageHold=0; return; }
             transform.localPosition=ArenaProjection.VisualOffset(0,top);
+            billboard.Offset=new Vector2(0,top);
             if(HealthFraction<previousHealth-.002f) { healthTrail=Mathf.Max(healthTrail,previousHealth); damageHold=.28f; }
             if(HealthFraction>=healthTrail) healthTrail=HealthFraction;
             if(animate)

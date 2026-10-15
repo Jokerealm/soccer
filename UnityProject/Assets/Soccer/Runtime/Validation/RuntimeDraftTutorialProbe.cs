@@ -43,8 +43,8 @@ namespace Soccer.Runtime
                     Check(PicksButton(name),size+" mode action receives pointer: "+name);
                 yield return Capture("modes-"+size.x+"x"+size.y);
             }
-            yield return Click("play-online");Check(app.Page==AppPage.ModeDetails && app.Simulation==null,"normal mode connects players before selecting characters");
-            yield return Click("mode-back");Check(app.Page==AppPage.PlayMenu,"normal-mode back returns to the preceding mode selection");
+            yield return Click("play-online");Check(app.Page==AppPage.NetworkMenu && app.Simulation==null,"normal mode connects players before selecting characters");
+            yield return Click("network-back");Check(app.Page==AppPage.PlayMenu,"normal-mode back returns to the preceding mode selection");
             yield return Click("play-training");Check(app.Page==AppPage.CharacterSelect && !app.InDraft,"free training keeps its direct practice character choice");
             yield return Click("select-back");Check(app.Page==AppPage.PlayMenu,"free training back returns to mode selection");
             yield return Click("play-ai");

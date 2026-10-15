@@ -7,13 +7,20 @@ namespace Soccer.Runtime
 {
     public sealed partial class AppController
     {
+        public BotDifficulty SelectedBotDifficulty {get;private set;} = BotDifficulty.Player;
+        public void SelectBotDifficulty(BotDifficulty difficulty)
+        {
+            if(!Enum.IsDefined(typeof(BotDifficulty),difficulty))return;
+            SelectedBotDifficulty=difficulty;if(!ValidationSession){PlayerPrefs.SetInt("soccer.botDifficulty",(int)difficulty);PlayerPrefs.Save();}
+        }
+        private MatchRules LocalMatchRules() {var rules=RulesAsset.CreateRules();rules.BotDifficulty=SelectedBotDifficulty;return rules;}
         private MatchDraft localDraft;
         private int localDraftEpoch, shownNetworkDraftEpoch;
         private CharacterId[] preparedLineup;
         private Vec2[] preparedPositions;
-        public MatchDraft ActiveDraft => Room?.Draft ?? localDraft;
+        public MatchDraft ActiveDraft => ServiceMatch?.Draft ?? Room?.Draft ?? localDraft;
         public bool InDraft => Page==AppPage.CharacterSelect && ActiveDraft!=null;
-        public int DraftLocalSlot => Room?.LocalSlot ?? 0;
+        public int DraftLocalSlot => ServiceMatch?.Assignment.Slot ?? Room?.LocalSlot ?? 0;
         public bool MyDraftTurn => InDraft && ActiveDraft.CurrentSlot==DraftLocalSlot;
         public Vec2 DraftPosition { get; private set; }
         public string DraftStatus { get; private set; } = "";
@@ -27,7 +34,7 @@ namespace Soccer.Runtime
         {
             if(!EnsureEntered())return;
             CloseNetworking();Tutorial=null;Simulation=null;View.Clear();LocalPlayerId=0;SelectedMode=MatchMode.BotMatch;
-            localDraft=new MatchDraft(RulesAsset.CreateRules(),new[]{true,false,false,false,false,false},++localDraftEpoch);
+            localDraft=new MatchDraft(LocalMatchRules(),new[]{true,false,false,false,false,false},++localDraftEpoch);
             Selected=localDraft.Picks[0].Character;DraftPosition=localDraft.Picks[0].Position;DraftStatus="";
             selectionOrigin=AppPage.PlayMenu;Page=AppPage.CharacterSelect;UI.ShowPage(Page);Audio.SetContext(Page,false);
         }
@@ -50,6 +57,7 @@ namespace Soccer.Runtime
         {
             if(!InDraft) {StartMatch();return;}
             if(!MyDraftTurn)return;
+            if(ServiceMatch!=null){ServiceMatch.Lock(Selected,DraftPosition);return;}
             if(Room!=null) { if(!Room.LockDraft(Selected,DraftPosition))DraftStatus=Room.Status; }
             else if(!localDraft.TryLock(0,Selected,DraftPosition,out var error))DraftStatus=error;
             UI.RefreshSelection();
@@ -69,11 +77,13 @@ namespace Soccer.Runtime
         }
         public string DraftName(int slot)
         {
+            if(ServiceMatch!=null && slot>=0 && slot<ServiceMatch.Assignment.Names.Length)return ServiceMatch.Assignment.Names[slot];
             var member=Room?.Lobby.Members.FirstOrDefault(m=>m.Slot==slot);
             return member!=null ? member.Name+(slot==DraftLocalSlot ? " · 你" : "") : Room==null && slot==0 ? "你" : "AI "+(slot%3+1);
         }
         public void ReplaySession()
         {
+            if(ServiceMatch!=null){LeaveServiceMatch();return;}
             if(Room!=null) {if(Room.IsHost)Room.ReturnToLobby();return;}
             if(Tutorial!=null) {RestartTutorialStep();return;}
             if(SelectedMode==MatchMode.BotMatch)BeginLocalDraft();else StartMatch();

@@ -442,7 +442,7 @@ namespace Soccer.Runtime
             yield return Capture("08-home-4x3");
             yield return Click("normal-mode");
             yield return Capture("09-normal-4x3");
-            Check(PicksButton("online-play") && PicksButton("join-room"), "4:3 multiplayer create and join actions remain accessible");
+            Check(PicksButton("network-create-tab") && PicksButton("network-join-tab"), "4:3 multiplayer create and join actions remain accessible");
             app.OpenSelection(MatchMode.Training); app.SelectCharacter(CharacterId.Marine); app.StartMatch();
             yield return new WaitForSecondsRealtime(3.4f);
             var dock = app.UI.Root.Q("battle-dock").worldBound;
@@ -1185,11 +1185,12 @@ namespace Soccer.Runtime
                 Check(!bounds.Overlaps(app.UI.Root.Q("battle-dock").worldBound),context+": minimap does not overlap the skill dock");
                 Check(app.WorldCamera.rect==new Rect(0,0,1,1),context+": minimap overlays the full-window playing field");
             }
-            bool ignores=map.pickingMode==PickingMode.Ignore;
-            foreach (var item in map.Query<VisualElement>().ToList()) ignores &= item.pickingMode==PickingMode.Ignore;
-            var picked=app.UI.Root.panel.Pick(app.UI.Root.Q("minimap-player-0").worldBound.center);
-            while (picked!=null) { ignores &= picked!=map && !picked.ClassListContains("minimap-player"); picked=picked.parent; }
-            Check(ignores,context+": field and every portrait allow mouse aiming through the map");
+            bool interactive=map.pickingMode==PickingMode.Position;
+            foreach (var item in map.Query<VisualElement>().ToList()) if(item!=map)interactive &= item.pickingMode==PickingMode.Ignore;
+            var point=app.UI.Root.Q("minimap-player-0").worldBound.center;
+            var picked=app.UI.Root.panel.Pick(point);bool hitsMap=false;
+            while(picked!=null){hitsMap |= picked==map;picked=picked.parent;}
+            Check(interactive && hitsMap && app.UI.MiniMap.Contains(point),context+": map captures observation clicks without interactive child portraits");
         }
 
         private void CheckMiniMapRoster(string context)
@@ -1595,16 +1596,14 @@ namespace Soccer.Runtime
             Check(app.UI.Root.panel.focusController.focusedElement == app.UI.Root.Q<Button>("normal-mode"), "arrow down selects multiplayer from primary entry");
             using (var evt = KeyDownEvent.GetPooled('\0', KeyCode.Return, EventModifiers.None)) home.SendEvent(evt);
             yield return null;
-            Check(app.Page == AppPage.ModeDetails && app.Route == ConnectionRoute.LAN, "Enter opens offline multiplayer directly on LAN");
+            Check(app.Page == AppPage.NetworkMenu && app.Route == ConnectionRoute.LAN, "Enter opens offline multiplayer directly on LAN");
             yield return new WaitForSecondsRealtime(.35f);
             Check(!app.UI.Root.Q<Button>("internet-route").enabledSelf && PicksButton("route-login"), "offline multiplayer offers login beside disabled Internet tab");
-            yield return Click("online-play");
+            yield return Click("network-create-tab");
             Check(app.Page == AppPage.NetworkMenu && app.NetworkCreating, "main menu multiplayer creates room without a mode-information screen");
-            app.BackFromNetwork(); yield return null;
-            yield return Click("join-room");
-            Check(app.Page == AppPage.NetworkMenu && !app.NetworkCreating, "main menu multiplayer joins room without a mode-information screen");
-            app.BackFromNetwork(); yield return null;
-            yield return Click("mode-back");
+            yield return Click("network-join-tab");
+            Check(app.Page == AppPage.NetworkMenu && !app.NetworkCreating && app.UI.JoinDialogOpen, "one join entry opens room-code input from the browser");
+            yield return Click("network-join-cancel");app.BackFromNetwork();yield return null;
             yield return Click("bots-button");
             Check(app.Page == AppPage.PlayMenu && app.Simulation==null, "primary start entry chooses mode before character selection");
             yield return Click("play-ai");
@@ -1630,10 +1629,10 @@ namespace Soccer.Runtime
                     size + " live character lineup stays on the display side of the menu");
                 yield return Capture("menu-home-" + size.x + "x" + size.y);
                 yield return Click("normal-mode");
-                Check(PicksButton("online-play") && PicksButton("join-room") && PicksButton("mode-back"), size + " multiplayer entrances receive pointer");
+                Check(PicksButton("network-create-tab") && PicksButton("network-join-tab") && PicksButton("network-back"), size + " multiplayer entrances receive pointer");
                 yield return new WaitForSecondsRealtime(.35f);
                 yield return Capture("menu-multiplayer-" + size.x + "x" + size.y);
-                yield return Click("mode-back");
+                yield return Click("network-back");
             }
             app.UI.Root.Q<Button>("bots-button").Focus();
             using (var evt = KeyDownEvent.GetPooled('\0', KeyCode.UpArrow, EventModifiers.None)) home.SendEvent(evt);

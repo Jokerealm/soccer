@@ -1,0 +1,13 @@
+{
+  "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.27.0-Windows-x64.zip",
+  "bytes": 144611527,
+  "sha256": "07ec994c49e5f068e4a5f2b18ade96a85325a86477ec8fa08ac7b417fa867049",
+  "zipVerified": true,
+  "packagedFilesMatchBuild": {
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "03072e7936ba73b527a53297394c1ed72097f87ea49cb912d42742dd82871b4b",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "f5aeb8a86887fc5cfa9d1dade24d05d81745ed6be837d8f4e141ed3ac867130a",
+    "SkillSoccer_Data/globalgamemanagers": "c37daa6828338ebba9d6f93ad6e57aee6be2ce25d5dbadec66e9d7b294c9216f",
+    "SkillSoccer_Data/Plugins/x86_64/steam_api64.dll": "eb17909a76668cf9ae0b92a618a34a50f6c73d3a6787cb4dd8ce36a8b10bfb75",
+    "steam_appid.txt": "66c342932aa7c18f7bf1fa212aa011069fc2e50e0c7e9e4c73fcaa6851854c47"
+  }
+}

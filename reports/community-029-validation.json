@@ -1,0 +1,115 @@
+{
+  "version": "0.29.0",
+  "date": "2026-10-15",
+  "passed": true,
+  "totalChecks": 1292,
+  "checks": {
+    "core": {
+      "passed": true,
+      "checks": 255,
+      "report": "reports/community-029-core/core-tests.json"
+    },
+    "network": {
+      "passed": true,
+      "checks": 58,
+      "report": "reports/community-029-network/network-tests.json"
+    },
+    "communityService": {
+      "passed": true,
+      "checks": 191,
+      "report": "reports/community-029-service/community-tests.json"
+    },
+    "persistence": {
+      "passed": true,
+      "checks": 20,
+      "report": "reports/community-029-persistence.json"
+    },
+    "communityClient": {
+      "passed": true,
+      "checks": 55,
+      "report": "reports/community-029-runtime-verified/community-smoke.json"
+    },
+    "clientRegression": {
+      "passed": true,
+      "checks": 613,
+      "report": "reports/community-029-regression-verified/runtime-smoke.json"
+    },
+    "steam": {
+      "passed": true,
+      "checks": 33,
+      "report": "reports/community-029-steam/steam-smoke.json"
+    },
+    "legacyLogin": {
+      "passed": true,
+      "checks": 9,
+      "report": "reports/community-029-legacy-login.json"
+    },
+    "legacyFriends": {
+      "passed": true,
+      "checks": 22,
+      "report": "reports/community-029-legacy-social.json"
+    },
+    "legacyDirectory": {
+      "passed": true,
+      "checks": 36,
+      "report": "reports/community-029-legacy-directory.json"
+    }
+  },
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 414793694
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 383159467
+    }
+  },
+  "packages": {
+    "windows": {
+      "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.29.0-Windows-x64.zip",
+      "bytes": 144661779,
+      "sha256": "e9802e1390b37cd75e190ae5bdfa177182268918b85b5e15a28bce399a8fcb2e",
+      "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.29.0-Windows-x64.zip.sha256",
+      "playerFiles": 144,
+      "zipVerified": true
+    },
+    "server": {
+      "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.29.0-Server.zip",
+      "bytes": 121003,
+      "sha256": "826c5ccec0268e0b72e117e3dfb2c9d4238b206eb43df4629e7b2b23aa7049a7",
+      "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.29.0-Server.zip.sha256",
+      "files": 3,
+      "zipVerified": true
+    }
+  },
+  "verified": [
+    "Independent account registration and authenticated game friends",
+    "Friend private chat, party and custom-room chat, native match team and all chat",
+    "Two intact three-player parties complete real six-player ordinary and ranked server matches",
+    "Real movement and charged shot produce a goal and balanced, idempotent ranked settlement",
+    "Extracted portable service ZIP preserves friends, private messages and rank across restart",
+    "Native Unity client blocks gameplay inputs while typing and keeps online simulation running",
+    "Incoming party invitations appear on home page",
+    "Steam player connects independent game account while preserving Steam session; real Valve lobby/search and native UDP loopback"
+  ],
+  "limits": [
+    "Public game social and matchmaking service is not deployed or configured into the player",
+    "Steam Web API credentials and real friend invitations were not tested",
+    "Two-account Internet P2P/relay, public-network latency and load were not tested",
+    "Windows x64 was built and packaged on macOS; Windows native runtime was not tested",
+    "Service uses single-instance JSON storage; parties, rooms and active matches clear on restart"
+  ]
+}

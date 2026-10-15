@@ -1,0 +1,79 @@
+{
+  "version": "0.28.0",
+  "date": "2026-10-15",
+  "protocol": "SkillSoccer/0.28.0/9",
+  "passed": true,
+  "totalChecks": 961,
+  "tests": {
+    "core": {
+      "passed": true,
+      "checks": 253,
+      "report": "reports/tactics-028-core/core-tests.json"
+    },
+    "network": {
+      "passed": true,
+      "checks": 56,
+      "report": "reports/tactics-028-network/network-tests.json"
+    },
+    "tacticalClient": {
+      "passed": true,
+      "checks": 39,
+      "report": "reports/tactics-028-runtime-verified/tactics-smoke.json"
+    },
+    "fullClientRegression": {
+      "passed": true,
+      "checks": 613,
+      "report": "reports/tactics-028-regression-final/runtime-smoke.json"
+    }
+  },
+  "sourceFingerprintSha256": "4a6fdd7f7d941a0eced9dcfec81c25a6bd67c1e75ae056a5b07b3ed0df9478c4",
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 414701986
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 383067759
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.28.0-Windows-x64.zip",
+    "bytes": 144627707,
+    "sha256": "a38a39a6d110482e465ad60f3c934f0ef2492e43626d67913492040fc7ff51a0",
+    "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.28.0-Windows-x64.zip.sha256",
+    "playerFiles": 144,
+    "zipVerified": true,
+    "packagedFilesMatchBuild": {
+      "SkillSoccer_Data/Managed/Soccer.Core.dll": "928425423bafe286a0dc7fd62549fd555a1b260254f911e06a11f105c3b7940d",
+      "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "9ca67db53116d2a44274cb6fbfaac2ff57b87c6bf11069d3c508ce1d4e542a6e",
+      "SkillSoccer_Data/globalgamemanagers": "238cfeccafe392799536b3e3068fb3a89e1f16ef35f8b93284c16cb3503937e6",
+      "steam_appid.txt": "66c342932aa7c18f7bf1fa212aa011069fc2e50e0c7e9e4c73fcaa6851854c47"
+    }
+  },
+  "features": [
+    "Per-player opening hexagons with whole-body warmup walls and kickoff release",
+    "Four AI difficulty tiers; cheater bonuses only on robot slots, including synchronized network configuration",
+    "Five-way Alt team signal tray with dead zone, cooldown, in-world and minimap feedback",
+    "Authenticated team-only signal relay over shared TCP/Steam protocol",
+    "Clickable minimap observation, Ctrl+1–9 groups and double-press camera following",
+    "Tactical input suppression cancels pending charge/skills while preserving movement orders"
+  ],
+  "limitations": {
+    "windowsNativeExecutionVerified": false,
+    "twoRealSteamAccountsAcrossPublicInternetVerified": false,
+    "physicalKeyboardMouseVerified": false,
+    "nativeSignalTest": "Rendered macOS player and real TCP peer in the same process; not two graphical clients",
+    "difficultyBalanceHumanPlaytested": false
+  }
+}

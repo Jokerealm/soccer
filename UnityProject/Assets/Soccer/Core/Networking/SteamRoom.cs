@@ -31,6 +31,6 @@ namespace Soccer.Core.Networking
             var room=new NetworkRoom {server=peer,options=value,expectedRoomId=expectedRoomId,lastServer=-1};room.SendHello();return room;
         }
         private string OwnAccountId=>options.Route==NetworkRoute.Steam ? options.PlatformAccountId : options.Account?.Id ?? "";
-        private void SendHello()=>server.Send(PacketKind.Hello,NetworkCodec.Pack(w=>{NetworkCodec.Text(w,NetworkCodec.Version);NetworkCodec.Text(w,options.PlayerName,24);w.Write((int)options.Character);w.Write((int)options.Team);w.Write((int)options.Route);NetworkCodec.Text(w,OwnAccountId,32);}));
+        private void SendHello()=>server.Send(PacketKind.Hello,NetworkCodec.Pack(w=>{NetworkCodec.Text(w,NetworkCodec.Version);NetworkCodec.Text(w,options.PlayerName,PlayerNickname.MaxWireLength);w.Write((int)options.Character);w.Write(options.AutoAssignTeam ? -1 : (int)options.Team);w.Write((int)options.Route);NetworkCodec.Text(w,OwnAccountId,32);}));
     }
 }

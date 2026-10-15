@@ -7,6 +7,11 @@ namespace Soccer.Core.Networking
     /// <summary>Explicit public test identities for the debug build; no registration or cloud account service.</summary>
     public static class DebugAccounts
     {
+        public static DebugAccountSession FromService(string id)
+        {
+            if(string.IsNullOrEmpty(id) || id.Length>32 || System.Array.Exists(id.ToCharArray(),c=>!char.IsLetterOrDigit(c) && c!='_'))throw new ArgumentException("帐号无效");
+            return new DebugAccountSession(id,new byte[32]);
+        }
         public static bool IsKnown(string id) => id == "a" || id == "b";
         private static byte[] Key(string id, string password)
         { using (var sha = SHA256.Create()) return sha.ComputeHash(Encoding.UTF8.GetBytes("SkillSoccer/debug-account/1|" + id + "|" + password)); }

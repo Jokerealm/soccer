@@ -17,7 +17,7 @@ namespace Soccer.Core.Networking
     {
         public NetworkRoute Route;
         public string Name = "足球房间", PlayerName = "球员", Password = "";
-        public bool UsePassword;
+        public bool UsePassword,AutoAssignTeam;
         // Zero lets the program choose a port; explicit values are reserved for developer tools.
         public int Port;
         public CharacterId Character = CharacterId.Marine;
@@ -26,7 +26,7 @@ namespace Soccer.Core.Networking
         public string PlatformAccountId="";
         public void Validate()
         {
-            Name = Clean(Name, 32); PlayerName = Clean(PlayerName, 24);
+            Name = Clean(Name, 32); PlayerName = PlayerNickname.Normalize(PlayerName);
             if (Port < 0 || Port > 65535 || !Enum.IsDefined(typeof(NetworkRoute), Route) || !Enum.IsDefined(typeof(Team), Team) || !ValidCharacter(Character)) throw new ArgumentException("房间设置无效");
             if (Route == NetworkRoute.Internet && (Account == null || !DebugAccounts.IsKnown(Account.Id))) throw new ArgumentException("请先登录调试帐号 a 或 b");
             if(Route==NetworkRoute.Steam && !SteamAccount.IsValid(PlatformAccountId))throw new ArgumentException("请先登录 Steam");
@@ -61,6 +61,7 @@ namespace Soccer.Core.Networking
         public RoomMember[] Members = new RoomMember[0];
         public int[] Bots = new int[0];
         public float CountdownRemaining;
+        public BotDifficulty BotDifficulty = BotDifficulty.Player;
     }
     public sealed class NetworkStart
     {
@@ -276,14 +277,15 @@ namespace Soccer.Core.Networking
                 if (Running || Lobby.Drafting || CountingDown || OccupiedSlots >= 6) { Reject(guest.Peer, Running || Lobby.Drafting || CountingDown ? "比赛已经开始，请等待下一局" : "房间已满"); return; }
                 var member = new RoomMember(); Team team = Team.Cyan; NetworkRoute route = NetworkRoute.Internet;
                 NetworkCodec.Read(packet.Body, r =>
-                { if (NetworkCodec.Text(r) != NetworkCodec.Version) throw new InvalidDataException(); member.Name = RoomOptions.Clean(NetworkCodec.Text(r, 24), 24); member.Character = (CharacterId)r.ReadInt32(); team = (Team)r.ReadInt32(); route = (NetworkRoute)r.ReadInt32(); member.AccountId = NetworkCodec.Text(r, 32); });
-                if (!RoomOptions.ValidCharacter(member.Character) || !Enum.IsDefined(typeof(Team), team) || route != Lobby.Route) throw new InvalidDataException();
+                { if (NetworkCodec.Text(r) != NetworkCodec.Version) throw new InvalidDataException(); member.Name = PlayerNickname.Normalize(NetworkCodec.Text(r, PlayerNickname.MaxWireLength)); member.Character = (CharacterId)r.ReadInt32(); team = (Team)r.ReadInt32(); route = (NetworkRoute)r.ReadInt32(); member.AccountId = NetworkCodec.Text(r, 32); });
+                bool automatic=(int)team==-1;
+                if (!RoomOptions.ValidCharacter(member.Character) || !automatic && !Enum.IsDefined(typeof(Team), team) || route != Lobby.Route) throw new InvalidDataException();
                 if(route==NetworkRoute.Steam && (member.AccountId!=guest.Peer.AuthenticatedAccountId || !SteamAccount.IsValid(member.AccountId))){Reject(guest.Peer,"Steam身份与连接不一致");return;}
                 if (route!=NetworkRoute.Steam && (route == NetworkRoute.Internet && !DebugAccounts.IsKnown(member.AccountId) || member.AccountId.Length > 0 && !DebugAccounts.IsKnown(member.AccountId)))
                 { Reject(guest.Peer, "帐号验证失败，请使用调试帐号 a 或 b 登录"); return; }
-                member.Slot = FreeSlot(team); if (member.Slot < 0) { Reject(guest.Peer, "所选队伍已满，请换队后加入"); return; }
+                member.Slot = automatic ? AutomaticSlot() : FreeSlot(team); if (member.Slot < 0) { Reject(guest.Peer, automatic ? "房间已满" : "所选队伍已满，请换队后加入"); return; }
                 guest.Member = member; guest.Nonce = RoomPassword.Random(32); guest.Challenged = true;
-                guest.Peer.Send(PacketKind.Challenge, NetworkCodec.Pack(w => { w.Write(Lobby.RequiresPassword); w.Write(salt); w.Write(guest.Nonce); })); return;
+                guest.Peer.Send(PacketKind.Challenge, NetworkCodec.Pack(w => { w.Write(Lobby.RequiresPassword); w.Write(salt); w.Write(guest.Nonce); w.Write(member.Slot); })); return;
             }
             if (packet.Kind == PacketKind.Authenticate && guest.Challenged && !guest.Joined)
             {
@@ -299,6 +301,8 @@ namespace Soccer.Core.Networking
                 guest.Joined = true;CancelCountdown();foreach(var existing in Lobby.Members)existing.Ready=false; Lobby.Members = Lobby.Members.Concat(new[] { guest.Member }).OrderBy(m => m.Slot).ToArray(); BroadcastLobby(); return;
             }
             if (!guest.Joined) throw new InvalidDataException();
+            if(packet.Kind==PacketKind.TeamSignal){ReceiveSignal(packet,guest.Member.Slot);return;}
+            if(packet.Kind==PacketKind.Chat){ReceiveChat(packet,guest.Member.Slot);return;}
             if (packet.Kind == PacketKind.DraftLock) { if(Lobby.Drafting)ReceiveDraftLock(guest,packet);return; }
             if (Lobby.Drafting && (packet.Kind==PacketKind.Choice || packet.Kind==PacketKind.Ready || packet.Kind==PacketKind.Input)) return;
             // In-flight lobby buttons and inputs may arrive just after a phase transition.
@@ -313,6 +317,9 @@ namespace Soccer.Core.Networking
         }
         private void ClientPacket(WirePacket packet)
         {
+            if(packet.Kind==PacketKind.Chat && Connected){ReceiveChat(packet);return;}
+            if(packet.Kind==PacketKind.TeamSignal && Connected){ReceiveSignal(packet);return;}
+
             if (packet.Kind == PacketKind.Reject) { string reason = ""; NetworkCodec.Read(packet.Body, r => reason = NetworkCodec.Text(r)); Fail(reason); return; }
             if (packet.Kind == PacketKind.Ping) { server.Send(PacketKind.Pong, new byte[0]); return; }
             if (packet.Kind == PacketKind.Pong) return;
@@ -320,9 +327,11 @@ namespace Soccer.Core.Networking
             { NetworkCodec.Read(packet.Body, r => Status = NetworkCodec.Text(r)); Changed?.Invoke(); return; }
             if (packet.Kind == PacketKind.Challenge && !Connected)
             {
-                bool locked = false; byte[] roomSalt = null, nonce = null;
-                NetworkCodec.Read(packet.Body, r => { locked = r.ReadBoolean(); roomSalt = r.ReadBytes(16); nonce = r.ReadBytes(32); });
+                bool locked = false; byte[] roomSalt = null, nonce = null;int assigned=-1;
+                NetworkCodec.Read(packet.Body, r => { locked = r.ReadBoolean(); roomSalt = r.ReadBytes(16); nonce = r.ReadBytes(32); assigned=r.ReadInt32(); });
                 if (roomSalt.Length != 16 || nonce.Length != 32) throw new InvalidDataException();
+                if(assigned<0 || assigned>=6 || !options.AutoAssignTeam && (assigned<3 ? Team.Cyan : Team.Amber)!=options.Team)throw new InvalidDataException();
+                options.Team=assigned<3 ? Team.Cyan : Team.Amber;
                 byte[] proof = new byte[0];
                 if (locked)
                 {
@@ -351,13 +360,20 @@ namespace Soccer.Core.Networking
                 var start = new NetworkStart();
                 NetworkCodec.Read(packet.Body, r => { matchEpoch = r.ReadInt32(); if (matchEpoch <= 0) throw new InvalidDataException(); start.Rules = NetworkCodec.ReadFields<MatchRules>(r); start.Rules.Validate(); start.Lineup = new CharacterId[6]; for (int i = 0; i < 6; i++) { start.Lineup[i] = (CharacterId)r.ReadInt32(); if (!RoomOptions.ValidCharacter(start.Lineup[i])) throw new InvalidDataException(); }
                     if(r.ReadBoolean()) { start.Positions=new Vec2[6];for(int i=0;i<6;i++)start.Positions[i]=new Vec2(r.ReadSingle(),r.ReadSingle());MatchDraft.ValidateOpening(start.Rules,start.Positions); } });
-                Lobby.Running = true; Lobby.Drafting=false; Draft=null; Started?.Invoke(start); return;
+                Lobby.Running = true; Lobby.Drafting=false; Draft=null; ResetSignals(start.Rules);Started?.Invoke(start); return;
             }
             if (packet.Kind == PacketKind.Snapshot && Running) { SnapshotReceived?.Invoke(packet.Body); return; }
             throw new InvalidDataException();
         }
         private int FreeSlot(Team team)
         { int start = team == Team.Cyan ? 0 : 3; for (int i = start; i < start + 3; i++) if (!Lobby.Members.Any(m => m.Slot == i) && !Lobby.Bots.Contains(i) && !guests.Any(g => g.Challenged && !g.Joined && g.Peer.Connected && g.Member.Slot == i)) return i; return -1; }
+        private int AutomaticSlot()
+        {
+            int cyan=FreeSlot(Team.Cyan),amber=FreeSlot(Team.Amber);if(cyan<0)return amber;if(amber<0)return cyan;
+            int cyanCount=Lobby.Members.Count(m=>m.Team==Team.Cyan)+Lobby.Bots.Count(s=>s<3)+guests.Count(g=>g.Challenged && !g.Joined && g.Peer.Connected && g.Member.Team==Team.Cyan);
+            int amberCount=Lobby.Members.Count(m=>m.Team==Team.Amber)+Lobby.Bots.Count(s=>s>=3)+guests.Count(g=>g.Challenged && !g.Joined && g.Peer.Connected && g.Member.Team==Team.Amber);
+            return cyanCount<=amberCount ? cyan : amber;
+        }
         private bool ApplyChoice(RoomMember member, CharacterId character, Team team)
         {
             if (!RoomOptions.ValidCharacter(character) || !Enum.IsDefined(typeof(Team), team)) throw new InvalidDataException();
@@ -375,6 +391,7 @@ namespace Soccer.Core.Networking
         {if(!Connected || Running || Lobby.Drafting)return;if(IsHost){Lobby.Members.Single(m=>m.Host).Ready=ready;if(!ready)CancelCountdown();BroadcastLobby();}else server.Send(PacketKind.Ready, NetworkCodec.Pack(w => w.Write(ready)));}
         public void StartMatch(MatchRules rules)
         {
+            rules.BotDifficulty=Lobby.BotDifficulty;
             if (!CanStart) throw new InvalidOperationException("等待所有球员准备后才能开始");
             rules.Validate(); var lineup = new[] { CharacterId.Marine, CharacterId.Thor, CharacterId.Thor, CharacterId.Marine, CharacterId.Thor, CharacterId.Thor };
             foreach (var member in Lobby.Members) lineup[member.Slot] = member.Character;
@@ -382,6 +399,7 @@ namespace Soccer.Core.Networking
         }
         private void LaunchMatch(NetworkStart start)
         {
+            ResetSignals(start.Rules);
             CancelCountdown();Lobby.Running=true;Lobby.Drafting=false;Draft=null;matchEpoch++;eventBatch.Clear();
             foreach(var guest in guests) guest.Input.Reset();BroadcastLobby();
             var bytes=NetworkCodec.Pack(w=> { w.Write(matchEpoch);NetworkCodec.WriteFields(w,start.Rules);foreach(var character in start.Lineup)w.Write((int)character);
@@ -410,8 +428,8 @@ namespace Soccer.Core.Networking
         internal static void WriteLobby(BinaryWriter w, RoomLobby lobby)
         {
             NetworkCodec.Text(w, NetworkCodec.Version); NetworkCodec.Text(w, lobby.Id, 32); NetworkCodec.Text(w, lobby.Code, 6); NetworkCodec.Text(w, lobby.Name, 32); w.Write((int)lobby.Route); w.Write(lobby.RequiresPassword); w.Write(lobby.Running); w.Write(lobby.Drafting); w.Write(lobby.Port);
-            w.Write(lobby.Members.Length); foreach (var m in lobby.Members) { w.Write(m.Slot); NetworkCodec.Text(w, m.Name, 24); NetworkCodec.Text(w, m.AccountId, 32); w.Write((int)m.Character); w.Write(m.Ready); w.Write(m.Host); }
-            w.Write(lobby.Bots.Length);foreach(int slot in lobby.Bots)w.Write(slot);w.Write(lobby.CountdownRemaining);
+            w.Write(lobby.Members.Length); foreach (var m in lobby.Members) { w.Write(m.Slot); NetworkCodec.Text(w, m.Name, PlayerNickname.MaxWireLength); NetworkCodec.Text(w, m.AccountId, 32); w.Write((int)m.Character); w.Write(m.Ready); w.Write(m.Host); }
+            w.Write(lobby.Bots.Length);foreach(int slot in lobby.Bots)w.Write(slot);w.Write((int)lobby.BotDifficulty);w.Write(lobby.CountdownRemaining);
         }
         internal static RoomLobby ReadLobby(BinaryReader r)
         {
@@ -422,13 +440,15 @@ namespace Soccer.Core.Networking
             int count = r.ReadInt32(); if (count < 1 || count > 6) throw new InvalidDataException(); var members = new List<RoomMember>();
             for (int i = 0; i < count; i++)
             {
-                var m = new RoomMember { Slot = r.ReadInt32(), Name = NetworkCodec.Text(r, 24), AccountId = NetworkCodec.Text(r, 32), Character = (CharacterId)r.ReadInt32(), Ready = r.ReadBoolean(), Host = r.ReadBoolean() };
+                var m = new RoomMember { Slot = r.ReadInt32(), Name = NetworkCodec.Text(r, PlayerNickname.MaxWireLength), AccountId = NetworkCodec.Text(r, 32), Character = (CharacterId)r.ReadInt32(), Ready = r.ReadBoolean(), Host = r.ReadBoolean() };
+                if(!PlayerNickname.IsValid(m.Name))throw new InvalidDataException();
                 if(lobby.Route==NetworkRoute.Steam ? !SteamAccount.IsValid(m.AccountId) : m.AccountId.Length > 0 && !DebugAccounts.IsKnown(m.AccountId) || lobby.Route == NetworkRoute.Internet && !DebugAccounts.IsKnown(m.AccountId))throw new InvalidDataException();
                 if (m.Slot < 0 || m.Slot >= 6 || !RoomOptions.ValidCharacter(m.Character) || members.Any(a => a.Slot == m.Slot)) throw new InvalidDataException(); members.Add(m);
             }
             if (members.Count(m => m.Host) != 1) throw new InvalidDataException(); lobby.Members = members.ToArray();
             int bots=r.ReadInt32();if(bots<0 || bots+count>6)throw new InvalidDataException();lobby.Bots=new int[bots];
             for(int i=0;i<bots;i++){int slot=r.ReadInt32();if(slot<0 || slot>=6 || members.Any(m=>m.Slot==slot) || lobby.Bots.Take(i).Contains(slot))throw new InvalidDataException();lobby.Bots[i]=slot;}
+            lobby.BotDifficulty=(BotDifficulty)r.ReadInt32();if(!Enum.IsDefined(typeof(BotDifficulty),lobby.BotDifficulty))throw new InvalidDataException();
             lobby.CountdownRemaining=r.ReadSingle();if(!Geometry.IsFinite(lobby.CountdownRemaining) || lobby.CountdownRemaining<0 || lobby.CountdownRemaining>3 || lobby.CountdownRemaining>0 && (lobby.Running || lobby.Drafting || count+bots!=6 || members.Any(m=>!m.Ready)))throw new InvalidDataException();return lobby;
         }
         private void BroadcastLobby()

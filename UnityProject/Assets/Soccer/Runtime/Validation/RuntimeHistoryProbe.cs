@@ -24,7 +24,7 @@ namespace Soccer.Runtime
         {
             int width=Screen.width,height=Screen.height;var mode=Screen.fullScreenMode;app.GoHome();yield return new WaitForSecondsRealtime(.35f);
             int before=app.History.Matches.Count;yield return Click("profile-button");yield return Click("profile-history");
-            Check(app.Page==AppPage.History && app.UI.Root.Q<Label>("history-profile").text.Contains("离线玩家"),"home history opens current offline profile");
+            Check(app.Page==AppPage.History && app.UI.Root.Q<Label>("history-profile").text.Contains(app.PlayerName),"home history opens current offline profile");
             if(before==0)Check(HistoryVisible(app.UI.Root.Q("history-empty")) && !HistoryVisible(app.UI.Root.Q("history-detail")),"new profile displays an honest empty history");
             yield return Click("history-back");HistoryFixture(2,1,CharacterId.Marine);yield return null;
             Check(app.History.Matches.Count==Math.Min(50,before+1) && app.History.Matches[0].OwnScore==2 && app.History.Matches[0].Goals==2 && app.History.Matches[0].Knockouts==3 && app.History.Matches[0].Coins==100,"finished match records actual role, local stats, score and settled reward");

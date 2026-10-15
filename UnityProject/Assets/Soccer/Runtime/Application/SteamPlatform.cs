@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Soccer.Core;
 using Soccer.Core.Networking;
 using Steamworks;
 using UnityEngine;
@@ -9,7 +10,7 @@ namespace Soccer.Runtime
 {
     public sealed class SteamFriendInfo {public ulong Id;public string Name;public bool Online;}
     public sealed class SteamRoomInfo
-    {public ulong LobbyId,Owner;public string Name,Code,RoomId;public int Occupied;public bool Password,Busy;}
+    {public ulong LobbyId,Owner;public string Name,Code,RoomId,HostName;public int Occupied,Players;public bool Password,Busy;}
     /// <summary>Steam API callbacks, lobby metadata and P2P connections stay on Unity's main thread.</summary>
     public sealed class SteamPlatform : IDisposable
     {
@@ -32,6 +33,21 @@ namespace Soccer.Runtime
         private HSteamListenSocket listener;private NetworkRoom hostRoom;private ulong expectedOwner;
         private Action<SteamSocketPeer> onConnected;private HSteamNetConnection pendingConnection;
         private readonly Dictionary<uint,SteamSocketPeer> peers=new Dictionary<uint,SteamSocketPeer>();
+        private Callback<GetTicketForWebApiResponse_t> communityTicketCallback;
+        private HAuthTicket communityTicket=HAuthTicket.Invalid;private Action<string> communityTicketReady;private float communityTicketDeadline;
+        public void RequestCommunityTicket(Action<string> ready)
+        {
+            CancelCommunityTicket();if(!Ready){ready(null);return;}
+            if(communityTicketCallback==null)communityTicketCallback=Callback<GetTicketForWebApiResponse_t>.Create(result=>{
+                if(result.m_hAuthTicket!=communityTicket || communityTicketReady==null)return;
+                var callback=communityTicketReady;communityTicketReady=null;
+                callback(result.m_eResult==EResult.k_EResultOK && result.m_cubTicket>0 && result.m_cubTicket<=result.m_rgubTicket.Length
+                    ? BitConverter.ToString(result.m_rgubTicket,0,result.m_cubTicket).Replace("-","") : null);
+            });
+            communityTicketReady=ready;communityTicketDeadline=Time.realtimeSinceStartup+10;communityTicket=SteamUser.GetAuthTicketForWebApi("skillsoccer-community");
+        }
+        public void CancelCommunityTicket(){if(communityTicket!=HAuthTicket.Invalid && Initialized)SteamUser.CancelAuthTicket(communityTicket);communityTicket=HAuthTicket.Invalid;communityTicketReady=null;}
+        public bool InviteFriend(ulong id)=>Ready && LobbyId!=0 && SteamMatchmaking.InviteUserToLobby(new CSteamID(LobbyId),new CSteamID(id));
         private float deadline;private int operation;
         public bool Initialize()
         {
@@ -54,12 +70,16 @@ namespace Soccer.Runtime
             catch(Exception){Status="Steam接口暂不可用，请检查Steam客户端是否已启动";return false;}
         }
         private static string Data(CSteamID id,string key)=>SteamMatchmaking.GetLobbyData(id,key);
-        public SteamRoomInfo Describe(ulong value)
+        public SteamRoomInfo Describe(ulong value,bool requireOwner=false)
         {
             var id=new CSteamID(value);if(!id.IsValid() || Data(id,"game")!=GameKey || Data(id,"protocol")!=NetworkCodec.Version)return null;
-            string room=Data(id,"room"),code=Data(id,"code");if(!Guid.TryParseExact(room,"N",out _) || !RoomCode.IsValid(code) || !ulong.TryParse(Data(id,"owner"),out var owner) || owner!=SteamMatchmaking.GetLobbyOwner(id).m_SteamID || !int.TryParse(Data(id,"occupied"),out int count) || count<1 || count>6)return null;
+            string room=Data(id,"room"),code=Data(id,"code");if(!Guid.TryParseExact(room,"N",out _) || !RoomCode.IsValid(code) || !ulong.TryParse(Data(id,"owner"),out var owner) || !new CSteamID(owner).IsValid() || !int.TryParse(Data(id,"occupied"),out int count) || count<1 || count>6)return null;
+            // GetLobbyOwner returns nil until this user has joined. Search metadata is only
+            // a preview; verify its owner against Steam after joining and before connecting.
+            if(requireOwner && owner!=SteamMatchmaking.GetLobbyOwner(id).m_SteamID)return null;
             string name=Data(id,"name");if(string.IsNullOrWhiteSpace(name) || name.Length>32)return null;
-            return new SteamRoomInfo {LobbyId=value,Owner=owner,Name=name,Code=code,RoomId=room,Occupied=count,Password=Data(id,"password")=="1",Busy=Data(id,"busy")=="1"};
+            string hostName=Data(id,"hostName");if(!PlayerNickname.IsValid(hostName) || !int.TryParse(Data(id,"players"),out int players) || players<1 || players>count)return null;
+            return new SteamRoomInfo {LobbyId=value,Owner=owner,Name=name,Code=code,RoomId=room,HostName=hostName,Players=players,Occupied=count,Password=Data(id,"password")=="1",Busy=Data(id,"busy")=="1"};
         }
         public void CreateRoom(NetworkRoom room)
         {if(!Ready || Busy)throw new InvalidOperationException(Status);LeaveRoom();hostRoom=room;operation=1;Busy=true;deadline=Time.realtimeSinceStartup+15;Status="正在创建Steam房间…";create.Set(SteamMatchmaking.CreateLobby(ELobbyType.k_ELobbyTypePublic,6));Changed?.Invoke();}
@@ -69,7 +89,7 @@ namespace Soccer.Runtime
             LobbyId=value.m_ulSteamIDLobby;
             listener=SteamNetworkingSockets.CreateListenSocketP2P(0,0,null);
             if(listener==HSteamListenSocket.Invalid){LeaveRoom();Status="Steam网络监听未能启动";Changed?.Invoke();return;}
-            Publish(hostRoom);Status="Steam房间已创建";LobbyCreated?.Invoke(Describe(LobbyId));Changed?.Invoke();
+            Publish(hostRoom);Status="Steam房间已创建";LobbyCreated?.Invoke(Describe(LobbyId,true));Changed?.Invoke();
         }
         public void FindRooms(string code=null)
         {
@@ -84,13 +104,14 @@ namespace Soccer.Runtime
         {
             operation=0;Busy=false;var found=new List<SteamRoomInfo>();if(!io)for(int i=0;i<value.m_nLobbiesMatching;i++){var room=Describe(SteamMatchmaking.GetLobbyByIndex(i).m_SteamID);if(room!=null)found.Add(room);}
             Rooms=found.ToArray();Status=io ? "Steam房间搜索失败" : Rooms.Length==0 ? "暂无可加入的Steam房间" : "";Changed?.Invoke();
+            Debug.Log("STEAM_LOBBY_SEARCH raw="+value.m_nLobbiesMatching+" accepted="+Rooms.Length+" ioFailure="+io);
         }
         public void JoinRoom(ulong id)
         {if(!Ready || Busy)return;LeaveRoom();operation=2;Busy=true;deadline=Time.realtimeSinceStartup+15;Status="正在加入Steam房间…";join.Set(SteamMatchmaking.JoinLobby(new CSteamID(id)));Changed?.Invoke();}
         private void Joined(LobbyEnter_t value,bool io)
         {
             operation=0;Busy=false;if(io || value.m_EChatRoomEnterResponse!=(uint)EChatRoomEnterResponse.k_EChatRoomEnterResponseSuccess){Status="Steam房间无法加入，可能已满或已关闭";Changed?.Invoke();return;}
-            LobbyId=value.m_ulSteamIDLobby;var room=Describe(LobbyId);if(room==null || room.Busy || room.Occupied>=6 || room.Owner==UserId){LeaveRoom();Status="房间已关闭、已满或版本不同";Changed?.Invoke();return;}
+            LobbyId=value.m_ulSteamIDLobby;var room=Describe(LobbyId,true);if(room==null || room.Busy || room.Occupied>=6 || room.Owner==UserId){LeaveRoom();Status="房间已关闭、已满或版本不同";Changed?.Invoke();return;}
             Status="正在连接Steam房主…";LobbyJoined?.Invoke(room);Changed?.Invoke();
         }
         public void Connect(ulong owner,Action<SteamSocketPeer> complete)
@@ -104,6 +125,7 @@ namespace Soccer.Runtime
         private void ConnectionChanged(SteamNetConnectionStatusChangedCallback_t value)
         {
             var info=value.m_info;ulong remote=info.m_identityRemote.GetSteamID64();
+            Debug.Log("STEAM_CONNECTION state="+info.m_eState+" remote="+remote+" endReason="+info.m_eEndReason+" detail="+info.m_szEndDebug);
             if(info.m_eState==ESteamNetworkingConnectionState.k_ESteamNetworkingConnectionState_Connecting && info.m_hListenSocket==listener && listener!=HSteamListenSocket.Invalid)
             {
                 if(hostRoom==null || !Member(remote) || remote==UserId || hostRoom.Running || hostRoom.Lobby.Drafting || hostRoom.CountingDown || hostRoom.OccupiedSlots>=6){SteamNetworkingSockets.CloseConnection(value.m_hConn,0,"room unavailable",false);return;}
@@ -130,7 +152,7 @@ namespace Soccer.Runtime
         public void Publish(NetworkRoom room)
         {
             if(!Ready || LobbyId==0 || !room.IsHost)return;var id=new CSteamID(LobbyId);
-            var entries=new Dictionary<string,string>{{"game",GameKey},{"protocol",NetworkCodec.Version},{"owner",UserId.ToString()},{"room",room.Lobby.Id},{"code",room.Lobby.Code},{"name",room.Lobby.Name},{"occupied",room.OccupiedSlots.ToString()},{"password",room.Lobby.RequiresPassword ? "1" : "0"},{"busy",room.Running || room.Lobby.Drafting || room.CountingDown ? "1" : "0"}};
+            var entries=new Dictionary<string,string>{{"game",GameKey},{"protocol",NetworkCodec.Version},{"owner",UserId.ToString()},{"hostName",room.Lobby.Members.Single(m=>m.Host).Name},{"players",room.Lobby.Members.Length.ToString()},{"room",room.Lobby.Id},{"code",room.Lobby.Code},{"name",room.Lobby.Name},{"occupied",room.OccupiedSlots.ToString()},{"password",room.Lobby.RequiresPassword ? "1" : "0"},{"busy",room.Running || room.Lobby.Drafting || room.CountingDown ? "1" : "0"}};
             foreach(var pair in entries)SteamMatchmaking.SetLobbyData(id,pair.Key,pair.Value);
             SteamMatchmaking.SetLobbyJoinable(id,!room.Running && !room.Lobby.Drafting && !room.CountingDown && room.OccupiedSlots<6);
             SteamFriends.SetRichPresence("connect","+connect_lobby "+LobbyId);
@@ -155,6 +177,7 @@ namespace Soccer.Runtime
         public void Pump()
         {
             if(!Initialized)return;SteamAPI.RunCallbacks();
+            if(communityTicketReady!=null && Time.realtimeSinceStartup>communityTicketDeadline){var callback=communityTicketReady;CancelCommunityTicket();callback(null);}
             foreach(var key in peers.Where(p=>!p.Value.Connected).Select(p=>p.Key).ToArray()){peers[key].Dispose();peers.Remove(key);}
             if(Busy && Time.realtimeSinceStartup>=deadline){if(operation==3){list.Cancel();Rooms=new SteamRoomInfo[0];Busy=false;operation=0;}else LeaveRoom();Status="Steam操作超时，请重试";Changed?.Invoke();}
         }
@@ -167,6 +190,6 @@ namespace Soccer.Runtime
             if(listener!=HSteamListenSocket.Invalid)SteamNetworkingSockets.CloseListenSocket(listener);listener=HSteamListenSocket.Invalid;
             if(LobbyId!=0)SteamMatchmaking.LeaveLobby(new CSteamID(LobbyId));LobbyId=0;hostRoom=null;SteamFriends.ClearRichPresence();
         }
-        public void Dispose(){LeaveRoom();create?.Dispose();join?.Dispose();list?.Dispose();invitation?.Dispose();connections?.Dispose();if(Initialized)SteamAPI.Shutdown();Initialized=false;}
+        public void Dispose(){CancelCommunityTicket();communityTicketCallback?.Dispose();LeaveRoom();create?.Dispose();join?.Dispose();list?.Dispose();invitation?.Dispose();connections?.Dispose();if(Initialized)SteamAPI.Shutdown();Initialized=false;}
     }
 }

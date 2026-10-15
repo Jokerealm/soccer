@@ -39,7 +39,7 @@ namespace Soccer.Core
             var command = cached.WithoutEdges();
             if (state.Tick >= nextDecision)
             {
-                nextDecision = state.Tick + 11;
+                nextDecision = state.Tick + BotDifficulties.DecisionTicks(rules.BotDifficulty);
                 float side = p.Team == Team.Cyan ? 1 : -1;
                 Vec2 target;
                 if (state.Ball.OwnerId == p.Id)
@@ -96,7 +96,7 @@ namespace Soccer.Core
             var kit = p.Stats.Loadout;
             if (state.Tick >= nextDecision)
             {
-                nextDecision = state.Tick + 11;
+                nextDecision = state.Tick + BotDifficulties.DecisionTicks(rules.BotDifficulty);
                 command = new PlayerCommand();
                 float side = p.Team == Team.Cyan ? 1 : -1;
                 PlayerState enemy = null;
@@ -111,7 +111,7 @@ namespace Soccer.Core
                 {
                     var target = new Vec2(side * (rules.FieldWidth / 2 + 0.5f), p.Id % 2 == 0 ? 0.6f : -0.6f);
                     command.Move = new Vec2(side, -p.Position.Y * 0.12f).Normalized;
-                    if (enemyDistance < 3 || p.Health < 45)
+                    if (rules.BotDifficulty != BotDifficulty.BallBoy && (enemyDistance < 3 || p.Health < 45))
                     {
                         PlayerState receiver = null;
                         float bestSpace = enemyDistance + 0.8f;
@@ -128,7 +128,9 @@ namespace Soccer.Core
                         }
                         if (receiver != null) target = receiver.Position;
                     }
+                    if (rules.BotDifficulty >= BotDifficulty.God) target = BotTactics.KickTarget(state, rules, p);
                     command.Aim = (target - p.Position).Normalized;
+                    if (rules.BotDifficulty == BotDifficulty.BallBoy) command.Aim = Vec2.Rotate(command.Aim, (p.Id % 2 == 0 ? 1 : -1) * .09f);
                     if (!charging && p.KickCooldown <= 0 && Vec2.Distance(target, p.Position) < 16)
                     {
                         charging = true;
@@ -156,6 +158,7 @@ namespace Soccer.Core
                     if (!teamHasBall && enemy != null && enemyDistance < 4 && closest != p.Id)
                         target = enemy.Position - (enemy.Position - p.Position).Normalized * Math.Min(3, kit.WeaponRange * 0.6f);
                     if (closest == p.Id && state.Owner != null && !teamHasBall) target = state.Ball.Position;
+                    if (rules.BotDifficulty >= BotDifficulty.God) target = BotTactics.Position(state, rules, p, closest);
                     var offset = target - p.Position;
                     command.Move = offset.Length > 0.4f ? offset.Normalized : Vec2.Zero;
                     command.Aim = (state.Ball.Position - p.Position).Normalized;
@@ -204,6 +207,16 @@ namespace Soccer.Core
                                     Vec2.Distance(target.Position, bomb.AttachedToBall ? state.Ball.Position : bomb.Position) < bomb.Radius + target.Stats.Radius)
                                 { command.SpecialPressed = true; command.QPressed = command.EPressed = command.AttackHeld = false; break; }
                     }
+                }
+                if (rules.BotDifficulty == BotDifficulty.BallBoy)
+                    command.QPressed = command.EPressed = command.SpecialPressed = false;
+                else if (rules.BotDifficulty >= BotDifficulty.God && state.Ball.OwnerId != p.Id)
+                {
+                    // Save costly mobility while safely covering; punish an exhausted carrier instead.
+                    bool contest = state.Owner != null && state.Owner.Team != p.Team && enemyDistance < 7;
+                    if (!contest && Vec2.Distance(state.Ball.Position,p.Position) > 10)
+                        command.QPressed = command.EPressed = false;
+                    if (p.Health < p.Stats.MaxHealth * .4f) command.QPressed = false;
                 }
                 cached = command.WithoutEdges();
             }

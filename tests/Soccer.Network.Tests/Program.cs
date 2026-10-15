@@ -13,6 +13,25 @@ void Until(Func<bool> done, params NetworkRoom[] rooms)
 RoomOptions Options(NetworkRoute route=NetworkRoute.Internet, Team team=Team.Cyan, string password="", string account="a") => new RoomOptions { Route=route,Team=team,Name="联机测试房间",PlayerName="测试球员",Port=0,UsePassword=password.Length>0,Password=password,Account=route==NetworkRoute.Internet?DebugAccounts.Login(account,account):null };
 NetworkRoom Client(NetworkRoom host, Team team=Team.Amber, string password="") => NetworkRoom.Join("127.0.0.1:"+host.Port,Options(host.Lobby.Route,team,password,"b"));
 MatchSimulation Simulation(CharacterId[] lineup=null) => new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch,lineup);
+Test("parallel server matches and client replicas share thread-safe codec metadata",()=> {
+ Parallel.For(0,12,index=>{
+  var authority=Simulation();var replica=Simulation();
+  for(int tick=0;tick<120;tick++){
+   authority.Step(new PlayerCommand[6]);NetworkCodec.ApplySnapshot(replica.State,NetworkCodec.Snapshot(authority.State));
+   Assert(replica.State.Tick==authority.State.Tick && replica.State.Players.Count==6,"concurrent codec lost snapshot data");
+   var input=NetworkCodec.Pack(w=>NetworkCodec.WriteFields(w,new PlayerCommand{Move=new Vec2(0,1)}));NetworkCodec.Read(input,r=>Assert(NetworkCodec.ReadFields<PlayerCommand>(r).Move.Y==1,"concurrent command schema corrupted"));
+  }
+ });
+});
+Test("game names accept six Chinese characters and six emoji without splitting Unicode",()=> {
+ foreach(var value in new[]{"一二三四五六","ABC123","😀😃😄😁😆😅","e\u0301e\u0301e\u0301e\u0301e\u0301e\u0301"})Assert(PlayerNickname.Normalize(value)==value,"six-character name rejected");
+ foreach(var value in new[]{"", "   ","一二三四五六七","ABCDEFG","😀😃😄😁😆😅😂","球\n员","\ud83d"})Assert(!PlayerNickname.IsValid(value),"invalid name accepted");
+ Assert(PlayerNickname.Normalize("  球员  ")=="球员","name was not trimmed");
+});
+Test("game names persist across restart, change atomically and remain separate per account",()=> {
+ var folder=Path.Combine(Path.GetTempPath(),"soccer-names-"+Guid.NewGuid().ToString("N"));
+ try {var first=new Soccer.Runtime.PlayerNameStore(folder,"steam:42");var second=new Soccer.Runtime.PlayerNameStore(folder,"steam:43");Assert(first.Load()=="" && second.Load()=="","first login already named");first.Save("青队队长");second.Save("橙队队长");first.Save("新名字");Assert(new Soccer.Runtime.PlayerNameStore(folder,"steam:42").Load()=="新名字" && second.Load()=="橙队队长","rename crossed account boundaries or failed persistence");bool rejected=false;try{first.Save("一二三四五六七");}catch(ArgumentException){rejected=true;}Assert(rejected && first.Load()=="新名字","invalid rename changed persisted name");Assert(Directory.GetFiles(folder).All(p=>p.EndsWith(".txt")),"atomic save left temporary files");}finally{if(Directory.Exists(folder))Directory.Delete(folder,true);}
+});
 Test("both public debug accounts log in and reject invalid credentials",()=> {
  using var a=DebugAccounts.Login("a","a");using var b=DebugAccounts.Login("b","b");
  Assert(a?.Id=="a" && b?.Id=="b","debug login failed");
@@ -135,9 +154,9 @@ Test("invalid passwords, ports and room addresses reject before listening",()=> 
 });
 Test("in-flight ready and input packets survive return-to-lobby transitions",()=> {
  using var host=NetworkRoom.Host(Options());using var socket=new System.Net.Sockets.TcpClient("127.0.0.1",host.Port);using var peer=new RoomPeer(socket);
- peer.Send(PacketKind.Hello,NetworkCodec.Pack(w=>{NetworkCodec.Text(w,NetworkCodec.Version);NetworkCodec.Text(w,"raw-guest",24);w.Write((int)CharacterId.Marine);w.Write((int)Team.Amber);w.Write((int)NetworkRoute.Internet);NetworkCodec.Text(w,"b",16);}));
- byte[] nonce=null;Until(()=>{while(peer.TryRead(out var packet))if(packet.Kind==PacketKind.Challenge)NetworkCodec.Read(packet.Body,r=>{r.ReadBoolean();r.ReadBytes(16);nonce=r.ReadBytes(32);});return nonce!=null;},host);
- using var account=DebugAccounts.Login("b","b");var proof=account.Proof(nonce,NetworkCodec.Version+"|b|raw-guest|"+(int)CharacterId.Marine+"|"+(int)Team.Amber);
+ peer.Send(PacketKind.Hello,NetworkCodec.Pack(w=>{NetworkCodec.Text(w,NetworkCodec.Version);NetworkCodec.Text(w,"客人",24);w.Write((int)CharacterId.Marine);w.Write((int)Team.Amber);w.Write((int)NetworkRoute.Internet);NetworkCodec.Text(w,"b",16);}));
+ byte[] nonce=null;Until(()=>{while(peer.TryRead(out var packet))if(packet.Kind==PacketKind.Challenge)NetworkCodec.Read(packet.Body,r=>{r.ReadBoolean();r.ReadBytes(16);nonce=r.ReadBytes(32);r.ReadInt32();});return nonce!=null;},host);
+ using var account=DebugAccounts.Login("b","b");var proof=account.Proof(nonce,NetworkCodec.Version+"|b|客人|"+(int)CharacterId.Marine+"|"+(int)Team.Amber);
  peer.Send(PacketKind.Authenticate,NetworkCodec.Pack(w=>{w.Write((byte)proof.Length);w.Write(proof);w.Write((byte)0);}));Until(()=>host.Lobby.Members.Length==2,host);
  host.FillBots();host.SetReady(true);peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(true)));Until(()=>host.CanStart,host);host.StartMatch(new MatchRules());
  peer.Send(PacketKind.Ready,NetworkCodec.Pack(w=>w.Write(false)));Thread.Sleep(20);host.Pump(Now());
@@ -282,7 +301,7 @@ Test("leaving or changing the roster cancels a pending countdown",()=> {
  using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginCountdown(new MatchRules());
  host.SetBot(1,false);Assert(!host.CountingDown && host.Draft==null && !host.CanStart,"bot removal did not cancel launch");host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);host.BeginCountdown(new MatchRules());client.Dispose();Until(()=>host.Lobby.Members.Length==1,host);Assert(!host.CountingDown && host.Draft==null,"disconnect did not cancel launch");
 });
-RoomOptions SteamOptions(ulong id,Team team=Team.Cyan,string password="")=>new RoomOptions {Route=NetworkRoute.Steam,PlatformAccountId=SteamAccount.FromId(id),PlayerName="Steam测试球员",Team=team,UsePassword=password.Length>0,Password=password};
+RoomOptions SteamOptions(ulong id,Team team=Team.Cyan,string password="")=>new RoomOptions {Route=NetworkRoute.Steam,PlatformAccountId=SteamAccount.FromId(id),PlayerName="蒸汽球员",Team=team,UsePassword=password.Length>0,Password=password};
 Test("Steam identity keys are canonical and TCP cannot impersonate a Steam transport",()=> {
  foreach(var key in new[]{"", "a", "steam:0", "steam:01", "steam:-1", "Steam:42", "steam:18446744073709551616"})Assert(!SteamAccount.IsValid(key),"invalid platform identity accepted");
  Assert(SteamAccount.IsValid(SteamAccount.FromId(42)),"canonical fixture id rejected");
@@ -292,6 +311,19 @@ Test("Steam framing round trips and rejects invalid packet kind and per-kind len
  foreach(var kind in Enum.GetValues<PacketKind>()){var bytes=new byte[]{1,2,3};var frame=RoomFrame.Decode(RoomFrame.Encode(kind,bytes));Assert(frame.Kind==kind && frame.Body.SequenceEqual(bytes),"frame lost message boundary");}
  foreach(var bytes in new[]{Array.Empty<byte>(),new byte[]{255},new byte[8194].Select((_,i)=>i==0 ? (byte)PacketKind.Hello : (byte)0).ToArray(),new byte[514].Select((_,i)=>i==0 ? (byte)PacketKind.Input : (byte)0).ToArray()}){bool rejected=false;try{RoomFrame.Decode(bytes);}catch(System.IO.InvalidDataException){rejected=true;}Assert(rejected,"invalid Steam frame accepted");}
  Assert(RoomFrame.Decode(RoomFrame.Encode(PacketKind.Snapshot,new byte[NetworkCodec.MaxFrameBytes])).Body.Length==NetworkCodec.MaxFrameBytes,"snapshot maximum rejected");
+});
+Test("automatic admission binds password proof to the assigned team and permits room team changes",()=> {
+ using var host=NetworkRoom.HostSteam(SteamOptions(42,password:"secret"));var pair=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(pair.a);var options=SteamOptions(43,password:"secret");options.AutoAssignTeam=true;
+ using var guest=NetworkRoom.JoinSteam(pair.b,options,host.Lobby.Id);Until(()=>guest.Connected,host,guest);Assert(guest.LocalSlot==3,"automatic join did not use the less populated team");
+ host.SetReady(true);guest.SetReady(true);Until(()=>host.Lobby.Members.All(m=>m.Ready),host,guest);guest.SetChoice(CharacterId.Marine,Team.Cyan);Until(()=>guest.LocalSlot==1,host,guest);Assert(host.Lobby.Members.All(m=>!m.Ready),"changing teams retained readiness");
+ guest.SetChoice(CharacterId.Marine,Team.Amber);Until(()=>guest.LocalSlot==3,host,guest);
+});
+Test("simultaneous automatic Steam joins reserve distinct slots and fill both teams",()=> {
+ using var host=NetworkRoom.HostSteam(SteamOptions(42));var guests=new List<NetworkRoom>();
+ try {for(ulong id=43;id<48;id++){var pair=MemoryPeer.Pair(id,42);host.AcceptSteamPeer(pair.a);var options=SteamOptions(id);options.AutoAssignTeam=true;guests.Add(NetworkRoom.JoinSteam(pair.b,options,host.Lobby.Id));}
+ Until(()=>guests.All(g=>g.Connected),new[]{host}.Concat(guests).ToArray());Assert(host.Lobby.Members.Length==6 && host.Lobby.Members.Select(m=>m.Slot).Distinct().Count()==6,"automatic joins collided or stranded an available slot");Assert(host.Lobby.Members.Count(m=>m.Team==Team.Cyan)==3,"automatic joins failed to fill both teams");
+ var extra=MemoryPeer.Pair(48,42);host.AcceptSteamPeer(extra.a);var overflow=SteamOptions(48);overflow.AutoAssignTeam=true;using var denied=NetworkRoom.JoinSteam(extra.b,overflow,host.Lobby.Id);string reason="";denied.Failed+=x=>reason=x;Until(()=>reason.Length>0,new[]{host,denied}.Concat(guests).ToArray());Assert(reason.Contains("满") && host.Lobby.Members.Length==6,"full automatic room admitted another player");
+ }finally{foreach(var guest in guests)guest.Dispose();}
 });
 Test("Steam room admission works after a long-running Unity clock without HTTP login",()=> {
  using var host=NetworkRoom.HostSteam(SteamOptions(42));var pair=MemoryPeer.Pair(43,42);Assert(host.AcceptSteamPeer(pair.a),"authenticated transport rejected");using var guest=NetworkRoom.JoinSteam(pair.b,SteamOptions(43,Team.Amber),host.Lobby.Id);
@@ -315,6 +347,45 @@ Test("Steam transport reuses cancelable countdown and authoritative player input
  using var host=NetworkRoom.HostSteam(SteamOptions(42));var pair=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(pair.a);using var guest=NetworkRoom.JoinSteam(pair.b,SteamOptions(43,Team.Amber),host.Lobby.Id);Until(()=>guest.Connected,host,guest);host.FillBots();host.SetReady(true);guest.SetReady(true);Until(()=>host.CanStart,host,guest);host.BeginCountdown(new MatchRules());Until(()=>guest.CountingDown,host,guest);guest.SetReady(false);Until(()=>!host.CountingDown && !guest.CountingDown,host,guest);Assert(host.Draft==null,"unready Steam client entered draft");
  guest.SetReady(true);Until(()=>host.CanStart,host,guest);MatchSimulation replica=null;host.Started+=x=>{};guest.Started+=x=>replica=Simulation(x.Lineup);host.StartMatch(new MatchRules());Until(()=>replica!=null,host,guest);guest.SendInput(new PlayerCommand {Move=new Vec2(0,1)});Until(()=>host.ReadInput(3).Move.Y==1,host,guest);Assert(host.ReadInput(0).Move.Y==0,"guest commanded host slot");
  guest.Dispose();Until(()=>host.Lobby.Members.Length==1,host);Assert(!host.IsHumanSlot(3),"Steam disconnect retained human control");
+});
+Test("host difficulty replicates and changing it cancels player readiness",()=> {
+ using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);
+ host.BeginCountdown(new MatchRules());Assert(!client.SetBotDifficulty(BotDifficulty.Cheater),"guest changed host difficulty");
+ Assert(host.SetBotDifficulty(BotDifficulty.Cheater),"host could not change difficulty");Until(()=>client.Lobby.BotDifficulty==BotDifficulty.Cheater,host,client);
+ Assert(!host.CountingDown && host.Lobby.Members.All(m=>!m.Ready),"difficulty change did not cancel countdown/readiness");
+ host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);NetworkStart start=null;client.Started+=x=>start=x;host.StartMatch(new MatchRules());Until(()=>start!=null,host,client);
+ Assert(start.Rules.BotDifficulty==BotDifficulty.Cheater,"match lost host's bot difficulty");
+ var authority=new MatchSimulation(start.Rules,StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch,start.Lineup);var replica=new MatchSimulation(start.Rules,StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch,start.Lineup);
+ foreach(var p in authority.State.Players){authority.ConfigureBot(p.Id,!host.IsHumanSlot(p.Id));replica.ConfigureBot(p.Id,!client.IsHumanSlot(p.Id));}
+ NetworkCodec.ApplySnapshot(replica.State,NetworkCodec.Snapshot(authority.State));Assert(replica.State.Players[1].Health==125 && replica.State.Players[3].Health==100,"cheating stats diverged or boosted a human");
+});
+Test("team signals relay only to allies and rate limiting keeps the room usable",()=> {
+ using var host=NetworkRoom.HostSteam(SteamOptions(42));var pair1=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(pair1.a);using var ally=NetworkRoom.JoinSteam(pair1.b,SteamOptions(43,Team.Cyan),host.Lobby.Id);
+ var pair2=MemoryPeer.Pair(44,42);host.AcceptSteamPeer(pair2.a);using var enemy=NetworkRoom.JoinSteam(pair2.b,SteamOptions(44,Team.Amber),host.Lobby.Id);Until(()=>ally.Connected && enemy.Connected,host,ally,enemy);
+ host.FillBots();host.SetReady(true);ally.SetReady(true);enemy.SetReady(true);Until(()=>host.CanStart,host,ally,enemy);host.StartMatch(new MatchRules());Until(()=>ally.Running && enemy.Running,host,ally,enemy);
+ int own=0,friendly=0,opposing=0;host.SignalReceived+=x=>own++;ally.SignalReceived+=x=>friendly++;enemy.SignalReceived+=x=>opposing++;
+ Assert(host.SendSignal(SignalKind.Attack,new Vec2(5,2)),"host signal failed");Until(()=>friendly==1,host,ally,enemy);Assert(own==1 && opposing==0,"signal leaked to enemy");
+ Assert(!host.SendSignal(SignalKind.Shoot,Vec2.Zero),"host signal flood bypassed limit");
+ ally.SendSignal(SignalKind.PassToMe,Vec2.Zero,ally.LocalSlot);Until(()=>own==2,host,ally,enemy);Assert(friendly==2 && opposing==0,"ally signal echo or team isolation failed");
+ ally.SendSignal(SignalKind.Attention,Vec2.Zero);for(int i=0;i<4;i++){host.Pump(Now());ally.Pump(Now());enemy.Pump(Now());}Assert(own==2 && host.Lobby.Members.Length==3,"throttle disconnected a valid sender or duplicated signal");
+ Assert(!enemy.SendSignal((SignalKind)99,Vec2.Zero) && !enemy.SendSignal(SignalKind.Attack,new Vec2(float.NaN,0)),"invalid signal queued");
+});
+Test("signals from a previous match are ignored and cannot impersonate another player",()=> {
+ using var host=NetworkRoom.HostSteam(SteamOptions(42));var pair=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(pair.a);using var ally=NetworkRoom.JoinSteam(pair.b,SteamOptions(43,Team.Cyan),host.Lobby.Id);Until(()=>ally.Connected,host,ally);
+ host.FillBots();host.SetReady(true);ally.SetReady(true);Until(()=>host.CanStart,host,ally);host.StartMatch(new MatchRules());Until(()=>ally.Running,host,ally);int count=0;host.SignalReceived+=x=>count++;
+ var signal=new TacticalSignal{PlayerId=ally.LocalSlot,Kind=SignalKind.Defend};pair.b.Send(PacketKind.TeamSignal,NetworkCodec.Pack(w=>{w.Write(0);NetworkCodec.WriteFields(w,signal);}));host.Pump(Now());Assert(count==0 && ally.Connected,"stale match signal was delivered");
+ signal.PlayerId=host.LocalSlot;pair.b.Send(PacketKind.TeamSignal,NetworkCodec.Pack(w=>{w.Write(1);NetworkCodec.WriteFields(w,signal);}));Until(()=>host.Lobby.Members.Length==1,host,ally);Assert(count==0,"spoofed signal was relayed");
+});
+Test("room chat is authenticated, team chat stays private and long Unicode messages round-trip",()=> {
+ using var host=NetworkRoom.HostSteam(SteamOptions(42));var p1=MemoryPeer.Pair(43,42);host.AcceptSteamPeer(p1.a);using var ally=NetworkRoom.JoinSteam(p1.b,SteamOptions(43,Team.Cyan),host.Lobby.Id);
+ var p2=MemoryPeer.Pair(44,42);host.AcceptSteamPeer(p2.a);using var enemy=NetworkRoom.JoinSteam(p2.b,SteamOptions(44,Team.Amber),host.Lobby.Id);Until(()=>ally.Connected && enemy.Connected,host,ally,enemy);
+ var own=new List<ChatMessage>();var team=new List<ChatMessage>();var opposing=new List<ChatMessage>();host.ChatReceived+=own.Add;ally.ChatReceived+=team.Add;enemy.ChatReceived+=opposing.Add;
+ string longText=new string('传',160);Assert(host.SendChat("room",longText),"valid 160-character room message failed");Until(()=>team.Count==1 && opposing.Count==1,host,ally,enemy);
+ Assert(team[0].Text==longText && team[0].SenderName==host.Lobby.Members[0].Name,"long message or sender identity changed");Assert(!host.SendChat("room","刷屏"),"message cooldown missing");
+ host.FillBots();host.SetReady(true);ally.SetReady(true);enemy.SetReady(true);Until(()=>host.CanStart,host,ally,enemy);host.StartMatch(new MatchRules());Until(()=>ally.Running && enemy.Running,host,ally,enemy);
+ Assert(ally.SendChat("team","<b>队内</b>"),"team message not queued");Until(()=>own.Count==2 && team.Count==2,host,ally,enemy);Assert(opposing.Count==1,"team chat leaked to opponents");
+ Assert(own[1].SenderId==ally.LocalSlot.ToString() && own[1].Text=="<b>队内</b>","host did not bind sender or preserve literal text");
+ Assert(!enemy.SendChat("private","非法频道") && !enemy.SendChat("all",new string('字',161)) && !enemy.SendChat("all","\n"),"invalid chat accepted");
 });
 var report=args.Length>0?args[0]:"reports/network-017-transport";Directory.CreateDirectory(report);File.WriteAllText(Path.Combine(report,"network-tests.json"),JsonSerializer.Serialize(new{passed=failed==0,total=results.Count,failed,results},new JsonSerializerOptions{WriteIndented=true}));return failed==0?0:1;
 

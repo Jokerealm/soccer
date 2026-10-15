@@ -1,63 +1,51 @@
-# 登录与房间号服务
+# 技能足球游戏服务 0.30.0
 
-客户端 0.19.0 在启动页通过 HTTP 验证帐号，并用同一服务登记和查询 6 位互联网房间号。a/a、b/b 是公开试玩帐号。公共服务尚未部署；离线进入仍能训练、AI 对练和局域网联机，局域网房间号不依赖此服务。
+服务端使用 .NET 10，提供独立游戏帐号、好友、私聊、三人队伍、好友房间、普通／排位匹配，以及权威对局模拟。运行、持久化、Steam 票据及公网配置见 [部署说明](DEPLOY.md)。可使用 `tools/python tools/package_server.py` 生成不含帐号数据或凭据的便携服务包。
 
-安装 .NET 10 SDK 后，在仓库根目录运行：
+当前 Mac 已作为暂用服务器运行，地址 `http://192.168.31.29:27862`，客户端包已预设此地址。其他电脑需在同一局域网；公网服务尚未部署。可用 `--soccer-auth-url` 覆盖地址，玩家填写游戏帐号与密码。Steam 原生邀请与局域网房间聊天不依赖此服务。
 
-```sh
-dotnet run --project server/Soccer.LoginServer --urls http://0.0.0.0:27862
-```
+## 接口
 
-开发者启动客户端时通过 `--soccer-auth-url http://127.0.0.1:27862` 配置本机服务。测试另一电脑时可使用服务电脑的 IPv4 地址，例如 `--soccer-auth-url http://192.168.1.10:27862`。服务电脑需要允许 TCP 27862。玩家界面只填写帐号、密码和房间号；地址和端口属于程序与部署配置。
-
-登录返回内存中的 6 小时 Bearer 会话令牌，帐号密码与令牌不写入客户端设置，也不写入服务日志。每个房间由创建时的会话维护，不按共享调试帐号授权修改。房间目录只接收是否需要密码的标记，房间密码在房主的实际游戏连接中验证。
-
-接口：
+除注册／登录外，接口携带 `Authorization: Bearer <accessToken>`。会话有效期六小时，重启后失效。
 
 | 接口 | 行为 |
 | --- | --- |
 | `GET /health` | 服务标识及版本 |
-| `POST /api/login` | 验证 `account`、`password`，返回 `accountId`、`service`、`accessToken`、`expiresInSeconds` |
-| `POST /api/rooms` | 登录会话创建或幂等注册自己的房间，返回唯一 6 位号码 |
-| `GET /api/rooms/{code}` | 登录后解析号码；大小写不敏感；已满或正在比赛返回 409，已失效返回 404 |
-| `PUT /api/rooms/{code}` | 房主会话续租，并更新人数与比赛状态 |
-| `DELETE /api/rooms/{code}` | 房主会话关闭房间 |
+| `POST /api/register` | 创建独立游戏帐号，返回会话 |
+| `POST /api/login` | 验证帐号密码，返回会话 |
+| `POST /api/auth/steam` | 服务端通过 Valve 验证票据后建立游戏帐号；须配置 Web API Key |
+| `GET /api/friends` | 好友、收到和发出的申请 |
+| `POST /api/friends/{account}/request`、`accept`、`reject` | 申请、接受、拒绝 |
+| `DELETE /api/friends/{account}` | 移除好友或撤回申请 |
+| `GET /api/profiles/{account}` | 查看名字、累计角色战绩和最近 50 场 |
+| `POST /api/profile/matches` | 上传本机完成的战绩；按 MatchId 去重，不能修改排位分 |
+| `GET /api/community/state` | 队伍、邀请、房间、匹配、在线好友、私聊摘要和服务器排位分 |
+| `POST /api/community/action` | 组队、邀请、准备、开房、加入、排队、取消及离开 |
+| `GET /api/chat?channel=private&target=好友ID&after=消息ID` | 读取私聊；也支持 party、room 频道 |
+| `POST /api/chat` | 发送私聊、队伍或房间消息；服务端绑定发送身份与频道权限 |
+| `WS /api/matches/{matchId}/socket` | 已分配玩家的选人、输入、快照、队内／全场聊天和战术信号 |
 
-房间接口携带 `Authorization: Bearer <accessToken>`。注册／续租 JSON 字段为 `code`、`roomId`、`name`、`host`、`port`、`players`、`running`、`requiresPassword`。客户端自动填写。`host` 留空时使用服务观察到的客户端 IPv4 地址，IPv4 映射 IPv6 地址会转为 IPv4；原生 IPv6 房主连接暂未支持。地址覆盖使用客户端开发参数 `--soccer-room-host`。部署在代理后时需要提供正确的房主公网地址；当前服务不盲目信任请求中的转发头。
+WebSocket 还需 `X-SkillSoccer-Protocol` 与当前客户端协议一致。比赛的运动、球权、进球、结束和排位结算均由服务端执行；玩家只能提交自己的输入。普通匹配和排位等待六名真人，完整队伍保持同队；好友房间可由房主手动补 AI。队内聊天与信号只发给本队。
 
-默认租期 30 秒，客户端每 10 秒续租，并在状态改变时提前更新。异常退出后自动过期，正常离开主动删除；失效号码短期保留 10 分钟。可通过 `--RoomDirectory:LeaseSeconds=30` 调整租期，范围 3—120 秒。会话与目录均存于内存，服务重启后需要重新登录和建房；实现限制了会话、活动房间与保留号码数量。
+帐号、好友与主页、最近私聊分别原子保存至 `data/accounts.json`、`data/social.json`、`data/chat.json`；目录默认位于服务程序旁，部署时必须持久化。队伍、房间、在线状态、邀请、排队和进行中比赛为内存状态，重启会清除。当前为单实例原型服务。
 
-公网部署应使用 HTTPS；HTTP 仅供本机／受控网络的公开调试帐号验证。发布：
+## 原有互联网直连房间目录
+
+目录接口继续保留：`POST /api/rooms`、`GET /api/rooms/{code}`、`PUT /api/rooms/{code}`、`DELETE /api/rooms/{code}`。目录只负责六位号码的发布、解析与租约，TCP 房间仍由房主运行，与上述权威匹配服务分开。
+
+房间发布字段为 `code`、`roomId`、`name`、`host`、`port`、`players`、`running`、`requiresPassword`。密码不传给目录。房间由创建会话维护，其他帐号或同帐号的不同会话无法覆盖。默认租期 30 秒，每 10 秒续租；失效号码保留 10 分钟。目录不提供 NAT 穿透，互联网直连需要房主地址可达。新注册帐号使用游戏服务内的好友房间和匹配。
+
+## 本地验证
+
+`a/a`、`b/b` 仅在 `Accounts__AllowDebug=true` 或 Development 环境开放；生产默认禁用，旧存档中的这两个帐号也不能登录或被搜索。不要将调试凭据用于公开服务。
 
 ```sh
-dotnet publish server/Soccer.LoginServer -c Release -o dist/login-server
-dotnet dist/login-server/Soccer.LoginServer.dll --urls http://127.0.0.1:27862
+dotnet build server/Soccer.LoginServer
+Accounts__AllowDebug=true dotnet run --no-build --project server/Soccer.LoginServer -- --urls http://127.0.0.1:27862
+python tools/test_login_server.py --url http://127.0.0.1:27862
+Accounts__AllowDebug=true python tools/test_room_directory.py --start-server
+Accounts__AllowDebug=true python tools/test_social_server.py
+dotnet run --project tests/Soccer.Community.Tests -- http://127.0.0.1:27862 reports/community-service
 ```
 
-房间目录只负责查号，比赛仍由房主的 TCP 房间执行权威模拟。房间号不会提供 NAT 穿透；无公网可达房主时，需要继续部署中继／比赛服务器。
-
-检查：
-
-```sh
-python tools/test_login_server.py --url http://127.0.0.1:27862 --report reports/room-codes-019-login-service.json
-python tools/test_room_directory.py --start-server
-```
-
-第二条命令自行选取空闲本机端口、启动短租期测试服务并关闭，不会操作已有服务器。
-
-
-## 个人主页与好友（0.25.0）
-
-登录成功返回的 Bearer token 绑定帐号。增加以下接口：
-
-- `GET /api/profiles/{account}`：查看帐号累计角色战绩和最近 50 场。
-- `POST /api/profile/matches`：当前帐号提交完成的赛果，按 MatchId 去重。
-- `GET /api/friends`：双向好友、收到及发出的申请。
-- `POST /api/friends/{account}/request`、`accept`、`reject`：申请、接受、拒绝。
-- `DELETE /api/friends/{account}`：移除好友或撤回申请。
-
-默认原子保存至运行目录 `data/social.json`，可通过 `Social__DataPath` 指定绝对路径。请在部署时持久化这个文件所在目录。房间租约仍只在内存中，好友和战绩跨服务重启保留。调试帐号仍为 a / a、b / b。
-
-当前战绩由客户端完成对局后提交，联网登录时补传仍在本机保存的最近记录；各设备尚未同步的记录超过最近 50 场范围后不会补传。客户端主页保留本机累计统计；好友主页展示服务已经接收的战绩。正式上线仍需服务器结算和正式帐号服务。本次未部署公共服务。
-
-实际 HTTP 与重启验证：`tools/python tools/test_social_server.py`。测试使用独立的临时社交存档，不修改正常服务数据。
+六人对局测试建议配置 `Gameplay__MatchSeconds=14`、`Gameplay__OvertimeSeconds=3`，使用独立的帐号／好友／聊天数据目录。测试只向本地生成的测试帐号发送消息与邀请，不操作真实 Steam 好友。

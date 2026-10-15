@@ -3,6 +3,8 @@ namespace Soccer.Core
     /// <summary>一帧输入意图。按键边沿只消费一次；输入提供者不能直接修改比赛状态。</summary>
     public struct PlayerCommand
     {
+        // Held while a tactical UI consumes input; preserves navigation but cancels pending actions.
+        public bool BlockActions;
         public Vec2 Move;
         public Vec2 Aim;
         public bool OrderPressed;
@@ -28,7 +30,7 @@ namespace Soccer.Core
 
         public PlayerCommand WithoutEdges()
         {
-            return new PlayerCommand { Move = Move, Aim = Aim, KickHeld = KickHeld, AttackHeld = AttackHeld, Navigate = Navigate };
+            return new PlayerCommand { BlockActions = BlockActions, Move = Move, Aim = Aim, KickHeld = KickHeld, AttackHeld = AttackHeld, Navigate = Navigate };
         }
     }
 

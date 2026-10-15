@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Soccer.Runtime
 {
-    public enum GameAction { Kick, Push, SkillQ, SkillE, Special, Cancel, Stop, StopAlternate, Queue, Pause, Reset, OwnBall, TargetBall, Debug, Corner, FreeKick }
+    public enum GameAction { Kick, Push, SkillQ, SkillE, Special, Cancel, Stop, StopAlternate, Queue, Pause, Reset, OwnBall, TargetBall, Debug, Corner, FreeKick, SignalWheel, CameraSelf }
     public sealed class KeyBindingDefinition
     {
         public readonly GameAction Action; public readonly string Id, Name, Group; public readonly KeyCode Default;
@@ -16,6 +16,7 @@ namespace Soccer.Runtime
     {
         bool Down(KeyCode key); bool Held(KeyCode key); bool Up(KeyCode key);
         bool MouseDown(int button); Vector3 MousePosition { get; }
+        float ScrollDelta {get;}
     }
     public sealed class UnityPlayerInputState : IPlayerInputState
     {
@@ -25,11 +26,14 @@ namespace Soccer.Runtime
         public bool Up(KeyCode key) => Input.GetKeyUp(key);
         public bool MouseDown(int button) => Input.GetMouseButtonDown(button);
         public Vector3 MousePosition => Input.mousePosition;
+        public float ScrollDelta => Input.mouseScrollDelta.y;
     }
     /// <summary>Local bindings translate physical keys into actions; match commands and network packets stay unchanged.</summary>
     public sealed class GameKeyBindings
     {
         public static readonly KeyBindingDefinition[] Definitions = {
+            new KeyBindingDefinition(GameAction.SignalWheel,"signal-wheel","快捷交流（按住）","视角与交流",KeyCode.LeftAlt),
+            new KeyBindingDefinition(GameAction.CameraSelf,"camera-self","视角回到自己","视角与交流",KeyCode.BackQuote),
             new KeyBindingDefinition(GameAction.Kick,"kick","踢球 / 蓄力","比赛",KeyCode.V),
             new KeyBindingDefinition(GameAction.Push,"push","推球 / 铲球","比赛",KeyCode.Space),
             new KeyBindingDefinition(GameAction.SkillQ,"q","角色技能 1","比赛",KeyCode.Q),
@@ -77,7 +81,7 @@ namespace Soccer.Runtime
         public bool TryAssign(GameAction action, KeyCode candidate, out string message)
         {
             candidate = Normalize(candidate);
-            if (!Allowed(action,candidate)) { message = "此键保留给界面操作，请选择字母、数字、功能键或空格。"; return false; }
+            if (!Allowed(action,candidate)) { message = "此键保留给界面或编队操作；1–9 与 Ctrl 用于观察编队。"; return false; }
             foreach (var definition in Definitions)
                 if (definition.Action != action && Key(definition.Action) == candidate)
                 { message = "已用于「" + definition.Name + "」，请换一个按键。"; return false; }
@@ -100,7 +104,8 @@ namespace Soccer.Runtime
         private static bool Allowed(GameAction action, KeyCode key)
         {
             if (key == KeyCode.Escape) return action == GameAction.Pause;
-            if (key == KeyCode.LeftShift || key == KeyCode.LeftControl || key == KeyCode.LeftAlt) return action == GameAction.Queue;
+            if (key >= KeyCode.Alpha1 && key <= KeyCode.Alpha9 || key >= KeyCode.Keypad1 && key <= KeyCode.Keypad9) return false;
+            if (key == KeyCode.LeftShift || key == KeyCode.LeftControl || key == KeyCode.LeftAlt) return key == KeyCode.LeftAlt ? action == GameAction.SignalWheel : key == KeyCode.LeftShift && action == GameAction.Queue;
             return key >= KeyCode.A && key <= KeyCode.Z || key >= KeyCode.Alpha0 && key <= KeyCode.Alpha9 ||
                 key >= KeyCode.F1 && key <= KeyCode.F12 || key >= KeyCode.Keypad0 && key <= KeyCode.Keypad9 ||
                 key == KeyCode.Space || key == KeyCode.BackQuote || key == KeyCode.Minus || key == KeyCode.Equals ||

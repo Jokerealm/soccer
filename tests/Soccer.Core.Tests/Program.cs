@@ -52,7 +52,7 @@ Test("opening warmup allows movement and facing without using match time", () =>
     var origin = sim.State.Players[0].Position;
     Steps(sim, 60, new PlayerCommand { Move = new Vec2(-1, 0), Aim=new Vec2(0,1) });
     Near(sim.State.RemainingSeconds, 300); Near(sim.State.ElapsedSeconds,0);
-    Near(Vec2.Distance(origin, sim.State.Players[0].Position),5.6f*sim.Rules.MovementSpeedScale,.003f);
+    Assert(Vec2.Distance(origin,sim.State.Players[0].Position)>.5f && OpeningArea.Contains(sim.Rules,sim.State.Players[0],sim.State.Players[0].Position),"warmup must move inside its hexagon");
     Near(Vec2.Distance(sim.State.Players[0].Facing,new Vec2(0,1)),0);
     Assert(sim.State.IsOpeningWarmup,"warmup ended prematurely");
 });
@@ -1117,7 +1117,8 @@ Test("navigation routes around the opening shield using real body clearance", ()
     var sim=new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.Training);
     var p=sim.State.Players[0];sim.State.Players[1].Position=new Vec2(10,8);p.Position=new Vec2(-6,0);
     var path=NavigationPathfinder.Find(sim.State,sim.Rules,p,new Vec2(6,0));
-    Assert(path.Count>1,"opening dome omitted from path graph");
+    Assert(path.Count>0,"opening warmup destination is unreachable");
+    foreach(var point in path)Assert(OpeningArea.Contains(sim.Rules,p,point),"path escaped player hexagon");
     foreach(var point in path)Assert(point.Length>=sim.Rules.OpeningShieldRadius+p.Stats.Radius-.001f,"path entered warmup dome");
 });
 Test("moving player receives stationary ball by a continuous relative sweep", () => {
@@ -1654,6 +1655,96 @@ Test("version one history upgrades once without losing previous results",()=> {
  var sim=StarSim(mode:MatchMode.BotMatch);sim.Finish();var store=new MemoryHistoryStore{Data=new MatchHistoryData{Version=1,Matches=new List<MatchRecord>{MatchRecord.FromFinishedMatch(sim.State,0,"old",MatchSource.AI,1000,0)}}};
  var history=new MatchHistory(store);Assert(history.Heroes.Sum(h=>h.Draws)==1 && history.Matches.Count==1,"old history was lost during upgrade");
  history.Add(MatchRecord.FromFinishedMatch(sim.State,0,"new",MatchSource.LAN,1001,0));Assert(new MatchHistory(store).Heroes.Sum(h=>h.Matches)==2 && store.Data.Version==2,"migration doubled previous career");
+});
+Test("opening hex walls contain full bodies in all six directions and release on kickoff",()=> {
+ foreach(int direction in Enumerable.Range(0,6)){
+  var sim=new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Thor,MatchMode.BotMatch);
+  var p=sim.State.Players[0];var origin=p.OpeningPosition;var move=OpeningArea.Vertex(Vec2.Zero,1,direction);
+  for(int tick=0;tick<160;tick++){Steps(sim,1,new PlayerCommand{Move=move});Assert(OpeningArea.Contains(sim.Rules,p,p.Position),"full body escaped warmup polygon");}
+  Assert(Vec2.Distance(origin,p.Position)>.4f,"warmup movement was frozen");
+  Steps(sim,22);var before=p.Position;Steps(sim,25,new PlayerCommand{Move=new Vec2(-1,0)});
+  Assert(!sim.State.IsOpeningWarmup && p.Position.X<before.X-.3f,"warmup wall remained active");
+ }
+});
+Test("draft locations anchor warmup hexagons and old warmup orders are cleared on kickoff",()=> {
+ var sim=new MatchSimulation(new MatchRules(),StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);
+ var positions=Enumerable.Range(0,6).Select(i=>MatchDraft.DefaultPosition(sim.Rules,i)).ToArray();sim.ApplyOpeningPositions(positions);
+ foreach(var p in sim.State.Players)Near(Vec2.Distance(p.OpeningPosition,positions[p.Id]),0);
+ Steps(sim,180,new PlayerCommand{OrderPressed=true,OrderKind=UnitOrderKind.Move,OrderPosition=new Vec2(-26,12)});
+ Steps(sim,2);var player=sim.State.Players[0];var before=player.Position;Steps(sim,20);
+ Near(Vec2.Distance(player.Position,before),0,.002f);Assert(player.Order==UnitOrderKind.None,"old warmup route leaked after kickoff");
+});
+Test("normal AI tiers retain normal stats and cheating bonuses affect only assigned bots",()=> {
+ foreach(var difficulty in Enum.GetValues<BotDifficulty>()){
+  var roster=StarStrikerLoadouts.CreateRoster();var sim=new MatchSimulation(new MatchRules{BotDifficulty=difficulty},roster,CharacterId.Marine,MatchMode.BotMatch);
+  var p=sim.State.Players[1];float speed=p.Stats.Speed;sim.ConfigureBot(1,true);sim.ConfigureBot(1,true);
+  Near(sim.State.Players[0].Health,100);Near(roster[0].MaxHealth,100);
+  Near(p.Health,difficulty==BotDifficulty.Cheater ? 125 : 100);Near(p.Energy,difficulty==BotDifficulty.Cheater ? 125 : 100);
+  Near(p.Stats.Speed,speed*(difficulty==BotDifficulty.Cheater ? 1.12f : 1));
+  p.Health=p.Stats.MaxHealth*.5f;sim.ConfigureBot(1,false);Near(p.Health,50);Near(p.Stats.Speed,speed);
+ }
+ Assert(BotDifficulties.DecisionTicks(BotDifficulty.BallBoy)>BotDifficulties.DecisionTicks(BotDifficulty.Player) && BotDifficulties.DecisionTicks(BotDifficulty.Player)>BotDifficulties.DecisionTicks(BotDifficulty.God),"AI reaction tiers not ordered");
+ Assert(BotDifficulties.DecisionTicks(BotDifficulty.God)==BotDifficulties.DecisionTicks(BotDifficulty.Cheater),"cheater must use god decisions");
+});
+Test("god AI avoids intercepted passes and leads a moving receiver",()=> {
+ var sim=new MatchSimulation(new MatchRules{BotDifficulty=BotDifficulty.God},StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);
+ sim.State.Phase=MatchPhase.Playing;foreach(var p in sim.State.Players)p.Position=new Vec2(-24+p.Id*2,12);
+ var passer=sim.State.Players[0];var receiver=sim.State.Players[1];var blocker=sim.State.Players[3];
+ passer.Position=new Vec2(0,0);receiver.Position=new Vec2(8,0);receiver.Velocity=new Vec2(0,2);blocker.Position=new Vec2(4,0);
+ Assert(!BotTactics.ClearLane(sim.State,passer,receiver.Position,sim.Rules.BallRadius),"AI passed through an interception");
+ blocker.Position=new Vec2(4,8);var target=BotTactics.KickTarget(sim.State,sim.Rules,passer);
+ Assert(target.Y>0 && target.X<15,"AI failed to lead a clear receiver");
+});
+Test("ball boy saves complex skills while god recognizes an exhausted carrier",()=> {
+ foreach(var difficulty in new[]{BotDifficulty.BallBoy,BotDifficulty.God}){
+  var sim=new MatchSimulation(new MatchRules{BotDifficulty=difficulty},StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);sim.State.Phase=MatchPhase.Playing;
+  var p=sim.State.Players[0];p.Position=Vec2.Zero;sim.State.Players[3].Position=new Vec2(3,0);sim.State.Players[3].Health=20;sim.State.Ball.OwnerId=3;
+  var input=new BotCommandSource(sim.Rules).ReadCommand(sim.State,0);
+  if(difficulty==BotDifficulty.BallBoy)Assert(!input.QPressed && !input.EPressed && !input.SpecialPressed,"beginner bot spent complex abilities");
+  else Assert(input.Move.X>0,"god failed to contest weak carrier");
+ }
+});
+Test("all AI tiers run stable six-player combat matches",()=> {
+ foreach(var difficulty in Enum.GetValues<BotDifficulty>()){
+  var sim=new MatchSimulation(new MatchRules{BotDifficulty=difficulty},StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);
+  var bots=sim.State.Players.Select(p=>new BotCommandSource(sim.Rules)).ToArray();foreach(var p in sim.State.Players)sim.ConfigureBot(p.Id,true);
+  for(int i=0;i<1800;i++)sim.Step(sim.State.Players.Select(p=>bots[p.Id].ReadCommand(sim.State,p.Id)).ToArray());
+  foreach(var p in sim.State.Players)Assert(Geometry.IsFinite(p.Position.X) && p.Health>=0 && p.Health<=p.Stats.MaxHealth && p.Energy<=p.Stats.MaxEnergy,"AI tier corrupted match state");
+ }
+});
+Test("tactical input blocking cancels charge and buffered attacks while preserving movement orders",()=> {
+ var sim=StarSim();sim.ResetTraining(true);var p=sim.State.Players[0];
+ Steps(sim,1,new PlayerCommand{KickPressed=true,KickHeld=true,Aim=new Vec2(1,0)});Assert(p.Charging,"charge did not begin");
+ var start=p.Position;Steps(sim,1,new PlayerCommand{BlockActions=true,OrderPressed=true,OrderKind=UnitOrderKind.Move,OrderPosition=start+new Vec2(0,4),QPressed=true,AttackHeld=true,KickReleased=true});
+ Steps(sim,120,new PlayerCommand{BlockActions=true});
+ Assert(p.Kicks==0 && !p.Charging && p.QCooldown==0 && p.Health==100,"tactical UI leaked a shot or skill");
+ Assert(p.Position.Y>start.Y+1,"tactical UI cancelled pre-existing navigation");
+ Steps(sim,2);Assert(p.Kicks==0,"closing tray released an old shot");
+});
+Test("holding the tactical tray suppresses contextual autoattacks across repeated ticks",()=> {
+ var sim=StarSim();sim.ResetTraining(false);var p=sim.State.Players[0];p.Position=Vec2.Zero;sim.State.Players[1].Position=new Vec2(2,0);
+ Steps(sim,90,new PlayerCommand{BlockActions=true,OrderPressed=true,OrderKind=UnitOrderKind.Attack,OrderTargetId=1});
+ Assert(p.Ammo==3 && !p.AttackPending && sim.State.Players[1].Health==100,"holding tray allowed contextual attacks on later ticks");
+});
+Test("signal tray maps five directions with a cancel dead zone",()=> {
+ Assert(TacticalSignal.WheelSelection(0,0)==-1 && TacticalSignal.WheelSelection(20,20)==-1,"deadzone sent an accidental ping");
+ for(int i=0;i<5;i++){double a=i*Math.PI*2/5;Assert(TacticalSignal.WheelSelection((float)Math.Sin(a)*100,-(float)Math.Cos(a)*100)==i,"direction picked wrong signal");}
+ var invalid=new TacticalSignal{PlayerId=0,Position=new Vec2(float.NaN,0)};Assert(!invalid.Valid(56,34),"nonfinite signal accepted");
+});
+Test("observation groups bind allies or enemies and require two presses of the same number",()=> {
+ var groups=new ObservationGroups();groups.Bind(1,4);groups.Bind(2,1);Assert(groups.Press(1,1)==-1,"single press moved camera");Assert(groups.Press(2,1.1)==-1,"different key counted as double");
+ Assert(groups.Press(1,1.2)==-1 && groups.Press(1,1.4)==4,"double press did not observe enemy");
+ Assert(groups.Press(2,2)==-1 && groups.Press(2,2.5)==-1,"slow press counted as double");groups.Reset();Assert(groups.Target(1)==-1,"groups leaked into next match");
+});
+
+Test("chat validation accepts literal text and rejects empty, overlong or malformed Unicode messages",()=> {
+ Assert(ChatText.Normalize("  <b>进攻</b>  ")=="<b>进攻</b>","chat altered literal player text");
+ Assert(ChatText.Normalize(new string('球',160)).Length==160,"valid maximum-length chat was rejected");
+ foreach(string text in new[]{"", "   ",new string('球',161),"换\n行","\ud83d","\ude00"}){bool rejected=false;try{ChatText.Normalize(text);}catch(ArgumentException){rejected=true;}Assert(rejected,"invalid chat accepted");}
+});
+Test("community JSON normalization distinguishes absent parties and rooms from real membership",()=> {
+ var state=new CommunityState{Party=new PartyData(),Room=new CommunityRoom(),Match=new MatchAssignment()}.Normalize();Assert(state.Party==null && state.Room==null && state.Match==null,"empty inline DTO became membership");
+ state.Room=new CommunityRoom{Code="AB12CD",Slots=Enumerable.Range(0,6).Select(_=>new PartyMember()).ToArray()};state.Normalize();Assert(state.Room.Slots.All(p=>p==null),"empty inline slots became real players");
 });
 string reportDir = args.Length > 0 ? args[0] : Path.GetFullPath("reports");
 Directory.CreateDirectory(reportDir);

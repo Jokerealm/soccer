@@ -9,7 +9,7 @@ namespace Soccer.Core
         {
             if(State.Mode!=MatchMode.BotMatch || State.Tick!=0 || State.Phase!=MatchPhase.Countdown) throw new InvalidOperationException("只能在开局前布置球员");
             MatchDraft.ValidateOpening(Rules,positions);
-            foreach(var player in State.Players) {player.Position=positions[player.Id];player.PreviousPosition=player.Position;}
+            foreach(var player in State.Players) {player.Position=positions[player.Id];player.PreviousPosition=player.OpeningPosition=player.Position;}
         }
         /// <summary>Controlled drills use normal commands, damage and recovery after placing the teaching scenario.</summary>
         public void SetupTrainingLesson(TrainingLesson lesson)

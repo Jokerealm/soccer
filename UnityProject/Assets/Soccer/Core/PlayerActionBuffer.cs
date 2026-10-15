@@ -28,10 +28,10 @@ namespace Soccer.Core
             }
             if (kick <= 0) kickReleased = false;
             if (e <= 0) eReleased = false;
-            if (input.Cancel || p.IsDead || p.Stun > 0 || p.PushRemaining > 0)
+            if (input.Cancel || input.BlockActions || p.IsDead || p.Stun > 0 || p.PushRemaining > 0)
             {
                 Clear();
-                return new PlayerCommand { Move = input.Move, Aim = input.Aim, Cancel = input.Cancel };
+                return new PlayerCommand { Move = input.Move, Aim = input.Aim, Cancel = input.Cancel, BlockActions = input.BlockActions };
             }
             float window = Math.Max(dt, rules.ActionBufferSeconds);
             if (input.AttackPressed && rules.EnableCombat && p.Ammo > 0 && p.WeaponCooldown <= rules.ActionBufferSeconds)

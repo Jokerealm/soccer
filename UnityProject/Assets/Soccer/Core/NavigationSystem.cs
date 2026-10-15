@@ -152,7 +152,7 @@ namespace Soccer.Core
             Geometry.Clamp(point.Y, -rules.FieldHeight / 2 + p.Stats.Radius, rules.FieldHeight / 2 - p.Stats.Radius));
         public static Vec2 ProjectDestination(MatchState state, MatchRules rules, PlayerState p, Vec2 destination)
         {
-            var result = Clamp(rules, p, destination); var obstacles = Obstacles(state, rules, p);
+            var result = Clamp(rules, p, destination);if(state.IsOpeningWarmup)result=OpeningArea.Constrain(rules,p,result);var obstacles = Obstacles(state, rules, p);
             for (int pass = 0; pass < 12; pass++)
             {
                 bool moved = false;
@@ -161,11 +161,11 @@ namespace Soccer.Core
                     var d = result - o.Position;
                     if (d.Length >= o.Radius + .002f) continue;
                     var normal = d.LengthSquared > .00001f ? d.Normalized : (p.Position - o.Position).Normalized;
-                    result = Clamp(rules, p, o.Position + normal * (o.Radius + .005f)); moved = true;
+                    result = Clamp(rules, p, o.Position + normal * (o.Radius + .005f));if(state.IsOpeningWarmup)result=OpeningArea.Constrain(rules,p,result);moved = true;
                 }
                 if (!moved) break;
             }
-            return result;
+            return state.IsOpeningWarmup ? OpeningArea.Constrain(rules,p,result) : result;
         }
         public static bool ClearSegment(MatchState state, MatchRules rules, PlayerState p, Vec2 from, Vec2 to)
             => Clear(from, to, Obstacles(state, rules, p));

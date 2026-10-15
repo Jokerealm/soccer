@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -10,16 +11,12 @@ namespace Soccer.Core.Networking
     // A fixed binary schema of scalar state, never arbitrary object deserialization.
     public static class NetworkCodec
     {
-        public const string Version = "SkillSoccer/0.26.0/7";
+        public const string Version = "SkillSoccer/0.29.0/10";
         public const int MaxFrameBytes = 262144;
-        private static readonly Dictionary<Type, PropertyInfo[]> properties = new Dictionary<Type, PropertyInfo[]>();
-        private static PropertyInfo[] Props(Type type)
-        {
-            if (!properties.TryGetValue(type, out var result))
-                properties[type] = result = type.GetProperties(BindingFlags.Instance | BindingFlags.Public)
-                    .Where(p => p.GetSetMethod(true) != null && p.Name != nameof(PlayerState.Stats)).OrderBy(p => p.Name, StringComparer.Ordinal).ToArray();
-            return result;
-        }
+        private static readonly ConcurrentDictionary<Type,PropertyInfo[]> properties = new ConcurrentDictionary<Type,PropertyInfo[]>();
+        private static readonly ConcurrentDictionary<Type,FieldInfo[]> fields = new ConcurrentDictionary<Type,FieldInfo[]>();
+        private static PropertyInfo[] Props(Type type) => properties.GetOrAdd(type,t=>t.GetProperties(BindingFlags.Instance | BindingFlags.Public)
+            .Where(p=>p.GetSetMethod(true)!=null && p.Name!=nameof(PlayerState.Stats)).OrderBy(p=>p.Name,StringComparer.Ordinal).ToArray());
         public static byte[] Pack(Action<BinaryWriter> write)
         {
             using (var stream = new MemoryStream())
@@ -52,7 +49,7 @@ namespace Soccer.Core.Networking
             else if (type == typeof(int)) w.Write((int)value);
             else if (type == typeof(long)) w.Write((long)value);
             else if (type == typeof(bool)) w.Write((bool)value);
-            else if (type == typeof(string)) Text(w, (string)value);
+            else if (type == typeof(string)) Text(w, (string)value,512);
             else if (type == typeof(Vec2)) { var v = (Vec2)value; w.Write(v.X); w.Write(v.Y); }
             else throw new InvalidDataException("不支持的网络字段 " + type.Name);
         }
@@ -65,7 +62,7 @@ namespace Soccer.Core.Networking
             if (type == typeof(int)) return r.ReadInt32();
             if (type == typeof(long)) return r.ReadInt64();
             if (type == typeof(bool)) { byte v = r.ReadByte(); if (v > 1) throw new InvalidDataException("网络布尔值无效"); return v != 0; }
-            if (type == typeof(string)) return Text(r);
+            if (type == typeof(string)) return Text(r,512);
             if (type == typeof(Vec2)) return new Vec2(Number(r), Number(r));
             throw new InvalidDataException("不支持的网络字段");
         }
@@ -73,7 +70,7 @@ namespace Soccer.Core.Networking
         { foreach (var p in Props(obj.GetType())) Scalar(w, p.PropertyType, p.GetValue(obj)); }
         private static void ReadProps(BinaryReader r, object obj)
         { foreach (var p in Props(obj.GetType())) p.SetValue(obj, Scalar(r, p.PropertyType)); }
-        private static FieldInfo[] Fields(Type type) => type.GetFields(BindingFlags.Public | BindingFlags.Instance).OrderBy(f => f.Name, StringComparer.Ordinal).ToArray();
+        private static FieldInfo[] Fields(Type type) => fields.GetOrAdd(type,t=>t.GetFields(BindingFlags.Public | BindingFlags.Instance).OrderBy(f=>f.Name,StringComparer.Ordinal).ToArray());
         public static void WriteFields(BinaryWriter w, object obj)
         { foreach (var f in Fields(obj.GetType())) Scalar(w, f.FieldType, f.GetValue(obj)); }
         public static T ReadFields<T>(BinaryReader r) where T : new()

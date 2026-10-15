@@ -1,0 +1,23 @@
+{
+    "passed": true,
+    "found": true,
+    "connected": true,
+    "appId": 480,
+    "ownerBeforeJoin": 0,
+    "code": "J2LIX5",
+    "status": "已加入房间",
+    "scope": "Real remote lobby discovery and cross-account Steam room admission; gameplay and public Internet/SDR routing are not asserted.",
+    "checks": [
+        "PASS actual Steam account initializes through the game login action",
+        "PASS Steam runtime reports the configured application id",
+        "PASS Steam identity has a separate wallet and personal profile namespace",
+        "PASS room list discovers the remote account's lobby before membership",
+        "PASS remote lobby uses a different real Steam account",
+        "PASS nonmember owner lookup is nil without discarding valid search metadata",
+        "PASS room code completes real cross-account Steam P2P and password admission",
+        "PASS joined owner is verified against Steam before authenticated room admission",
+        "PASS both real Steam identities appear in the replicated room",
+        "PASS remote room remains connected after admission"
+    ],
+    "errors": []
+}

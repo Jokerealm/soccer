@@ -13,6 +13,7 @@ namespace Soccer.Core.Networking
         public void BeginDraft(MatchRules rules)
         {
             if(!CanStart) throw new InvalidOperationException("等待所有球员准备后才能选人");
+            rules.BotDifficulty=Lobby.BotDifficulty;
             var humans=Enumerable.Range(0,6).Select(IsHumanSlot).ToArray();
             Draft=new MatchDraft(rules,humans,++draftEpoch);Lobby.Drafting=true;draftBroadcastAge=0;
             BroadcastLobby();BroadcastDraft();

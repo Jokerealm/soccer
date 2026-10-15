@@ -63,18 +63,14 @@ namespace Soccer.Runtime
                 yield return Click("login-offline");
                 Check(app.EntryMode == GameEntryMode.Offline && app.Account == null, "offline entry makes LAN available without account service");
             }
+            if(app.Page==AppPage.Nickname){root.Q<TextField>("nickname-value").value=role=="host" ? "联机房主" : "联机客人";yield return Click("nickname-save");}
+            else {app.OpenNickname();root.Q<TextField>("nickname-value").value=role=="host" ? "联机房主" : "联机客人";yield return Click("nickname-save");}
             app.OpenMode(GamePlaylist.Normal); app.SelectConnection(route == "lan" ? ConnectionRoute.LAN : ConnectionRoute.Internet); app.OpenNetwork(role == "host");
             yield return new WaitForSecondsRealtime(.4f);
-            Check(!root.Q<Foldout>("network-profile").value, "player setup starts collapsed");
-            Check(!PointerHits(root.Q("network-player-name")), "collapsed player setup hides its fields from interaction");
-            Check(!root.Q<Foldout>("network-join-secret").value, "optional join password stays collapsed initially");
+            Check(root.Q("network-team")==null && root.Q("network-player-name")==null,"room setup has no pre-join team or separate player-name field");
+            Check(!app.UI.JoinDialogOpen,"room browser keeps room code entry closed until requested");
             yield return Capture("00-default-room-form");
-            if (role == "host") yield return CheckRoomSizes("network-page", "network-create", "setup");
-            yield return Expand("network-profile");
-            Check(Visible(root.Q("network-player-name")) && !Visible(root.Q("network-character")) && Visible(root.Q("network-team")), "room setup exposes nickname and team while role selection waits for draft");
-            root.Q<TextField>("network-player-name").value = role == "host" ? "联机房主" : "联机客人";
-            root.Q<DropdownField>("network-team").value = role == "host" ? "青队" : "橙队";
-            root.Q<Foldout>("network-profile").value = false;
+            if(role=="host")yield return CheckRoomSizes("network-page","network-create","setup");
             Check(root.Q<TextField>("network-room-password").isPasswordField && root.Q<TextField>("network-join-password").isPasswordField, "both room passwords use masked fields");
             if (role == "host")
             {
@@ -159,12 +155,12 @@ namespace Soccer.Runtime
                     { if (app.Discovery != null) foreach (var room in app.Discovery.Rooms) if (room.Lobby.Name == "联机验证 · " + route) found = room; yield return null; }
                     Check(found != null, "second game process discovers host over UDP");
                     if (Argument("--soccer-network-join-mode", "list") == "code")
-                        root.Q<TextField>("network-address").value = File.ReadAllText(codeFile).ToLowerInvariant();
+                        {yield return Click("network-join-tab");root.Q<TextField>("network-address").value = File.ReadAllText(codeFile).ToLowerInvariant();}
                     else if (Argument("--soccer-network-join-mode", "list") == "ip")
-                        root.Q<TextField>("network-address").value = "127.0.0.1";
+                        {yield return Click("network-join-tab");root.Q<TextField>("network-address").value = "127.0.0.1";}
                     else if (found != null) yield return Click("network-discovered-" + found.Lobby.Id);
                 }
-                else { root.Q<TextField>("network-address").value = File.ReadAllText(codeFile).ToLowerInvariant(); root.Q<TextField>("network-join-password").value = TestPassword; }
+                else {yield return Click("network-join-tab"); root.Q<TextField>("network-address").value = File.ReadAllText(codeFile).ToLowerInvariant(); root.Q<TextField>("network-join-password").value = TestPassword; }
                 if (route == "internet")
                 {
                     yield return Expand("network-join-secret");
@@ -194,12 +190,10 @@ namespace Soccer.Runtime
                     }
                     yield return null;
                 }
-                Check(app.Room != null && app.Room.Connected && app.LocalPlayerId == 3, "join button admits client to its chosen opposing team");
+                Check(app.Room != null && app.Room.Connected && app.LocalPlayerId == 3, "join button automatically assigns an available opposing slot");
                 if (app.Room == null || !app.Room.Connected) { errors.Add(app.NetworkStatus); Finish(); yield break; }
-                Check(!root.Q<Foldout>("lobby-options").value && !Visible(root.Q("lobby-character")), "lobby role and team controls start collapsed");
-                yield return Expand("lobby-options");
-                Check(!Visible(root.Q("lobby-character")) && Visible(root.Q("lobby-team")), "lobby exposes team control and defers roles to the draft");
-                root.Q<Foldout>("lobby-options").value = false;
+                yield return new WaitForSecondsRealtime(.35f); // Wait for page layout and its entrance animation.
+                Check(!Visible(root.Q("lobby-character")) && Visible(root.Q("lobby-team")),"joined room immediately exposes team choice and defers roles to the draft");
                 Check(app.Room.Lobby.Code == File.ReadAllText(codeFile), "room code synchronizes to guest lobby after lookup and admission");
                 Check(app.Room.Lobby.RequiresPassword == (route == "internet"), "room password setting arrives through live handshake");
                 if (route == "internet") Check(app.Room.Lobby.Members[0].AccountId == "a" && app.Room.Lobby.Members[1].AccountId == "b", "verified account identities synchronize internally");
@@ -308,7 +302,8 @@ namespace Soccer.Runtime
         }
         private IEnumerator Click(string name)
         {
-            var button = app.UI.Root.Q<Button>(name); button.Focus(); yield return null;
+            float deadline=Time.realtimeSinceStartup+2;Button button=null;while((button=app.UI.Root.Q<Button>(name))==null && Time.realtimeSinceStartup<deadline)yield return null;
+            if(button==null){Check(false,"UI button appears: "+name);yield break;}button.Focus(); yield return null;
             using (var evt = NavigationSubmitEvent.GetPooled()) {evt.target=button;button.SendEvent(evt);} yield return null;
         }
         private IEnumerator Capture(string name)

@@ -21,6 +21,7 @@ namespace Soccer.Core
         public Team Team { get; internal set; }
         public CharacterStats Stats { get; internal set; }
         public Vec2 Position { get; internal set; }
+        public Vec2 OpeningPosition { get; internal set; }
         public Vec2 PreviousPosition { get; internal set; }
         internal Vec2 ContactStart { get; set; }
         public Vec2 Facing { get; internal set; }

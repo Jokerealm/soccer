@@ -1,0 +1,33 @@
+{
+    "passed": true,
+    "steamInitialized": true,
+    "realLobby": true,
+    "nativeLoopback": true,
+    "crossAccountP2PVerified": false,
+    "appId": 480,
+    "checks": [
+        "PASS actual Steam account initializes through the game login action",
+        "PASS Steam runtime reports the configured application id",
+        "PASS Steam identity has a separate wallet and personal profile namespace",
+        "PASS Steam login presents native friends separately from HTTP debug friends",
+        "PASS Steam connection mode is selectable without HTTP debug login",
+        "PASS actual Valve matchmaking lobby is created from game UI",
+        "PASS lobby metadata is scoped to this game, protocol and authenticated owner",
+        "PASS joined lobby rejects advertised owner substitution before P2P connection",
+        "PASS Steam lobby retains explicit empty slots and host readiness",
+        "PASS Steam friend invitation control and six-character join code are available",
+        "PASS Steam room copy preserves the simple room code",
+        "PASS Valve lobby search finds this game's room through its six-character code",
+        "PASS real Steam Networking Sockets creates encrypted UDP loopback connections",
+        "PASS room protocol accepts the isolated logical identity fixture over native Steam packets",
+        "PASS native Steam packets complete room admission and team assignment using logical identity fixtures",
+        "PASS native Steam transport replicates explicit bots and every human's readiness",
+        "PASS actual Steam packets replicate three-second countdown before selection",
+        "PASS native Steam draft locks deliver actual role and opening placement",
+        "PASS native Steam player command arrives at authoritative host",
+        "PASS native Steam snapshot replicates actual final score"
+    ],
+    "errors": [],
+    "platform": "OSXPlayer",
+    "scope": "Real Valve lobby and Steam UDP loopback. Both native loopback sides use the signed-in account; the second room identity is an isolated protocol fixture; two-account Internet P2P and relay routing are not verified."
+}

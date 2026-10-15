@@ -15,7 +15,7 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="0.26.0" class="loading-version" />
+            <ui:Label text="0.30.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -24,15 +24,17 @@
             <ui:Label text="登录游戏" class="page-title" />
             <ui:Label text="离线也可局域网联机。" class="muted" />
             <ui:TextField name="login-name" label="帐号" />
+            <ui:TextField name="register-name" label="游戏名字" class="hidden" />
             <ui:TextField name="login-password" label="密码" />
             <ui:Foldout text="试玩帐号" value="false" class="network-disclosure"><ui:Label text="a / a，b / b（帐号 / 密码）" class="muted" /></ui:Foldout>
             <ui:Label name="login-status" class="network-status" />
             <ui:VisualElement class="row login-actions"><ui:Button name="login-offline" text="离线进入" class="secondary" /><ui:Button name="login-submit" text="联网登录    →" class="primary" /></ui:VisualElement>
+            <ui:Button name="register-toggle" text="没有游戏帐号？注册" class="secondary" />
             <ui:Button name="login-steam" text="使用 Steam 进入" class="secondary steam-login" />
         </ui:VisualElement>
 
         <ui:VisualElement name="home-page" class="game-home hidden">
-            <ui:VisualElement class="home-topbar row"><ui:VisualElement class="grow" /><ui:Button name="home-friends" text="好友" class="home-account" /><ui:Label name="home-coins" class="home-coins" /><ui:Label name="connection-status" class="home-connection" /><ui:Button name="home-account" text="联网登录" class="home-account" /></ui:VisualElement>
+            <ui:VisualElement class="home-topbar row"><ui:VisualElement class="grow" /><ui:Button name="home-party" text="组队 / 匹配" class="home-account" /><ui:Button name="home-friends" text="好友" class="home-account" /><ui:Label name="home-coins" class="home-coins" /><ui:Label name="connection-status" class="home-connection" /><ui:Button name="home-account" text="联网登录" class="home-account" /></ui:VisualElement>
             <ui:VisualElement class="home-body">
                 <ui:VisualElement class="home-wordmark"><ui:Label text="SKILL SOCCER" class="home-brand-en" /><ui:Label text="技能足球" class="home-brand-title" /><ui:VisualElement class="home-brand-line" /></ui:VisualElement>
                 <ui:VisualElement name="home-navigation" class="home-navigation">
@@ -44,7 +46,7 @@
                     <ui:Button name="settings-button" text="设置" class="home-nav home-nav-small" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.26.0" class="home-version" /></ui:VisualElement>
+            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.27.0" class="home-version" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="play-page" class="play-menu hidden">
@@ -55,57 +57,40 @@
                 <ui:Button name="play-tutorial" class="play-option"><ui:Label text="新手教程" class="play-option-name" /><ui:Label text="操作与比赛机制" class="play-option-note" /></ui:Button>
                 <ui:Button name="play-training" class="play-option"><ui:Label text="训练场" class="play-option-name" /><ui:Label text="自由练习" class="play-option-note" /></ui:Button>
             </ui:VisualElement>
+            <ui:Button name="play-party" text="好友组队 · 普通匹配 / 排位" class="party-entry" />
+            <ui:VisualElement class="ai-difficulty-panel"><ui:DropdownField name="ai-difficulty" label="AI 难度" /><ui:Label name="ai-difficulty-note" class="muted" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="mode-details-page" class="multiplayer-menu hidden">
-            <ui:VisualElement class="multiplayer-topbar row"><ui:Button name="mode-back" text="‹  返回" class="front-utility" /><ui:VisualElement class="grow" /></ui:VisualElement>
-            <ui:VisualElement class="multiplayer-body">
-                <ui:Label text="联机对战" class="multiplayer-title" />
-                <ui:VisualElement class="connection-panel">
-                    <ui:VisualElement class="connection-tabs row"><ui:Button name="steam-route" text="Steam" class="route-button" /><ui:Button name="internet-route" text="互联网" class="route-button route-selected" /><ui:Button name="lan-route" text="局域网" class="route-button" /></ui:VisualElement>
-                    <ui:VisualElement class="multiplayer-actions"><ui:Button name="online-play" text="创建房间" class="network-action" /><ui:Button name="join-room" text="加入房间" class="network-action" /></ui:VisualElement>
-                    <ui:Label name="connection-copy" class="connection-copy hidden" />
-                    <ui:Button name="route-login" text="联网登录" class="multiplayer-login hidden" />
-                </ui:VisualElement>
-            </ui:VisualElement>
+            <ui:Button name="mode-back" text="‹ 返回" class="front-utility" />
         </ui:VisualElement>
 
         <ui:VisualElement name="network-page" class="page network-page network-setup hidden">
-            <ui:VisualElement class="page-heading row">
-                <ui:VisualElement class="grow"><ui:Label name="network-route" class="eyebrow" /><ui:Label name="network-title" text="创建房间" class="page-title" /></ui:VisualElement>
-                <ui:Button name="network-back" text="返回" class="secondary" />
-            </ui:VisualElement>
-            <ui:VisualElement class="row network-tabs"><ui:Button name="network-create-tab" text="创建" class="route-button" /><ui:Button name="network-join-tab" text="加入" class="route-button" /></ui:VisualElement>
+            <ui:VisualElement class="page-heading row"><ui:VisualElement class="grow"><ui:Label name="network-route" class="eyebrow" /><ui:Label name="network-title" text="联机房间" class="page-title" /></ui:VisualElement><ui:Button name="network-back" text="返回" class="secondary" /></ui:VisualElement>
+            <ui:VisualElement class="connection-tabs row"><ui:Button name="steam-route" text="Steam" class="route-button" /><ui:Button name="internet-route" text="互联网" class="route-button" /><ui:Button name="lan-route" text="局域网" class="route-button" /></ui:VisualElement>
+            <ui:Label name="connection-copy" class="connection-copy hidden" /><ui:Button name="route-login" text="联网登录" class="secondary hidden" />
+            <ui:VisualElement class="row network-tabs"><ui:Button name="network-create-tab" text="创建房间" class="secondary" /><ui:Button name="network-join-tab" text="加入房间" class="primary" /></ui:VisualElement>
             <ui:ScrollView class="network-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
-                <ui:VisualElement name="network-create-form" class="network-card">
-                    <ui:TextField name="network-room-name" label="名称" value="足球房间" />
-                    <ui:VisualElement name="network-internet-options">
-                        <ui:Toggle name="network-password-enabled" label="设置密码" />
-                        <ui:TextField name="network-room-password" label="密码" class="hidden" />
-                    </ui:VisualElement>
+                <ui:VisualElement name="network-create-form" class="network-card hidden">
+                    <ui:TextField name="network-room-name" label="房间名称" value="足球房间" />
+                    <ui:VisualElement name="network-internet-options"><ui:Toggle name="network-password-enabled" label="设置密码" /><ui:TextField name="network-room-password" label="密码" class="hidden" /></ui:VisualElement>
                     <ui:Button name="network-create" text="创建房间" class="primary" />
                 </ui:VisualElement>
-                <ui:VisualElement name="network-join-form" class="network-card hidden">
-                    <ui:TextField name="network-address" label="房间号" />
-                    <ui:Label name="network-address-help" class="muted small" />
-                    <ui:Foldout name="network-join-secret" text="需要密码？" value="false" class="network-disclosure">
-                        <ui:TextField name="network-join-password" label="密码" />
-                    </ui:Foldout>
-                    <ui:Button name="network-join" text="加入房间" class="primary" />
-                    <ui:VisualElement name="network-lan-discovery">
-                        <ui:VisualElement class="row"><ui:Label text="附近房间" class="skill-heading grow" /><ui:Button name="network-refresh" text="刷新" class="secondary" /></ui:VisualElement>
-                        <ui:Label name="network-room-list-empty" text="暂无房间" class="muted" />
-                        <ui:VisualElement name="network-room-list" />
-                        <ui:Foldout name="network-lan-help" text="找不到房间？" value="false" class="network-disclosure"><ui:Label text="也可以在上方输入房主 IP。" class="muted" /></ui:Foldout>
-                    </ui:VisualElement>
+                <ui:VisualElement name="network-lan-discovery">
+                    <ui:VisualElement class="row"><ui:Label name="network-list-title" text="Steam 房间" class="skill-heading grow" /><ui:Button name="network-refresh" text="刷新" class="secondary" /></ui:VisualElement>
+                    <ui:Label name="network-room-list-empty" text="暂无房间" class="muted" /><ui:VisualElement name="network-room-list" />
+                    <ui:Foldout name="network-lan-help" text="找不到房间？" value="false" class="network-disclosure"><ui:Label text="点击加入房间，也可以输入房主 IP。" class="muted" /></ui:Foldout>
                 </ui:VisualElement>
-                <ui:Foldout name="network-profile" text="玩家设置" value="false" class="network-disclosure">
-                    <ui:TextField name="network-player-name" label="昵称" value="球员" />
-                    <ui:DropdownField name="network-character" label="角色" class="hidden" />
-                    <ui:DropdownField name="network-team" label="队伍" />
-                </ui:Foldout>
             </ui:ScrollView>
             <ui:Label name="network-status" class="network-status hidden" />
+            <ui:VisualElement name="network-join-dialog" class="join-dialog hidden">
+                <ui:VisualElement name="network-join-form" class="network-card join-dialog-card">
+                    <ui:VisualElement class="row"><ui:Label name="network-join-title" text="加入房间" class="skill-heading grow" /><ui:Button name="network-join-cancel" text="取消" class="secondary" /></ui:VisualElement>
+                    <ui:TextField name="network-address" label="房间号" /><ui:Label name="network-address-help" class="muted small" />
+                    <ui:Foldout name="network-join-secret" text="房间密码" value="false" class="network-disclosure"><ui:TextField name="network-join-password" label="密码" /></ui:Foldout>
+                    <ui:Label name="network-join-status" class="network-status" /><ui:Button name="network-join" text="确认加入" class="primary" />
+                </ui:VisualElement>
+            </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="room-page" class="page network-page network-lobby hidden">
             <ui:VisualElement class="page-heading row">
@@ -113,16 +98,18 @@
                 <ui:Button name="lobby-leave" text="离开" class="secondary" />
             </ui:VisualElement>
             <ui:VisualElement class="row lobby-invitation"><ui:TextField name="lobby-address" label="房间号" class="lobby-invite-field" /><ui:Button name="lobby-copy-address" text="复制" class="secondary" /><ui:Button name="lobby-steam-invite" text="邀请 Steam 好友" class="secondary hidden" /></ui:VisualElement>
+                <ui:VisualElement name="lobby-options" class="network-card">
+                    <ui:DropdownField name="lobby-character" label="角色" class="hidden" /><ui:DropdownField name="lobby-team" label="你的队伍" />
+                    <ui:Label name="lobby-address-note" class="muted small" />
+                </ui:VisualElement>
             <ui:ScrollView class="network-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden">
                 <ui:VisualElement class="row network-teams">
                     <ui:VisualElement class="network-card grow"><ui:Label text="青队" class="skill-heading cyan" /><ui:VisualElement name="lobby-cyan-members" /></ui:VisualElement>
                     <ui:VisualElement class="network-card grow"><ui:Label text="橙队" class="skill-heading amber" /><ui:VisualElement name="lobby-amber-members" /></ui:VisualElement>
                 </ui:VisualElement>
-                <ui:Foldout name="lobby-options" text="队伍" value="false" class="network-disclosure">
-                    <ui:DropdownField name="lobby-character" label="角色" class="hidden" /><ui:DropdownField name="lobby-team" label="队伍" />
-                    <ui:Label name="lobby-address-note" class="muted small" />
-                </ui:Foldout>
+
             </ui:ScrollView>
+            <ui:VisualElement class="row"><ui:DropdownField name="lobby-ai-difficulty" label="机器人难度" /><ui:Label name="lobby-ai-note" class="muted grow" /></ui:VisualElement>
             <ui:VisualElement class="row network-footer"><ui:Label name="lobby-status" class="network-status grow hidden" /><ui:VisualElement class="grow" /><ui:Button name="lobby-fill-bots" text="补齐机器人" class="secondary" /><ui:Button name="lobby-clear-bots" text="清空机器人" class="secondary" /><ui:Button name="lobby-ready" text="准备" class="primary" /></ui:VisualElement>
             <ui:VisualElement name="lobby-countdown" class="lobby-countdown hidden" picking-mode="Ignore"><ui:Label name="lobby-countdown-number" class="lobby-countdown-number" /><ui:Label text="即将进入选人布阵" class="lobby-countdown-copy" /><ui:Label text="取消准备可中止" class="social-muted" /></ui:VisualElement>
         </ui:VisualElement>
@@ -306,7 +293,7 @@
             <ui:Label name="result-title" text="训练完成" class="page-title" />
             <ui:Label name="result-score" text="0 : 0" class="result-score" />
             <ui:Label name="result-subtitle" class="muted" />
-            <ui:VisualElement class="row result-wallet"><ui:Label name="result-reward" class="result-reward grow" /><ui:Label name="result-coins" class="result-coins" /></ui:VisualElement>
+            <ui:VisualElement class="row result-wallet"><ui:Label name="result-rank" class="social-section hidden" /><ui:Label name="result-reward" class="result-reward grow" /><ui:Label name="result-coins" class="result-coins" /></ui:VisualElement>
             <ui:Label name="combat-summary" class="muted combat-summary" />
             <ui:VisualElement class="result-stats row">
                 <ui:VisualElement class="stat"><ui:Label name="stat-goals" class="stat-number" /><ui:Label text="进球" /></ui:VisualElement>
@@ -327,7 +314,7 @@
         </ui:VisualElement>
 
         <ui:VisualElement name="profile-page" class="social-page hidden">
-            <ui:VisualElement class="row social-heading"><ui:VisualElement class="grow"><ui:Label name="profile-name" class="social-title" /><ui:Label name="profile-id" class="social-muted" /></ui:VisualElement><ui:Button name="profile-friends" text="好友" class="front-utility" /><ui:Button name="profile-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
+            <ui:VisualElement class="row social-heading"><ui:VisualElement class="grow"><ui:Label name="profile-name" class="social-title" /><ui:Label name="profile-id" class="social-muted" /></ui:VisualElement><ui:Button name="profile-rename" text="修改名字" class="front-utility" /><ui:Button name="profile-friends" text="好友" class="front-utility" /><ui:Button name="profile-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
             <ui:Label name="profile-status" class="social-status" />
             <ui:VisualElement class="row profile-metrics"><ui:VisualElement class="profile-metric"><ui:Label name="profile-matches" class="profile-number" /><ui:Label text="累计场次" class="social-muted" /></ui:VisualElement><ui:VisualElement class="profile-metric"><ui:Label name="profile-winrate" class="profile-number" /><ui:Label text="胜率" class="social-muted" /></ui:VisualElement><ui:VisualElement class="profile-metric"><ui:Label name="profile-goals" class="profile-number" /><ui:Label text="总进球" class="social-muted" /></ui:VisualElement></ui:VisualElement>
             <ui:VisualElement name="profile-heroes" class="row profile-heroes" />
@@ -336,8 +323,9 @@
         </ui:VisualElement>
         <ui:VisualElement name="friends-page" class="social-page hidden">
             <ui:VisualElement class="row social-heading"><ui:Label text="好友" class="social-title grow" /><ui:Button name="friends-refresh" text="刷新" class="front-utility" /><ui:Button name="friends-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
-            <ui:VisualElement name="friends-offline" class="social-offline"><ui:Label text="联网登录后可添加好友" class="social-section" /><ui:Button name="friends-login" text="联网登录" class="primary" /></ui:VisualElement>
-            <ui:VisualElement name="friends-steam" class="friends-online hidden"><ui:VisualElement class="row"><ui:Label name="steam-friends-count" class="social-section grow" /><ui:Button name="steam-friends-open" text="管理 Steam 好友" class="social-action" /></ui:VisualElement><ui:Label text="在房间内邀请好友，或分享房间号。" class="social-muted" /><ui:Label name="steam-friends-empty" text="暂无 Steam 好友。" class="social-muted" /><ui:ScrollView name="steam-friends-list" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement>
+            <ui:VisualElement class="row friends-tabs"><ui:Button name="friends-game-tab" text="游戏好友" class="front-utility" /><ui:Button name="friends-steam-tab" text="Steam 好友" class="front-utility" /><ui:Button name="friends-copy-id" text="复制 ID" class="front-utility" /><ui:Label name="friends-game-id" class="social-muted grow" /></ui:VisualElement>
+            <ui:VisualElement name="friends-offline" class="social-offline"><ui:Label text="连接游戏好友服务后，可添加游戏好友、私聊和组队。" class="social-section" /><ui:Button name="friends-link-game" text="使用游戏帐号连接 / 注册" class="secondary hidden" /><ui:Button name="friends-login" text="联网登录" class="primary" /></ui:VisualElement>
+            <ui:VisualElement name="friends-steam" class="friends-online hidden"><ui:Button name="steam-friends-login" text="使用 Steam 登录查看好友" class="primary hidden" /><ui:VisualElement class="row"><ui:Label name="steam-friends-count" class="social-section grow" /><ui:Button name="steam-friends-open" text="管理 Steam 好友" class="social-action" /></ui:VisualElement><ui:Label text="点击邀请开房，通过 Steam 给好友发送房间邀请。" class="social-muted" /><ui:Label name="steam-friends-empty" text="暂无 Steam 好友。" class="social-muted" /><ui:ScrollView name="steam-friends-list" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement>
             <ui:VisualElement name="friends-online" class="friends-online"><ui:VisualElement class="row friend-search-row"><ui:TextField name="friend-account" label="帐号 ID" class="grow" /><ui:Button name="friend-search" text="查找玩家" class="social-action" /></ui:VisualElement><ui:Label name="friends-status" class="social-status" /><ui:VisualElement name="friend-result" />
                 <ui:VisualElement class="row friends-columns"><ui:VisualElement class="friends-column"><ui:Label name="friends-count" text="好友 · 0" class="social-section" /><ui:Label name="friends-empty" text="暂无好友，可以通过帐号 ID 添加。" class="social-muted" /><ui:ScrollView name="friends-list" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement><ui:VisualElement class="friends-column"><ui:Label name="friends-requests-title" text="申请 · 0" class="social-section" /><ui:ScrollView name="friends-requests" mode="Vertical" horizontal-scroller-visibility="Hidden" class="friends-list" /></ui:VisualElement></ui:VisualElement>
             </ui:VisualElement>
@@ -371,6 +359,24 @@
                 <ui:ScrollView name="keys-scroll" class="keys-scroll" mode="Vertical" horizontal-scroller-visibility="Hidden"><ui:VisualElement name="keybinding-list" /><ui:Label text="鼠标右键：移动 / 追击&#10;鼠标左键：确认技能目标&#10;Esc：始终可以返回或打开比赛菜单" class="fixed-mouse-keys" /></ui:ScrollView>
                 <ui:Label name="keys-status" text="" class="keys-status" />
             </ui:VisualElement>
+        </ui:VisualElement>
+        <ui:VisualElement name="nickname-page" class="page login-page hidden">
+            <ui:Label text="技能足球" class="eyebrow" /><ui:Label name="nickname-title" text="给自己起个名字" class="page-title" />
+            <ui:Label text="1–6 个字，之后可在个人主页修改。" class="muted" />
+            <ui:TextField name="nickname-value" label="游戏名字" /><ui:Label name="nickname-count" text="0 / 6" class="muted" /><ui:Label name="nickname-status" class="network-status" />
+            <ui:VisualElement class="row login-actions"><ui:Button name="nickname-cancel" text="取消" class="secondary hidden" /><ui:Button name="nickname-save" text="进入游戏" class="primary" /></ui:VisualElement>
+        </ui:VisualElement>
+
+        <ui:VisualElement name="party-page" class="social-page party-page hidden">
+            <ui:VisualElement class="row social-heading"><ui:VisualElement class="grow"><ui:Label text="组队大厅" class="social-title" /><ui:Label name="party-identity" class="social-muted" /></ui:VisualElement><ui:Button name="party-friends" text="邀请好友" class="front-utility" /><ui:Button name="party-chat" text="队伍聊天" class="front-utility" /><ui:Button name="party-back" text="‹ 返回" class="front-utility" /></ui:VisualElement>
+            <ui:Label name="party-status" class="social-status" /><ui:Button name="party-login" text="连接游戏帐号服务" class="primary hidden" />
+            <ui:ScrollView class="party-body" mode="Vertical" horizontal-scroller-visibility="Hidden">
+                <ui:VisualElement class="party-columns"><ui:VisualElement class="party-main"><ui:Label text="我的队伍 · 最多三人" class="social-section" /><ui:VisualElement name="party-members" />
+                    <ui:VisualElement name="party-queue-actions"><ui:Label name="party-queue-status" class="social-copy" /><ui:VisualElement class="row party-actions"><ui:Button name="party-ready" text="准备" class="primary" /><ui:Button name="party-normal" text="普通匹配" class="secondary" /><ui:Button name="party-ranked" text="排位" class="secondary" /><ui:Button name="party-cancel" text="取消匹配" class="secondary hidden" /></ui:VisualElement><ui:VisualElement class="row party-actions"><ui:Button name="party-create-room" text="队伍一起开房" class="secondary" /><ui:Button name="party-leave" text="离开队伍" class="secondary" /></ui:VisualElement></ui:VisualElement>
+                    <ui:Button name="party-reconnect" text="重新连接当前对局" class="primary hidden" />
+                    <ui:VisualElement name="party-room" class="party-room hidden"><ui:Label name="party-room-title" class="social-section" /><ui:VisualElement name="party-room-slots" /><ui:DropdownField name="party-room-difficulty" label="AI 难度" /><ui:VisualElement class="row party-actions"><ui:Button name="party-room-ready" text="准备" class="primary" /><ui:Button name="party-room-bots" text="补齐 AI" class="secondary" /><ui:Button name="party-room-clear" text="清空 AI" class="secondary" /></ui:VisualElement><ui:VisualElement class="row party-actions"><ui:Button name="party-room-chat" text="房间聊天" class="secondary" /><ui:Button name="party-room-copy" text="复制房间号" class="secondary" /><ui:Button name="party-room-leave" text="离开房间" class="secondary" /></ui:VisualElement></ui:VisualElement>
+                </ui:VisualElement><ui:VisualElement class="party-side"><ui:Label text="收到的邀请" class="social-section" /><ui:Label name="party-invites-empty" text="暂无邀请。可以从好友列表邀请朋友组队。" class="social-muted" /><ui:ScrollView name="party-invites" class="party-invites" mode="Vertical" horizontal-scroller-visibility="Hidden" /><ui:TextField name="party-room-code" label="好友房间号" max-length="6" /><ui:Button name="party-room-join" text="按号加入好友房间" class="secondary" /><ui:Label text="匹配和排位等待六名真人；好友房间可补 AI。退出未结束的排位不会取消服务器结算。" class="social-muted" /></ui:VisualElement></ui:VisualElement>
+            </ui:ScrollView>
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>

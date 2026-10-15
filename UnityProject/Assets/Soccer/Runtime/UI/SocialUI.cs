@@ -8,14 +8,18 @@ namespace Soccer.Runtime
 {
     public sealed class SocialUI
     {
-        private readonly AppController app;private readonly VisualElement root;private CharacterId? hero;
+        private readonly AppController app;private readonly VisualElement root;private CharacterId? hero;private bool steamTab;
         public SocialUI(AppController app,VisualElement root)
         {
             this.app=app;this.root=root;
             Button("profile-back",app.BackFromProfile);Button("profile-friends",app.OpenFriends);Button("profile-history",app.OpenHistory);
-            Button("profile-all",()=>{hero=null;RefreshProfile();});Button("friends-back",app.GoHome);Button("friends-login",app.OpenLogin);
+            Button("profile-rename",()=>app.OpenNickname());
+            Button("profile-all",()=>{hero=null;RefreshProfile();});Button("friends-back",app.BackFromFriends);Button("friends-login",()=>{if(app.SteamEntry)app.ConnectSteamCommunity();else app.OpenLogin();});
             Button("friends-refresh",()=>{if(app.SteamEntry)RefreshFriends();else app.RefreshFriends();});Button("steam-friends-open",app.Steam.OpenFriends);Button("friend-search",()=>app.SearchFriend(root.Q<TextField>("friend-account").value));
-            root.Q<TextField>("friend-account").maxLength=16;
+            root.Q<TextField>("friend-account").maxLength=32;
+            Button("friends-copy-id",()=>GUIUtility.systemCopyBuffer=app.SocialAccountId);
+            Button("friends-link-game",app.UI.ShowCommunityLogin);
+            Button("friends-game-tab",()=>{steamTab=false;RefreshFriends();});Button("friends-steam-tab",()=>{steamTab=true;RefreshFriends();});Button("steam-friends-login",()=>app.EnterSteam());
         }
         private void Button(string name,Action action){root.Q<Button>(name).clicked+=()=>{app.Audio.PlayClick();action();};}
         private Button ActionButton(string text,string name,Action action)
@@ -30,6 +34,7 @@ namespace Soccer.Runtime
         }
         private void RefreshProfile()
         {
+            Show("profile-rename",app.OwnProfile);
             var data=app.VisibleProfile;Text("profile-name",data?.DisplayName ?? "玩家主页");Text("profile-id",data==null ? "" : data.AccountId.Length==0 ? "离线档案" : "帐号 ID  "+data.AccountId);
             Text("profile-status",app.ProfileStatus);Show("profile-friends",app.OwnProfile);Show("profile-history",app.OwnProfile);
             var heroes=root.Q("profile-heroes");heroes.Clear();var recent=root.Q<ScrollView>("profile-recent");recent.Clear();
@@ -57,25 +62,31 @@ namespace Soccer.Runtime
         }
         private void RefreshFriends()
         {
-            bool online=app.SocialOnline,steam=app.SteamEntry;Show("friends-steam",steam);Show("friends-online",online);Show("friends-offline",!online && !steam);
+            bool online=app.SocialOnline,steam=steamTab;Show("friends-steam",steam);Show("friends-online",!steam && online);Show("friends-offline",!steam && !online);
+            root.Q("friends-game-tab").EnableInClassList("route-selected",!steam);root.Q("friends-steam-tab").EnableInClassList("route-selected",steam);
+            root.Q<Button>("friends-login").text=app.SteamEntry ? "连接游戏好友" : "游戏帐号登录";
+            Text("friends-game-id",online ? "你的游戏 ID："+app.SocialAccountId : app.SocialStatus);
+            Show("steam-friends-login",!app.SteamEntry);Show("friends-link-game",app.SteamEntry && !online);
             if(steam)
             {
                 root.Q<Button>("friends-refresh").SetEnabled(app.Steam.Ready);var list=root.Q<ScrollView>("steam-friends-list");list.Clear();
                 var steamFriends=app.Steam.GetFriends();Text("steam-friends-count","Steam好友 · "+steamFriends.Length);Show("steam-friends-empty",steamFriends.Length==0);
-                foreach(var friend in steamFriends){var captured=friend;var row=new VisualElement();row.AddToClassList("social-person");row.AddToClassList("row");var name=new Label(friend.Name+" · "+(friend.Online ? "在线" : "离线"));name.AddToClassList("social-copy");name.AddToClassList("grow");row.Add(name);row.Add(ActionButton("Steam主页","steam-profile-"+friend.Id,()=>app.Steam.OpenFriendProfile(captured.Id)));list.Add(row);}return;
+                foreach(var friend in steamFriends){var captured=friend;var row=new VisualElement();row.AddToClassList("social-person");row.AddToClassList("row");var name=new Label(friend.Name+" · "+(friend.Online ? "在线" : "离线"));name.AddToClassList("social-copy");name.AddToClassList("grow");row.Add(name);var invite=ActionButton("邀请开房","steam-invite-"+friend.Id,()=>app.InviteSteamFriend(captured.Id));invite.SetEnabled(app.Steam.Ready && !app.Steam.Busy && app.Page!=AppPage.Match);row.Add(invite);row.Add(ActionButton("Steam主页","steam-profile-"+friend.Id,()=>app.Steam.OpenFriendProfile(captured.Id)));list.Add(row);}return;
             }Text("friends-status",app.SocialStatus);
             root.Q<Button>("friend-search").SetEnabled(online && !app.FriendsBusy);root.Q<Button>("friends-refresh").SetEnabled(online && !app.FriendsBusy);
             var result=root.Q("friend-result");result.Clear();var person=app.SearchPerson;
             if(person!=null)
             {
                 var row=PersonRow(person.AccountId,person.DisplayName,"search-profile");
-                bool own=person.AccountId==app.Account.Id,friend=app.Friends.Friends.Any(p=>p.AccountId==person.AccountId),incoming=app.Friends.Incoming.Any(p=>p.AccountId==person.AccountId),pending=app.Friends.Outgoing.Any(p=>p.AccountId==person.AccountId);
+                bool own=person.AccountId==app.SocialAccountId,friend=app.Friends.Friends.Any(p=>p.AccountId==person.AccountId),incoming=app.Friends.Incoming.Any(p=>p.AccountId==person.AccountId),pending=app.Friends.Outgoing.Any(p=>p.AccountId==person.AccountId);
                 var add=ActionButton(own ? "你自己" : friend ? "已是好友" : incoming ? "接受申请" : pending ? "已申请" : "添加好友","friend-add",()=>app.FriendAction(person.AccountId,incoming ? "accept" : "request"));
                 add.SetEnabled(!own && !friend && !pending && !app.FriendsBusy);row.Add(add);result.Add(row);
             }
             var friends=root.Q<ScrollView>("friends-list");friends.Clear();Text("friends-count","好友 · "+app.Friends.Friends.Length);Show("friends-empty",app.Friends.Friends.Length==0);
             foreach(var personData in app.Friends.Friends)
-            {var p=personData;var row=PersonRow(p.AccountId,p.DisplayName,"friend-profile-"+p.AccountId);var remove=ActionButton("移除","friend-remove-"+p.AccountId,()=>app.FriendAction(p.AccountId,"remove"));remove.SetEnabled(!app.FriendsBusy);row.Add(remove);friends.Add(row);}
+            {var p=personData;var row=PersonRow(p.AccountId,p.DisplayName+(app.Community.OnlineFriends.Contains(p.AccountId) ? " · 在线" : " · 离线"),"friend-profile-"+p.AccountId);
+                var chat=ActionButton("私聊","friend-chat-"+p.AccountId,()=>app.UI.Chat.OpenPrivate(p.AccountId,p.DisplayName));row.Add(chat);
+                var invite=ActionButton(app.Community.Room!=null ? "邀入房间" : "邀请组队","friend-invite-"+p.AccountId,()=>app.CommunityCommand(new CommunityAction{Action=app.Community.Room!=null ? "inviteRoom" : "invite",Target=p.AccountId}));invite.SetEnabled(!app.CommunityBusy);row.Add(invite);var remove=ActionButton("移除","friend-remove-"+p.AccountId,()=>app.FriendAction(p.AccountId,"remove"));remove.SetEnabled(!app.FriendsBusy);row.Add(remove);friends.Add(row);}
             var requests=root.Q<ScrollView>("friends-requests");requests.Clear();Text("friends-requests-title","申请 · "+app.Friends.Incoming.Length);
             foreach(var personData in app.Friends.Incoming)
             {var p=personData;var row=PersonRow(p.AccountId,p.DisplayName,"request-profile-"+p.AccountId);var accept=ActionButton("接受","friend-accept-"+p.AccountId,()=>app.FriendAction(p.AccountId,"accept"));var reject=ActionButton("拒绝","friend-reject-"+p.AccountId,()=>app.FriendAction(p.AccountId,"reject"));accept.SetEnabled(!app.FriendsBusy);reject.SetEnabled(!app.FriendsBusy);row.Add(accept);row.Add(reject);requests.Add(row);}

@@ -1,0 +1,32 @@
+{
+  "passed": true,
+  "total": 6,
+  "checks": [
+    {
+      "name": "http://127.0.0.1:27862 /health returns 0.30.0",
+      "passed": true
+    },
+    {
+      "name": "http://127.0.0.1:27862 requires authentication for private community state",
+      "passed": true
+    },
+    {
+      "name": "http://192.168.31.29:27862 /health returns 0.30.0",
+      "passed": true
+    },
+    {
+      "name": "http://192.168.31.29:27862 requires authentication for private community state",
+      "passed": true
+    },
+    {
+      "name": "live host disables legacy public debug accounts",
+      "passed": true
+    },
+    {
+      "name": "user service is configured to listen on LAN, start at login and restart after exit",
+      "passed": true
+    }
+  ],
+  "remoteComputerVerified": false,
+  "publicInternetVerified": false
+}

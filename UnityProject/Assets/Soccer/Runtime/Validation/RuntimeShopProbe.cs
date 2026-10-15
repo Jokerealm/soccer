@@ -37,7 +37,7 @@ namespace Soccer.Runtime
             yield return null;Check(app.InDraft,"native KeyDown Enter dispatches a queued button submit exactly once");app.BackFromSelection();
             app.GoHome();yield return new WaitForSecondsRealtime(.35f);
             yield return Click("shop-button");Check(app.Page==AppPage.Shop && app.Wallet!=null,"mouse shop entry opens the current player's actual wallet");
-            Check(app.UI.Root.Q<Label>("shop-coins").text==app.Wallet.Coins.ToString("N0") && app.UI.Root.Q<Label>("shop-profile").text=="离线玩家","shop balance and profile reflect persisted offline wallet");
+            Check(app.UI.Root.Q<Label>("shop-coins").text==app.Wallet.Coins.ToString("N0") && app.UI.Root.Q<Label>("shop-profile").text==app.PlayerName,"shop balance and profile reflect persisted offline wallet");
             foreach(var size in new[]{new Vector2Int(1024,768),new Vector2Int(1280,720),new Vector2Int(1920,1080)})
             {
                 Screen.SetResolution(size.x,size.y,false);yield return new WaitForSecondsRealtime(.5f);

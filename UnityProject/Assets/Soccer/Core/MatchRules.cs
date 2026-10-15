@@ -6,7 +6,7 @@ namespace Soccer.Core
     [Serializable]
     public sealed class MatchRules
     {
-        public string RuleVersion = "star-strikers-prototype-0.22.0";
+        public string RuleVersion = "star-strikers-prototype-0.29.0";
         // 原地图速度保留在角色表；统一倍率用于校准本原型的现实时间跑位。
         public float MovementSpeedScale = 1.6f;
         public bool EnableCombat = true;
@@ -32,6 +32,8 @@ namespace Soccer.Core
         public float MatchSeconds = 300;
         public float OvertimeSeconds = 90;
         public float InitialCountdown = 3;
+        public float OpeningHexRadius = 2.2f;
+        public BotDifficulty BotDifficulty = BotDifficulty.Player;
         // 中圈美术、保护罩美术与阻挡判定共用同一个半径。
         public float CenterCircleRadius = 4.2f;
         public float OpeningShieldRadius => CenterCircleRadius;
@@ -74,6 +76,8 @@ namespace Soccer.Core
 
         public void Validate()
         {
+            if (!Enum.IsDefined(typeof(BotDifficulty), BotDifficulty) || !Geometry.IsFinite(OpeningHexRadius) || OpeningHexRadius < 1.2f || OpeningHexRadius > 4)
+                throw new ArgumentException("机器人难度或开场六边形范围无效。");
             if (!Geometry.IsFinite(MovementSpeedScale) || MovementSpeedScale <= 0 || MovementSpeedScale > 4)
                 throw new ArgumentException("移动速度倍率必须在 0 到 4 之间。");
             foreach (float value in new[] { SkillPlayerClearHeight, SkillBallCatchHeight, SkillBallGravity,
@@ -114,6 +118,7 @@ namespace Soccer.Core
     [Serializable]
     public sealed class CharacterStats
     {
+        public CharacterStats Copy() => (CharacterStats)MemberwiseClone();
         public CharacterId Id;
         public string Name;
         public float MaxHealth = 100;

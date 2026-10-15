@@ -345,6 +345,7 @@ namespace Soccer.Runtime
                     var go = new GameObject("Damage Number"); go.transform.SetParent(ActorRoot, false);
                     var text = go.AddComponent<TextMesh>(); text.fontSize = 64; text.characterSize = 0.06f;
                     text.transform.localRotation = Quaternion.Euler(55,0,0);
+                    go.AddComponent<CameraBillboard>();
                     text.anchor = TextAnchor.MiddleCenter; text.alignment = TextAlignment.Center;
                     go.GetComponent<MeshRenderer>().sortingOrder = 900;
                     number = new DamageNumber { Text = text }; numbers.Add(number);
@@ -364,6 +365,8 @@ namespace Soccer.Runtime
                 number.Age += dt; number.Text.gameObject.SetActive(number.Age < 0.55f);
                 if (number.Age >= 0.55f) continue;
                 number.Text.transform.position = ArenaProjection.ToWorld(number.Center) + ArenaProjection.VisualOffset(0.25f, 2.05f + number.Age * 0.65f);
+                var billboard=number.Text.GetComponent<CameraBillboard>();
+                billboard.Anchor=ArenaProjection.ToWorld(number.Center);billboard.Offset=new Vector2(.25f,2.05f+number.Age*.65f);
                 number.Text.transform.localScale = Vector3.one * (1 + Mathf.Max(0, 1 - number.Age / 0.12f) * 0.2f);
                 Color color = number.Color; color.a = Mathf.Clamp01((0.55f - number.Age) / 0.2f); number.Text.color = color;
             }

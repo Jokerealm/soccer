@@ -16,6 +16,25 @@ namespace Soccer.Core
         private readonly CombatSystem combat;
         private readonly StarStrikerSkills starSkills;
         private readonly PlayerActionBuffer[] actionBuffers;
+        private CharacterStats[] basePlayerStats;
+        private bool[] botSlots;
+
+        public void ConfigureBot(int slot, bool bot)
+        {
+            if (slot < 0 || slot >= State.Players.Count) throw new ArgumentOutOfRangeException(nameof(slot));
+            if (basePlayerStats == null)
+            {
+                basePlayerStats = new CharacterStats[State.Players.Count];
+                botSlots = new bool[State.Players.Count];
+                foreach (var p in State.Players) basePlayerStats[p.Id] = p.Stats.Copy();
+            }
+            var player = State.Players[slot];
+            if (botSlots[slot] == bot) return;
+            float healthRatio = player.Health / player.Stats.MaxHealth, energyRatio = player.Energy / player.Stats.MaxEnergy;
+            player.Stats = BotDifficulties.Configure(basePlayerStats[slot], bot, Rules.BotDifficulty);
+            player.Health = player.Stats.MaxHealth * healthRatio; player.Energy = player.Stats.MaxEnergy * energyRatio;
+            botSlots[slot] = bot;
+        }
 
         public MatchSimulation(MatchRules rules, CharacterStats[] roster, CharacterId selected, MatchMode mode, CharacterId[] lineup = null)
         {
@@ -143,6 +162,7 @@ namespace Soccer.Core
                     }
                     else
                     {
+                        if (State.IsOpeningWarmup) navigation.ClearAll();
                         State.Phase = MatchPhase.Playing;
                         if (State.Round > 0 && State.Owner != null)
                         {
@@ -178,7 +198,7 @@ namespace Soccer.Core
                 var command = buffer.Prepare(input, p, Rules, hasBall, activeDt);
                 if (command.Aim.LengthSquared > 0.0001f && p.Dash == DashKind.None) p.Facing = command.Aim.Normalized;
                 // 被控制或右键取消必须先于同帧松键生效。
-                if (command.Cancel || p.Stun > 0 || p.PushRemaining > 0)
+                if (command.Cancel || command.BlockActions || p.Stun > 0 || p.PushRemaining > 0)
                 {
                     CancelCharge(p);
                     p.PreviewingE = false;
@@ -432,6 +452,7 @@ namespace Soccer.Core
                 float front=opening ? Math.Max(3,Rules.CenterCircleRadius+p.Stats.Radius+.9f) : 3;
                 p.Position = new Vec2(side * (slot == 0 ? front : slot == 1 ? Math.Max(8,front+2.5f) : Math.Max(12,front+5)), slot == 1 ? -4 : slot == 2 ? 3 : 0);
                 p.PreviousPosition = p.Position;
+                p.OpeningPosition = p.Position;
                 p.Facing = new Vec2(-side, 0);
                 p.Velocity = Vec2.Zero;
                 p.TackleCooldown = p.QCooldown = p.ECooldown = p.ActionLock = 0;

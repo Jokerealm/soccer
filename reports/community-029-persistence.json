@@ -1,0 +1,87 @@
+{
+  "passed": true,
+  "total": 20,
+  "checks": [
+    {
+      "name": "six previously settled real-match accounts are available as persistence fixtures",
+      "passed": true
+    },
+    {
+      "name": "production disables legacy debug login even with old debug accounts on disk",
+      "passed": true
+    },
+    {
+      "name": "registered account can log in using the packaged service",
+      "passed": true
+    },
+    {
+      "name": "server restart preserves exact ranked rating and settled-game count",
+      "passed": true
+    },
+    {
+      "name": "registered account can log in using the packaged service",
+      "passed": true
+    },
+    {
+      "name": "server restart preserves exact ranked rating and settled-game count",
+      "passed": true
+    },
+    {
+      "name": "registered account can log in using the packaged service",
+      "passed": true
+    },
+    {
+      "name": "server restart preserves exact ranked rating and settled-game count",
+      "passed": true
+    },
+    {
+      "name": "registered account can log in using the packaged service",
+      "passed": true
+    },
+    {
+      "name": "server restart preserves exact ranked rating and settled-game count",
+      "passed": true
+    },
+    {
+      "name": "registered account can log in using the packaged service",
+      "passed": true
+    },
+    {
+      "name": "server restart preserves exact ranked rating and settled-game count",
+      "passed": true
+    },
+    {
+      "name": "registered account can log in using the packaged service",
+      "passed": true
+    },
+    {
+      "name": "server restart preserves exact ranked rating and settled-game count",
+      "passed": true
+    },
+    {
+      "name": "production game search hides legacy debug profiles",
+      "passed": true
+    },
+    {
+      "name": "bilateral game friendship survives process replacement",
+      "passed": true
+    },
+    {
+      "name": "private message history survives process replacement without interpreting markup",
+      "passed": true
+    },
+    {
+      "name": "authentication sessions are invalidated by service restart",
+      "passed": true
+    },
+    {
+      "name": "ephemeral parties rooms and matches are cleared by restart",
+      "passed": true
+    },
+    {
+      "name": "restarting twice cannot duplicate ranked settlement",
+      "passed": true
+    }
+  ],
+  "scope": "Extracted portable ZIP, production defaults, synthetic local player fixtures only"
+}

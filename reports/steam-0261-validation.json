@@ -1,0 +1,66 @@
+{
+  "date": "2026-10-14",
+  "version": "0.26.1",
+  "protocol": "SkillSoccer/0.26.0/7",
+  "cause": "GetLobbyOwner requires lobby membership. The old search parser compared a valid metadata owner with nil (0) and discarded foreign lobbies.",
+  "fix": "Validate search metadata before joining; verify real lobby ownership after LobbyEnter and before authenticated P2P connection.",
+  "networkTests": {
+    "passed": true,
+    "total": 49,
+    "report": "reports/steam-0261-network/network-tests.json"
+  },
+  "steamNativeRegression": {
+    "passed": true,
+    "total": 20,
+    "report": "reports/steam-0261-smoke/steam-smoke.json"
+  },
+  "realMacToWindowsJoin": {
+    "passed": true,
+    "total": 10,
+    "report": "reports/steam-0261-real-join/steam-join.json",
+    "code": "J2LIX5",
+    "ownerBeforeJoin": 0,
+    "differentSteamAccounts": true,
+    "passwordAdmission": true,
+    "connected": true
+  },
+  "macBuild": {
+    "target": "StandaloneOSX",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 414646122
+  },
+  "windowsBuild": {
+    "target": "StandaloneWindows64",
+    "result": "Succeeded",
+    "editor": "2022.3.62t16",
+    "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+    "errors": 0,
+    "warnings": 0,
+    "warningMessages": [],
+    "bytes": 383011895
+  },
+  "package": {
+    "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.26.1-Windows-x64.zip",
+    "bytes": 144608515,
+    "sha256": "735b7b8cedd34c529d123c04b0f1aa6fde99c25e498b8473e546f2d2654dbbb2",
+    "zipVerified": true
+  },
+  "packagedFilesMatchBuild": {
+    "SkillSoccer_Data/Managed/Soccer.Runtime.dll": "2f850053b959df62633b6d9df44d26e6684556064bd5fda77233a5c2398da631",
+    "SkillSoccer_Data/Managed/Soccer.Core.dll": "c796eac915e3b09e9426eb91288d57d7c14ca4342e14fd73ce2bf6551a085e39",
+    "SkillSoccer_Data/globalgamemanagers": "d755a2e41541776ce3a49d04244cfbd4096f59c3e1c2d5d9ef124ddcddd99cdd",
+    "steam_appid.txt": "66c342932aa7c18f7bf1fa212aa011069fc2e50e0c7e9e4c73fcaa6851854c47"
+  },
+  "limitations": {
+    "publicInternetRouteVerified": false,
+    "SDRRouteVerified": false,
+    "fullCrossDeviceMatchVerified": false,
+    "newWindowsClientNativeExecutionVerified": false,
+    "githubReleasePublished": false
+  }
+}

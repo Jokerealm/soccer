@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Soccer.Runtime
 {
-    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby, Login, PlayMenu, Shop, History, Profile, Friends }
+    public enum AppPage { Home, CharacterSelect, Match, Results, Settings, Loading, ModeDetails, NetworkMenu, RoomLobby, Login, PlayMenu, Shop, History, Profile, Friends, Nickname, Party }
 
     /// <summary>应用流程编排：创建对局、推进固定 Tick、暂停、结束。业务规则留在 Core。</summary>
     public sealed partial class AppController : MonoBehaviour
@@ -23,6 +23,7 @@ namespace Soccer.Runtime
         private AppPage selectionOrigin = AppPage.Home;
         private AppPage modeOrigin = AppPage.Home;
         public GameKeyBindings Keys { get; private set; }
+        private bool ValidationSession => Array.Exists(Environment.GetCommandLineArgs(),arg=>arg=="--soccer-smoke" || arg=="--soccer-network-smoke" || arg=="--soccer-steam-smoke" || arg=="--soccer-tactics-smoke" || arg=="--soccer-community-smoke");
         public MatchSimulation Simulation { get; private set; }
         public CharacterId Selected { get; private set; } = CharacterId.Marine;
         public MatchMode SelectedMode { get; private set; } = MatchMode.Training;
@@ -46,7 +47,8 @@ namespace Soccer.Runtime
             if (Array.Find(Characters, d => d.Stats.Id == Selected) == null) Selected = Characters[0].Stats.Id;
             InitializeLoginAddress();
             Keys = new GameKeyBindings();
-            InitializeEconomy();
+            SelectedBotDifficulty=ValidationSession ? BotDifficulty.Player : (BotDifficulty)Mathf.Clamp(PlayerPrefs.GetInt("soccer.botDifficulty",1),0,3);
+            InitializeIdentity();InitializeEconomy();
             UI.Bind(this);
             UI.ShowPage(Page);
             Audio.SetContext(Page, false);
@@ -54,6 +56,8 @@ namespace Soccer.Runtime
             if (Array.IndexOf(args, "--soccer-smoke") >= 0) gameObject.AddComponent<RuntimeSmokeProbe>();
             if (Array.IndexOf(args, "--soccer-input-probe") >= 0) gameObject.AddComponent<RuntimeInputProbe>();
             if (Array.IndexOf(args, "--soccer-network-smoke") >= 0) gameObject.AddComponent<RuntimeNetworkProbe>();
+            if(Array.IndexOf(args,"--soccer-community-smoke")>=0)gameObject.AddComponent<RuntimeCommunityProbe>();
+            if(Array.IndexOf(args,"--soccer-tactics-smoke")>=0)gameObject.AddComponent<RuntimeTacticsProbe>();
             if(Array.IndexOf(args,"--soccer-steam-smoke")>=0)gameObject.AddComponent<RuntimeSteamProbe>();
             float began = Time.realtimeSinceStartup;
             UI.SetLoading(0.08f, "正在准备球员与球场…");
@@ -95,8 +99,10 @@ namespace Soccer.Runtime
             if (!EnsureEntered()) return;
             if(Page==AppPage.PlayMenu || Page==AppPage.Home)modeOrigin=Page;
             SelectedPlaylist = mode;
+            if(mode==GamePlaylist.Ranked || mode==GamePlaylist.Normal && EntryMode==GameEntryMode.Online && !Soccer.Core.Networking.DebugAccounts.IsKnown(Account?.Id)){OpenParty();return;}
             if (EntryMode == GameEntryMode.Offline && GameModeCatalog.SupportsLAN(mode)) Route = ConnectionRoute.LAN;
             if (!GameModeCatalog.SupportsLAN(mode)) Route = ConnectionRoute.Internet;
+            if(mode==GamePlaylist.Normal){OpenNetwork(false);return;}
             Page = AppPage.ModeDetails;
             UI.ShowPage(Page); Audio.SetContext(Page, false);
         }
@@ -108,11 +114,12 @@ namespace Soccer.Runtime
         {
             if (route == ConnectionRoute.Internet && EntryMode != GameEntryMode.Online) return;
             if (route == ConnectionRoute.LAN && !GameModeCatalog.SupportsLAN(SelectedPlaylist)) return;
-            Route = route; UI.RefreshModeDetails();
+            Route = route; if(Page==AppPage.NetworkMenu)OpenNetwork(false);else UI.RefreshModeDetails();
         }
 
         public void BackFromSelection()
         {
+            if(ServiceMatch!=null){LeaveServiceMatch();return;}
             if(InDraft && Room!=null) {if(Room.IsHost)Room.ReturnToLobby();else BackFromNetwork();return;}
             if(InDraft) {localDraft=null;OpenPlayMenu();return;}
             if(selectionOrigin==AppPage.PlayMenu) {OpenPlayMenu();return;}
@@ -126,7 +133,7 @@ namespace Soccer.Runtime
             if (Room != null) { if (Room.IsHost) Room.ReturnToLobby(); return; }
             LocalPlayerId = 0; View.LocalPlayerId = Audio.LocalPlayerId = 0;
             var roster = Array.ConvertAll(Characters, c => c.CreateStats());
-            Simulation = new MatchSimulation(RulesAsset.CreateRules(), roster, Selected, SelectedMode,SelectedMode==MatchMode.BotMatch ? preparedLineup : null);
+            Simulation = new MatchSimulation(LocalMatchRules(), roster, Selected, SelectedMode,SelectedMode==MatchMode.BotMatch ? preparedLineup : null);
             if(SelectedMode==MatchMode.BotMatch && preparedPositions!=null)Simulation.ApplyOpeningPositions(preparedPositions);
             preparedLineup=null;preparedPositions=null;
             BeginRewardSession();
@@ -134,7 +141,8 @@ namespace Soccer.Runtime
             inputSources = new ICommandSource[Simulation.State.Players.Count];
             commands = new PlayerCommand[inputSources.Length];
             inputSources[0] = localInput;
-            for (int i = 1; i < inputSources.Length; i++) inputSources[i] = new BotCommandSource(Simulation.Rules);
+            for (int i = 1; i < inputSources.Length; i++)
+            { inputSources[i] = new BotCommandSource(Simulation.Rules);if(SelectedMode==MatchMode.BotMatch)Simulation.ConfigureBot(i,true); }
             View.Bind(Simulation.State, Characters);
             accumulator = 0;
             FinalGoalRemaining=0;
@@ -152,18 +160,23 @@ namespace Soccer.Runtime
         {
             PumpSteam();
             PumpNetworking();
-            TickSocial();
+            TickSocial();TickCommunity();UI.Chat?.Tick();
             TickDraft();
-            if (UI.BlocksKeyNavigation) return;
+            if (UI.BlocksKeyNavigation && Page!=AppPage.Match) return;
             if (Page != AppPage.Match && Page != AppPage.Loading && Page != AppPage.Login && Input.GetKeyDown(KeyCode.Escape))
             {
                 Audio.PlayClick();
-                if (Page == AppPage.CharacterSelect) BackFromSelection();
+                if(Page==AppPage.NetworkMenu && UI.JoinDialogOpen)UI.CloseJoinDialog();
+                else if (Page == AppPage.CharacterSelect) BackFromSelection();
                 else if (Page == AppPage.NetworkMenu || Page == AppPage.RoomLobby) BackFromNetwork();
-                else if(Page==AppPage.ModeDetails)BackFromMode();else if(Page==AppPage.Profile)BackFromProfile();else GoHome();
+                else if(Page==AppPage.Nickname)CancelNickname();else if(Page==AppPage.ModeDetails)BackFromMode();else if(Page==AppPage.Profile)BackFromProfile();else GoHome();
             }
             if (Page != AppPage.Match || Simulation == null) return;
-            if (Input.GetKeyDown(KeyCode.Escape) || Keys.Down(GameAction.Pause)) { Audio.PlayClick(); SetPaused(!Paused); }
+            bool pausePressed=Input.GetKeyDown(KeyCode.Escape) || Keys.Down(GameAction.Pause);
+            bool cancelSignal=pausePressed && UI.Tactics.WheelOpen;
+            if (!UI.Chat.BlocksGameplay && pausePressed && !cancelSignal) { Audio.PlayClick(); SetPaused(!Paused); }
+            if(UI.Chat.BlocksGameplay || cancelSignal)UI.Tactics?.SuspendInput();else UI.Tactics?.Tick();
+            if (IsServiceMatch) {UpdateServiceMatch();return;}
             if (IsNetworkMatch) { UpdateNetworkMatch(); return; }
             if (Paused) { View.Render(Simulation.State, Simulation.Rules, 1, ShowDebug, false); return; }
             var state = Simulation.State;
@@ -179,7 +192,7 @@ namespace Soccer.Runtime
                 if(FinalGoalRemaining<=0) ShowResults();
                 return;
             }
-            if (state.Mode == MatchMode.Training && !state.IsOpeningWarmup && Tutorial==null)
+            if (state.Mode == MatchMode.Training && !state.IsOpeningWarmup && Tutorial==null && !UI.Tactics.BlocksGameplay && !UI.Chat.BlocksGameplay)
             {
                 if (Keys.Down(GameAction.Reset)) { Audio.PlayClick(); ResetTraining(false); }
                 if (Keys.Down(GameAction.OwnBall)) { Audio.PlayClick(); ResetTraining(true); }
@@ -189,7 +202,7 @@ namespace Soccer.Runtime
                 if (Keys.Down(GameAction.Debug)) { Audio.PlayClick(); ToggleDebug(); }
             }
             if (state.Phase == MatchPhase.Playing || state.IsOpeningWarmup || state.Phase == MatchPhase.SetPiece)
-                localInput.Sample(state, Simulation.Rules, UI.IsPointerOverControl(),state.IsOpeningWarmup);
+                { if(UI.Tactics.BlocksGameplay || UI.Chat.BlocksGameplay)localInput.SuppressActions();else localInput.Sample(state, Simulation.Rules, UI.IsPointerOverControl(),state.IsOpeningWarmup); }
             else localInput.Reset();
             accumulator += Mathf.Min(Time.unscaledDeltaTime, 0.1f);
             while (accumulator >= MatchSimulation.TickSeconds && Page == AppPage.Match)
@@ -290,7 +303,9 @@ namespace Soccer.Runtime
             Paused = paused;
             accumulator = 0;
             localInput?.Reset();
-            if (IsNetworkMatch)
+            if(IsServiceMatch)
+            {ServiceMatch.Input(new PlayerCommand{BlockActions=true,StopPressed=true});}
+            else if (IsNetworkMatch)
             {
                 if (Room.IsHost) Simulation.CancelPlayerInputs(LocalPlayerId);
                 else Room.SendInput(new PlayerCommand { Cancel = true, StopPressed = true });
@@ -335,6 +350,7 @@ namespace Soccer.Runtime
         { SettleMatchReward();FinalGoalRemaining=0;Paused = false; Page = AppPage.Results; UI.ShowPage(Page); Audio.SetContext(Page, false); Audio.PlayFinish(); }
         public void GoHome()
         {
+            if(ServiceMatch!=null){LeaveServiceMatch();return;}
             if (!EnsureEntered()) return;
             SettleMatchReward();ReloadWallet();
             CloseNetworking(); LocalPlayerId = 0;

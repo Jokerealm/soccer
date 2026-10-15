@@ -20,14 +20,15 @@ namespace Soccer.Runtime
         {
             if (SelectedPlaylist != GamePlaylist.Normal || !EnsureEntered()) return;
             if (Route == ConnectionRoute.Internet && EntryMode != GameEntryMode.Online) { OpenLogin(); return; }
-            CloseNetworking(); NetworkCreating = create; NetworkStatus = "";
+            CloseNetworking();UI.ResetNetworkForm(); NetworkCreating = create; NetworkStatus = "";
             if (Route == ConnectionRoute.LAN)
                 try { Discovery = new LanDiscovery(); } catch (Exception) { NetworkStatus = "自动发现不可用，可以使用房主地址加入"; }
             Page = AppPage.NetworkMenu; UI.ShowPage(Page); Audio.SetContext(Page, false);
             if(Route==ConnectionRoute.Steam && !create && browseSteam)Steam.FindRooms();
         }
         public void BackFromNetwork()
-        { CloseNetworking(); OpenMode(SelectedPlaylist); }
+        { CloseNetworking(); BackFromMode(); }
+        public void ClearNetworkStatus(){NetworkStatus="";}
         private void CloseNetworking()
         { shownNetworkDraftEpoch=0; StopRoomDirectory(); Room?.Dispose(); Room = null; Discovery?.Dispose(); Discovery = null;CloseSteamRoom(); }
         public void CreateNetworkRoom(RoomOptions options)
@@ -69,8 +70,11 @@ namespace Soccer.Runtime
             {
                 if (Room == null) return; publicationDirty = true; LocalPlayerId = Room.LocalSlot; NetworkStatus = Room.Status;
                 if (Room.Connected && Page == AppPage.NetworkMenu) { Page = AppPage.RoomLobby; UI.ShowPage(Page); }
+                if(Simulation!=null && Room.Running)foreach(var p in Simulation.State.Players)Simulation.ConfigureBot(p.Id,!Room.IsHumanSlot(p.Id));
                 UI.RefreshNetwork();
             };
+            Room.ChatReceived += message=>UI.Chat.Receive(message,"room:"+Room.Lobby.Id);
+            Room.SignalReceived += signal => UI.Tactics?.Receive(signal);
             Room.Started += BeginNetworkMatch;
             Room.DraftChanged += ShowNetworkDraft;
             Room.ReturnedToLobby += () =>
@@ -78,7 +82,7 @@ namespace Soccer.Runtime
                 Simulation = null; View.Clear(); localInput?.Reset(); Paused = false; FinalGoalRemaining = 0;
                 Page = AppPage.RoomLobby; UI.ShowPage(Page); Audio.SetContext(Page, false);
             };
-            Room.PlayerLeft += slot => { Simulation?.CancelPlayerInputs(slot); if (Simulation != null && inputSources != null) inputSources[slot] = new BotCommandSource(Simulation.Rules); Feedback = "球员离开，空位由 AI 接管"; feedbackRemaining = 3; };
+            Room.PlayerLeft += slot => { Simulation?.CancelPlayerInputs(slot); if (Simulation != null && inputSources != null) { Simulation.ConfigureBot(slot,true);inputSources[slot] = new BotCommandSource(Simulation.Rules); } Feedback = "球员离开，空位由 AI 接管"; feedbackRemaining = 3; };
             Room.SnapshotReceived += bytes =>
             {
                 if (Simulation == null) return;
@@ -99,6 +103,7 @@ namespace Soccer.Runtime
             BeginRewardSession("network:"+Room.MatchId);
             localInput = new KeyboardMouseInput(WorldCamera,Keys); inputSources = new ICommandSource[6]; commands = new PlayerCommand[6];
             for (int i = 0; i < 6; i++) inputSources[i] = i == LocalPlayerId ? (ICommandSource)localInput : new BotCommandSource(Simulation.Rules);
+            foreach(var p in Simulation.State.Players)Simulation.ConfigureBot(p.Id,!Room.IsHumanSlot(p.Id));
             View.LocalPlayerId = Audio.LocalPlayerId = LocalPlayerId; View.Bind(Simulation.State, Characters);
             accumulator = 0; lastSnapshotAt = Time.realtimeSinceStartup; FinalGoalRemaining = 0; Paused = false;
             Feedback = "联机 3v3 · 接触足球夺球，传球配合进攻"; feedbackRemaining = 4;
@@ -124,7 +129,8 @@ namespace Soccer.Runtime
                 if (FinalGoalRemaining <= 0) ShowResults(); return;
             }
             bool inputActive = !Paused && Application.isFocused && (state.Phase == MatchPhase.Playing || state.IsOpeningWarmup || state.Phase == MatchPhase.SetPiece);
-            if (inputActive) localInput.Sample(state, Simulation.Rules, UI.IsPointerOverControl(), state.IsOpeningWarmup, LocalPlayerId);
+            if (inputActive)
+            {if(UI.Tactics.BlocksGameplay || UI.Chat.BlocksGameplay)localInput.SuppressActions();else localInput.Sample(state, Simulation.Rules, UI.IsPointerOverControl(), state.IsOpeningWarmup, LocalPlayerId);}
             else localInput.Reset();
             accumulator += Mathf.Min(Time.unscaledDeltaTime, .1f);
             while (accumulator >= MatchSimulation.TickSeconds)
@@ -143,6 +149,6 @@ namespace Soccer.Runtime
             Audio.Observe(state, Simulation.Rules); View.Render(state, Simulation.Rules, alpha, ShowDebug, !Paused, localInput.PreviewAim, localInput.SelectingSkillTarget); UI.RefreshMatch();
         }
         private void OnApplicationQuit() { applicationQuitting = true; }
-        private void OnDestroy() { applicationQuitting = true; CloseNetworking(); Account?.Dispose(); Account = null;Steam.Dispose(); }
+        private void OnDestroy() { applicationQuitting = true; ServiceMatch?.Dispose();CloseNetworking(); Account?.Dispose(); Account = null;Steam.Dispose(); }
     }
 }

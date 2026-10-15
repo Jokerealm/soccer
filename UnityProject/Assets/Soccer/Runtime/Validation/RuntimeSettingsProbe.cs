@@ -18,6 +18,7 @@ namespace Soccer.Runtime
             public bool Up(KeyCode key) => key == Released;
             public bool MouseDown(int button) => button == 1 && Right || button == 0 && Left;
             public Vector3 MousePosition => Position;
+            public float ScrollDelta => 0;
             public void Clear() { Pressed = HeldKey = Released = KeyCode.None; Right = Left = false; }
         }
         private void BindingKey(KeyCode key)
@@ -62,14 +63,14 @@ namespace Soccer.Runtime
                 Check(!command.KickPressed && !command.KickHeld,"old kick key no longer fires the command");
                 input.Clear();input.Pressed=KeyCode.K;sampler.Sample(state,app.Simulation.Rules,false);command=sampler.ReadCommand(state,0);
                 Check(command.TacklePressed,"remapped push key reaches the gameplay command");
-                foreach (var pair in new[] { (GameAction.SkillQ,KeyCode.U), (GameAction.SkillE,KeyCode.I), (GameAction.Special,KeyCode.O), (GameAction.Cancel,KeyCode.L), (GameAction.Stop,KeyCode.N), (GameAction.Queue,KeyCode.LeftControl) })
+                foreach (var pair in new[] { (GameAction.SkillQ,KeyCode.U), (GameAction.SkillE,KeyCode.I), (GameAction.Special,KeyCode.O), (GameAction.Cancel,KeyCode.L), (GameAction.Stop,KeyCode.N), (GameAction.Queue,KeyCode.LeftShift) })
                     Check(app.Keys.TryAssign(pair.Item1,pair.Item2,out _),"configure sampler action: "+pair.Item1);
                 input.Clear();input.Pressed=KeyCode.U;sampler.Sample(state,app.Simulation.Rules,false);command=sampler.ReadCommand(state,0);Check(command.QPressed,"remapped skill 1 command");
                 input.Clear();input.Pressed=KeyCode.I;sampler.Sample(state,app.Simulation.Rules,false);command=sampler.ReadCommand(state,0);Check(command.EPressed,"remapped skill 2 command");
                 input.Clear();input.Pressed=KeyCode.O;sampler.Sample(state,app.Simulation.Rules,false);command=sampler.ReadCommand(state,0);Check(command.SpecialPressed,"remapped detonation command");
                 input.Clear();input.Pressed=KeyCode.L;sampler.Sample(state,app.Simulation.Rules,false);command=sampler.ReadCommand(state,0);Check(command.Cancel,"remapped cancel command");
                 input.Clear();input.Pressed=KeyCode.N;sampler.Sample(state,app.Simulation.Rules,false);command=sampler.ReadCommand(state,0);Check(command.StopPressed,"remapped stop command");
-                input.Clear();input.HeldKey=KeyCode.RightControl;input.Right=true;sampler.Sample(state,app.Simulation.Rules,false);command=sampler.ReadCommand(state,0);Check(command.OrderPressed && command.QueueOrder,"right modifier also queues the actual contextual order after Ctrl binding");
+                input.Clear();input.HeldKey=KeyCode.RightShift;input.Right=true;sampler.Sample(state,app.Simulation.Rules,false);command=sampler.ReadCommand(state,0);Check(command.OrderPressed && command.QueueOrder,"right Shift also queues the contextual order while Ctrl remains reserved for observation groups");
                 app.GoHome(); yield return Click("settings-button");yield return Click("settings-keys-tab");yield return Click("keys-reset");
                 Check(app.Keys.Key(GameAction.Kick)==KeyCode.V && new GameKeyBindings().Key(GameAction.Push)==KeyCode.Space,"restore-default button restores and persists all action bindings");
                 foreach (var size in new[] { new Vector2Int(1024,768),new Vector2Int(1280,720) })

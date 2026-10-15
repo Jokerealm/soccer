@@ -5,6 +5,12 @@ namespace Soccer.Core.Networking
 {
     public sealed partial class NetworkRoom
     {
+        public bool SetBotDifficulty(BotDifficulty difficulty)
+        {
+            if(!IsHost || !Connected || Running || Lobby.Drafting || !Enum.IsDefined(typeof(BotDifficulty),difficulty))return false;
+            if(Lobby.BotDifficulty==difficulty)return true;
+            Lobby.BotDifficulty=difficulty;CancelCountdown();foreach(var member in Lobby.Members)member.Ready=false;BroadcastLobby();return true;
+        }
         private MatchRules countdownRules;
         private float countdownBroadcastAge;
         public bool CountingDown=>Lobby?.CountdownRemaining>0;

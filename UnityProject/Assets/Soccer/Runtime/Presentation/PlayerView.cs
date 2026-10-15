@@ -11,6 +11,7 @@ namespace Soccer.Runtime
         public PlayerModelView Model { get; private set; }
         public PlayerResourceView ResourcesUI { get; private set; }
         private TextMesh status;
+        private CameraBillboard statusBillboard;
         private LineRenderer meleeArc;
         private LineRenderer muzzle;
         private CharacterDefinition definition;
@@ -47,6 +48,7 @@ namespace Soccer.Runtime
             var text = new GameObject("Status / Respawn Countdown");
             text.transform.SetParent(transform, false);
             status = text.AddComponent<TextMesh>();
+            statusBillboard=text.AddComponent<CameraBillboard>();
             status.fontSize = 48; status.characterSize = 0.043f;
             status.anchor = TextAnchor.LowerCenter; status.alignment = TextAlignment.Center;
             text.GetComponent<MeshRenderer>().sortingOrder = 800;
@@ -108,6 +110,7 @@ namespace Soccer.Runtime
             }
             status.transform.localPosition = ArenaProjection.VisualOffset(0, state.IsDead ? .55f : top + .14f);
             status.transform.localRotation = Quaternion.Euler(55,0,0);
+            statusBillboard.Offset=new Vector2(0,state.IsDead ? .55f : top+.14f);
             status.text = state.IsDead ? $"{state.RespawnRemaining:0.0}s" : state.Stun > 0 ? "STUN" : "";
             status.color = state.IsDead ? new Color(1, 0.76f, 0.55f) : Color.white;
         }

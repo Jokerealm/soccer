@@ -18,9 +18,11 @@ namespace Soccer.Runtime
         public string ProfileStatus {get;private set;}="";
         public string ProfileOwner {get;private set;}="";
         private PlayerProfileData remoteProfile,onlineProfile;private bool profileSyncing;
+        private AppPage friendsOrigin=AppPage.Home;
+        public void BackFromFriends(){if(Room!=null && Room.Connected){Page=AppPage.RoomLobby;UI.ShowPage(Page);}else if(friendsOrigin==AppPage.Party)OpenParty();else GoHome();}
         private int socialGeneration;private float nextFriendsRefresh;
         private readonly HashSet<string> uploadedMatches=new HashSet<string>();
-        public bool SocialOnline=>EntryMode==GameEntryMode.Online && Account!=null && serviceAccessToken.Length>0;
+        public bool SocialOnline=>serviceAccessToken.Length>0 && (EntryMode==GameEntryMode.Online && Account!=null || SteamEntry && steamCommunityAccount.Length>0);
         public bool OwnProfile=>ProfileOwner==PlayerAccountId;
         public PlayerProfileData VisibleProfile
         {
@@ -28,12 +30,12 @@ namespace Soccer.Runtime
             {
                 if(!OwnProfile)return remoteProfile;
                 var local=new PlayerProfileData {AccountId=PlayerAccountId,DisplayName=WalletProfile,Heroes=History?.Heroes ?? HeroRecord.Empty(),Recent=History?.Matches.ToArray() ?? new MatchRecord[0]};
-                return onlineProfile!=null && onlineProfile.Heroes.Sum(h=>h.Matches)>=local.Heroes.Sum(h=>h.Matches) ? onlineProfile : local;
+                var visible=onlineProfile!=null && onlineProfile.Heroes.Sum(h=>h.Matches)>=local.Heroes.Sum(h=>h.Matches) ? onlineProfile : local;visible.DisplayName=WalletProfile;return visible;
             }
         }
         private void ResetSocial()
         {
-            socialGeneration++;Friends=new FriendsData();SearchPerson=null;onlineProfile=remoteProfile=null;FriendsBusy=profileSyncing=false;
+            socialGeneration++;Steam.CancelCommunityTicket();ResetCommunity();steamCommunityAccount="";Friends=new FriendsData();SearchPerson=null;onlineProfile=remoteProfile=null;FriendsBusy=profileSyncing=false;
             SocialStatus=ProfileStatus="";uploadedMatches.Clear();nextFriendsRefresh=0;
         }
         public void OpenProfile(string account=null)
@@ -45,13 +47,13 @@ namespace Soccer.Runtime
         public void BackFromProfile(){if(OwnProfile)GoHome();else OpenFriends();}
         public void OpenFriends()
         {
-            if(!EnsureEntered())return;Page=AppPage.Friends;UI.ShowPage(Page);Audio.SetContext(Page,false);RefreshFriends();
+            if(!EnsureEntered())return;if(Page!=AppPage.Friends)friendsOrigin=Page;Page=AppPage.Friends;UI.ShowPage(Page);Audio.SetContext(Page,false);if(SteamEntry && !SocialOnline)ConnectSteamCommunity();RefreshFriends();
         }
         public void RefreshFriends(){if(SocialOnline && !FriendsBusy)StartCoroutine(RequestFriends("/api/friends","GET"));}
         public void SearchFriend(string account)
         {
             if(!SocialOnline || FriendsBusy)return;string id=(account ?? "").Trim();
-            if(id.Length<1 || id.Length>16){SocialStatus="请输入帐号";UI.RefreshSocial();return;}
+            if(id.Length<1 || id.Length>32){SocialStatus="请输入帐号";UI.RefreshSocial();return;}
             StartCoroutine(SearchSocialPerson(id,socialGeneration));
         }
         public void FriendAction(string account,string action)
@@ -63,7 +65,7 @@ namespace Soccer.Runtime
         private UnityWebRequest SocialRequest(string path,string method,string body=null)
         {
             var request=new UnityWebRequest(LoginServerAddress+path,method){downloadHandler=new DownloadHandlerBuffer(),timeout=7};
-            request.SetRequestHeader("Authorization","Bearer "+serviceAccessToken);
+            if(serviceAccessToken.Length>0)request.SetRequestHeader("Authorization","Bearer "+serviceAccessToken);
             if(method=="POST"){request.uploadHandler=new UploadHandlerRaw(Encoding.UTF8.GetBytes(body ?? "{}"));request.SetRequestHeader("Content-Type","application/json");}
             return request;
         }
@@ -125,7 +127,7 @@ namespace Soccer.Runtime
                     uploadedMatches.Add(match.MatchId);
                 }
             }
-            using(var request=SocialRequest("/api/profiles/"+Uri.EscapeDataString(Account.Id),"GET"))
+            using(var request=SocialRequest("/api/profiles/"+Uri.EscapeDataString(SocialAccountId),"GET"))
             {
                 yield return request.SendWebRequest();if(generation!=socialGeneration)yield break;
                 if(request.result==UnityWebRequest.Result.Success){try{onlineProfile=ParseProfile(request.downloadHandler.text);ProfileStatus="";}catch(Exception){ProfileStatus="战绩已保存在本机";}}

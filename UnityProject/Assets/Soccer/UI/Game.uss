@@ -538,3 +538,79 @@ Button.lobby-bot-control { font-size: 12px; min-height: 28px; padding: 4px 8px; 
 .lobby-countdown-copy { font-size: 16px; color: rgb(219,231,235); margin-bottom: 12px; white-space: normal; }
 .steam-login { margin-top: 16px; }
 .connection-tabs Button.route-button { min-width: 0; flex-grow: 1; flex-basis: 0; }
+
+/* Room browser and room-code/password dialogs. */
+.network-setup { width: 860px; }
+.network-setup .connection-tabs { margin-bottom: 12px; }
+.network-setup .connection-tabs Button { flex-grow: 1; margin-right: 6px; }
+.network-setup .network-scroll { height: 300px; }
+.join-dialog { position: absolute; left: 0; right: 0; top: 0; bottom: 0; align-items: center; justify-content: center; background-color: rgba(13,31,41,.84); border-radius: 20px; }
+.join-dialog-card { width: 88%; max-width: 520px; background-color: rgb(242,246,235); padding: 20px; }
+.room-list-info { flex-grow: 1; flex-shrink: 1; min-width: 0; padding: 4px 8px; }
+.discovery-room .room-list-title { font-size: 18px; margin-bottom: 4px; }
+.room-lock { width: 20px; height: 24px; flex-shrink: 0; margin: 0 6px; }
+.room-lock-shackle { position: absolute; left: 4px; top: 1px; width: 12px; height: 14px; border-width: 3px; border-color: rgb(157,117,45); border-radius: 8px; }
+.room-lock-body { position: absolute; left: 1px; top: 10px; width: 18px; height: 13px; background-color: rgb(201,151,60); border-radius: 3px; }
+.network-setup .connection-tabs { background-color: rgb(222,231,225); border-color: rgb(192,207,201); border-radius: 8px; }
+.network-setup .connection-tabs Button.route-button { color: rgb(44,74,80); background-color: rgba(0,0,0,0); border-width: 0; border-radius: 6px; padding: 8px; }
+.network-setup .connection-tabs Button.route-button.route-selected { color: rgb(250,244,217); background-color: rgb(44,108,108); }
+.network-setup .connection-tabs Button.route-button:disabled { color: rgb(141,155,153); }
+.ai-difficulty-panel { margin-top: 20px; padding: 14px 20px; background-color: rgba(10,27,37,0.88); border-radius: 8px; }
+.ai-difficulty-panel .unity-base-field { max-width: 330px; font-size: 18px; }
+.ai-difficulty-panel .muted { font-size: 14px; white-space: normal; margin-top: 6px; }
+.tactics-layer { position: absolute; left: 0; right: 0; top: 0; bottom: 0; }
+.signal-wheel { position: absolute; width: 300px; height: 300px; }
+.signal-choice { position: absolute; width: 102px; height: 36px; margin: 0; font-size: 17px; color: rgb(219,233,232); -unity-text-align: middle-center; -unity-font-definition: url("ChineseBold.asset"); }
+.signal-selected { color: rgb(255,230,153); font-size: 19px; }
+.signal-center { position: absolute; left: 105px; top: 120px; width: 90px; height: 60px; margin: 0; font-size: 12px; color: rgb(210,222,216); -unity-text-align: middle-center; }
+.observation-status { position: absolute; left: 22px; bottom: 192px; margin: 0; padding: 5px 9px; border-radius: 5px; background-color: rgba(9,26,34,0.78); color: rgb(204,232,221); font-size: 12px; }
+.observation-groups { position: absolute; left: 22px; bottom: 170px; margin: 0; padding: 3px 8px; background-color: rgba(9,26,34,0.72); border-radius: 4px; color: rgb(174,198,191); font-size: 10px; }
+.world-signal { position: absolute; width: 144px; min-height: 30px; margin: 0; padding: 6px 8px; border-radius: 6px; background-color: rgba(8,24,32,0.93); border-width: 1px; border-color: rgba(171,208,194,0.6); font-size: 14px; -unity-text-align: middle-center; -unity-font-definition: url("ChineseBold.asset"); }
+.minimap-signal { position: absolute; width: 26px; height: 26px; margin: 0; border-radius: 15px; border-width: 2px; border-color: rgba(255,233,153,0.9); background-color: rgba(9,25,34,0.96); font-size: 13px; -unity-text-align: middle-center; -unity-font-definition: url("ChineseBold.asset"); }
+
+.signal-center { background-color: rgba(9,26,34,0.96); border-radius: 36px; border-width: 1px; border-color: rgba(132,178,160,0.65); }
+
+.party-entry { margin-top: 6px; align-self: flex-start; min-height: 40px; padding: 8px 18px; background-color: rgba(25,65,68,0.94); color: rgb(216,243,231); border-width: 1px; border-color: rgba(126,200,176,0.6); font-size: 16px; }
+.friends-tabs { margin-bottom: 16px; align-items: center; }
+.friends-tabs Button { margin-right: 12px; }
+.friends-tabs Label { margin-left: 14px; }
+.party-body { flex-grow: 1; }
+.party-columns { flex-direction: row; }
+.party-main { width: 62%; padding-right: 22px; }
+.party-side { width: 38%; padding-left: 18px; border-left-width: 1px; border-left-color: rgba(149,190,177,0.25); }
+.party-member { flex-direction: row; align-items: center; min-height: 70px; padding: 10px 16px; margin: 0 0 8px; background-color: rgba(13,35,44,0.90); border-radius: 6px; }
+.party-member Label { flex-grow: 1; font-size: 17px; white-space: normal; color: rgb(218,237,230); }
+.party-member Button { font-size: 13px; margin-left: 8px; padding: 7px; }
+.party-actions { flex-wrap: wrap; margin-top: 10px; }
+.party-actions Button { margin-right: 8px; margin-bottom: 7px; min-width: 95px; }
+.party-invites { min-height: 90px; max-height: 300px; }
+.party-invite { padding: 10px; margin-bottom: 8px; background-color: rgba(16,40,48,0.95); border-radius: 5px; }
+.party-invite Label { white-space: normal; font-size: 15px; color: rgb(219,233,221); }
+.party-invite Button { margin-top: 6px; }
+.party-room { margin-top: 14px; padding: 14px; background-color: rgba(13,35,44,0.90); border-radius: 6px; }
+.party-room-slot { padding: 5px; font-size: 15px; color: rgb(212,232,222); }
+.chat-toggle { position: absolute; left: 22px; bottom: 18px; padding: 7px 14px; color: rgb(202,230,221); font-size: 13px; background-color: rgba(10,28,37,0.9); border-radius: 5px; }
+.chat-toggle.chat-in-match { left: auto; right: 22px; }
+.chat-panel { position: absolute; left: 18px; bottom: 54px; width: 380px; max-width: 88%; height: 320px; max-height: 65%; padding: 12px; background-color: rgba(7,22,31,0.96); border-width: 1px; border-color: rgba(115,176,156,0.7); border-radius: 8px; }
+.chat-panel .unity-base-field { margin: 0; font-size: 14px; }
+.chat-panel Button { font-size: 14px; padding: 6px 10px; margin-left: 6px; }
+.chat-messages { flex-grow: 1; margin: 9px 0 6px; }
+.chat-message { white-space: normal; margin-bottom: 7px; font-size: 14px; color: rgb(215,231,222); }
+.chat-status { font-size: 11px; color: rgb(237,187,133); white-space: normal; }
+.compact-front-end .party-page { padding: 24px 36px; }
+.compact-front-end .party-member { min-height: 56px; }
+.compact-front-end .party-actions Button { font-size: 13px; min-width: 75px; }
+
+.community-login-dialog { position: absolute; left: 0; right: 0; top: 0; bottom: 0; justify-content: center; align-items: center; background-color: rgba(4,13,19,0.85); }
+.community-login-card { width: 460px; max-width: 90%; padding: 28px; background-color: rgb(14,34,44); border-radius: 10px; border-width: 1px; border-color: rgb(80,131,119); }
+.community-login-card Label { white-space: normal; font-size: 16px; margin-bottom: 12px; color: rgb(211,233,224); }
+.community-login-card Button { min-height: 36px; margin-top: 8px; }
+.community-login-card .unity-base-field { margin-bottom: 10px; }
+
+.friends-tabs { flex-wrap: wrap; }
+.friends-tabs .social-muted { flex-shrink: 1; font-size: 13px; white-space: normal; }
+
+.chat-panel Button { background-color: rgb(24,55,65); color: rgb(218,238,229); border-width: 1px; border-color: rgb(61,105,104); border-radius: 4px; }
+.chat-panel .unity-base-field__input { background-color: rgb(21,44,54); color: rgb(225,240,232); }
+.chat-panel .unity-text-field__input { color: rgb(225,240,232); }
+.chat-panel .unity-popup-field__text { color: rgb(225,240,232); }

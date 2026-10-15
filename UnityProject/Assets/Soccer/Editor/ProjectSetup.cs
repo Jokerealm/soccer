@@ -335,7 +335,7 @@ namespace Soccer.Editor
             EditorSettings.defaultBehaviorMode = EditorBehaviorMode.Mode2D;
             PlayerSettings.companyName = "Future City League";
             PlayerSettings.productName = "技能足球";
-            PlayerSettings.bundleVersion = "0.26.0";
+            PlayerSettings.bundleVersion = "0.30.0";
             PlayerSettings.insecureHttpOption = InsecureHttpOption.AlwaysAllowed;
             PlayerSettings.SetApplicationIdentifier(NamedBuildTarget.Standalone, "com.futurecity.skillsoccer");
             PlayerSettings.defaultScreenWidth = 1600; PlayerSettings.defaultScreenHeight = 900;

@@ -1,0 +1,107 @@
+{
+  "version": "0.30.0",
+  "date": "2026-10-15",
+  "passed": true,
+  "totalChecks": 1163,
+  "tests": {
+    "core": {
+      "passed": true,
+      "checks": 255,
+      "report": "reports/camera-030-core/core-tests.json"
+    },
+    "network": {
+      "passed": true,
+      "checks": 58,
+      "report": "reports/camera-030-network/network-tests.json"
+    },
+    "sixPlayerService": {
+      "passed": true,
+      "checks": 173,
+      "report": "reports/camera-030-service/community-tests.json"
+    },
+    "cameraSignalsAndLiveClient": {
+      "passed": true,
+      "checks": 58,
+      "report": "reports/camera-030-runtime-verified/tactics-smoke.json"
+    },
+    "clientRegression": {
+      "passed": true,
+      "checks": 613,
+      "report": "reports/camera-030-regression/runtime-smoke.json"
+    },
+    "liveHost": {
+      "passed": true,
+      "checks": 6,
+      "report": "reports/camera-030-host-health.json"
+    }
+  },
+  "builds": {
+    "macos": {
+      "target": "StandaloneOSX",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/macOS/SkillSoccer.app",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 414802393
+    },
+    "windows": {
+      "target": "StandaloneWindows64",
+      "result": "Succeeded",
+      "editor": "2022.3.62t16",
+      "output": "/Users/gz/Documents/soccer/UnityProject/Builds/Windows/SkillSoccer.exe",
+      "errors": 0,
+      "warnings": 0,
+      "warningMessages": [],
+      "bytes": 383167884
+    }
+  },
+  "packages": {
+    "windows": {
+      "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.30.0-Windows-x64.zip",
+      "bytes": 144667450,
+      "sha256": "c5c799cbc59cc7cbc68e1507d155cc5c887ef61e2c0bf6a6db4c7e35b463630d",
+      "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.30.0-Windows-x64.zip.sha256",
+      "playerFiles": 145,
+      "zipVerified": true
+    },
+    "server": {
+      "archive": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.30.0-Server.zip",
+      "bytes": 120464,
+      "sha256": "b124465605f38b31821cf7b402373b52a0796e9d0c826aca3ad15bedd6fe8eaf",
+      "checksum": "/Users/gz/Documents/soccer/dist/SkillSoccer-0.30.0-Server.zip.sha256",
+      "files": 3,
+      "zipVerified": true
+    }
+  },
+  "server": {
+    "serviceUrl": "http://192.168.31.29:27862",
+    "port": 27862,
+    "data": "/Users/gz/Library/Application Support/SkillSoccer/Server/data",
+    "release": "/Users/gz/Library/Application Support/SkillSoccer/Server/releases/20261015-085951",
+    "launchAgent": "/Users/gz/Library/LaunchAgents/com.skillsoccer.local-server.plist",
+    "running": true,
+    "version": "0.30.0"
+  },
+  "camera": {
+    "scroll": "zoom",
+    "ctrlScroll": "orbit, either Ctrl key",
+    "signal": "hold middle mouse or configured Alt action, move to select, release to send",
+    "zoomRange": [
+      0.6,
+      1.7
+    ],
+    "degreesPerScrollUnit": 12,
+    "persistsWithinMatch": true,
+    "worldLabelsFaceCamera": true
+  },
+  "compatibilityProtocol": "SkillSoccer/0.29.0/10",
+  "limits": [
+    "Current server is a LAN host, no public domain TLS or router forwarding configured",
+    "No other physical computer or public Internet connectivity was tested",
+    "Windows was cross-built on macOS and has not been run on Windows",
+    "Steam Web API credentials and real friend invitations remain outside this verification"
+  ],
+  "testIsolation": "Six-player HTTP/WebSocket tests use the same published server DLL with separate temporary storage and short match clocks; live-host checks are read-only except rejecting the disabled legacy debug login."
+}

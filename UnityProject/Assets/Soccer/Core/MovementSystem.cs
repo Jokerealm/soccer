@@ -42,7 +42,7 @@ namespace Soccer.Core
             }
             SeparateBodies();
             if(State.IsOpeningWarmup) foreach(var p in State.Players)
-                if(!p.IsDead) p.Position=OutsideOpeningShield(p.Position,p);
+                if(!p.IsDead) p.Position=OpeningArea.Constrain(Rules,p,OutsideOpeningShield(p.Position,p));
         }
 
         private float SpeedMultiplier(PlayerState p)
@@ -119,7 +119,7 @@ namespace Soccer.Core
                 var remainder = delta * (1 - earliest);
                 delta = remainder - normal * Math.Min(0, Vec2.Dot(remainder, normal));
             }
-            if (State.IsOpeningWarmup) p.Position = OutsideOpeningShield(p.Position, p);
+            if (State.IsOpeningWarmup) p.Position = OpeningArea.Constrain(Rules,p,OutsideOpeningShield(p.Position, p));
             if (p.Dash != DashKind.None && p.DashRemaining <= 0 && p.DashWindup <= 0)
             {
                 if (p.Dash == DashKind.Tackle) { p.ActionLock = Rules.TackleRecovery; sim.Emit(MatchEventKind.Miss, p.Id); }

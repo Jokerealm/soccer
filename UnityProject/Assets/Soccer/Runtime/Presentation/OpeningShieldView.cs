@@ -11,6 +11,7 @@ namespace Soccer.Runtime
         private Material material;
         private LineRenderer ring;
         private float time,fade;
+        private readonly System.Collections.Generic.List<LineRenderer> pads = new System.Collections.Generic.List<LineRenderer>();
         public bool Visible => dome!=null && dome.enabled;
         public float PresentationTime => time;
         public void Initialize(Transform parent)
@@ -28,6 +29,19 @@ namespace Soccer.Runtime
         public void Render(MatchState state,MatchRules rules,bool animate)
         {
             bool protectedBall=state.IsOpeningWarmup;
+            while(pads.Count<state.Players.Count)
+            {
+                var pad=ViewLines.Create(transform,"Opening hexagon "+pads.Count,.055f,Color.white,711);
+                pad.positionCount=7;pads.Add(pad);
+            }
+            for(int i=0;i<pads.Count;i++)
+            {
+                var pad=pads[i];pad.enabled=protectedBall && i<state.Players.Count;
+                if(!pad.enabled)continue;
+                var player=state.Players[i];var color=player.Team==Team.Cyan ? new Color(.32f,.96f,.82f,.85f) : new Color(1,.64f,.28f,.85f);
+                pad.startColor=pad.endColor=color;
+                for(int corner=0;corner<=6;corner++)pad.SetPosition(corner,ArenaProjection.ToWorld(OpeningArea.Vertex(player.OpeningPosition,rules.OpeningHexRadius,corner),.045f));
+            }
             if(animate) {time+=Mathf.Min(Time.unscaledDeltaTime,.1f); fade=Mathf.MoveTowards(fade,protectedBall ? 1 : 0,Time.unscaledDeltaTime*7);}
             if(protectedBall) fade=1;
             // 正式开球即关闭可见罩体，避免视觉阻挡晚于规则解除。

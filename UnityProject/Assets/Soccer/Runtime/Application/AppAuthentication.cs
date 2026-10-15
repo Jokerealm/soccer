@@ -1,5 +1,6 @@
 using System;
 using System.Collections;
+using System.IO;
 using System.Text;
 using Soccer.Core.Networking;
 using UnityEngine;
@@ -24,9 +25,20 @@ namespace Soccer.Runtime
         private string serviceAccessToken = "";
         [Serializable] private sealed class LoginRequest { public string account, password; }
         [Serializable] private sealed class LoginResponse { public string accountId, service, accessToken; }
+        [Serializable] private sealed class ServiceEndpoint {public string ServiceUrl;}
         private void InitializeLoginAddress()
         {
             LoginServerAddress = PlayerPrefs.GetString("soccer.loginServer", "");
+            try
+            {
+                string path=Path.Combine(Application.streamingAssetsPath,"game-service.json");
+                if(File.Exists(path))
+                {
+                    string address=JsonUtility.FromJson<ServiceEndpoint>(File.ReadAllText(path))?.ServiceUrl?.Trim().TrimEnd('/');
+                    if(Uri.TryCreate(address,UriKind.Absolute,out var endpoint) && (endpoint.Scheme=="http" || endpoint.Scheme=="https") && endpoint.UserInfo.Length==0 && endpoint.Query.Length==0 && endpoint.Fragment.Length==0)LoginServerAddress=address;
+                }
+            }
+            catch(Exception e) when(e is IOException || e is ArgumentException || e is UnauthorizedAccessException){Debug.LogWarning("游戏服务配置暂时无法读取");}
             var args = Environment.GetCommandLineArgs(); int index = Array.IndexOf(args, "--soccer-auth-url");
             if (index >= 0 && index + 1 < args.Length) LoginServerAddress = args[index + 1];
         }
@@ -79,13 +91,13 @@ namespace Soccer.Runtime
                     {
                         var response = JsonUtility.FromJson<LoginResponse>(request.downloadHandler.text);
                         if (response != null && response.service == "SkillSoccer.Login" && response.accountId == id && ValidServiceToken(response.accessToken))
-                        { session = DebugAccounts.Login(id, password); if (session != null) serviceAccessToken = response.accessToken; }
+                        { session = DebugAccounts.IsKnown(id) ? DebugAccounts.Login(id,password) : DebugAccounts.FromService(id); if (session != null) serviceAccessToken = response.accessToken; }
                     }
                     catch (Exception) { }
                     if (session != null)
                     {
                         Account?.Dispose(); Account = session; EntryMode = GameEntryMode.Online;
-                        LoginStatus = ""; Route = ConnectionRoute.Internet;ReloadWallet(); GoHome();
+                        LoginStatus = ""; Route = ConnectionRoute.Internet;ReloadWallet(); if(HasPlayerName)GoHome();else OpenNickname(true);
                         ResetSocial();SyncSocialProfile();RefreshFriends();
                     }
                     else LoginStatus = "登录服务器返回无效的帐号信息";
@@ -95,6 +107,6 @@ namespace Soccer.Runtime
             Array.Clear(payload, 0, payload.Length);
         }
         private bool EnsureEntered()
-        { if (EntryMode != GameEntryMode.NotEntered) return true; OpenLogin(); return false; }
+        { if (EntryMode != GameEntryMode.NotEntered){if((SteamEntry || EntryMode==GameEntryMode.Online) && !HasPlayerName){OpenNickname(true);return false;}return true;} OpenLogin(); return false; }
     }
 }

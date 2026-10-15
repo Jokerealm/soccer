@@ -10,6 +10,33 @@ namespace Soccer.Runtime
     {
         private readonly VisualElement root, frame;
         private readonly PitchCanvas pitch;
+        private readonly List<Label> signalMarkers=new List<Label>();
+        public bool Contains(Vector2 point) => Visible && frame.worldBound.Contains(point);
+        public int PlayerAt(Vector2 point)
+        {
+            if(!Contains(point))return -1;int id=-1;float best=float.MaxValue;
+            foreach(var pair in markers)if(pair.Value.Seen && pair.Value.worldBound.Contains(point))
+            {float distance=Vector2.Distance(point,pair.Value.worldBound.center);if(distance<best){id=pair.Key;best=distance;}}
+            return id;
+        }
+        public bool TryGroundAt(Vector2 point,out Vec2 ground)
+        {
+            ground=default;if(!Visible || !pitch.worldBound.Contains(point))return false;
+            ground=pitch.Unproject(point-pitch.worldBound.position);return true;
+        }
+        public void RenderSignals(IReadOnlyList<ActiveTacticalSignal> signals,MatchState state)
+        {
+            while(signalMarkers.Count<signals.Count)
+            {var marker=new Label {name="minimap-signal-"+signalMarkers.Count,pickingMode=PickingMode.Ignore};marker.AddToClassList("minimap-signal");pitch.Add(marker);signalMarkers.Add(marker);}
+            for(int i=0;i<signalMarkers.Count;i++)
+            {
+                var marker=signalMarkers[i];marker.style.display=i<signals.Count ? DisplayStyle.Flex : DisplayStyle.None;if(i>=signals.Count)continue;
+                var signal=signals[i];var position=pitch.Project(signal.Position(state));
+                marker.text=new[]{"攻","射","传","守","!"}[(int)signal.Signal.Kind];
+                marker.style.color=MatchTacticsUI.SignalColor(signal.Signal.Kind);marker.style.left=position.x-13;marker.style.top=position.y-13;
+                marker.style.opacity=Mathf.Clamp01(signal.Expires-Time.realtimeSinceStartup);marker.BringToFront();
+            }
+        }
         private readonly Dictionary<int, PortraitMarker> markers = new Dictionary<int, PortraitMarker>();
         private readonly Dictionary<CharacterId, Texture2D> portraits = new Dictionary<CharacterId, Texture2D>();
         public bool Visible => frame.style.display.value == DisplayStyle.Flex;
@@ -22,7 +49,7 @@ namespace Soccer.Runtime
         public MatchMiniMap(VisualElement ui)
         {
             root = ui;
-            frame = new VisualElement { name="minimap", pickingMode=PickingMode.Ignore };
+            frame = new VisualElement { name="minimap", pickingMode=PickingMode.Position };
             frame.AddToClassList("minimap");
             var heading = new VisualElement { pickingMode=PickingMode.Ignore };
             heading.AddToClassList("minimap-heading");
@@ -127,6 +154,7 @@ namespace Soccer.Runtime
                 style.position=Position.Absolute; style.left=8; style.top=23;
                 generateVisualContent+=Draw;
             }
+            public Vec2 Unproject(Vector2 point) => new Vec2(Mathf.Clamp((point.x-center.x)/scale,-rules.FieldWidth/2,rules.FieldWidth/2),Mathf.Clamp(-(point.y-center.y)/yScale,-rules.FieldHeight/2,rules.FieldHeight/2));
             public Vector2 Project(Vec2 ground) => center+new Vector2(ground.X*scale,-ground.Y*yScale);
             public void Configure(Camera camera, MatchState state, MatchRules definition, Vector2 size, float pixelsPerUnit)
             {
