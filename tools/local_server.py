@@ -108,7 +108,16 @@ def main():
             'StandardErrorPath': str(logs / 'server.log')}
         PLIST.write_bytes(plistlib.dumps(settings))
         PLIST.chmod(0o600)
-        launch('bootstrap', DOMAIN, str(PLIST))
+        # bootout can return before launchd finishes unregistering the previous job.
+        # Retry only its transient EIO result; preserve other failures for diagnosis.
+        for attempt in range(20):
+            registered = launch('bootstrap', DOMAIN, str(PLIST), check=False)
+            if registered.returncode == 0:
+                break
+            if registered.returncode != 5 or attempt == 19:
+                raise subprocess.CalledProcessError(registered.returncode, registered.args,
+                                                    registered.stdout, registered.stderr)
+            time.sleep(.15)
         # Configuration travels with both desktop clients and remains editable after unpacking.
         config = ROOT / 'UnityProject/Assets/StreamingAssets/game-service.json'
         config.parent.mkdir(parents=True, exist_ok=True)

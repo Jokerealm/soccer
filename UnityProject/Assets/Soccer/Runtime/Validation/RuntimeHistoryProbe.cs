@@ -53,15 +53,21 @@ namespace Soccer.Runtime
                 foreach(var character in new[]{CharacterId.Marine,CharacterId.Thor})
                 {
                     app.SelectCharacter(character);yield return new WaitForSecondsRealtime(.35f);
-                    var root=app.UI.Root;var foldout=root.Q<Foldout>("character-parameters");
-                    Check(!foldout.value && !HistoryVisible(root.Q("selected-stats")),"selection parameters are hidden until requested for "+character);
+                    var root=app.UI.Root;
+                    Check(!HistoryVisible(root.Q("q-detail")) && !HistoryVisible(root.Q("e-detail")) && !HistoryVisible(root.Q("weapon-detail")),"each skill detail starts collapsed for "+character);
                     Check(!root.Q<Label>("q-name").text.Contains("能量") && !root.Q<Label>("e-name").text.Contains("秒") && root.Q<Label>("q-copy").text.Length<35 && root.Q<Label>("e-copy").text.Length<35,"ability cards show short effects without costs and cooldown text");
                     Check(root.Q("selection-q-art").resolvedStyle.backgroundImage.texture!=null && root.Q("selection-e-art").resolvedStyle.backgroundImage.texture!=null,"selection cards use actual matching ability art");
                     Check(Mathf.Abs(app.UI.CharacterPreview.Distance-6.4f)<.1f && PicksButton("start-button") && PicksButton("preview-auto"),size+" smaller model framing preserves selection controls");
                     yield return Capture("selection-clean-"+character+"-"+size.x+"x"+size.y);
-                    foldout.value=true;root.Q<ScrollView>("character-details").ScrollTo(foldout);yield return new WaitForSecondsRealtime(.15f);
-                    Check(HistoryVisible(root.Q("selected-stats")) && root.Q<Label>("q-detail").text.Contains("冷却") && root.Q<Label>("e-detail").text.Contains("能量"),"expanded parameters retain truthful costs and cooldown information");
-                    yield return Capture("selection-parameters-"+character+"-"+size.x+"x"+size.y);foldout.value=false;root.Q<ScrollView>("character-details").scrollOffset=Vector2.zero;
+                    yield return Click("selection-q-toggle");yield return new WaitForSecondsRealtime(.15f);
+                    Check(HistoryVisible(root.Q("q-detail")) && !HistoryVisible(root.Q("e-detail")) && root.Q<Label>("q-detail").text.Contains("冷却"),"clicking Q expands only its own costs and cooldown");
+                    root.Q<ScrollView>("character-details").ScrollTo(root.Q("selection-e-toggle"));yield return null;yield return Click("selection-e-toggle");
+                    Check(HistoryVisible(root.Q("q-detail")) && HistoryVisible(root.Q("e-detail")) && root.Q<Label>("e-detail").text.Contains("能量"),"multiple skill descriptions expand independently");
+                    yield return Capture("selection-parameters-"+character+"-"+size.x+"x"+size.y);
+                    root.Q<ScrollView>("character-details").ScrollTo(root.Q("selection-q-toggle"));yield return null;yield return Click("selection-q-toggle");
+                    Check(!HistoryVisible(root.Q("q-detail")) && HistoryVisible(root.Q("e-detail")),"clicking Q again collapses only Q");
+                    root.Q<ScrollView>("character-details").scrollOffset=Vector2.zero;
+
                 }
             }
             app.GoHome();Screen.SetResolution(width,height,mode);yield return new WaitForSecondsRealtime(.5f);

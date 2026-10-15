@@ -266,9 +266,9 @@ Test("only current player's lock is accepted and final lineup and positions star
  using var host=NetworkRoom.Host(Options(NetworkRoute.LAN));using var client=Client(host);Until(()=>client.Connected,host,client);host.FillBots();host.SetReady(true);client.SetReady(true);Until(()=>host.CanStart,host,client);
  NetworkStart local=null,remote=null;host.Started+=x=>local=x;client.Started+=x=>remote=x;host.BeginDraft(new MatchRules());Until(()=>client.Draft!=null,host,client);
  client.LockDraft(CharacterId.Thor,client.Draft.Picks[3].Position);Until(()=>client.Status.Contains("等待"),host,client);Assert(host.Draft.TurnIndex==0,"wrong peer advanced draft");
- var hostPosition=new Vec2(-14,2);Assert(host.LockDraft(CharacterId.Thor,hostPosition),"host pick rejected");Until(()=>client.Draft.CurrentSlot==3,host,client);
+ var hostPosition=OpeningFormation.Position(host.Draft.Rules,0,4);Assert(host.LockDraft(CharacterId.Thor,hostPosition),"host pick rejected");Until(()=>client.Draft.CurrentSlot==3,host,client);
  client.LockDraft(CharacterId.Thor,new Vec2(-10,0));Until(()=>client.Status.Contains("半场"),host,client);Assert(host.Draft.CurrentSlot==3,"enemy-half client position accepted");
- var clientPosition=new Vec2(14,-2);client.LockDraft(CharacterId.Marine,clientPosition);Until(()=>remote!=null,host,client);
+ var clientPosition=OpeningFormation.Position(client.Draft.Rules,3,5);client.LockDraft(CharacterId.Marine,clientPosition);Until(()=>remote!=null,host,client);
  Assert(local!=null && local.Lineup[0]==CharacterId.Thor && remote.Lineup[3]==CharacterId.Marine && remote.Positions.Length==6,"draft lineup or positions lost on start");
  Assert(Vec2.Distance(local.Positions[0],hostPosition)<.001f && Vec2.Distance(remote.Positions[3],clientPosition)<.001f,"selected placement was not transmitted");MatchDraft.ValidateOpening(remote.Rules,remote.Positions);
 });

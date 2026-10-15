@@ -606,6 +606,22 @@ Button.lobby-bot-control { font-size: 12px; min-height: 28px; padding: 4px 8px; 
 .community-login-card Label { white-space: normal; font-size: 16px; margin-bottom: 12px; color: rgb(211,233,224); }
 .community-login-card Button { min-height: 36px; margin-top: 8px; }
 .community-login-card .unity-base-field { margin-bottom: 10px; }
+.community-login-card TextField > .unity-base-field__input, .party-page TextField > .unity-base-field__input { background-color: rgb(8,22,31); border-width: 1px; border-color: rgb(102,145,153); border-radius: 4px; min-height: 34px; padding: 5px 9px; color: rgb(245,249,247); -unity-selection-color: rgb(47,105,119); -unity-cursor-color: rgb(255,213,120); }
+.community-login-card TextField .unity-text-element, .party-page TextField .unity-text-element { color: rgb(245,249,247); }
+.community-login-card TextField:focus > .unity-base-field__input { border-color: rgb(255,213,120); }
+.party-page Button { color: rgb(22,41,52); background-color: rgb(222,232,227); opacity: 1; transition-duration: 0s; }
+.party-page Button.primary { background-color: rgb(247,196,91); }
+.party-page Button:hover { background-color: rgb(255,245,218); }
+.party-page Button:disabled { color: rgb(218,229,234); background-color: rgb(50,68,80); border-color: rgb(102,123,135); opacity: 1; }
+.draft-slots { flex-direction: row; flex-wrap: wrap; flex-shrink: 0; }
+Button.draft-point { font-size: 11px; min-height: 28px; margin: 2px 4px 2px 0; padding: 4px 7px; border-radius: 3px; border-width: 1px; }
+Button.draft-point-selected { background-color: rgb(255,201,108); border-color: rgb(255,228,166); }
+.selection-ability { padding: 0; align-items: stretch; }
+Button.selection-ability-toggle { background-color: rgba(26,45,60,0); border-width: 0; border-radius: 2px; padding: 12px 10px; margin: 0; min-height: 72px; color: rgb(220,234,240); -unity-text-align: middle-left; }
+Button.selection-ability-toggle:hover { background-color: rgba(99,137,153,0.18); }
+.selection-ability .parameter-copy { padding: 10px 12px; margin: 0; border-top-width: 1px; border-top-color: rgb(61,88,103); white-space: normal; font-size: 13px; color: rgb(208,227,235); }
+.skill-expand { color: rgb(255,209,124); font-size: 20px; margin-left: 8px; }
+.selection-base-stats { white-space: normal; color: rgb(176,197,210); font-size: 12px; margin-top: 8px; }
 
 .friends-tabs { flex-wrap: wrap; }
 .friends-tabs .social-muted { flex-shrink: 1; font-size: 13px; white-space: normal; }

@@ -18,7 +18,7 @@ var accounts=new AccountService(builder.Configuration["Accounts:DataPath"] ?? Pa
 social.KnownAccount=id=>accounts.Find(id)!=null;
 var community=new CommunityService(accounts,social,builder.Configuration);
 app.Lifetime.ApplicationStopping.Register(community.Dispose);
-app.MapGet("/health", () => Results.Ok(new { service = "SkillSoccer.Login", version = "0.30.0" }));
+app.MapGet("/health", () => Results.Ok(new { service = "SkillSoccer.Login", version = "0.31.0" }));
 IResult Fail(int code,string error)=>Results.Json(new{error},statusCode:code);
 IResult AuthResponse(AccountService.User user)
 {

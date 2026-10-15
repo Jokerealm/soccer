@@ -83,7 +83,7 @@ namespace Soccer.Runtime
                 var go = new GameObject($"{p.Id} {p.Stats.Name} ({p.Team}){(p.Id == LocalPlayerId ? " Local" : " AI")}");
                 go.transform.SetParent(ActorRoot, false);
                 var view = go.AddComponent<PlayerView>();
-                view.Initialize(definition, p.Team, p.Id == LocalPlayerId, CyanMarker, AmberMarker, ShadowSprite);
+                view.Initialize(definition, p.Team, state.Players[LocalPlayerId].Team, p.Id == LocalPlayerId, CyanMarker, AmberMarker, ShadowSprite);
                 players.Add(view);
             }
             ball = CreateBall("Ball Anchor", BallSprite, 0.48f, 700);

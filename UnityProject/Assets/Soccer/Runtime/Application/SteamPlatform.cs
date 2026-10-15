@@ -52,10 +52,12 @@ namespace Soccer.Runtime
         public bool Initialize()
         {
             if(Initialized){if(Ready){UserId=SteamUser.GetSteamID().m_SteamID;Name=SteamFriends.GetPersonaName();}Status=Ready ? "Steam 已连接" : "请在Steam客户端完成登录";return Ready;}
-            var args=Environment.GetCommandLineArgs();int at=Array.IndexOf(args,"--soccer-steam-app-id");
-            if(at>=0 && at+1<args.Length && (!uint.TryParse(args[at+1],out var id) || id==0)){Status="Steam AppID 配置无效";return false;}
-            if(at>=0 && at+1<args.Length)AppId=uint.Parse(args[at+1]);
-            Environment.SetEnvironmentVariable("SteamAppId",AppId.ToString());Environment.SetEnvironmentVariable("SteamGameId",AppId.ToString());
+            var args=Environment.GetCommandLineArgs();
+            try{AppId=SteamLaunch.AppId(args,Environment.GetEnvironmentVariable("SteamAppId"));}
+            catch(ArgumentException e){Status=e.Message;return false;}
+            // Respect the AppID supplied by Steam when the released game launches from its library.
+            Environment.SetEnvironmentVariable("SteamAppId",AppId.ToString());
+            if(Array.IndexOf(args,"--soccer-steam-app-id")>=0 || string.IsNullOrEmpty(Environment.GetEnvironmentVariable("SteamGameId")))Environment.SetEnvironmentVariable("SteamGameId",AppId.ToString());
             try
             {
                 if(!Packsize.Test()) {Status="Steam接口平台配置不匹配";return false;}

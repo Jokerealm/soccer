@@ -1746,6 +1746,64 @@ Test("community JSON normalization distinguishes absent parties and rooms from r
  var state=new CommunityState{Party=new PartyData(),Room=new CommunityRoom(),Match=new MatchAssignment()}.Normalize();Assert(state.Party==null && state.Room==null && state.Match==null,"empty inline DTO became membership");
  state.Room=new CommunityRoom{Code="AB12CD",Slots=Enumerable.Range(0,6).Select(_=>new PartyMember()).ToArray()};state.Normalize();Assert(state.Room.Slots.All(p=>p==null),"empty inline slots became real players");
 });
+Test("opening formation has six mirrored selectable points and rejects arbitrary coordinates",()=> {
+ var rules=new MatchRules();
+ for(int point=0;point<6;point++){
+  var cyan=OpeningFormation.Position(rules,0,point);var amber=OpeningFormation.Position(rules,3,point);
+  Near((cyan+amber).Length,0);Assert(MatchDraft.ValidFieldPoint(rules,0,cyan),"anchor is invalid");
+  Assert(!MatchDraft.ValidFieldPoint(rules,0,cyan+new Vec2(.1f,0)),"free-form coordinate accepted");
+  for(int other=0;other<point;other++)Assert(Vec2.Distance(cyan,OpeningFormation.Position(rules,0,other))>=MatchDraft.Separation,"anchors overlap");
+ }
+ var draft=new MatchDraft(rules,new bool[6]);
+ var point0=OpeningFormation.Position(rules,0,0);Assert(draft.TryLock(0,CharacterId.Marine,point0+new Vec2(.01f,0),out _),"wire tolerance rejected");Near(Vec2.Distance(draft.Picks[0].Position,point0),0);
+ for(int t=0;t<6;t++)draft.Tick(31);MatchDraft.ValidateOpening(rules,draft.Positions());
+});
+Test("AI plans safe pressure-relief passes and avoids blocked outlets",()=> {
+ var rules=new MatchRules{BotDifficulty=BotDifficulty.God};var sim=new MatchSimulation(rules,StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);var st=sim.State;
+ st.Phase=MatchPhase.Playing;st.Ball.OwnerId=0;var p=st.Players[0];p.Position=Vec2.Zero;
+ st.Players[1].Position=new Vec2(8,4);st.Players[2].Position=new Vec2(-18,-12);
+ st.Players[3].Position=new Vec2(2,-1);st.Players[4].Position=new Vec2(20,-10);st.Players[5].Position=new Vec2(22,10);
+ var plan=BotTactics.PlanKick(st,rules,p);Assert(plan.Ready && plan.Pass && plan.ReceiverId==1,"safe outlet was missed");
+ st.Players[4].Position=new Vec2(4,2);Assert(!BotTactics.PlanKick(st,rules,p).Ready,"intercepted pass or impossible midfield shot selected");
+ var bot=new BotCommandSource(rules);var command=bot.ReadCommand(st,0);Assert(!command.KickPressed,"AI blindly started a kick without a target");
+});
+Test("AI chooses an unobstructed close shot ahead of another pass",()=> {
+ var rules=new MatchRules{BotDifficulty=BotDifficulty.God};var sim=new MatchSimulation(rules,StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);var st=sim.State;
+ st.Phase=MatchPhase.Playing;st.Ball.OwnerId=0;st.Players[0].Position=new Vec2(20,0);st.Players[1].Position=new Vec2(23,6);st.Players[2].Position=new Vec2(15,-8);
+ foreach(var enemy in st.Players.Where(p=>p.Team==Team.Amber))enemy.Position=new Vec2(-20,enemy.Id*2-8);
+ var plan=BotTactics.PlanKick(st,rules,st.Players[0]);Assert(plan.Ready && !plan.Pass && plan.Target.X>rules.FieldWidth/2,"AI missed a clear finish");
+});
+Test("AI cancels a pass when its receiver is downed during charge",()=> {
+ var rules=new MatchRules{BotDifficulty=BotDifficulty.God};var sim=new MatchSimulation(rules,StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);var st=sim.State;
+ st.Phase=MatchPhase.Playing;st.Ball.OwnerId=0;st.Players[0].Position=Vec2.Zero;
+ st.Players[1].Position=new Vec2(10,4);st.Players[2].Position=new Vec2(-20,-12);
+ foreach(var enemy in st.Players.Where(p=>p.Team==Team.Amber))enemy.Position=new Vec2(23,enemy.Id*2-8);
+ var bot=new BotCommandSource(rules);Assert(bot.ReadCommand(st,0).KickPressed,"pass did not charge");
+ st.Players[1].Health=0;st.Players[1].RespawnRemaining=3;var command=bot.ReadCommand(st,0);Assert(command.Cancel && !command.KickReleased && !command.KickHeld,"AI released toward a downed teammate");
+});
+Test("two supporting AI choose opposite lanes for every carrier on either team",()=> {
+ var rules=new MatchRules();var sim=new MatchSimulation(rules,StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);var st=sim.State;
+ foreach(var owner in st.Players){owner.Position=Vec2.Zero;st.Ball.OwnerId=owner.Id;var targets=st.Players.Where(p=>p.Team==owner.Team && p.Id!=owner.Id).Select(p=>BotTactics.Position(st,rules,p,owner.Id)).ToArray();Assert(targets[0].Y*targets[1].Y<0,"receivers crowded the same wing");}
+});
+Test("AI completes physical passes to coordinated receivers on both teams",()=> {
+ foreach(var team in new[]{Team.Cyan,Team.Amber}){
+  var rules=new MatchRules{EnableCombat=false,BotDifficulty=BotDifficulty.God};var sim=new MatchSimulation(rules,StarStrikerLoadouts.CreateRoster(),CharacterId.Marine,MatchMode.BotMatch);var st=sim.State;st.Phase=MatchPhase.Playing;
+  int owner=team==Team.Cyan ? 0 : 3,receiver=owner+1;float side=team==Team.Cyan ? 1 : -1;
+  foreach(var p in st.Players)p.Position=new Vec2(-side*20,(p.Id-2)*3);
+  st.Players[owner].Position=Vec2.Zero;st.Players[receiver].Position=new Vec2(side*8,4);st.Ball.OwnerId=owner;
+  var bots=st.Players.Select(_=>new BotCommandSource(rules)).ToArray();var commands=new PlayerCommand[6];bool received=false;
+  for(int tick=0;tick<180;tick++){foreach(int id in new[]{owner,receiver})commands[id]=bots[id].ReadCommand(st,id);sim.Step(commands);if(st.Ball.OwnerId==receiver){received=true;break;}}
+  Assert(received && st.Players[owner].Passes>0,"pass was not received on "+team);
+ }
+});
+Test("Steam launch respects production AppIDs and parses dormant-game invitations",()=> {
+ Assert(Soccer.Core.Networking.SteamLaunch.AppId(new[]{"game"},"1234567")==1234567,"Steam AppID overwritten");
+ Assert(Soccer.Core.Networking.SteamLaunch.AppId(new[]{"game"},null)==480,"development fallback lost");
+ Assert(Soccer.Core.Networking.SteamLaunch.AppId(new[]{"game","--soccer-steam-app-id","42"},"1234567")==42,"explicit test override ignored");
+ Assert(Soccer.Core.Networking.SteamLaunch.Invitation(new[]{"game","+connect_lobby","109775243000000001"})==109775243000000001,"launch invitation lost");
+ Assert(Soccer.Core.Networking.SteamLaunch.Invitation(new[]{"game","+connect_lobby","bad"})==0,"invalid invitation accepted");
+ Assert(Soccer.Core.Networking.SteamLaunch.FromClient("1234567","1234567") && !Soccer.Core.Networking.SteamLaunch.FromClient(null,null),"launch origin misidentified");
+});
 string reportDir = args.Length > 0 ? args[0] : Path.GetFullPath("reports");
 Directory.CreateDirectory(reportDir);
 File.WriteAllText(Path.Combine(reportDir, "core-tests.json"), JsonSerializer.Serialize(new { passed = failed == 0, total = results.Count, failed, results }, new JsonSerializerOptions { WriteIndented = true }));

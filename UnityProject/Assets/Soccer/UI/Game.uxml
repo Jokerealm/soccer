@@ -15,7 +15,7 @@
                 <ui:VisualElement class="loading-track"><ui:VisualElement name="loading-fill" class="loading-fill" /></ui:VisualElement>
                 <ui:Label text="球场小提示：用传球和走位，为队友创造机会。" class="loading-tip" />
             </ui:VisualElement>
-            <ui:Label text="0.30.0" class="loading-version" />
+            <ui:Label text="0.31.0" class="loading-version" />
         </ui:VisualElement>
 
 
@@ -46,7 +46,7 @@
                     <ui:Button name="settings-button" text="设置" class="home-nav home-nav-small" />
                 </ui:VisualElement>
             </ui:VisualElement>
-            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 确认" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.27.0" class="home-version" /></ui:VisualElement>
+            <ui:VisualElement class="home-bottom row"><ui:Label text="↑ ↓ 选择    Enter 聊天" class="home-keyboard" /><ui:VisualElement class="grow" /><ui:Label text="0.31.0" class="home-version" /></ui:VisualElement>
         </ui:VisualElement>
 
         <ui:VisualElement name="play-page" class="play-menu hidden">
@@ -125,15 +125,15 @@
                 <ui:VisualElement class="character-showcase">
                     <ui:VisualElement name="character-preview" class="character-preview" />
                     <ui:VisualElement class="preview-controls row"><ui:Label text="拖动环绕 · 滚轮缩放" class="preview-hint grow" /><ui:Button name="preview-auto" text="自动旋转：开" class="front-utility" /><ui:Button name="preview-reset" text="复位" class="front-utility" /></ui:VisualElement>
-                    <ui:VisualElement name="draft-placement" class="draft-placement hidden"><ui:VisualElement class="row"><ui:Label name="draft-turn" class="draft-turn grow" /></ui:VisualElement><ui:VisualElement name="draft-map" class="draft-map" /><ui:Label name="draft-position-note" class="draft-position-note" /></ui:VisualElement>
+                    <ui:VisualElement name="draft-placement" class="draft-placement hidden"><ui:VisualElement class="row"><ui:Label name="draft-turn" class="draft-turn grow" /></ui:VisualElement><ui:VisualElement name="draft-map" class="draft-map" /><ui:VisualElement name="draft-slots" class="draft-slots" /><ui:Label name="draft-position-note" class="draft-position-note" /></ui:VisualElement>
                 </ui:VisualElement>
                 <ui:ScrollView name="character-details" class="character-details" mode="Vertical" horizontal-scroller-visibility="Hidden" vertical-scroller-visibility="Auto">
                     <ui:Label name="selected-name" class="page-title" /><ui:Label name="selected-role" class="eyebrow" /><ui:Label name="selected-summary" class="selection-summary" />
-                    <ui:VisualElement class="selection-ability row"><ui:VisualElement name="selection-weapon-art" class="selection-ability-art" /><ui:VisualElement class="grow"><ui:Label name="passive-name" class="skill-heading" /><ui:Label name="passive-copy" class="description" /></ui:VisualElement></ui:VisualElement>
-                    <ui:VisualElement class="selection-ability row"><ui:VisualElement name="selection-q-art" class="selection-ability-art" /><ui:VisualElement class="grow"><ui:Label name="q-name" class="skill-heading" /><ui:Label name="q-copy" class="description" /></ui:VisualElement></ui:VisualElement>
-                    <ui:VisualElement class="selection-ability row"><ui:VisualElement name="selection-e-art" class="selection-ability-art" /><ui:VisualElement class="grow"><ui:Label name="e-name" class="skill-heading" /><ui:Label name="e-copy" class="description" /></ui:VisualElement></ui:VisualElement>
+                    <ui:VisualElement class="selection-ability"><ui:Button name="selection-weapon-toggle" class="selection-ability-toggle row"><ui:VisualElement name="selection-weapon-art" class="selection-ability-art" /><ui:VisualElement class="grow"><ui:Label name="passive-name" class="skill-heading" /><ui:Label name="passive-copy" class="description" /></ui:VisualElement><ui:Label name="selection-weapon-arrow" text="＋" class="skill-expand" /></ui:Button><ui:Label name="weapon-detail" class="parameter-copy hidden" /></ui:VisualElement>
+                    <ui:VisualElement class="selection-ability"><ui:Button name="selection-q-toggle" class="selection-ability-toggle row"><ui:VisualElement name="selection-q-art" class="selection-ability-art" /><ui:VisualElement class="grow"><ui:Label name="q-name" class="skill-heading" /><ui:Label name="q-copy" class="description" /></ui:VisualElement><ui:Label name="selection-q-arrow" text="＋" class="skill-expand" /></ui:Button><ui:Label name="q-detail" class="parameter-copy hidden" /></ui:VisualElement>
+                    <ui:VisualElement class="selection-ability"><ui:Button name="selection-e-toggle" class="selection-ability-toggle row"><ui:VisualElement name="selection-e-art" class="selection-ability-art" /><ui:VisualElement class="grow"><ui:Label name="e-name" class="skill-heading" /><ui:Label name="e-copy" class="description" /></ui:VisualElement><ui:Label name="selection-e-arrow" text="＋" class="skill-expand" /></ui:Button><ui:Label name="e-detail" class="parameter-copy hidden" /></ui:VisualElement>
                     <ui:Label name="selection-controls" class="selection-controls" />
-                    <ui:Foldout name="character-parameters" text="查看技能参数" class="character-parameters" value="false"><ui:VisualElement name="character-parameter-content" class="hidden"><ui:Label name="selected-stats" class="stats-copy" /><ui:Label name="q-detail" class="parameter-copy" /><ui:Label name="e-detail" class="parameter-copy" /><ui:Label name="weapon-detail" class="parameter-copy" /></ui:VisualElement></ui:Foldout>
+                    <ui:Label name="selected-stats" class="stats-copy selection-base-stats" />
                 </ui:ScrollView>
             </ui:VisualElement>
             <ui:VisualElement class="selection-footer row"><ui:VisualElement class="grow" /><ui:Button name="start-button" text="开始训练" class="primary" /></ui:VisualElement>

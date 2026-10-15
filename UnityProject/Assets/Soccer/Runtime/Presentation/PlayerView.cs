@@ -24,7 +24,7 @@ namespace Soccer.Runtime
         public void Recoil(Vec2 direction) { recoilDirection = direction.Normalized; recoilRemaining = 0.1f; }
         public void ClearFeedback() { flashRemaining = impactRemaining = recoilRemaining = 0; }
 
-        public void Initialize(CharacterDefinition character, Team team, bool local, Sprite ring, Sprite diamond, Sprite shadowSprite)
+        public void Initialize(CharacterDefinition character, Team team, Team localTeam, bool local, Sprite ring, Sprite diamond, Sprite shadowSprite)
         {
             definition = character;
             teamColor = team == Team.Cyan ? new Color(0.3f, 0.93f, 0.87f) : new Color(1, 0.68f, 0.3f);
@@ -39,7 +39,7 @@ namespace Soccer.Runtime
             Model = model.AddComponent<PlayerModelView>(); Model.Initialize(character.Stats, team);
             aim = ViewLines.Create(transform, "Aim Direction", 0.035f, Color.white, 600);
             var resources=new GameObject("Life and Energy"); resources.transform.SetParent(transform,false);
-            ResourcesUI=resources.AddComponent<PlayerResourceView>(); ResourcesUI.Initialize(team,local);
+            ResourcesUI=resources.AddComponent<PlayerResourceView>(); ResourcesUI.Initialize(team,local,team==localTeam);
             shieldRing = ViewLines.Create(transform, "Shield or Protection", 0.045f, new Color(0.65f, 0.85f, 1), 600);
             shieldRing.positionCount = 33;
             meleeArc = ViewLines.Create(transform, "Melee Cone", 0.05f, new Color(1, 0.8f, 0.3f, 0.7f), 620);

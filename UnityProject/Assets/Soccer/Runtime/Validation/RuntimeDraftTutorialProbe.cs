@@ -57,10 +57,11 @@ namespace Soccer.Runtime
                 Check(PicksButton("character-0") && PicksButton("character-1") && PicksButton("start-button") && PicksButton("select-back"),size+" draft choices and lock are accessible");
                 yield return Capture("draft-"+size.x+"x"+size.y);
             }
-            DraftMapClick(new Vec2(14,2));yield return null;
-            Check(app.DraftPosition.X>0 && !app.UI.Root.Q<Button>("start-button").enabledSelf && app.DraftStatus.Length>0,"clicking the opposing half gives placement feedback and disables locking");
-            Vec2 opening=new Vec2(-14,3);DraftMapClick(opening);yield return null;yield return Click("character-1");
-            Check(Vec2.Distance(app.DraftPosition,opening)<.15f && app.Selected==CharacterId.Thor && app.UI.CharacterPreview.Character==CharacterId.Thor,"map click chooses actual world position and character choice updates the live model");
+            var original=app.DraftPosition;DraftMapClick(new Vec2(14,2));yield return null;
+            Check(Vec2.Distance(original,app.DraftPosition)<.001f,"clicking outside fixed own-team points leaves placement unchanged");
+            for(int i=0;i<6;i++)Check(PicksButton("draft-point-"+i),"fixed formation point is selectable: "+i);
+            Vec2 opening=OpeningFormation.Position(app.ActiveDraft.Rules,app.DraftLocalSlot,4);DraftMapClick(opening);yield return null;yield return Click("character-1");
+            Check(Vec2.Distance(app.DraftPosition,opening)<.15f && app.Selected==CharacterId.Thor && app.UI.CharacterPreview.Character==CharacterId.Thor,"map click selects a fixed formation point and character choice updates the live model");
             yield return Click("start-button");
             Check(app.InDraft && app.ActiveDraft.Picks[0].Locked && !app.MyDraftTurn,"locking commits the human's role and position and advances to the other team");
             float deadline=Time.realtimeSinceStartup+5;while(app.InDraft && Time.realtimeSinceStartup<deadline)yield return null;

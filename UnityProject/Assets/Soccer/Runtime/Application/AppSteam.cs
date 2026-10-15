@@ -12,6 +12,15 @@ namespace Soccer.Runtime
         public bool SteamEntry=>EntryMode==GameEntryMode.Steam;
         public string PlayerAccountId=>SteamEntry ? Steam.AccountId : Account?.Id ?? "";
         private ulong pendingSteamFriend;
+        private void ResumeSteamLaunch()
+        {
+            if(ValidationSession)return;
+            var args=Environment.GetCommandLineArgs();ulong lobby=SteamLaunch.Invitation(args);
+            if(lobby!=0 && (!new Steamworks.CSteamID(lobby).IsValid() || !new Steamworks.CSteamID(lobby).IsLobby()))lobby=0;
+            if(lobby==0 && !SteamLaunch.FromClient(Environment.GetEnvironmentVariable("SteamAppId"),Environment.GetEnvironmentVariable("SteamGameId")))return;
+            if(EnterSteam(lobby==0)){if(lobby!=0)AcceptSteamInvitation(lobby);}
+            else if(SteamEntry && !HasPlayerName)nicknameContinuation=()=>{GoHome();ConnectSteamCommunity();if(lobby!=0)AcceptSteamInvitation(lobby);};
+        }
         public void InviteSteamFriend(ulong id)
         {
             if(!SteamEntry || Steam.Busy)return;

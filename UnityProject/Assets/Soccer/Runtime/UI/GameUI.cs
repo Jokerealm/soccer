@@ -88,7 +88,7 @@ namespace Soccer.Runtime
             BindButton("route-login", app.OpenLogin);
             BindButton("login-steam",()=>app.EnterSteam());BindButton("steam-route",app.SelectSteamConnection);
             BindMenuNavigation();
-            root.Q<Foldout>("character-parameters").RegisterValueChangedCallback(e=>root.Q("character-parameter-content").EnableInClassList("hidden",!e.newValue));
+            BindSkillDetails();
             BindButton("internet-route", () => app.SelectConnection(ConnectionRoute.Internet));
             BindButton("lan-route", () => app.SelectConnection(ConnectionRoute.LAN));
             BindButton("settings-back", app.GoHome);
@@ -287,7 +287,7 @@ namespace Soccer.Runtime
             if(page==AppPage.PlayMenu)root.schedule.Execute(()=>{if(app.Page==AppPage.PlayMenu)root.Q<Button>("play-online").Focus();});
             if (page == AppPage.History)historyUI.Open();
             if(page==AppPage.Profile)socialUI.OpenProfile();socialUI?.Refresh();
-            if (page == AppPage.CharacterSelect){root.Q<Foldout>("character-parameters").SetValueWithoutNotify(false);root.Q("character-parameter-content").AddToClassList("hidden");RefreshSelection();}
+            if (page == AppPage.CharacterSelect){ResetSkillDetails();RefreshSelection();}
             if (page == AppPage.ModeDetails || page==AppPage.NetworkMenu) RefreshModeDetails();
             if (page == AppPage.NetworkMenu || page == AppPage.RoomLobby) RefreshNetwork();
             Visible(root.Q("menu-backdrop"), page != AppPage.Match && page != AppPage.Loading);
@@ -308,10 +308,26 @@ namespace Soccer.Runtime
             if(page==AppPage.Party || page==AppPage.Home || page==AppPage.PlayMenu)RefreshCommunity();
         }
 
+        private CharacterId? detailCharacter;
+        private readonly string[] detailSkills={"weapon","q","e"};
+        private void BindSkillDetails()
+        {
+            foreach(string skill in detailSkills)
+                BindButton("selection-"+skill+"-toggle",()=>{
+                    var detail=root.Q(skill+"-detail");bool expand=detail.ClassListContains("hidden");
+                    detail.EnableInClassList("hidden",!expand);
+                    root.Q<Label>("selection-"+skill+"-arrow").text=expand ? "－" : "＋";
+                });
+        }
+        private void ResetSkillDetails()
+        {
+            foreach(string skill in detailSkills){root.Q(skill+"-detail").AddToClassList("hidden");root.Q<Label>("selection-"+skill+"-arrow").text="＋";}
+        }
         public void RefreshDraft() => draftUI?.Refresh();
         public void RefreshSelection()
         {
             var d = app.SelectedDefinition;
+            if(detailCharacter!=d.Stats.Id){ResetSkillDetails();detailCharacter=d.Stats.Id;}
             CharacterPreview?.Select(d);
             Text("select-title", app.SelectedMode == MatchMode.Training ? "选择角色 · 训练场" : "选择角色 · 合作乱斗");
             Text("select-subtitle", app.SelectedMode == MatchMode.Training ? "练习移动、传射和角色技能。" : "3v3 AI 对练 · 选择你的角色。");

@@ -9,10 +9,12 @@ namespace Soccer.Runtime
         private readonly AppController app;private readonly VisualElement root;
         private readonly DraftPitch pitch;
         private readonly Label[] members=new Label[6];
+        private readonly Button[] points=new Button[OpeningFormation.Count];
         public DraftUI(AppController controller,VisualElement ui)
         {
             app=controller;root=ui;pitch=new DraftPitch(app);root.Q("draft-map").Add(pitch);
             for(int i=0;i<6;i++) {members[i]=new Label {name="draft-member-"+i};members[i].AddToClassList("draft-member");root.Q("draft-members").Add(members[i]);}
+            for(int i=0;i<points.Length;i++){int index=i;points[i]=new Button(()=>app.SelectDraftPoint(index)){name="draft-point-"+i};points[i].AddToClassList("draft-point");root.Q("draft-slots").Add(points[i]);}
         }
         public void Refresh()
         {
@@ -21,9 +23,16 @@ namespace Soccer.Runtime
             if(!active)return;
             var draft=app.ActiveDraft;int local=app.DraftLocalSlot;bool locked=draft.Picks[local].Locked;
             root.Q<Label>("select-title").text="对局准备 · 选人布阵";
-            root.Q<Label>("select-subtitle").text=(app.Room==null ? "AI 队伍已就绪" : "玩家已就绪")+" · 两队轮流选择 · 当前角色允许重复";
+            root.Q<Label>("select-subtitle").text=(app.Room==null && app.ServiceMatch==null ? "AI 队伍已就绪" : "玩家已就绪")+" · 两队轮流选择 · 当前角色允许重复";
             root.Q<Label>("draft-turn").text=draft.Complete ? "阵容已确定" : app.DraftName(draft.CurrentSlot)+" 正在选择 · "+Mathf.CeilToInt(draft.RemainingSeconds)+" 秒";
-            root.Q<Label>("draft-position-note").text=app.DraftStatus.Length>0 ? app.DraftStatus : locked ? "角色与位置已锁定" : "点击我方半场选择开局位置";
+            int selected=OpeningFormation.IndexAt(draft.Rules,local,app.DraftPosition);
+            root.Q<Label>("draft-position-note").text=app.DraftStatus.Length>0 ? app.DraftStatus : (locked ? "已锁定：" : "当前：")+(selected<0 ? "请选择点位" : OpeningFormation.Names[selected])+" · 每队 6 个固定点，队友不能重叠";
+            for(int i=0;i<points.Length;i++)
+            {
+                bool free=draft.CanPlace(local,OpeningFormation.Position(draft.Rules,local,i),out _);
+                points[i].text=(i+1)+" "+OpeningFormation.Names[i]+(free ? "" : " · 已占");
+                points[i].SetEnabled(!locked && free);points[i].EnableInClassList("draft-point-selected",selected==i);
+            }
             for(int i=0;i<6;i++)
             {
                 var pick=draft.Picks[i];members[i].text=(i<3 ? "青" : "橙")+(i%3+1)+"  "+app.DraftName(i)+"\n"+
@@ -48,7 +57,8 @@ namespace Soccer.Runtime
                     if(evt.button!=0 || draft==null || draft.Picks[local].Locked)return;
                     var rect=Field();Vector2 point=evt.localPosition;
                     if(!rect.Contains(point))return;
-                    app.SelectDraftPosition(new Vec2((point.x-rect.center.x)/rect.width*draft.Rules.FieldWidth,(rect.center.y-point.y)/rect.height*draft.Rules.FieldHeight));evt.StopPropagation();
+                    for(int i=0;i<OpeningFormation.Count;i++)
+                        if(Vector2.Distance(point,Project(OpeningFormation.Position(draft.Rules,local,i),rect))<=16){app.SelectDraftPoint(i);evt.StopPropagation();break;}
                 });
             }
             public void Refresh(MatchDraft state,int slot,Vec2 point) {draft=state;local=slot;candidate=point;MarkDirtyRepaint();}
@@ -69,6 +79,12 @@ namespace Soccer.Runtime
                 painter.strokeColor=new Color(.50f,.66f,.72f);painter.lineWidth=1.5f;painter.BeginPath();painter.MoveTo(field.min);painter.LineTo(new Vector2(field.xMax,field.yMin));painter.LineTo(field.max);painter.LineTo(new Vector2(field.xMin,field.yMax));painter.ClosePath();painter.Stroke();
                 painter.BeginPath();painter.MoveTo(new Vector2(field.center.x,field.yMin));painter.LineTo(new Vector2(field.center.x,field.yMax));painter.Stroke();
                 painter.BeginPath();painter.Arc(field.center,draft.Rules.CenterCircleRadius/draft.Rules.FieldWidth*field.width,0,360);painter.Stroke();
+                for(int slot=0;slot<=3;slot+=3)for(int i=0;i<OpeningFormation.Count;i++)
+                {
+                    var anchor=OpeningFormation.Position(draft.Rules,slot,i);
+                    painter.strokeColor=slot/3==local/3 ? new Color(.50f,.88f,.79f) : new Color(.45f,.51f,.55f,.5f);
+                    painter.lineWidth=2;painter.BeginPath();painter.Arc(Project(anchor,field),9,0,360);painter.Stroke();
+                }
                 foreach(var pick in draft.Picks)
                 {
                     if(!pick.Locked && pick.Slot!=local)continue;

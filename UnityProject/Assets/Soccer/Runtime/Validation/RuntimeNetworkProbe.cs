@@ -247,7 +247,7 @@ namespace Soccer.Runtime
         private IEnumerator ParticipateDraft()
         {
             float deadline=Time.realtimeSinceStartup+18;bool sawDraft=false,locked=false;
-            Vec2 position=role=="host" ? new Vec2(-14,2) : new Vec2(14,-2);
+            Vec2 position=OpeningFormation.Position(new MatchRules(),role=="host" ? 0 : 3,role=="host" ? 4 : 5);
             while(app.Page!=AppPage.Match && Time.realtimeSinceStartup<deadline)
             {
                 if(app.InDraft)

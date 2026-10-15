@@ -33,22 +33,19 @@ namespace Soccer.Core
         }
         public static Vec2 DefaultPosition(MatchRules rules,int slot)
         {
-            int lane=slot%3; float side=slot<3 ? -1 : 1;
-            float x=lane==0 ? Math.Max(rules.CenterCircleRadius+1.1f,rules.FieldWidth*.19f) : rules.FieldWidth*(lane==1 ? .30f : .39f);
-            x=Math.Min(x,rules.FieldWidth*.5f-PlacementMargin);
-            return new Vec2(side*x,lane==1 ? -rules.FieldHeight*.20f : lane==2 ? rules.FieldHeight*.20f : 0);
+            return OpeningFormation.Position(rules,slot,slot%3==0 ? 3 : slot%3);
         }
         public bool CanPlace(int slot,Vec2 position,out string error)
         {
-            if (slot<0 || slot>5 || !ValidFieldPoint(Rules,slot,position)) { error="请在我方半场内选择位置，并避开中圈保护区。";return false; }
+            if (slot<0 || slot>5 || !ValidFieldPoint(Rules,slot,position)) { error="请在我方半场的六个固定点位中选择。";return false; }
             foreach(var pick in Picks)
                 if(pick.Slot!=slot && pick.Locked && Vec2.Distance(position,pick.Position)<Separation)
-                {error="该位置离已选球员太近，请换一个位置。";return false;}
+                {error="该点位已被队友占用，请选择其他点位。";return false;}
             error="";return true;
         }
         public static bool ValidFieldPoint(MatchRules rules,int slot,Vec2 point)
         {
-            if(slot<0 || slot>5 || !Geometry.IsFinite(point.X) || !Geometry.IsFinite(point.Y)) return false;
+            if(OpeningFormation.IndexAt(rules,slot,point)<0) return false;
             float sign=slot<3 ? -1 : 1;
             return point.X*sign>=PlacementMargin && point.X*sign<=rules.FieldWidth*.5f-PlacementMargin &&
                 Math.Abs(point.Y)<=rules.FieldHeight*.5f-PlacementMargin && point.Length>=rules.CenterCircleRadius+PlacementMargin;
@@ -58,7 +55,7 @@ namespace Soccer.Core
             if(Complete || slot!=CurrentSlot) {error="请等待轮到你选择。";return false;}
             if(character!=CharacterId.Marine && character!=CharacterId.Thor) {error="角色尚未开放。";return false;}
             if(!CanPlace(slot,position,out error)) return false;
-            var pick=Picks[slot];pick.Character=character;pick.Position=position;pick.Locked=true;pick.Automatic=automatic;
+            var pick=Picks[slot];pick.Character=character;pick.Position=OpeningFormation.Position(Rules,slot,OpeningFormation.IndexAt(Rules,slot,position));pick.Locked=true;pick.Automatic=automatic;
             TurnIndex++;RemainingSeconds=Complete ? 0 : TurnSeconds;aiAge=0;return true;
         }
         public void SetHuman(int slot,bool human) { if(slot>=0 && slot<6) Humans[slot]=human; }
@@ -71,11 +68,9 @@ namespace Soccer.Core
             if(!CanPlace(slot,position,out _))
             {
                 bool found=false;float best=float.PositiveInfinity;
-                for(int x=0;x<16;x++) for(int y=0;y<16;y++)
+                for(int i=0;i<OpeningFormation.Count;i++)
                 {
-                    float sign=slot<3 ? -1 : 1;
-                    var p=new Vec2(sign*(PlacementMargin+(Rules.FieldWidth*.5f-2*PlacementMargin)*x/15),
-                        -Rules.FieldHeight*.5f+PlacementMargin+(Rules.FieldHeight-2*PlacementMargin)*y/15);
+                    var p=OpeningFormation.Position(Rules,slot,i);
                     if(CanPlace(slot,p,out _) && Vec2.Distance(p,pick.Position)<best) {position=p;best=Vec2.Distance(p,pick.Position);found=true;}
                 }
                 if(!found) throw new InvalidOperationException("无法为球员安排开局位置");

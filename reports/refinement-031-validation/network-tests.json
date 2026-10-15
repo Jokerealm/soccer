@@ -1,0 +1,297 @@
+{
+  "passed": true,
+  "total": 58,
+  "failed": 0,
+  "results": [
+    {
+      "name": "parallel server matches and client replicas share thread-safe codec metadata",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "game names accept six Chinese characters and six emoji without splitting Unicode",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "game names persist across restart, change atomically and remain separate per account",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "both public debug accounts log in and reject invalid credentials",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "account proof binds account, nonce and player identity",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "internet rooms require login while LAN remains available without accounts",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "internet host rejects forged account proof even in an unlocked room",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "password proofs bind nonce and player identity",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "open internet room ignores disabled password and joins without password",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "locked internet room rejects incorrect password",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "locked internet room rejects omitted password",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "locked internet room accepts correct password",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "room route mismatch cannot join a LAN room as internet",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "LAN discovery finds real UDP responder and usable TCP address",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "ready and character/team selection synchronize before host starts",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "full team rejects fourth member while the other team can still join",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "late join rejected after match start",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "remote input controls only assigned slot and host snapshots synchronize ball and players",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "guest disconnect releases slot and notifies host for AI takeover",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "host closure is reported and client stops",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "return to lobby resets readiness and allows a new match",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "input buffer preserves short button edges and rejects replay/nonfinite commands",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "complete snapshot round trip includes effects, resources, orders and events",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "malformed snapshot cannot partially mutate live state",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid passwords, ports and room addresses reject before listening",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "in-flight ready and input packets survive return-to-lobby transitions",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "oversized unauthenticated control frame is rejected without room admission",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "invalid owner snapshot is rejected atomically",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "six concurrent players occupy unique slots and all can ready",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "each IPv4 subnet gets its own directed broadcast including non-24-bit masks",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "LAN announcements discover two hosts and deduplicate broadcast and loopback replies",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "automatic hosting survives occupied preferred port and assigns distinct usable endpoints",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "LAN IP-only join resolves occupied-port fallback through directed discovery",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "IP-only lookup refuses ambiguous hosts and invitations select the intended room",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "internet invitation carries an automatically selected port and still requires room password",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "malformed, cross-route and stale invitations are rejected",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "every room receives a mixed six-character uppercase alphanumeric code",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "LAN discovery includes the current room code",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "room enters replicated draft after ready and cannot join or change teams during selection",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "only current player\u0027s lock is accepted and final lineup and positions start both peers",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "draft cancellation returns both players to lobby and rematch starts a new selection epoch",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "draft snapshot rejects impossible locked order and nonfinite placement",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "lobby begins empty and only host controls explicit bot slots",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "three second countdown replicates, cancels on unready and then enters draft",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "leaving or changing the roster cancels a pending countdown",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Steam identity keys are canonical and TCP cannot impersonate a Steam transport",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Steam framing round trips and rejects invalid packet kind and per-kind length",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "automatic admission binds password proof to the assigned team and permits room team changes",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "simultaneous automatic Steam joins reserve distinct slots and fill both teams",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Steam room admission works after a long-running Unity clock without HTTP login",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Steam rejects hello identity spoofing and authenticated owner substitution",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Steam optional password and stale lobby protection remain enforced",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "one authenticated Steam account cannot occupy two player slots",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "Steam transport reuses cancelable countdown and authoritative player input",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "host difficulty replicates and changing it cancels player readiness",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "team signals relay only to allies and rate limiting keeps the room usable",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "signals from a previous match are ignored and cannot impersonate another player",
+      "passed": true,
+      "error": ""
+    },
+    {
+      "name": "room chat is authenticated, team chat stays private and long Unicode messages round-trip",
+      "passed": true,
+      "error": ""
+    }
+  ]
+}

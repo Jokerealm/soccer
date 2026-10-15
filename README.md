@@ -2,13 +2,13 @@
 
 合作乱斗足球游戏，Unity 体系的团结引擎 + C# 开发，Windows / Steam 优先，后续适配手机。常规规则使用二维球场，三维足球／球门、图片地面和实时灯光用于显示；只有未来特定越顶技能启用球的高度。
 
-当前阶段：**视角滚轮与本机服务器 0.30.0**。滚轮缩放，Ctrl＋滚轮旋转，按住中键或 Alt 选择快捷信号，松开发送。镜头旋转后资源条与文字继续面向镜头。详见 [更新说明](docs/视角滚轮与本机服务器0.30.0.md)。
+当前阶段：**界面布阵与 AI 配合 0.31.0**。修复输入框和组队按钮文字对比度，Enter 统一聊天，技能详情独立展开，每队六个固定布阵点，己方绿血条、敌方红血条，AI 判断传球时机并分路接应。详见 [更新说明](docs/界面布阵与AI配合0.31.0.md)。
 
 本轮通过核心 255 项、网络 58 项、视角／信号专项 58 项和完整客户端回归 613 项检查；六人服务流程与本机服务连通检查通过。macOS／Windows 构建零错误、零警告。见 [验证报告](reports/camera-030-validation.json)。
 
 当前开发机 Mac 已启动临时游戏服务器 `http://192.168.31.29:27862`，登录后自动运行。客户端默认连接此地址，同一局域网可注册游戏帐号、使用好友与聊天、组队开房及普通／排位匹配。尚未部署公网服务。运行配置见 [服务端说明](server/DEPLOY.md)。
 
-项目仓库：[Jokerealm/soccer](https://github.com/Jokerealm/soccer)。下载 [0.30.0 Windows 试玩包](https://github.com/Jokerealm/soccer/releases/download/v0.30.0/SkillSoccer-0.30.0-Windows-x64.zip)，完整解压后运行 `SkillSoccer.exe`。[完整发布说明与服务端包](https://github.com/Jokerealm/soccer/releases/tag/v0.30.0)。Steam 仍使用开发测试 AppID 480；原生 Steam 房间不依赖游戏服务。Windows 实机尚未验证。
+项目仓库：[Jokerealm/soccer](https://github.com/Jokerealm/soccer)。下载 [0.31.0 Windows 试玩包](https://github.com/Jokerealm/soccer/releases/download/v0.31.0/SkillSoccer-0.31.0-Windows-x64.zip)，完整解压后运行 `SkillSoccer.exe`。[完整发布说明与服务端包](https://github.com/Jokerealm/soccer/releases/tag/v0.31.0)。Steam 仍使用开发测试 AppID 480；原生 Steam 房间不依赖游戏服务。Windows 实机尚未验证。
 
 体型碰撞、右键寻路和定位球继续保留：角色间按实际半径阻挡并绕行，球半径与模型一致；右键地面移动、右键敌人追击攻击、右键队友跟随，Shift 追加路线，S/H 停止。整球出界后按最后触球判界外球、角球或球门球；任意球已加入，正常武器、技能和推抢都允许进攻，点球暂不做。
 
@@ -16,6 +16,7 @@
 
 枪兵与雷神使用可替换的临时立体造型，统一 100 生命、100 能量；V 键踢球冷却 6 秒，空格铲球冷却 5 秒并扣生命，推力越大扣血越少。新手默认显示半透明完整技能栏，老手可切换为左上角头像与生命、能量数值，设置自动保存。生命低于 25% 时屏幕最外围出现半透明红色渐变。常规二维比赛规则和 **5 秒原地满状态复活**保留。
 
+- [界面布阵与 AI 配合 0.31.0](docs/界面布阵与AI配合0.31.0.md)
 - [视角滚轮与本机服务器 0.30.0](docs/视角滚轮与本机服务器0.30.0.md)
 - [聊天、好友与组队匹配 0.29.0](docs/聊天好友与组队匹配0.29.0.md)
 - [开场热身与战术交流 0.28.0](docs/开场热身与战术交流0.28.0.md)

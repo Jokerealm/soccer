@@ -17,6 +17,7 @@ namespace Soccer.Runtime
         private readonly Dictionary<string,List<ChatMessage>> logs=new Dictionary<string,List<ChatMessage>>();
         private readonly Dictionary<string,long> read=new Dictionary<string,long>();
         private string scope="party",target="",privateName="",context="",signature="";
+        private int enterFrame=-1;
         private float nextPoll,nextSend;private bool polling,sending,pendingFocus,consumed;
         public bool IsOpen {get;private set;}
         public bool BlocksGameplay=>consumed || IsOpen && (pendingFocus || input.panel?.focusController?.focusedElement is TextField || input.Contains(input.panel?.focusController?.focusedElement as VisualElement));
@@ -68,18 +69,28 @@ namespace Soccer.Runtime
             return "service-room:"+(app.Community.Room?.Code??"");
         }
         private void Switch(){context=Context();signature="";nextPoll=0;status.text="";Render();}
+        public bool HandleEnter(bool all=false)
+        {
+            if(app.EntryMode==GameEntryMode.NotEntered || app.Page==AppPage.Loading || app.Page==AppPage.Login || app.Page==AppPage.Nickname)return false;
+            if(enterFrame==Time.frameCount)return true;
+            var focused=root.panel?.focusController?.focusedElement as VisualElement;
+            for(var field=focused;field!=null;field=field.parent)
+                if(field is TextField && field!=input)return false;
+            if(!IsOpen && app.UI.BlocksKeyNavigation)return false;
+            enterFrame=Time.frameCount;consumed=true;
+            if(!IsOpen)Open(all && app.Page==AppPage.Match ? "all" : DefaultScope());
+            else if(Input.compositionString.Length==0){if(string.IsNullOrWhiteSpace(input.value))Close();else Send();}
+            return true;
+        }
         public void Tick()
         {
-            consumed=false;
+            consumed=enterFrame==Time.frameCount;
             bool visible=app.EntryMode!=GameEntryMode.NotEntered && app.Page!=AppPage.Loading && app.Page!=AppPage.Login && app.Page!=AppPage.Nickname;
             badge.EnableInClassList("chat-in-match",app.Page==AppPage.Match);
             badge.style.display=visible ? DisplayStyle.Flex : DisplayStyle.None;if(!visible){Close();return;}
             bool enter=Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter);
             if(IsOpen && Input.GetKeyDown(KeyCode.Escape)){consumed=true;Close();return;}
-            if(enter && !app.UI.BlocksKeyNavigation && !IsOpen && (app.Page==AppPage.Match || app.Page==AppPage.RoomLobby || app.Page==AppPage.Party))
-            {consumed=true;Open(Input.GetKey(KeyCode.LeftShift) && app.Page==AppPage.Match ? "all" : DefaultScope());}
-            else if(enter && IsOpen && BlocksGameplay && Input.compositionString.Length==0)
-            {consumed=true;if(string.IsNullOrWhiteSpace(input.value))Close();else Send();}
+            if(enter)HandleEnter(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift));
             if(!IsOpen)return;
             SetChoices();if(context!=Context())Switch();Render();
             bool service=scope=="private" || scope=="party" || scope=="room" && app.Room==null;

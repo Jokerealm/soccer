@@ -1,0 +1,41 @@
+{
+  "version": "0.31.0",
+  "passed": true,
+  "windowsRuntimeVerified": false,
+  "validation": {
+    "core": {
+      "passed": true,
+      "checks": 262,
+      "report": "reports/refinement-031-validation/core-tests.json"
+    },
+    "network": {
+      "passed": true,
+      "checks": 58,
+      "report": "reports/refinement-031-validation/network-tests.json"
+    },
+    "native": {
+      "passed": true,
+      "checks": 656,
+      "report": "reports/refinement-031-regression-verified/runtime-smoke.json"
+    },
+    "community": {
+      "passed": true,
+      "checks": 182,
+      "report": "reports/refinement-031-service-validation/community-tests.json"
+    },
+    "steam": {
+      "passed": true,
+      "checks": 33,
+      "report": "reports/refinement-031-steam/steam-smoke.json"
+    }
+  },
+  "localServer": {
+    "serviceUrl": "http://192.168.31.29:27862",
+    "port": 27862,
+    "data": "/Users/gz/Library/Application Support/SkillSoccer/Server/data",
+    "release": "/Users/gz/Library/Application Support/SkillSoccer/Server/releases/20261015-161447",
+    "launchAgent": "/Users/gz/Library/LaunchAgents/com.skillsoccer.local-server.plist",
+    "running": true,
+    "version": "0.31.0"
+  }
+}

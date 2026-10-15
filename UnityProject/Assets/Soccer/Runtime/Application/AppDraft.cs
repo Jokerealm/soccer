@@ -52,7 +52,15 @@ namespace Soccer.Runtime
             UI.RefreshSelection();
         }
         public void SelectDraftPosition(Vec2 point)
-        { if(!InDraft || ActiveDraft.Picks[DraftLocalSlot].Locked)return;DraftPosition=point;ActiveDraft.CanPlace(DraftLocalSlot,point,out var error);DraftStatus=error;UI.RefreshSelection(); }
+        {
+            if(!InDraft || ActiveDraft.Picks[DraftLocalSlot].Locked)return;
+            int index=OpeningFormation.IndexAt(ActiveDraft.Rules,DraftLocalSlot,point);
+            if(index<0)return;
+            DraftPosition=OpeningFormation.Position(ActiveDraft.Rules,DraftLocalSlot,index);
+            ActiveDraft.CanPlace(DraftLocalSlot,DraftPosition,out var error);DraftStatus=error;UI.RefreshSelection();
+        }
+        public void SelectDraftPoint(int index)
+        {if(InDraft && index>=0 && index<OpeningFormation.Count)SelectDraftPosition(OpeningFormation.Position(ActiveDraft.Rules,DraftLocalSlot,index));}
         public void ConfirmSelection()
         {
             if(!InDraft) {StartMatch();return;}

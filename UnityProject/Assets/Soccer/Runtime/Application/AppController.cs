@@ -78,6 +78,7 @@ namespace Soccer.Runtime
             while (Time.realtimeSinceStartup - began < 1.6f) yield return null;
             StartupReady = true;
             OpenLogin();
+            ResumeSteamLaunch();
         }
 
         public CharacterDefinition SelectedDefinition => Array.Find(Characters, c => c.Stats.Id == Selected);

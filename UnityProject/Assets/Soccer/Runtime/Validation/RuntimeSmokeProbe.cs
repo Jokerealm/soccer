@@ -146,6 +146,7 @@ namespace Soccer.Runtime
             string[] modeButtons = { "bots-button", "normal-mode", "train-button", "profile-button", "shop-button", "settings-button" };
             yield return CaptureMainMenuFlow();
             yield return CaptureHistoryAndSelection();
+            yield return CaptureRefinements();
             yield return CaptureOfflineProfile();
             yield return CaptureShopAndNavigation();
             yield return CaptureDraftAndTutorial();
@@ -1596,7 +1597,9 @@ namespace Soccer.Runtime
             Check(app.UI.Root.panel.focusController.focusedElement == app.UI.Root.Q<Button>("normal-mode"), "arrow down selects multiplayer from primary entry");
             using (var evt = KeyDownEvent.GetPooled('\0', KeyCode.Return, EventModifiers.None)) home.SendEvent(evt);
             yield return null;
-            Check(app.Page == AppPage.NetworkMenu && app.Route == ConnectionRoute.LAN, "Enter opens offline multiplayer directly on LAN");
+            Check(app.Page==AppPage.Home && app.UI.Chat.IsOpen,"Enter opens home chat while keeping the selected menu action inactive");
+            app.UI.Chat.Close();yield return null;yield return Click("normal-mode");
+            Check(app.Page==AppPage.NetworkMenu && app.Route==ConnectionRoute.LAN,"mouse opens offline multiplayer on LAN");
             yield return new WaitForSecondsRealtime(.35f);
             Check(!app.UI.Root.Q<Button>("internet-route").enabledSelf && PicksButton("route-login"), "offline multiplayer offers login beside disabled Internet tab");
             yield return Click("network-create-tab");

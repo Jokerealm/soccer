@@ -10,6 +10,7 @@ namespace Soccer.Core
         private long nextDecision;
         private bool charging;
         private long releaseTick;
+        private BotTactics.KickPlan kickPlan;
         public BotCommandSource(MatchRules rules) { this.rules = rules; }
         public void Reset() { cached = default; nextDecision = 0; charging = false; }
 
@@ -36,58 +37,66 @@ namespace Soccer.Core
             if (state.Phase != MatchPhase.Playing || p.IsDead || p.Stun > 0 || p.PushRemaining > 0)
             { Reset(); return new PlayerCommand { Aim = p.Facing }; }
             if (rules.EnableCombat) return ReadCombatCommand(state, p);
-            var command = cached.WithoutEdges();
-            if (state.Tick >= nextDecision)
+            var command=cached.WithoutEdges();
+            if(state.Tick>=nextDecision)
             {
-                nextDecision = state.Tick + BotDifficulties.DecisionTicks(rules.BotDifficulty);
-                float side = p.Team == Team.Cyan ? 1 : -1;
-                Vec2 target;
-                if (state.Ball.OwnerId == p.Id)
-                {
-                    var goal = new Vec2(side * (rules.FieldWidth / 2 + 0.5f), (p.Id % 2 == 0 ? 0.6f : -0.6f));
-                    command.Aim = (goal - p.Position).Normalized;
-                    command.Move = new Vec2(side, -p.Position.Y * 0.12f).Normalized;
-                    if (!charging && p.KickCooldown <= 0 && Vec2.Distance(goal, p.Position) < 16)
-                    {
-                        charging = true;
-                        releaseTick = state.Tick + 43;
-                        command.KickPressed = true;
-                    }
-                }
+                nextDecision=state.Tick+BotDifficulties.DecisionTicks(rules.BotDifficulty);
+                command=new PlayerCommand();
+                if(state.Ball.OwnerId==p.Id)ReadCarrier(state,p,ref command);
                 else
                 {
-                    charging = false;
-                    int closestId = playerId;
-                    float closest = float.MaxValue;
-                    foreach (var teammate in state.Players)
-                    {
-                        if (teammate.Team != p.Team) continue;
-                        float d = Vec2.Distance(teammate.Position, state.Ball.Position);
-                        if (d < closest) { closest = d; closestId = teammate.Id; }
-                    }
-                    if (closestId == p.Id) target = state.Ball.Position;
-                    else
-                    {
-                        bool support = state.Owner != null && state.Owner.Team == p.Team;
-                        target = new Vec2(support ? state.Owner.Position.X + side * 3 : -side * (rules.FieldWidth / 2 - 4),
-                            p.Id % 2 == 0 ? 3.5f : -3.5f);
-                    }
-                    var offset = target - p.Position;
-                    command.Move = offset.Length < 0.4f ? Vec2.Zero : offset.Normalized;
-                    command.Aim = (state.Ball.Position - p.Position).Normalized;
-                    if (state.Owner != null && state.Owner.Team != p.Team &&
-                        Vec2.Distance(state.Owner.Position, p.Position) < 2.4f && p.TackleCooldown <= 0 &&
-                        Vec2.Distance(p.Position,state.Ball.Position) > p.Stats.Radius + rules.BallRadius + .12f &&
+                    charging=false;int closest=BotTactics.Chaser(state,p.Team);
+                    var target=BotTactics.Position(state,rules,p,closest);
+                    command.Move=Vec2.Distance(p.Position,target)>.4f ? (target-p.Position).Normalized : Vec2.Zero;
+                    command.Aim=(state.Ball.Position-p.Position).Normalized;
+                    if(state.Owner!=null && state.Owner.Team!=p.Team && closest==p.Id &&
+                        Vec2.Distance(state.Owner.Position,p.Position)<2.4f && p.TackleCooldown<=0 &&
+                        Vec2.Distance(p.Position,state.Ball.Position)>p.Stats.Radius+rules.BallRadius+.12f &&
                         !TackleSystem.IsRearContact(state.Owner,state.Owner.Position-p.Position,rules))
-                    { command.TacklePressed = true; command.Aim = (state.Owner.Position - p.Position).Normalized; }
+                    {command.TacklePressed=true;command.Aim=(state.Owner.Position-p.Position).Normalized;}
                 }
-                cached = command.WithoutEdges();
+                cached=command.WithoutEdges();
             }
-            command.KickHeld = charging;
-            if (charging && state.Tick >= releaseTick)
-            { command.KickReleased = true; command.KickHeld = false; charging = false; }
-            command.Navigate = true;
-            return command;
+            FinishKick(state,p,ref command);command.Navigate=true;return command;
+        }
+        private void ReadCarrier(MatchState state,PlayerState p,ref PlayerCommand command)
+        {
+            float side=p.Team==Team.Cyan ? 1 : -1;
+            command.Move=new Vec2(side,-p.Position.Y*.12f).Normalized;
+            command.Aim=command.Move;
+            if(!charging && p.KickCooldown<=0)
+            {
+                var plan=BotTactics.PlanKick(state,rules,p);
+                if(plan.Ready)
+                {
+                    kickPlan=plan;charging=true;command.KickPressed=true;
+                    float distance=Vec2.Distance(p.Position,plan.Target);
+                    float speed=plan.Pass ? (float)Math.Sqrt(2*rules.BallDeceleration*Math.Max(0,distance-.7f)+9) : rules.FullKickSpeed;
+                    speed/=(float)Math.Sqrt(p.Stats.KickDistance);
+                    float charge=Geometry.Clamp((speed-rules.TapKickSpeed)/(rules.FullKickSpeed-rules.TapKickSpeed),0,1);
+                    releaseTick=state.Tick+Math.Max(1,(long)Math.Ceiling(charge*rules.ChargeSeconds/MatchSimulation.TickSeconds));
+                }
+            }
+            if(charging){command.Aim=(kickPlan.Target-p.Position).Normalized;if(kickPlan.Pass)command.Move=Vec2.Zero;}
+        }
+        private void FinishKick(MatchState state,PlayerState p,ref PlayerCommand command)
+        {
+            if(state.Ball.OwnerId!=p.Id)charging=false;
+            if(charging)
+            {
+                if(kickPlan.Pass)
+                {
+                    var receiver=state.Players[kickPlan.ReceiverId];
+                    var target=BotTactics.Lead(rules,p,receiver);
+                    if(receiver.IsDead || receiver.Stun>0 || !BotTactics.ClearLane(state,p,target,rules.BallRadius))
+                    {charging=false;command.Cancel=true;command.KickPressed=false;nextDecision=state.Tick+1;}
+                    else kickPlan.Target=target;
+                }
+                command.Aim=(kickPlan.Target-p.Position).Normalized;
+            }
+            command.KickHeld=charging;
+            if(charging && state.Tick>=releaseTick)
+            {command.KickReleased=true;command.KickHeld=false;charging=false;}
         }
 
         private PlayerCommand ReadCombatCommand(MatchState state, PlayerState p)
@@ -109,56 +118,15 @@ namespace Soccer.Core
                 }
                 if (state.Ball.OwnerId == p.Id)
                 {
-                    var target = new Vec2(side * (rules.FieldWidth / 2 + 0.5f), p.Id % 2 == 0 ? 0.6f : -0.6f);
-                    command.Move = new Vec2(side, -p.Position.Y * 0.12f).Normalized;
-                    if (rules.BotDifficulty != BotDifficulty.BallBoy && (enemyDistance < 3 || p.Health < 45))
-                    {
-                        PlayerState receiver = null;
-                        float bestSpace = enemyDistance + 0.8f;
-                        foreach (var ally in state.Players)
-                        {
-                            float d = Vec2.Distance(ally.Position, p.Position);
-                            if (ally.Id == p.Id || ally.IsDead || ally.Team != p.Team || d < 1.5f || d > 11 ||
-                                (ally.Position.X - p.Position.X) * side < -4) continue;
-                            float space = float.MaxValue;
-                            foreach (var opponent in state.Players)
-                                if (!opponent.IsDead && opponent.Team != p.Team)
-                                    space = Math.Min(space, Vec2.Distance(opponent.Position, ally.Position));
-                            if (space > bestSpace) { bestSpace = space; receiver = ally; }
-                        }
-                        if (receiver != null) target = receiver.Position;
-                    }
-                    if (rules.BotDifficulty >= BotDifficulty.God) target = BotTactics.KickTarget(state, rules, p);
-                    command.Aim = (target - p.Position).Normalized;
-                    if (rules.BotDifficulty == BotDifficulty.BallBoy) command.Aim = Vec2.Rotate(command.Aim, (p.Id % 2 == 0 ? 1 : -1) * .09f);
-                    if (!charging && p.KickCooldown <= 0 && Vec2.Distance(target, p.Position) < 16)
-                    {
-                        charging = true;
-                        float speed = (float)Math.Sqrt(2 * rules.BallDeceleration * Math.Min(17, Vec2.Distance(target, p.Position))) + 1;
-                        float charge = Geometry.Clamp((speed - rules.TapKickSpeed) / (rules.FullKickSpeed - rules.TapKickSpeed), 0, 0.9f);
-                        releaseTick = state.Tick + Math.Max(1, (long)(charge * rules.ChargeSeconds / MatchSimulation.TickSeconds));
-                        command.KickPressed = true;
-                    }
+                    ReadCarrier(state,p,ref command);
                 }
                 else
                 {
                     charging = false;
-                    int closest = p.Id;
-                    float best = float.MaxValue;
-                    foreach (var ally in state.Players)
-                    {
-                        if (ally.IsDead || ally.Team != p.Team) continue;
-                        float distance = Vec2.Distance(ally.Position, state.Ball.Position);
-                        if (distance < best) { best = distance; closest = ally.Id; }
-                    }
-                    bool teamHasBall = state.Owner != null && state.Owner.Team == p.Team;
-                    Vec2 target = closest == p.Id && !teamHasBall ? state.Ball.Position : teamHasBall
-                        ? state.Owner.Position + new Vec2(side * 3, p.Id % 2 == 0 ? 2.5f : -2.5f)
-                        : new Vec2(-side * (rules.FieldWidth / 2 - 5), p.Id % 2 == 0 ? 3 : -3);
-                    if (!teamHasBall && enemy != null && enemyDistance < 4 && closest != p.Id)
-                        target = enemy.Position - (enemy.Position - p.Position).Normalized * Math.Min(3, kit.WeaponRange * 0.6f);
-                    if (closest == p.Id && state.Owner != null && !teamHasBall) target = state.Ball.Position;
-                    if (rules.BotDifficulty >= BotDifficulty.God) target = BotTactics.Position(state, rules, p, closest);
+                    int closest=BotTactics.Chaser(state,p.Team);
+                    float best=Vec2.Distance(p.Position,state.Ball.Position);
+                    bool teamHasBall=state.Owner!=null && state.Owner.Team==p.Team;
+                    Vec2 target=BotTactics.Position(state,rules,p,closest);
                     var offset = target - p.Position;
                     command.Move = offset.Length > 0.4f ? offset.Normalized : Vec2.Zero;
                     command.Aim = (state.Ball.Position - p.Position).Normalized;
@@ -220,10 +188,7 @@ namespace Soccer.Core
                 }
                 cached = command.WithoutEdges();
             }
-            if (state.Ball.OwnerId != p.Id) charging = false;
-            command.KickHeld = charging;
-            if (charging && state.Tick >= releaseTick)
-            { command.KickReleased = true; command.KickHeld = false; charging = false; }
+            FinishKick(state,p,ref command);
             command.Navigate = true;
             return command;
         }

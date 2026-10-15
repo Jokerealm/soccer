@@ -28,13 +28,13 @@ namespace Soccer.Runtime
             Check(FocusIs("normal-mode"),"legacy and native events in one frame advance only once");yield return null;
             input.Pressed=KeyCode.UpArrow;yield return null;input.Clear();Check(FocusIs("bots-button"),"legacy Up moves selection back");yield return null;
             input.Pressed=KeyCode.Return;yield return null;input.Clear();
-            Check(app.Page==AppPage.PlayMenu,"legacy Enter opens the selected primary action");app.UI.MenuInputOverride=null;
+            Check(app.Page==AppPage.Home && app.UI.Chat.IsOpen,"legacy Enter opens chat without confirming the focused menu action");app.UI.MenuInputOverride=null;app.UI.Chat.Close();yield return null;yield return Click("bots-button");
             yield return new WaitForSecondsRealtime(.35f);NavigationMove(Vector2.down);yield return null;
             Check(FocusIs("play-ai"),"mode selection also supports native directional navigation");
             NavigationMove(Vector2.down);yield return null;Check(FocusIs("play-tutorial"),"mode Down reaches tutorial");
             NavigationMove(Vector2.up);yield return null;Check(FocusIs("play-ai"),"mode Up returns to AI option");
             using(var evt=KeyDownEvent.GetPooled('\0',KeyCode.Return,EventModifiers.None)){evt.target=app.UI.Root;app.UI.Root.SendEvent(evt);}
-            yield return null;Check(app.InDraft,"native KeyDown Enter dispatches a queued button submit exactly once");app.BackFromSelection();
+            yield return null;Check(app.Page==AppPage.PlayMenu && app.UI.Chat.IsOpen,"native Enter opens chat without selecting a game mode");app.UI.Chat.Close();yield return null;yield return Click("play-ai");Check(app.InDraft,"mouse still confirms game mode");app.BackFromSelection();
             app.GoHome();yield return new WaitForSecondsRealtime(.35f);
             yield return Click("shop-button");Check(app.Page==AppPage.Shop && app.Wallet!=null,"mouse shop entry opens the current player's actual wallet");
             Check(app.UI.Root.Q<Label>("shop-coins").text==app.Wallet.Coins.ToString("N0") && app.UI.Root.Q<Label>("shop-profile").text==app.PlayerName,"shop balance and profile reflect persisted offline wallet");
